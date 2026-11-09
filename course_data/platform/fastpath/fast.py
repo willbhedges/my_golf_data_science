@@ -29,6 +29,7 @@ pc.PACKAGES = os.path.join(CACHE, "packages")
 import osm_api  # noqa: E402
 
 _ROWS = None
+LATE = {}                # the card search thread of the last build (two-phase: wait_card() then build again)
 CARD_BUDGET_S = 15.0
 
 
@@ -69,6 +70,15 @@ def lookup(query):
     return best and best[1]
 
 
+def wait_card(seconds=60.0):
+    """True when the card search of the last build was still running at its budget and has now finished."""
+    t = LATE.get("card")
+    if t is None or not t.is_alive():
+        return False
+    t.join(seconds)
+    return not t.is_alive()
+
+
 def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=None, year="auto", canopy_trees=True):
     T = {}
     t_all = time.time()
@@ -107,7 +117,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     def img():
         t = time.time()
         if imagery and not os.path.exists(os.path.join(pkg_dir, "imagery", "georef.json")):
-            import imagery as fim
+            import fast_imagery as fim
             _, ti = fim.fetch(course["bbox"], os.path.join(pkg_dir, "imagery"), fc, year, label=course["name"])
             T.update(ti)
         T["imagery"] = round(time.time() - t, 2)
@@ -121,6 +131,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     import threading
     tc = threading.Thread(target=cards, daemon=True)     # the card search never holds the build: CARD_BUDGET_S
     tc.start()
+    LATE["card"] = tc
     with ThreadPoolExecutor(4) as ex:
         fs = [ex.submit(img), ex.submit(trees)]
         for f in fs:
@@ -153,9 +164,21 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     lap("solve", t0)
     if r.returncode:
         log(r.stderr[-1500:])
+    # the publish gate of the course-page pipeline (library/course_page.py): a map that is too wrong is never shown
+    blocked = []
+    try:
+        sys.path.insert(0, os.path.join(CD, "library"))
+        import course_page as cp
+        blocked = cp.publish_gate(package, {"tees": package.get("tee_set")}, req.get("near"))
+    except Exception as e:                                           # noqa: BLE001
+        blocked = [f"gate could not run: {type(e).__name__}: {e}"]
+    pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked))
     T["total"] = round(time.time() - t_all, 2)
     T["stages"] = package.get("stages")
     pc.write_json(os.path.join(pkg_dir, "timing.json"), T)
+    if blocked and r.returncode == 0:
+        return dict(status="blocked", stage="gate", why="; ".join(blocked)[:400], slug=slug, holes=len(package["holes"]),
+                    timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
     return dict(status="ok" if r.returncode == 0 else "failed", stage=None if r.returncode == 0 else "solve", slug=slug,
                 holes=len(package["holes"]), timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
 

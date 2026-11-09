@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): 1 of 3 usable as is, 1 usable without a card (one tee set), 1 blocked (unmapped: routing)**
+**Headline (updated at every course): 2 of 6 usable as is, 1 usable without a card, 3 blocked / not shown (2 unmapped tier D, 1 half-mapped tier C: all routing)**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -87,6 +87,9 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | 1 | Crow Canyon CC, San Ramon CA | A | **wrong**: map right on 18 / 18 holes (card vs measured within 5 yds on 17), but Mid iron on 9 of 13 tee shots and hole 16's back tee on a house roof | (a) geometry: a `landuse=residential` area drawn round the whole subdivision made every yard of rough OB (S3 build_holes); (b) tees: 68 of 104 lidar "pads" were roofs / house lots outside the course (S2 lidar pads) | this commit | **usable as is**: 4-wood / 2-wood / Driver / Long iron picks that fit the corridors, 16 on its box (175 vs card 180), OB = the real property lines, trees from Meta canopy |
 | 2 | Sunset GC, Mount Morris IL | D | **failed: blocked, routing** (105 s, 3 s cached; the Actions run failed the same way after 26 min) | package: OSM maps 0 holes / 0 greens / 0 tees and the fast path builds no perception scene (greens / tees from imagery), so there is nothing to route. Side fix: NAIP year scoring took 88 s with no OSM turf to score on -> newest covering year, newest 4 years only | open (the unmapped-course cause; revisit after 5 courses) | blocked |
 | 3 | Pheasant Ridge GC, Cedar Falls IA | A | **usable, no card** (47 s cold, 8 s cached): 18 / 18 holes on the real holes, pars 72, tees on the mapped back boxes, Driver / 4-wood picks that follow the doglegs; but ONE tee set ("back, from the map") and no card yardage | card: OpenGolfAPI lists only the facility's par-27 nine (rightly rejected), golfify has no page, AllSquare / BlueGolf / GolfPass / the club site are not reachable from this container (proxy), and their retries held the build 36 s -> the card search now gets a 15 s budget and never holds the build | this commit (budget); hosts asked | usable, no card |
+| 4 | Glenwild GC & Spa, Park City UT | D | **failed: blocked, routing** (29 s) | same as 2: OSM has only the outline | open | blocked |
+| 5 | Candler Park GC, Decatur GA (9 holes) | C | **wrong** (20 s): 7 of 9 holes built (1 and 8 missing); 4 plays across a road and houses, 6 across another fairway; the card yardages "match" because the tees were slid to fit | routing: OSM maps 8 greens + 8 tees and no hole lines; routing v2 + structure paired them wrongly. Not fixed here (bigger than 10 min). Guard added: the course-page publish gate now runs in the fast path -> "7 holes built, the card has 9" | this commit (gate) | **blocked (not shown)** |
+| 6 | Chevy Chase GC, Wheeling IL | A | **usable as is** (32 s incl. a late card; 11 s cached): 18 / 18 holes right, OpenGolfAPI card, every measured yardage within 6 of the card, 4 sets, water / OB / trees on the map, Driver / 4-wood / Long iron picks land on fairway (15: Driver +40 round the dog-leg; 9's back tee is a lidar pad at the card yardage) | - | - | usable as is |
 
 ## Time per course by stage (Actions, runner-minutes)
 
