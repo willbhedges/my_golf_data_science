@@ -1,7 +1,7 @@
 {
  "name": "Gateway National Golf Links",
  "title": "Gateway National Caddie",
- "sub": "NCCGA Regional 3, Nov 14-15 2026 · Driver 275/300 · 2-wood 265/280 · 4-wood 255/270 at 70°F · club and aim re-solved for the wind and temperature at each hole",
+ "sub": "NCCGA Regional 3, Nov 14-15 2026 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F \u00b7 club and aim re-solved for the wind and temperature at each hole",
  "event": "NCCGA Regional 3",
  "package": "course_data/courses/gateway_national/auto/package.json",
  "truth_package": "course_data/courses/gateway_national/truth/package.json",
@@ -42,5 +42,31 @@
   "wind_from": 200,
   "source": "mid-November normals for St. Louis (lows ~38 F, highs ~57 F, prevailing SSW wind ~10 mph)"
  },
- "foot": "Tee set: Back (6,623, 72.4/133) is the set the NCCGA played here in 2024 (6,623; Nov 2025 used a 6,377 combo); The Tips, Champions, Middle and Forward are on the tee picker. Imagery: USDA NAIP 2023-08-19."
+ "foot": "Tee set: Back (6,623, 72.4/133) is the set the NCCGA played here in 2024 (6,623; Nov 2025 used a 6,377 combo); The Tips, Champions, Middle and Forward are on the tee picker. Imagery: USDA NAIP 2023-08-19.",
+ "display_imagery": {
+  "year": "naipplus",
+  "img_w": 900,
+  "jpeg_q": 86,
+  "jpeg_sub": 2,
+  "sharpen": [
+   2.0,
+   70,
+   2
+  ],
+  "render_scale": [
+   2,
+   3
+  ],
+  "render_back": 120,
+  "share_photos": true,
+  "fallback_year": 2023,
+  "direct": true,
+  "p3_view_yds": 150
+ },
+ "grid_prune": true,
+ "page_text": {
+  "hide_hazards": true,
+  "source": "golfer request 2026-11-06 (Eagle Knoll): no water / OB / hazard words or outlines on the page",
+  "map_notes": {}
+ }
 }
