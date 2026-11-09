@@ -1,6 +1,6 @@
 # Coldwater Golf Links (Ames, IA) - Blue tees
 
-Built 2026-11-09T20:16:27Z. OSM way/44807109. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-09T22:08:56Z. OSM way/44807109. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 4, golf=bunker 41, golf=cartpath 8, go
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 74 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 63 candidate pads near hole starts (11 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/coldwater/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023

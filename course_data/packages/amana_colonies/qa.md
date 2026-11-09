@@ -1,6 +1,6 @@
 # Amana Colonies Golf Course (Amana, IA) - Black tees
 
-Built 2026-11-09T20:15:27Z. OSM way/731221353. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-09T22:08:16Z. OSM way/731221353. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 1, golf=bunker 59, golf=cartpath 8, go
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 88 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 86 candidate pads near hole starts (2 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/amana_colonies/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023

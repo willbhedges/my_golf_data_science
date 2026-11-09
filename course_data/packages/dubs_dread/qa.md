@@ -1,6 +1,6 @@
 # Dub's Dread Golf Club (Kansas City, KS) - Championship tees
 
-Built 2026-11-09T20:17:57Z. OSM way/505160823. Scorecard: file (course_data/library/dubs_dread/card_golfify.json). Tee set: colour.
+Built 2026-11-09T22:09:51Z. OSM way/505160823. Scorecard: file (course_data/library/dubs_dread/card_golfify.json). Tee set: colour.
 
 ## Coverage
 
@@ -50,7 +50,7 @@ OSM features inside the course: buildings 3, golf=bunker 12, golf=fairway 20, go
 - **scorecard**: ok: file (course_data/library/dubs_dread/card_golfify.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tee_overrides**: ok: Championship 4 review (inside OSM tee 505295054), 5 review (inside OSM tee 505295061), 9 review (inside OSM tee 505304285);
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 47 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 44 candidate pads near hole starts (3 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/dubs_dread/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
