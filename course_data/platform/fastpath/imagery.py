@@ -23,6 +23,7 @@ import naip_years as NY  # noqa: E402
 GDAL_ENV = dict(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif",
                 GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE="TRUE", GDAL_HTTP_MAX_RETRY="2")
 STRIPS = 8
+SCORE_YEARS = 4
 
 
 def _read_strips(items, bounds, res):
@@ -60,8 +61,12 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
     T["naip_list"] = round(time.time() - t0, 2)
     t0 = time.time()
     scores = {}
+    polys = NY.turf_polygons(osm) if (year == "auto" and osm) else None
+    if polys is not None and not any(polys.values()):
+        year = "latest"                 # no OSM turf to score on (unmapped course): the newest covering year, no reads
+    cov = [y for y in years if y["coverage"] > 0.9] or years
+    years = cov[-SCORE_YEARS:]          # only the newest few years compete (older flights predate renovations anyway)
     if year == "auto" and osm:
-        polys = NY.turf_polygons(osm)
 
         def sc(y):
             try:

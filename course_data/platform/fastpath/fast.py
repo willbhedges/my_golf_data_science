@@ -29,6 +29,7 @@ pc.PACKAGES = os.path.join(CACHE, "packages")
 import osm_api  # noqa: E402
 
 _ROWS = None
+CARD_BUDGET_S = 15.0
 
 
 def norm(s):
@@ -117,10 +118,16 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             canopy.fetch(course["bbox"], os.path.join(pkg_dir, "canopy"))
         T["canopy"] = round(time.time() - t, 2)
     t0 = time.time()
+    import threading
+    tc = threading.Thread(target=cards, daemon=True)     # the card search never holds the build: CARD_BUDGET_S
+    tc.start()
     with ThreadPoolExecutor(4) as ex:
-        fs = [ex.submit(cards), ex.submit(img), ex.submit(trees)]
+        fs = [ex.submit(img), ex.submit(trees)]
         for f in fs:
             f.result()
+    tc.join(max(0.0, CARD_BUDGET_S - (time.time() - t0)))
+    if tc.is_alive():
+        T["card"] = f"still searching after {CARD_BUDGET_S} s: built without it (a later run reads the cached answer)"
     lap("fetch (card || imagery)", t0)
     t0 = time.time()
     import package as pk

@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): 1 of 1 graded random courses usable as is after its fixes (0 of 1 before).**
+**Headline (updated at every course): 1 of 3 usable as is, 1 usable without a card (one tee set), 1 blocked (unmapped: routing)**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -85,6 +85,8 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | # | course | tier | verdict before | cause (stage) | fix commit | verdict after |
 |---|---|---|---|---|---|---|
 | 1 | Crow Canyon CC, San Ramon CA | A | **wrong**: map right on 18 / 18 holes (card vs measured within 5 yds on 17), but Mid iron on 9 of 13 tee shots and hole 16's back tee on a house roof | (a) geometry: a `landuse=residential` area drawn round the whole subdivision made every yard of rough OB (S3 build_holes); (b) tees: 68 of 104 lidar "pads" were roofs / house lots outside the course (S2 lidar pads) | this commit | **usable as is**: 4-wood / 2-wood / Driver / Long iron picks that fit the corridors, 16 on its box (175 vs card 180), OB = the real property lines, trees from Meta canopy |
+| 2 | Sunset GC, Mount Morris IL | D | **failed: blocked, routing** (105 s, 3 s cached; the Actions run failed the same way after 26 min) | package: OSM maps 0 holes / 0 greens / 0 tees and the fast path builds no perception scene (greens / tees from imagery), so there is nothing to route. Side fix: NAIP year scoring took 88 s with no OSM turf to score on -> newest covering year, newest 4 years only | open (the unmapped-course cause; revisit after 5 courses) | blocked |
+| 3 | Pheasant Ridge GC, Cedar Falls IA | A | **usable, no card** (47 s cold, 8 s cached): 18 / 18 holes on the real holes, pars 72, tees on the mapped back boxes, Driver / 4-wood picks that follow the doglegs; but ONE tee set ("back, from the map") and no card yardage | card: OpenGolfAPI lists only the facility's par-27 nine (rightly rejected), golfify has no page, AllSquare / BlueGolf / GolfPass / the club site are not reachable from this container (proxy), and their retries held the build 36 s -> the card search now gets a 15 s budget and never holds the build | this commit (budget); hosts asked | usable, no card |
 
 ## Time per course by stage (Actions, runner-minutes)
 
