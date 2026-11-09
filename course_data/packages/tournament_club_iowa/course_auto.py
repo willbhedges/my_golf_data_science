@@ -1,5 +1,5 @@
 """Course module for Tournament Club of Iowa (King tees), generated from package.json by
-course_data/platform/package.py on 2026-11-09T16:40:17Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-09T20:27:59Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_tournament_club_iowa.json
 
