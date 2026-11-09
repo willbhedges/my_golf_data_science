@@ -150,6 +150,34 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             _, ti = fim.fetch(course["bbox"], os.path.join(pkg_dir, "imagery"), fc, year, label=course["name"])
             T.update(ti)
         T["imagery"] = round(time.time() - t, 2)
+    def route_no_lines():
+        """OSM maps greens + tees but not the hole lines: joint routing (route_joint.py) -> golf=hole ways"""
+        nonlocal fc, summ
+        n_lines = sum(1 for f in fc["features"] if (f.get("properties") or {}).get("golf") == "hole"
+                      and f["properties"].get("inside_course") is not False)
+        n_green = sum(1 for f in fc["features"] if (f.get("properties") or {}).get("golf") == "green")
+        n_tee = sum(1 for f in fc["features"] if (f.get("properties") or {}).get("golf") == "tee")
+        if n_lines >= 3 or n_green < 7 or n_tee < 5:
+            return None
+        t = time.time()
+        import package as pk
+        import route_joint
+        card, _ = pk.pick_scorecard(req, raw, fc)
+        n = len(next(iter(card["tee_sets"].values()))["yards"]) if card and card.get("tee_sets") else (row.get("holes") or 18)
+        try:
+            r = route_joint.route(fc, card, n)
+        except Exception as e:                                       # noqa: BLE001
+            T["route_joint"] = f"failed: {type(e).__name__}: {e}"[:200]
+            return None
+        if r.get("features"):
+            sup = os.path.join(raw, "joint_holes.geojson")
+            pc.write_json(sup, {"type": "FeatureCollection", "features": r["features"]})
+            req["osm_supplement"] = sup
+            pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
+            fc, summ = osm_api.features(course, raw, CACHE, req)
+        T["route_joint"] = round(time.time() - t, 2)
+        return {k: v for k, v in r.items() if k != "features"}
+
     def trees():
         t = time.time()
         if canopy_trees:
@@ -169,6 +197,9 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     if tc.is_alive():
         T["card_late"] = f"still searching after {CARD_BUDGET_S} s: built without it (a later run reads the cached answer)"
     lap("fetch (card || imagery)", t0)
+    routed = None
+    if not tc.is_alive():
+        routed = route_no_lines()
     t0 = time.time()
     import package as pk
     try:
@@ -202,6 +233,13 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     except Exception as e:                                           # noqa: BLE001
         blocked = [f"gate could not run: {type(e).__name__}: {e}"]
     blocked += extra_gate(package)
+    if routed is not None:
+        import route_joint
+        pc.write_json(os.path.join(pkg_dir, "route_joint.json"), routed)
+        if routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or routed.get("n_virtual"):
+            blocked.append(f"hole lines routed by the joint solver with min margin {routed.get('min_margin', 0):.1f} "
+                           f"(< {route_joint.MIN_MARGIN}; {routed.get('n_virtual', 0)} holes without a tee or green): "
+                           "the numbering is not certain")
     pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked))
     T["total"] = round(time.time() - t_all, 2)
     T["stages"] = package.get("stages")

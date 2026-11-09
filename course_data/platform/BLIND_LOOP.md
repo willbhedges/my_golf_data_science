@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): after 13 courses - 3 usable as is, 2 usable with 1-3 confirms (all flagged), 1 usable without a card, 7 not shown (4 unmapped tier D, 3 tier C without hole lines / card misfit), 0 shown wrong. Tier A 6 / 6 usable; tier C / D 0 / 7.**
+**Headline (updated at every course): after 13 courses - 3 usable as is, 3 usable with 1-3 flagged confirms, 1 usable without a card, 6 not shown (4 unmapped tier D, 2 tier C), 0 shown wrong. Tier A 6 / 6 usable; tier C 1 / 3 (Royal Scot, by joint routing); tier D 0 / 4.**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -94,7 +94,7 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | 8 | The Kittansett Club, Marion MA | A | **usable with 1 confirm** (64 s cold: year scoring 37 s; 17 s cached): 18 / 18 holes right, golfify card, yardages within 4; hole 10's back tee was a lidar pad 62 yds to the side of the mapped boxes that happened to give the card 352; marsh / beach / OB mapped; picks sensible (4: Driver +40 across the corner of a dog-leg: confirm the line) | tees: a lidar pad far from every mapped box taken for the card yardage; time: year scoring at 1.2 m | this commit: pads must be within 40 yds of a mapped box or behind the hole's first leg (when OSM maps >= 9 boxes); year scoring reads at 2.4 m | **usable as is** apart from the wide aim on 4 (10: tee_axis 347 vs card 352) |
 | 9 | Makena North, Wailea HI | D | **failed: blocked, routing** (25 s) | same as 2 and 4: outline only (and no NAIP in Hawaii) | open | blocked |
 | 10 | Down River GC, Everett PA | C | **wrong** (58 s; build 36 s, the router): 17 OSM hole lines + 1 routed hole; hole 12 was routed onto hole 1's green; the golfify card is 50-125 yds longer than the map on 9 / 10 / 11 and the tee stage "fitted" it by putting those tees on other holes' boxes (4, 12, 3) | tees: another hole's box borrowed to fit the card; routing: the missing hole put on a used green; card: does not fit the map | this commit: (a) sanity.guard_tees - a tee > 60 yds from its hole's start and nearer another hole's start goes back to the line start, flagged (test); (b) fast-path gate - two holes sharing a green, or the card off by > 25 yds on >= 3 holes -> blocked (test) | **blocked (not shown)**: "holes 1 and 12 share a green; the card does not fit the map on 3 holes" |
-| 11 | Royal Scot GC, New Franken WI | C | **blocked (not shown)** (64 s; router 39 s): OSM has 19 greens + 48 tees and no hole lines; 17 of 18 holes routed, pars 67 vs 72 | routing (half-mapped, no lines) | open; gate works | blocked |
+| 11 | Royal Scot GC, New Franken WI | C | **blocked (not shown)** (64 s; router 39 s): OSM has 19 greens + 48 tees and no hole lines; the old router built 17 of 18 holes, pars 67 vs 72 | routing (half-mapped, no lines) | joint routing wired into the fast path (`fastpath/route_joint.py`: zero_tap/joint on the OSM polygons with tee_reuse, dog-leg hole lines through the fairway centreline, gate min margin >= 4) | **usable with 2 flagged confirms** (15 s cached; routing 2 s): 18 / 18 holes run tee -> fairway -> green by eye, every card yardage within 5 yds, min margin 4.3; wide dog-leg aims on 3 and 10 carry the confirm flag |
 | 12 | Zintel Creek GC, Kennewick WA | A | **usable with 3 confirms, all flagged** (25 s; 11 s cached): 18 / 18 holes right; the OpenGolfAPI card arrived after the 15 s budget and the first answer was built without it (bug: the late-card flag was overwritten, so no second-phase rebuild); with the card: 3 sets, yardages within 10 on 17 holes (18: card 455 vs 417), two dog-leg picks more than 40 yds off the line (5, 12) carry the "confirm the line" flag | fast path: late card not picked up | 9a2 (this commit): late card always triggers the rebuild | usable with 3 confirms |
 | 13 | Hawk's Point GC, Vidalia GA | D | **failed: blocked, routing** (8 s) | outline only | open | blocked |
 
@@ -130,7 +130,33 @@ a re-score a few minutes (number below when measured).
 
 (none yet)
 
-### Half-mapped courses (OSM greens + tees, no hole lines): measured 2026-11-09, not solved
+### Half-mapped courses, second pass (same evening): the tee-complex constraint was the wall
+
+The joint solver let each linked tee complex serve one hole; 95 of 106 dev courses have a complex that serves two
+(adjacent tees). With `tee_reuse` (zero_tap/joint/solve.py, params.json osm_card), OSM polygons + web card, 18-hole
+courses, K 18, beam 4000:
+
+| split | courses | holes fully right | greens numbered right | courses: every green numbered right | gate min margin >= 4: shown / right |
+|---|---|---|---|---|---|
+| dev, before | 106 | 76.0 % | 81.2 % | 45 (42 %) | about half right |
+| dev, tee_reuse | 106 | 81.7 % | 86.4 % | 59 (56 %) | 19 / 16 |
+| test, tee_reuse (read once) | 104 | 86.5 % | 90.4 % | 62 (60 %) | 28 / 27 (>= 3: 35 / 34; >= 6: 11 / 11) |
+
+Not helped (17-course dev sample): hard exclusion of pairs crossing an OSM road / building (+0.3 pt of holes), a
+fairway-ends rule (-1.3 pt): the hole model already reads the fairway polygons; pairs were 85.6 % right before any of
+this. What is left is order / numbering.
+
+Vision check by eye, blind, 5 dev courses, one contact sheet each of the solver's proposal (11-20 s to render incl.
+the NAIP fetch, about 40 s of looking): per-hole "is this a real tee -> green corridor" against the true pairs:
+precision 84 % (53 / 63), recall 90 %, 68 % of the wrong pairs caught (21 / 31). It separates hopeless routings (5 and
+11 of 18 judged ok; truth 1 and 8 pairs) from near-right ones (17 / 14 / 16 judged ok; truth 17 / 17 / 16) but does not
+see numbering and missed the one wrong hole of a 17 / 18 course: a coarse gate, not a zero-wrong gate.
+
+In the fast path a joint-routed course is shown only with min margin >= 4, no virtual hole, and the existing gates
+(hole count, shared green, card misfit on >= 3 holes); Royal Scot (blind 11) is the first such course shown: all 18
+card yardages within 5 yds of the routed dog-leg lengths. Candler Park (8 greens for 9 holes, margin 0) stays blocked.
+
+### Half-mapped courses (OSM greens + tees, no hole lines): first pass, before the tee-complex fix
 
 `zero_tap/joint` (card-aware joint solve) on the OSM green / tee polygons with the hole lines hidden (`prep.py
 --source osm`, first run of that source), web card, K 18, beam 4000, 4 CPUs: 0.5 s / course.
