@@ -1,6 +1,6 @@
 # WeaverRidge Golf Club (Peoria, IL) - Black tees
 
-Built 2026-11-09T20:29:34Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
+Built 2026-11-09T22:15:10Z. OSM way/749257217. Scorecard: file (course_data/library/weaver_ridge/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -51,7 +51,7 @@ OSM features inside the course: buildings 183, golf=bunker 78, golf=cartpath 46,
 - **scorecard**: ok: file (course_data/library/weaver_ridge/card_review.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tee_overrides**: ok: Black 5 review (inside OSM tee 749315882);
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 80 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 72 candidate pads near hole starts (8 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/weaver_ridge/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2019)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2019

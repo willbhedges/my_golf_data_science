@@ -1,6 +1,6 @@
 # The Falls Golf Club (O'Fallon, MO) - Blue tees
 
-Built 2026-11-09T20:27:13Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
+Built 2026-11-09T22:13:38Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
 
 ## Coverage
 
@@ -51,7 +51,7 @@ OSM features inside the course: buildings 34, golf=bunker 21, golf=cartpath 27, 
 - **scorecard**: ok: file (course_data/library/the_falls_ofallon/card_review.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tee_overrides**: ok: Gold 2 review (inside OSM tee 1241987977), 3 review (inside OSM tee 1241987984), 9 review (inside OSM tee 1243312604), 10 review (inside OSM tee 1243312612), 11 review (inside OSM tee 1243312620), 13 review (snapped 0 yds along OSM tee 705147986), 15 review (kept: snap snapped 0 yds along OSM tee 705151251 would measure 498, another set's box, point 506, card 506), 16 review (inside OSM tee 705151255), 18 review (inside OSM tee 705147983); Blue 18 review (inside OSM tee 705147983);
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 103 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 88 candidate pads near hole starts (15 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/packages/the_falls_ofallon/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022

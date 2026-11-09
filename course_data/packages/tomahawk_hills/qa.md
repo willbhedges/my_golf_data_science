@@ -1,6 +1,6 @@
 # Tomahawk Hills Golf Course (Shawnee, KS) - Blue tees
 
-Built 2026-11-09T20:28:47Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
+Built 2026-11-09T22:14:38Z. OSM way/117417596. Scorecard: club_site (club_site). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 4, golf=bunker 16, golf=cartpath 26, g
 - **routing**: ok: v2+structure (mapped_card, lam 0.5, structure on osm) placed 18/18 holes OSM has no way for (1 to check; segment no, lidar pads 104, perception scene no)
 - **scorecard**: ok: club_site (club_site)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 35 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 34 candidate pads near hole starts (1 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/tomahawk_hills/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
