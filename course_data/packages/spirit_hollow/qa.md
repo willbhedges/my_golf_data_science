@@ -1,6 +1,6 @@
 # Spirit Hollow Golf Course (Burlington, IA) - Black tees
 
-Built 2026-11-09T20:27:25Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
+Built 2026-11-09T22:15:43Z. OSM relation/13353211. Scorecard: file (course_data/tees/scorecard.json). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 7, golf=bunker 50, golf=cartpath 4, go
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: file (course_data/tees/scorecard.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 4 sets; lidar pads: 69 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 4 sets; lidar pads: 65 candidate pads near hole starts (4 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
 - **imagery**: ok: course_data/imagery/spirit_hollow (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023
