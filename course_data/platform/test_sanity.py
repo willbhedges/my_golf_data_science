@@ -685,3 +685,17 @@ def test_scrambled_osm_refs_still_renumber():
              for i, r in enumerate(osm_of)]
     dec = sanity.card_order(dict(features=feats), dict(par=card_pars, tee_sets={"Blue": dict(yards=card_yds)}))
     assert dec["action"] == "renumber" and dec["mapping"]["8"] == "3"
+
+
+def test_tee_on_another_holes_box_goes_back_to_the_line_start():
+    """Down River 10 (blind loop 2026-11-09): the card says 385 on a hole the map measures 332, so the tee was put on
+    hole 12's box 69 yds away. It goes back to its own line start and is flagged; a tee near its own start stays."""
+    fc = _hole_fc([line([(70, -10), (70, 300)], golf="hole", ref="2"), poly(70, -12, golf="tee", osm_id=21)])
+    tp = dict(holes={})
+    tee_at(tp, "1", "Blue", 68, -12, method="tee_axis")       # hole 2's box, 69 yds from hole 1's start
+    tee_at(tp, "1", "White", 2, 10, method="tee_axis")
+    notes = sanity.guard_tees(tp, fc)
+    blue, white = tp["holes"]["1"]["tees"]["Blue"], tp["holes"]["1"]["tees"]["White"]
+    assert blue["method"] == "tee_axis_capped" and "hole 2's tee" in blue["check"]
+    assert abs(yards_of(blue)[0]) < 1 and abs(yards_of(blue)[1]) < 1
+    assert "check" not in white and len(notes) == 1

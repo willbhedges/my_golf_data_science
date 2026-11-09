@@ -70,6 +70,35 @@ def lookup(query):
     return best and best[1]
 
 
+GATE_SHARED_GREEN_YD = 15.0     # two holes whose greens are this close are one hole built twice
+GATE_MISFIT_YD, GATE_MISFIT_HOLES = 25.0, 3   # card vs measured yards off by more than this on this many holes
+
+
+def extra_gate(package):
+    """Blocks the course-page gate does not have (blind loop 2026-11-09, Down River: hole 12 routed onto hole 1's
+    green; the card 50-125 yds longer than the map on 3 holes). -> reasons (empty: publishable)."""
+    import math
+    out = []
+    S = package.get("tee_set")
+    hs = sorted(package["holes"].items(), key=lambda kv: (len(kv[0]), kv[0]))
+    g = [(r, h.get("green_ll")) for r, h in hs if h.get("green_ll")]
+    for i, (ra, a) in enumerate(g):
+        for rb, b in g[i + 1:]:
+            k = math.cos(math.radians(a[1]))
+            if math.hypot((a[0] - b[0]) * k, a[1] - b[1]) * 111320.0 / 0.9144 <= GATE_SHARED_GREEN_YD:
+                out.append(f"holes {ra} and {rb} share a green: one of them is not routed")
+    bad = []
+    for r, h in hs:
+        t = (h.get("tees") or {}).get(S) or {}
+        card = (h.get("yards") or {}).get(S) if isinstance(h.get("yards"), dict) else None
+        if card and t.get("measured_yards") and abs(card - t["measured_yards"]) > GATE_MISFIT_YD:
+            bad.append(f"{r} ({card} vs {t['measured_yards']})")
+    if len(bad) >= GATE_MISFIT_HOLES:
+        out.append(f"the card does not fit the map on {len(bad)} holes (card vs measured yards: {', '.join(bad)}): "
+                   "wrong card, or holes numbered differently")
+    return out
+
+
 def wait_card(seconds=60.0):
     """True when the card search of the last build was still running at its budget and has now finished."""
     t = LATE.get("card")
@@ -172,6 +201,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
         blocked = cp.publish_gate(package, {"tees": package.get("tee_set")}, req.get("near"))
     except Exception as e:                                           # noqa: BLE001
         blocked = [f"gate could not run: {type(e).__name__}: {e}"]
+    blocked += extra_gate(package)
     pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked))
     T["total"] = round(time.time() - t_all, 2)
     T["stages"] = package.get("stages")

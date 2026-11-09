@@ -705,6 +705,9 @@ def _hit(pt, obs, skip):
     return None
 
 
+FOREIGN_OWN_YD, FOREIGN_OTHER_YD = 60.0, 80.0   # a tee this far from its own hole's start and this near another's
+
+
 def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
     """tp = tees/positions dict {holes: {ref: {tees: {set: {lat, lon, method, ...}}}}}; edited in place.
     -> [notes]. Moved entries get method '<old>_capped' and check='<reason>'."""
@@ -714,6 +717,7 @@ def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
     lines = _hole_lines(fc)
     obs = obstacles(fc, pr)
     notes = []
+    starts = {str(k): pr.fwd(*ln[0][:2]) for k, ln in lines.items() if ln and len(ln) >= 2}
     for ref, hp in tp["holes"].items():
         line = lines.get(str(ref))
         if not line or len(line) < 2:
@@ -733,6 +737,23 @@ def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
         back = min(alongs, key=alongs.get) if alongs else None
         hard = [o for o in obs if o[0] != "residential"]
         for s, r in (hp.get("tees") or {}).items():
+            if isinstance(r, dict) and r.get("lat") is not None and not r.get("check"):
+                # another hole's tee box taken to fit the card (Down River 9 / 10 / 11, blind loop 2026-11-09: card
+                # 400 / 385 / 415 on holes the map measures 275 / 332 / 306): a tee far from this hole's start and
+                # at another hole's start goes back to the line start, flagged; a card that does not fit is not
+                # made to fit by moving the tee
+                T0 = pr.fwd(r["lon"], r["lat"])
+                d_own = math.hypot(T0[0] - S[0], T0[1] - S[1])
+                if d_own > FOREIGN_OWN_YD:
+                    near = min(((math.hypot(T0[0] - q[0], T0[1] - q[1]), k) for k, q in starts.items() if k != str(ref)),
+                               default=(1e9, None))
+                    if near[0] <= FOREIGN_OTHER_YD and near[0] < d_own:
+                        lon, lat = pr.inv(*S)
+                        why = (f"tee was put {d_own:.0f} yds from this hole's start, at hole {near[1]}'s tee, to fit the "
+                               "card yardage: kept at the hole line's start (the card yardage does not fit this hole)")
+                        r.update(lon=lon, lat=lat, method=f"{r.get('method')}_capped", confidence="low", check=why)
+                        notes.append(f"hole {ref} {s}: CHECK, {why}")
+                        continue
             if not isinstance(r, dict) or r.get("lat") is None or str(r.get("method", "")).startswith(BOX_METHODS) \
                     or r.get("check"):
                 continue
