@@ -1,6 +1,6 @@
 # L.A. Nickell Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-09T20:23:36Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-09T22:11:11Z. OSM way/387047950. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -51,7 +51,7 @@ OSM features inside the course: buildings 7, golf=cartpath 12, golf=clubhouse 1,
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 28 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 25 candidate pads near hole starts (3 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/la_nickell/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2022)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2022

@@ -1,6 +1,6 @@
 # The Jayhawk Club (Lawrence, KS) - Black tees
 
-Built 2026-11-09T20:23:32Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-09T22:11:09Z. OSM relation/2053560. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -14,7 +14,7 @@ Built 2026-11-09T20:23:32Z. OSM relation/2053560. Scorecard: opengolfapi (opengo
 | holes_with_trees_or_long_grass_in_landing_zone | 3 |
 | of_par4_5 | 8 |
 | mean_landing_osm_share | 0.346 |
-| mean_confidence | 0.766 |
+| mean_confidence | 0.773 |
 | osm_score | 0.633 |
 
 OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18, golf=cartpath 15, golf=driving_range 1, golf=fairway 8, golf=green 10, golf=hole 10, golf=pin 2, golf=rough 1, golf=tee 32, golf=water_hazard 2, holes_with_par 10, single_trees 67, water_lines 39, water_polygons 3
@@ -29,7 +29,7 @@ OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18
 | 4 | 3 | 208 / 538 | 337 | 0.82 | auto | 100% | 0% | 0% | tee stage: Black walkback_capped | tee: tee stage: Black walkback_capped; Black tee walked back along the hole line (no box at 208 yds) |
 | 5 | 4 | 396 / 392 | 65 | 0.70 | check the flags | 41% | 0% | 59% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; no trees or long grass mapped in the landing zone (unmapped hazards play as rough); no fairway in the landing zone; Black tee on a lidar pad (no OSM box at 396 yds) |
 | 6 | 4 | 444 / 337 | 271 | 0.75 | check the flags | 36% | 0% | 64% | tee stage: Black tee_axis_far_cap | tee: tee stage: Black tee_axis_far_cap; Black tee out of order with the other sets |
-| 7 | 3 | 236 / 236 | 239 | 0.86 | auto | 100% | 0% | 0% | tee stage: Black lidar_pad | tee: tee stage: Black lidar_pad; Black tee on a lidar pad (no OSM box at 236 yds) |
+| 7 | 3 | 236 / 231 | 250 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
 | 8 | 5 | 512 / 380 | 107 | 0.77 | check the flags | 42% | 0% | 58% | tee stage: Black tee_axis_far_cap | tee: tee stage: Black tee_axis_far_cap; Black tee out of order with the other sets |
 | 9 | 4 | 412 / 412 | 312 | 0.78 | check the flags | 32% | 0% | 68% | tee stage: Black tee_centroid | no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
 | 10 | 4 | 408 / 299 | 347 | 0.74 | check the flags | 34% | 0% | 66% | tee stage: Black tee_axis_far_cap | tee: tee stage: Black tee_axis_far_cap; no trees or long grass mapped in the landing zone (unmapped hazards play as rough) |
@@ -41,7 +41,7 @@ OSM features inside the course: buildings 15, built_up_landuse 1, golf=bunker 18
 - **routing**: ok: structure (unmapped_card, structure on osm) placed 8/16 holes OSM has no way for (8 to check; segment no, lidar pads 655, perception scene no)
 - **scorecard**: ok: opengolfapi (opengolfapi)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 36 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 34 candidate pads near hole starts (2 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (10 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/jayhawk_club/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 10/10 greens visible as turf on NAIP 2021
