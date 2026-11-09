@@ -1,5 +1,5 @@
 """Course module for Pevely Farms Golf Course (Black tees), generated from package.json by
-course_data/platform/package.py on 2026-11-09T20:25:02Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-09T22:14:11Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_pevely_farms.json
 

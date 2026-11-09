@@ -1,6 +1,6 @@
 # Osage National Golf Club (Osage Beach, MO) - Palmer tees
 
-Built 2026-11-09T20:23:14Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
+Built 2026-11-09T22:13:01Z. OSM relation/5897058. Scorecard: opengolfapi (opengolfapi). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Palmer, Tournament, Middle, Members, Forward, Green)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green**
 
@@ -51,7 +51,7 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: opengolfapi (opengolfapi)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 6 sets; lidar pads: 108 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 6 sets; lidar pads: 103 candidate pads near hole starts (5 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 6 tee set(s))
 - **imagery**: ok: course_data/packages/osage_national/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2016)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2016
@@ -66,4 +66,3 @@ OSM features inside the course: buildings 48, built_up_landuse 1, golf=bunker 57
 ## Warnings
 
 - requested tee set 'Black' is not on the card; using 'Palmer' instead (allow_substitute). Sets on the card: Palmer, Tournament, Middle, Members, Forward, Green
-- hole 10 Green: CHECK, tee was on a building (OSM 793957852): moved 5 yds forward off it

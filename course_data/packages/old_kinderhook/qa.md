@@ -1,6 +1,6 @@
 # Old Kinderhook Resort, Golf, Club & Spa (Camdenton, MO) - Championship tees
 
-Built 2026-11-09T20:22:18Z. OSM way/393079215. Scorecard: request (request file yardages). Tee set: name.
+Built 2026-11-09T22:12:27Z. OSM way/393079215. Scorecard: request (request file yardages). Tee set: name.
 
 ## Coverage
 
@@ -50,7 +50,7 @@ OSM features inside the course: buildings 60, golf=bunker 53, golf=cartpath 42, 
 - **scorecard**: ok: request (request file yardages)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tee_overrides**: ok: Championship 9 review (inside OSM tee 822641041), 15 review (inside OSM tee -2);
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 1 sets; lidar pads: 81 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 1 sets; lidar pads: 74 candidate pads near hole starts (7 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
 - **imagery**: ok: course_data/packages/old_kinderhook/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2016)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2016
