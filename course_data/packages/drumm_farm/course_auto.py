@@ -1,5 +1,5 @@
 """Course module for Drumm Farm Golf Club (Tour tees), generated from package.json by
-course_data/platform/package.py on 2026-11-04T02:07:17Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-09T16:29:37Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_drumm_farm.json
 
