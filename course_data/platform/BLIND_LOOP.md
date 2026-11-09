@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): after 10 courses - 3 usable as is, 1 usable with 1 confirm, 1 usable without a card, 5 not shown (3 unmapped tier D: nothing to route; 2 tier C: mis-routed / card misfit, stopped by the gate), 0 shown wrong. Tier A 5 / 5 usable; tier C / D 0 / 5.**
+**Headline (updated at every course): after 13 courses - 3 usable as is, 2 usable with 1-3 confirms (all flagged), 1 usable without a card, 7 not shown (4 unmapped tier D, 3 tier C without hole lines / card misfit), 0 shown wrong. Tier A 6 / 6 usable; tier C / D 0 / 7.**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -94,6 +94,9 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | 8 | The Kittansett Club, Marion MA | A | **usable with 1 confirm** (64 s cold: year scoring 37 s; 17 s cached): 18 / 18 holes right, golfify card, yardages within 4; hole 10's back tee was a lidar pad 62 yds to the side of the mapped boxes that happened to give the card 352; marsh / beach / OB mapped; picks sensible (4: Driver +40 across the corner of a dog-leg: confirm the line) | tees: a lidar pad far from every mapped box taken for the card yardage; time: year scoring at 1.2 m | this commit: pads must be within 40 yds of a mapped box or behind the hole's first leg (when OSM maps >= 9 boxes); year scoring reads at 2.4 m | **usable as is** apart from the wide aim on 4 (10: tee_axis 347 vs card 352) |
 | 9 | Makena North, Wailea HI | D | **failed: blocked, routing** (25 s) | same as 2 and 4: outline only (and no NAIP in Hawaii) | open | blocked |
 | 10 | Down River GC, Everett PA | C | **wrong** (58 s; build 36 s, the router): 17 OSM hole lines + 1 routed hole; hole 12 was routed onto hole 1's green; the golfify card is 50-125 yds longer than the map on 9 / 10 / 11 and the tee stage "fitted" it by putting those tees on other holes' boxes (4, 12, 3) | tees: another hole's box borrowed to fit the card; routing: the missing hole put on a used green; card: does not fit the map | this commit: (a) sanity.guard_tees - a tee > 60 yds from its hole's start and nearer another hole's start goes back to the line start, flagged (test); (b) fast-path gate - two holes sharing a green, or the card off by > 25 yds on >= 3 holes -> blocked (test) | **blocked (not shown)**: "holes 1 and 12 share a green; the card does not fit the map on 3 holes" |
+| 11 | Royal Scot GC, New Franken WI | C | **blocked (not shown)** (64 s; router 39 s): OSM has 19 greens + 48 tees and no hole lines; 17 of 18 holes routed, pars 67 vs 72 | routing (half-mapped, no lines) | open; gate works | blocked |
+| 12 | Zintel Creek GC, Kennewick WA | A | **usable with 3 confirms, all flagged** (25 s; 11 s cached): 18 / 18 holes right; the OpenGolfAPI card arrived after the 15 s budget and the first answer was built without it (bug: the late-card flag was overwritten, so no second-phase rebuild); with the card: 3 sets, yardages within 10 on 17 holes (18: card 455 vs 417), two dog-leg picks more than 40 yds off the line (5, 12) carry the "confirm the line" flag | fast path: late card not picked up | 9a2 (this commit): late card always triggers the rebuild | usable with 3 confirms |
+| 13 | Hawk's Point GC, Vidalia GA | D | **failed: blocked, routing** (8 s) | outline only | open | blocked |
 
 ## Time per course by stage (Actions, runner-minutes)
 
