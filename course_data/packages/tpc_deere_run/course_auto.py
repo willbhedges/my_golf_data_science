@@ -1,5 +1,5 @@
 """Course module for TPC Deere Run (Gold tees), generated from package.json by
-course_data/platform/package.py on 2026-11-04T02:10:56Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-09T16:41:48Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_tpc_deere_run.json
 
