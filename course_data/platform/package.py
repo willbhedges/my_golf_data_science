@@ -863,7 +863,50 @@ def lidar_pads(fc, dem_path):
         pads = mod.detect_pads(dem_path, greens=greens, lines=lines)
     except Exception as e:                                       # noqa: BLE001
         return [], f"failed: {type(e).__name__}: {e}"[:200]
-    return pads, f"{len(pads)} candidate pads near hole starts"
+    pads, dropped = pads_on_course(pads, fc)
+    return pads, f"{len(pads)} candidate pads near hole starts" + (f" ({dropped} on buildings / off the course dropped)"
+                                                                   if dropped else "")
+
+
+PAD_OFF_COURSE_YD = 20.0     # a pad this far outside every leisure=golf_course outline is not a tee
+
+
+def pads_on_course(pads, fc):
+    """Lidar pads that can be a tee: not on an OSM building (a flat roof / a house lot is a perfect 'pad': Crow Canyon
+    16, blind loop 2026-11-09, put the back tee on a house 10 yds outside the course) and not more than
+    PAD_OFF_COURSE_YD outside the course outline(s) when OSM has one. -> (kept pads, n dropped)"""
+    try:
+        from shapely.geometry import Point, shape
+        from shapely.ops import unary_union
+    except ImportError:
+        return pads, 0
+    bld, crs = [], []
+    for f in (fc or {}).get("features", []):
+        pr, g = f.get("properties") or {}, f.get("geometry") or {}
+        if g.get("type") not in ("Polygon", "MultiPolygon"):
+            continue
+        try:
+            if pr.get("building") and pr.get("building") != "no":
+                bld.append(shape(g).buffer(0))
+            elif pr.get("leisure") == "golf_course":
+                crs.append(shape(g).buffer(0))
+        except Exception:                                        # noqa: BLE001
+            continue
+    if not bld and not crs:
+        return pads, 0
+    B = unary_union(bld) if bld else None
+    C = unary_union(crs) if crs else None
+    keep = []
+    for p in pads:
+        lat, lon = p["centroid"]
+        pt = Point(lon, lat)
+        k = math.cos(math.radians(lat))
+        if B is not None and B.distance(pt) * 111320.0 * k < 2.0:
+            continue
+        if C is not None and not C.contains(pt) and C.distance(pt) * 111320.0 * k / 0.9144 > PAD_OFF_COURSE_YD:
+            continue
+        keep.append(p)
+    return keep, len(pads) - len(keep)
 
 
 def place_tees_joint(fc, per_hole_card, card_sets, pads=()):

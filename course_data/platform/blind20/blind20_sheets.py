@@ -202,6 +202,68 @@ def overview(im, pkg, base, W=1500):
     return o
 
 
+def contact(course_dir, img_dir, out, cols=6, TH=430, TW=250):
+    """ONE image per course for the quick review: every hole as a thumbnail (whole hole, tee at the bottom) with the
+    tee, green, hole line, zones and the pick; title = hole, par, card / measured yards, club + aim."""
+    pkg = rj(os.path.join(course_dir, "package.json"))
+    dec = (rj(os.path.join(course_dir, "decision.json")) or {}).get("holes") or {}
+    base = pkg.get("tee_set")
+    im = Img(img_dir)
+    holes = pkg.get("holes") or {}
+    refs = sorted(holes, key=lambda r: (int("".join(c for c in r if c.isdigit()) or 0), r))
+    cells = []
+    for ref in refs:
+        h = holes[ref]
+        cell = np.full((TH + 34, TW, 3), 30, np.uint8)
+        tees = h.get("tees") or {}
+        t = tees.get(base) or (next(iter(tees.values())) if tees else {})
+        tee_ll, g_ll = t.get("tee_ll") or h.get("tee_ll"), h.get("green_ll")
+        d = dec.get(str(ref)) or {}
+        card = (h.get("yards") or {}).get(base) if isinstance(h.get("yards"), dict) else None
+        meas = t.get("measured_yards") or h.get("measured_length")
+        off = (card and meas and abs(card - meas) > 10)
+        text(cell, f"{ref} p{h.get('par')} {card}/{meas}", (3, 13), 0.42, (80, 180, 255) if off else (255, 255, 255))
+        text(cell, (f"{d.get('pick', '')} {d.get('aim', 0):+.0f}" if d else "par 3" if h.get("par") == 3 else "no pick")
+             + f" | {t.get('method', '?')[:12]}", (3, 28), 0.36, (0, 255, 255))
+        if tee_ll and g_ll:
+            fr = Frame(im, tee_ll, g_ll)
+            line = [fr.yd(p) for p in (h.get("hole_line_ll") or [tee_ll, g_ll])]
+            xs = [x for x, _ in line] + [0]
+            a0, a1 = -25, max(fr.len, max(a for _, a in line)) + 35
+            ppy = min(TH / (a1 - a0), 1.6)
+            half = TW / ppy / 2
+            cx = (min(xs) + max(xs)) / 2
+            crop, to = fr.crop(cx - half, cx + half, a0, a1, ppy)
+            for z in (h.get("zones_ll") or []):
+                poly(crop, to, [fr.yd(p) for p in z.get("poly") or []], COL.get(z.get("lie"), (200, 200, 200)), 1)
+            poly(crop, to, [fr.yd(p) for p in (h.get("green_polygon_ll") or [])], COL["green"], 1)
+            poly(crop, to, line, (255, 255, 0), 1, closed=False)
+            cv2.circle(crop, to(0, 0), 3, (0, 255, 255), -1, cv2.LINE_AA)
+            cv2.circle(crop, to(0, 0), max(2, int(10 * ppy)), (0, 255, 255), 1, cv2.LINE_AA)
+            cv2.drawMarker(crop, to(*fr.yd(g_ll)), (255, 255, 255), cv2.MARKER_TILTED_CROSS, 7, 1)
+            if d and t.get("aim_ll") and d.get("approach") is not None:
+                fa = Frame(im, tee_ll, t["aim_ll"])
+                along = max(60.0, (d.get("length") or fr.len) - d["approach"])
+                P = fa.t + YD * (along * fa.f + d.get("aim", 0) * fa.r)
+                q = (P - fr.t) / YD
+                c = to(float(q @ fr.r), float(q @ fr.f))
+                cv2.line(crop, to(0, 0), c, (0, 0, 255), 1, cv2.LINE_AA)
+                cv2.ellipse(crop, c, (max(2, int(15 * ppy)), max(3, int(28 * ppy))), 0, 0, 360, (0, 0, 255), 1, cv2.LINE_AA)
+            hh = min(crop.shape[0], TH)
+            cell[34:34 + hh, :min(crop.shape[1], TW)] = crop[:hh, :TW]
+        cells.append(cell)
+    rows = []
+    for i in range(0, len(cells), cols):
+        grp = cells[i:i + cols]
+        while len(grp) < cols:
+            grp.append(np.full_like(cells[0], 30))
+        rows.append(np.hstack([np.hstack([c, np.full((c.shape[0], 4, 3), 255, np.uint8)]) for c in grp]))
+    sheet = np.vstack(rows) if rows else np.full((100, 300, 3), 30, np.uint8)
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
+    cv2.imwrite(out, sheet, [cv2.IMWRITE_JPEG_QUALITY, 72])
+    return out
+
+
 def build(course_dir, img_dir, out):
     os.makedirs(out, exist_ok=True)
     pkg = rj(os.path.join(course_dir, "package.json"))
@@ -260,7 +322,11 @@ def main(argv=None):
     ap.add_argument("--img")
     ap.add_argument("--out")
     ap.add_argument("--bbox", action="store_true")
+    ap.add_argument("--contact", help="write ONE contact sheet (quick review) to this jpg instead of the full sheets")
     a = ap.parse_args(argv)
+    if a.contact:
+        print(contact(a.course_dir, a.img, a.contact))
+        return
     if a.bbox:
         print(bbox(a.course_dir))
         return

@@ -117,6 +117,7 @@ class World:
         self.counts = {}
         self.layers = {k: [] for k in ORDER}
         self.tees, self.greens, self.holes, self.course = [], [], [], []
+        landuse = []
         for f in feats:
             p, gt = f["properties"], f["geometry"]["type"]
             for k in ("golf", "natural", "landuse", "waterway", "leisure", "highway", "building", "water"):
@@ -143,11 +144,32 @@ class World:
                 if g.geom_type in ("LineString", "MultiLineString", "Point"):
                     g = g.buffer(half or 2, cap_style="flat" if g.geom_type != "Point" else "round")
                 if g.area > 0:
-                    self.layers[name].append(g)
+                    if name == "ob" and landuse_ob(p):
+                        landuse.append(g)
+                    else:
+                        self.layers[name].append(g)
         for name, geoms in extra_layers:
             self.layers[name] += [proj(g) for g in geoms]
         self.course = unary_union(self.course) if self.course else None
+        # A land-use area (landuse=residential ...) is often drawn round a whole subdivision, golf course included
+        # (Crow Canyon CC, blind loop 2026-11-09: every yard of rough was OB and the plan laid up with a mid iron on
+        # 9 of 13 tee shots). Inside the course outline it is not OB: the outline, buildings and roads say where OB is.
+        self.landuse_ob_clipped = 0
+        for g in landuse:
+            if self.course is not None and g.intersects(self.course):
+                g2 = g.difference(self.course)
+                self.landuse_ob_clipped += 1
+                if g2.is_empty:
+                    continue
+                g = g2
+            self.layers["ob"].append(g)
         self.union = {k: unary_union(v) if v else None for k, v in self.layers.items()}
+
+
+def landuse_ob(p):
+    """True when a feature is OB only because of its land-use tag (not a building, not golf=out_of_bounds)."""
+    return (p.get("landuse") in ("residential", "commercial", "industrial", "retail") and not p.get("building")
+            and p.get("golf") != "out_of_bounds")
 
 
 # ----------------------------------------------------------------------------- holes

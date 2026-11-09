@@ -3,7 +3,15 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): 0 of the last 10 random courses usable as is (0 graded so far).**
+**Headline (updated at every course): 1 of 1 graded random courses usable as is after its fixes (0 of 1 before).**
+
+**Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
+Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
+"Name, City, ST"` (resolve from the national index + OSM API, card, NAIP + 3DEP, Meta canopy trees, the unchanged
+`platform/package.py` build, quick solve). Raw fetches are cached in `fastpath/cache/` (not committed), so a re-run
+after an algorithm change takes ~15 s. Grading is from ONE contact sheet per course
+(`blind20_sheets.py --contact`, 0.6 s), zooming (`--out`, full sheets) only into holes that look wrong. Strictly one
+course at a time: build, grade, fix generally + test, re-run this and every earlier course, next course.
 
 ## Protocol
 
@@ -76,11 +84,35 @@ Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/bli
 
 | # | course | tier | verdict before | cause (stage) | fix commit | verdict after |
 |---|---|---|---|---|---|---|
+| 1 | Crow Canyon CC, San Ramon CA | A | **wrong**: map right on 18 / 18 holes (card vs measured within 5 yds on 17), but Mid iron on 9 of 13 tee shots and hole 16's back tee on a house roof | (a) geometry: a `landuse=residential` area drawn round the whole subdivision made every yard of rough OB (S3 build_holes); (b) tees: 68 of 104 lidar "pads" were roofs / house lots outside the course (S2 lidar pads) | this commit | **usable as is**: 4-wood / 2-wood / Driver / Long iron picks that fit the corridors, 16 on its box (175 vs card 180), OB = the real property lines, trees from Meta canopy |
 
 ## Time per course by stage (Actions, runner-minutes)
 
+Crow Canyon CC (tier A, 18 holes, 1,363 OSM features), the same course both ways:
+
+| stage | Actions course-page (run 42698761601) | local fast path, cold | what changed |
+|---|---|---|---|
+| runner set-up (disk, 5 GB checkout, pip) | 4.5 min | 0 | one process, no runner |
+| resolve + OSM | 18.8 min (every Overpass mirror failed for 8.6 min, then a 1.3 GB Geofabrik California download 7.7 min + cut 1.2 min) | 0.8 s + 1.8 s | national index + OSM API (`<type>/<id>/full`, `map?bbox=`) |
+| scorecard | 18 s | 4.6 s (in parallel with imagery) | same code |
+| NAIP + 3DEP DEM | 24 s | 16.7 s (list 2.4, year scoring 8.5, read 3.8, write 1.9; DEM 1.5) | years scored in parallel, strip reads by threads; same year, same grid |
+| package build (tees, geometry, elevation) | 9 s + 72 s rebuild | 9.5 s (lidar tee pads 5, elevation 3) | same code, built once |
+| trees | 6.0 min (lidar point clouds, PDAL, multi-year NAIP, LightGBM) | 1.9 s fetch + 1.1 s (Meta 1 m canopy height, one COG window) | accuracy cost: see the time-vs-accuracy table |
+| S2 native stack / native questions | 49 s / 86 s | not run | |
+| strategy solve | 4 compute jobs (wind grids + 48-draw decide), still running after 60 min | 3.2 s (decide quick, n 2000, 4 processes, lie raster) | calm-day pick only; no wind grids |
+| **total** | **32.8 min package job + compute + finish (> 1 h wall)** | **about 31 s cold, 15 s with the fetch cache** | |
+
+First local end-to-end was 58.6 s (imagery fetched by the stock script: 42.7 s); 34.7 s after the parallel imagery
+fetch; the lie raster cut the solve from 12.7 s to 3.2 s with trees on the map (EVs within 0.001 strokes).
+
+Held-out accuracy check (`fastpath/evalfast.py`: error_budget.score_course, auto vs truth, 24 card truth courses, 331
+tee shots, n 4000): committed packages with the shipped native band stripped = 234 / 331 match (70.7 %), regret 8.51 =
+0.36 strokes / 14-shot round. Wall: 10.2 min cold with polygon lie tests; the lie raster and the decision cache make
+a re-score a few minutes (number below when measured).
+
 | # | course | package | wind x2 | decide x2 | finish | total | wall |
 |---|---|---|---|---|---|---|---|
+| 2 | Sunset, Mount Morris IL (Actions, queued before the method change; not graded) | 16.2 min | 2.6 + 4.9 min | 2.8 + 2.9 min | 3.3 min | 32.7 runner-min | 26 min |
 
 ## For the routing agent (unmapped courses: pairing, numbering)
 
@@ -92,4 +124,14 @@ Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/bli
 
 ## Fix log
 
-(none yet)
+1. **Land-use OB inside the course** (`geometry/build_holes.py`, test `geometry/test_landuse_ob.py`). A
+   `landuse=residential / commercial / industrial / retail` polygon is now clipped by the `leisure=golf_course`
+   outline before it becomes OB; buildings, roads and `golf=out_of_bounds` are untouched. Crow Canyon: Mid iron on 9
+   of 13 tee shots -> none. Open: a course with no outline (tier D) inside a residential land-use area still gets it.
+2. **Lidar tee pads on roofs** (`platform/package.py pads_on_course`, test `platform/test_pads_on_course.py`). A lidar
+   pad on an OSM building, or more than 20 yds outside every course outline, is not a tee candidate. Crow Canyon: 68
+   of 104 pads dropped; hole 16's back tee moved from a house onto its box.
+3. **OSM transport** (`fastpath/osm_api.py`): the OSM API instead of Overpass / Geofabrik (seconds instead of 19 min on
+   Actions for this course; the Overpass mirrors and Geofabrik do not answer from the session container at all).
+4. **Lie raster** (`fastpath/solve.py raster_lie_at`): the solve's lie lookup from a label raster of the hole's zone
+   stack; 4x faster on a tree-heavy map, same picks except exact ties.
