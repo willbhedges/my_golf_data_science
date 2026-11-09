@@ -97,6 +97,75 @@ def route(fc, card, n_holes):
                 n_virtual=nv, n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]))
 
 
+def unnumbered_lines(fc, n_holes):
+    """OSM golf=hole ways when the course has (nearly) all of them but (nearly) none carries a usable ref: the pairs
+    are known, only the numbering is not (Brookhaven CC, blind loop 2026-11-09). -> [coords] or None"""
+    lines, numbered = [], 0
+    for f in (fc or {}).get("features", []):
+        pr, g = f.get("properties") or {}, f.get("geometry") or {}
+        if pr.get("golf") == "hole" and g.get("type") == "LineString" and len(g["coordinates"]) >= 2 \
+                and pr.get("inside_course") is not False:
+            lines.append(g["coordinates"])
+            numbered += str(pr.get("ref") or "").strip().isdigit()
+    if len(lines) < 0.8 * n_holes or len(lines) > 1.3 * n_holes or numbered > 0.3 * len(lines):
+        return None
+    return lines
+
+
+def route_lines(fc, lines, card, n_holes):
+    """Number unnumbered hole lines: the joint solve with every (tee, green) pair fixed to a line, so only the order
+    is solved (card yardage per position + green -> next tee walks + clubhouse start / end)."""
+    C, F, M, S = _mods()
+    from shapely.geometry import LineString
+    if _MS[0] is None:
+        _MS[0] = pickle.load(open(MODEL, "rb"))
+    lon0 = float(np.mean([ln[-1][0] for ln in lines]))
+    lat0 = float(np.mean([ln[-1][1] for ln in lines]))
+    pj = C.TR.Proj(lon0, lat0)
+    co = dict(pj=pj, source="lines", G=[], Gr=[], Gp=[], Gid=[], T=[], fair=[], club=None)
+    L = []
+    for j, ln in enumerate(lines):
+        xy = [pj.fwd(*q[:2]) for q in ln]
+        L.append(LineString(xy).length)
+        co["G"].append(xy[-1])
+        co["Gr"].append(12.0)
+        co["Gp"].append(0.98)
+        co["Gid"].append("g%d" % j)
+        co["T"].append(dict(c=xy[0], pts=[xy[0]], id="t%d" % j, ax=None, p=0.98))
+    fair, park, club = C._osm_context(fc, pj)
+    co["fair"] = fair
+    C._pick_club(co, park, club)
+    co = C._finish(co)
+    geo = F.geometry(co)
+    for j in range(len(lines)):                       # the hole's length is its line's, not the straight distance
+        geo["P"][j, j] = L[j]
+        try:
+            geo["Pbox"][j][j] = np.array([L[j]])
+        except Exception:                             # noqa: BLE001
+            pass
+    hp, hx = F.hole_features(co, geo)
+    wp, wx, W = F.walk_features(co, geo)
+    d = dict(row=dict(slug="x"), co=co, geo=geo, hp=hp, hx=hx, wp=wp, wx=wx, W=W, card=card, kind=int(n_holes))
+    d["sc"] = M.predict(_MS[0], d)
+    d["sc"]["ph"] = np.array([0.98 if int(t) == int(g) else 1e-6 for t, g in hp], float)
+    sol = S.solve(d, card, dict(PARAMS, tee_reuse=0, ph_min=0.5), None)
+    if not sol["seq"]:
+        return dict(features=[], min_margin=0.0, why="no ordering found")
+    mg = S.margins(sol, None)
+    pars = (card or {}).get("par") or []
+    feats, nv = [], 0
+    for i, (t, g) in enumerate(sol["holes"]):
+        if t < 0 or g < 0 or t != g:
+            nv += 1
+            continue
+        par = pars[i % len(pars)] if pars else (3 if L[t] < 245 else 4 if L[t] < 470 else 5)
+        feats.append({"type": "Feature", "geometry": {"type": "LineString", "coordinates": lines[t]},
+                      "properties": {"golf": "hole", "ref": str(i + 1), "par": str(par), "src": "joint:lines",
+                                     "margin": round(float(mg[i]), 2)}})
+    return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
+                n_virtual=nv, n_holes=int(n_holes), mode="unnumbered OSM hole lines ordered", lines=len(lines))
+
+
 if __name__ == "__main__":
     if sys.argv[1] == "fit":
         fit(sys.argv[2])

@@ -28,3 +28,16 @@ def test_lie_raster_matches_the_polygon_order():
     h = dict(zones=[("fairway", [(0, 0), (100, 0), (100, 300), (0, 300)]), ("water", [(40, 100), (60, 100), (60, 140), (40, 140)])])
     pts = np.array([[50, 50], [50, 120], [150, 50], [-5, 10], [99, 299]], float)
     assert list(solve.raster_lie_at(h, pts)) == ["fairway", "water", "rough", "rough", "fairway"]
+
+
+def test_unnumbered_hole_lines_are_detected_only_when_refs_are_missing():
+    import route_joint
+
+    def way(ref=None):
+        pr = {"golf": "hole"}
+        if ref:
+            pr["ref"] = ref
+        return {"type": "Feature", "properties": pr, "geometry": {"type": "LineString", "coordinates": [[-100, 40], [-100, 40.003]]}}
+    assert len(route_joint.unnumbered_lines({"features": [way() for _ in range(18)]}, 18)) == 18      # Brookhaven CC
+    assert route_joint.unnumbered_lines({"features": [way(str(i + 1)) for i in range(18)]}, 18) is None  # numbered: OSM's own
+    assert route_joint.unnumbered_lines({"features": [way() for _ in range(6)]}, 18) is None           # too few lines

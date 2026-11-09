@@ -157,19 +157,22 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                       and f["properties"].get("inside_course") is not False)
         n_green = sum(1 for f in fc["features"] if (f.get("properties") or {}).get("golf") == "green")
         n_tee = sum(1 for f in fc["features"] if (f.get("properties") or {}).get("golf") == "tee")
-        if n_lines >= 3 or n_green < 7 or n_tee < 5:
-            return None
-        t = time.time()
         import package as pk
         import route_joint
+        t = time.time()
         card, _ = pk.pick_scorecard(req, raw, fc)
         n = len(next(iter(card["tee_sets"].values()))["yards"]) if card and card.get("tee_sets") else (row.get("holes") or 18)
+        lines = route_joint.unnumbered_lines(fc, n)
+        if lines is None and (n_lines >= 3 or n_green < 7 or n_tee < 5):
+            return None
         try:
-            r = route_joint.route(fc, card, n)
+            r = route_joint.route_lines(fc, lines, card, n) if lines is not None else route_joint.route(fc, card, n)
         except Exception as e:                                       # noqa: BLE001
             T["route_joint"] = f"failed: {type(e).__name__}: {e}"[:200]
             return None
         if r.get("features"):
+            if lines is not None:
+                req["ignore_osm_holes"] = True          # the unnumbered OSM ways are replaced by their numbered copies
             sup = os.path.join(raw, "joint_holes.geojson")
             pc.write_json(sup, {"type": "FeatureCollection", "features": r["features"]})
             req["osm_supplement"] = sup

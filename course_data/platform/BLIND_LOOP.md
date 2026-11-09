@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): after 15 courses - 5 usable as is, 3 usable with 1-3 flagged confirms, 1 usable without a card, 6 not shown (4 unmapped tier D, 2 tier C), 0 shown wrong. Tier A 8 / 8 usable; tier C 1 / 3; tier D 0 / 4.**
+**Headline (updated at every course): after 16 courses - 5 usable as is, 3 usable with 1-3 flagged confirms, 1 usable without a card, 7 not shown (4 unmapped tier D, 3 tier C), 0 shown wrong. Tier A 8 / 8 usable; tier C 1 / 4; tier D 0 / 4.**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -99,6 +99,7 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | 13 | Hawk's Point GC, Vidalia GA | D | **failed: blocked, routing** (8 s) | outline only | open | blocked |
 | 14 | The GC at Cedar Creek, Onalaska WI | A | **usable as is** (34 s incl. the late card; 15 s cached): 18 / 18 holes right, golfify card, every yardage within 5, 3 sets, one green from the detector, picks on the fairways | - | - | usable as is |
 | 15 | Falls Village GC, Durham NC | A | **usable as is** (34 s incl. the late card; 20 s cached): 18 / 18 holes right, golfify card, yardages within 6, 12 sets, tree-lined corridors mapped, picks on the fairways; one flagged wide aim (18, Driver +60 round the dog-leg) | - | - | usable as is |
+| 16 | Brookhaven CC, Brookhaven MS | C | **wrong, unflagged** (28 s): OSM has 18 hole lines but NO ref on any of them, no greens, no tees; the build numbered the lines in file order, dropped the card (every card yardage None), took pars from length (68) and showed it; by eye six lines end on no visible green | numbering: unnumbered hole lines (S2a) | this commit: `route_joint.route_lines` - the joint solve with every pair fixed to its line orders them against the card (walks + clubhouse), written back as numbered ways; shown only with min margin >= 4 (test) | **blocked (not shown)**, 15 s cached: card attached, 15 of 18 yardages within 10, min margin 3.3 < 4 and 18 (442 on the card) on a 327-yd line: "the numbering is not certain" |
 
 ## Time per course by stage (Actions, runner-minutes)
 
