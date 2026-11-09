@@ -127,6 +127,32 @@ a re-score a few minutes (number below when measured).
 
 (none yet)
 
+### Half-mapped courses (OSM greens + tees, no hole lines): measured 2026-11-09, not solved
+
+`zero_tap/joint` (card-aware joint solve) on the OSM green / tee polygons with the hole lines hidden (`prep.py
+--source osm`, first run of that source), web card, K 18, beam 4000, 4 CPUs: 0.5 s / course.
+
+| split | courses | holes numbered right | courses with every hole right |
+|---|---|---|---|
+| dev | 130 | 69.8 % | 21.5 % |
+| test (read once) | 125 | 75.3 % | 25.6 % |
+
+No gate found that shows only right courses: the solver's own margin (min / p10 / mean, any threshold) tops out at
+about 50 % of shown courses fully right; requiring the joint solve and pathroute to agree on every green and number
+shows 41 dev courses, 22 right (test 47 / 20). So half-mapped courses stay **not shown** (the hole-count / shared-green
+/ card-misfit gate catches the build); the honest unlock is the golfer confirm (the app's tap flow) with the solver's
+per-hole margin choosing the holes to ask, not an automatic "shown correct".
+
+Tier C by what OSM has (share of all 13,090 US courses): every hole line but greens / tees short 5.8 % (routing is
+given: the detector fills greens, the line start gives the tee - Brookhaven, blind course 16, is the test); >= 80 %
+of the hole lines 3.2 %; no lines but greens + tees complete 5.7 % (the case above); no lines, greens + tees >= 80 %
+1.2 %; greens only 2.8 %; sparse 7.9 %. Tier D (outline only) 25.4 %.
+
+Regression guard after the shared-code fixes (land-use OB, pad rules): 13 truth courses rebuilt from their raw data
+with today's code, re-scored with the cached truth decisions: 138 / 180 match, regret 3.317 -> 138 / 180, 3.303
+(Hot Springs -2, Pine Dunes +2). Neutral. (11 more courses did not finish inside the 15-minute limit: the rebuild of a
+truth course with its lidar layers takes about a minute and some hang; `rebuild_truth.py`.)
+
 ## For the accuracy agent (mapped courses: tees, long grass, ensemble)
 
 (none yet)
