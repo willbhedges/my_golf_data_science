@@ -1,0 +1,32 @@
+{
+ "slug": "gate_b20_sunset",
+ "name": "Sunset Golf Course",
+ "request_name": "Sunset Golf Course",
+ "city": "Mount Morris",
+ "state": "IL",
+ "group": "gate",
+ "status": "failed",
+ "reasons": [
+  "package:      \"turf_rgb\": imagery ok: True course_data/library/gate/gate_b20_sunset/package_request.json: no holes built (no golf=hole ways and no tee/green pairs: OSM maps 0 holes, 0 greens, 0 tees; perception scene no). Fix the data: map the course in OSM, add an osm_supplement, or build a perception scene "
+ ],
+ "check_holes": [],
+ "tee_sets": [],
+ "page": null,
+ "page_bytes": null,
+ "request": "course_data/requests/course_page_b20_sunset.json",
+ "resolve": {
+  "status": "ok",
+  "candidates": [
+   {
+    "name": "Sunset Golf Course",
+    "town": "Mount Morris",
+    "holes": 0,
+    "osm": {
+     "type": "way",
+     "id": 295902652
+    }
+   }
+  ]
+ },
+ "built": "2026-11-09T21:20Z"
+}
