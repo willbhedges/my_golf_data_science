@@ -173,6 +173,28 @@ def club_eval(H, cond, o, z, lats, clubs=None):
 E.club_eval = club_eval
 
 
+class GHole(E.Hole):
+    """E.Hole with the lies painted in package order (later zones win, as the page's lie_at does), not E's fixed
+    priority (fairway < recovery < native < sand < ob < water). They differ only where zones overlap: on 7 and 14
+    the Nov 9 hand native bands (painted first) overlap the lidar trees, which keep the trees."""
+
+    def _pins(self, inset):
+        from matplotlib.path import Path
+        L, Dg = np.meshgrid(self.la, self.de, indexing="ij")
+        pts = np.c_[L.ravel(), Dg.ravel()]
+        lie = np.zeros(len(pts), int)
+        for nm, poly in self.g["zones"]:
+            nm = "fairway" if nm == "first_cut" else nm
+            if nm in E.C:
+                lie[Path(poly).contains_points(pts)] = E.C[nm]
+        lie[self.gpath.contains_points(pts)] = E.C["green"]
+        self.lie = lie.reshape(L.shape)
+        return super()._pins(inset)
+
+
+E.Hole = GHole
+
+
 def setup_engine():
     import v2_course as vc
     course, meta, M, D = vc.activate(SLUG, "truth")

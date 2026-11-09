@@ -75,13 +75,19 @@ The renders were scratch only.
 | hole | green outline | around it (in the tee frame) | verdict |
 |---|---|---|---|
 | 4 | matches the smooth putting surface; the green runs front-right to back-left | two bunkers short-left (match); mown rough left and long to the path at 195-200; trees and OB right from ~+40 | OK |
-| 7 | matches (the surface may run ~1-2 yds further right than mapped; no effect) | bunker right, small bunker short-left; trees short-left (2014 canopy, thinner on NAIP 2023); trees long-right; pond beyond | OK |
+| 7 | matches (the surface may run ~1-2 yds further right than mapped; no effect) | bunker right, small bunker short-left; trees short-left (2014 canopy, thinner on NAIP 2023); native long-right from ~3 yds past the back-right edge (map fix of Nov 9), trees long-right; pond beyond | OK |
 | 12 | matches | peninsula: water left (~3-5 yds off the edge), long (~22 yds past the centre at the line) and a creek 24-30 yds short; bunker long-right | OK, CIR water edges match the map |
-| 14 | matches | bunker left; tree line 1-3 yds behind the back edge (canopy edge = map edge within ~2 yds); trees left beyond the bunker | OK |
+| 14 | matches (NAIP 2023 is the reference; NAIP Plus is older and shadowed here) | bunker left; tree line 1-3 yds behind the back edge (canopy edge = map edge within ~2 yds); trees left beyond the bunker; native strip down the left of the corridor 0-185 yds (map fix of Nov 9), 30+ yds from the centre | OK |
 | 17 | matches | three bunkers short-right, one left; trees right 5-8 yds off the edge; trees long beyond the cart path | OK; the "trees long" polygon takes in the path strip (3-5 yds, 25-30 yds past the centre), no effect |
 
 No native or prairie lies within ~12 yds of any par-3 green. The par 3s were never hand-traced: their surrounds are
 OSM bunker / water / fairway plus lidar canopy. Reviewer A (EYECHECK_A_1109.md) found the same for 4.
+
+**Map revision.** Everything here is on the truth package as rebuilt on Nov 9 (commit 5403fb168). That revision added
+native on 7 and 14. 4, 12 and 17 are unchanged in it (same zones, tees and green), so their results stand. 7 and 14
+were re-solved for every set. Lies are painted in package order, as the page's `lie_at` does: later zones win, so where
+the new native bands overlap the lidar trees, the trees stay. The Back boxes for 7 and 14 did not move; on the other
+sets, the 14 boxes moved by 0.5-1 yd at most.
 
 Three map questions were run as variants (`mapvar`). Each gives the regret of keeping the page aim:
 * **4, if the smooth "fairway" lobe left of the green is putting surface** (reviewer A's note; pins there too): best
@@ -124,7 +130,7 @@ in 70 F, flat-ground yards.
 | 4 (180) | **+2.5, -5.5** | -1..5 / -8..-3 | 3.192 | **0.067 +/- 0.001** | 0.049 +/- 0.001 (1.8, -1.1) | **178** / 174 [180 / 179.5] | 180 / 176 | 191 / 170 |
 | 7 (180) | **0, -3.5** | -3..2 / -6..-2 | 3.194 | **0.032 +/- 0.001** | 0.039 +/- 0.001 (-0.5, +0.4) | **179** / 175 [178.4] | 181 / 177 | 192 / 171 |
 | 12 (131) | **+0.5, -1.5** | -2..2 / -3.5..0.5 | 3.069 | 0.007 +/- 0.001 | 0.007 +/- 0.001 (1.8, -1.6) | **131** / 131 [132] | 132 / 129 | 141 / 125 |
-| 14 (200) | **+0.5, -6.5** | -3..3 / -10..-4 | 3.280 | **0.101 +/- 0.002** | 0.063 +/- 0.001 (1.0, -1.2) | **196** / 196 [202] | 198 / 194 | 210 / 187 |
+| 14 (200) | **+0.5, -6.5** | -3..3 / -10..-4 | 3.281 | **0.100 +/- 0.002** | 0.063 +/- 0.001 (1.0, -1.2) | **196** / 196 [202] | 198 / 194 | 210 / 187 |
 | 17 (195) | **-1.5, -6.5** | -4..1 / -9..-4 | 3.244 | **0.090 +/- 0.001** | 0.049 +/- 0.001 (-1.8, -1.6) | **191** / 188.5 [195] | 193 / 188.5 | 205 / 182 |
 
 How the numbers are built:
@@ -207,8 +213,8 @@ Columns: best aim, box, gain vs centre, gain vs DECADE, plays like at 50 F calm 
 
 | set | 4 | 7 | 12 | 14 | 17 |
 |---|---|---|---|---|---|
-| The Tips | (2,-6.5), -1..5 / -9..-5; 0.093; 0.083; 194 / 189 | (0.5,-5), -3..3 / -6.5..-2.5; 0.076; 0.112; 202 / 197 | (1,-2.5), -1..3 / -4.5..-0.5; 0.020; 0.006; 153 / 152.5 | (1.5,-11), -2..5 / -13..-8; 0.207; 0.128; 232 / 232 | (-2.5,-10), -6..0 / -13..-7; 0.161; 0.087; 224 / 219 |
-| Champions | (2,-6.5), -1..5 / -9..-4; 0.092; 0.080; 191 / 187 | (0.5,-4.5), -3..3 / -7..-2; 0.058; 0.082; 198 / 193.5 | (0.5,-2), -1..3 / -4..0; 0.015; 0.006; 147 / 146 | (1,-11), -3..5 / -13..-8; 0.200; 0.123; 228 / 228 | (-3,-9.5), -6..0 / -12..-6; 0.152; 0.090; 218 / 215 |
+| The Tips | (2,-6.5), -1..5 / -9..-5; 0.093; 0.083; 194 / 189 | (0.5,-5), -3..3 / -6.5..-2.5; 0.076; 0.113; 202 / 197 | (1,-2.5), -1..3 / -4.5..-0.5; 0.020; 0.006; 153 / 152.5 | (1.5,-11), -2..5 / -14..-8; 0.206; 0.125; 232 / 232 | (-2.5,-10), -6..0 / -13..-7; 0.161; 0.087; 224 / 219 |
+| Champions | (2,-6.5), -1..5 / -9..-4; 0.092; 0.080; 191 / 187 | (0.5,-4.5), -3..3 / -7..-2; 0.059; 0.083; 198 / 193.5 | (0.5,-2), -1..3 / -4..0; 0.015; 0.006; 147 / 146 | (1.5,-10.5), -2..5 / -13..-8; 0.198; 0.120; 228 / 229 | (-3,-9.5), -6..0 / -12..-6; 0.152; 0.090; 218 / 215 |
 | Middle | (2,-3.5), -1..4 / -6..-2; 0.031; 0.017; 153 / 150 | (0,-2.5), -3..1 / -5..0; 0.017; 0.021; 160 / 155 | (0,-1), -1.5..2.5 / -3..1; 0.005; 0.012; 115 / 114 | (0,-5.5), -3..3 / -8..-3; 0.067; 0.038; 181.5 / 182 | (-1,-5), -3..1 / -7..-3; 0.059; 0.033; 170 / 168 |
 | Forward | (1.5,-2.5), -1..4 / -4..0; 0.011; 0.005; 130 / 129 | (-1,-2), -3..1 / -4..0; 0.014; 0.024; 145 / 142 | (-0.5,0), -2.5..1.5 / -2..2; 0.001; 0.035; 91 / 92 | (0.5,-3), -3..2 / -6..-1; 0.023; 0.010; 154 / 154 | (-0.5,-3.5), -3..1 / -6..-1; 0.035; 0.019; 154 / 153 |
 
@@ -247,6 +253,7 @@ Add to `course_data/courses/gateway_national/config.json`:
 ```
 
 The engine then calls `par3_targets.install(cfg, BW, meta["tee_set"])` (v2_course.py ~l.1193). No other key is needed.
+The Middle alt-base page (`truth_middle`, tee_set Middle) takes the file's own Middle entries.
 `par3_targets.json` covers all five sets. `d["p3club"]` names the club for the two forecast days. On Tips and
 Champions 14 / 17 it reads "4-iron", which lands 14-33 yds short; a template showing p3club should not show it for
 those sets.
