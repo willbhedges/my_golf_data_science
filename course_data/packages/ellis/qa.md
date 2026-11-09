@@ -1,6 +1,6 @@
 # Ellis Golf Course (Cedar Rapids, IA) - Blue tees
 
-Built 2026-11-09T16:30:15Z. OSM way/74271941. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-09T20:21:24Z. OSM way/74271941. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 

@@ -1,5 +1,5 @@
 """Course module for Ellis Golf Course (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-09T16:30:15Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-09T20:21:24Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_ellis.json
 
