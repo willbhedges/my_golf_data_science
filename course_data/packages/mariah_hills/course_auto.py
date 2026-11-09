@@ -1,5 +1,5 @@
 """Course module for Mariah Hills Golf Course (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-04T02:05:52Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-09T16:32:30Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_mariah_hills.json
 

@@ -1,6 +1,6 @@
 # Pevely Farms Golf Course (Saint Louis, MO) - Black tees
 
-Built 2026-11-04T02:08:11Z. OSM relation/5429230. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-09T16:36:44Z. OSM relation/5429230. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
