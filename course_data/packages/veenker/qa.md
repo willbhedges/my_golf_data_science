@@ -1,6 +1,6 @@
 # Veenker Memorial Golf Course (Ames, IA) - Blue tees
 
-Built 2026-11-09T20:30:35Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
+Built 2026-11-09T22:17:39Z. OSM way/44804299. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'White' not on the card (sets: Blue, Gold, Red)).
 
 **WARNING: requested tee set 'White' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, Gold, Red**
 
@@ -51,7 +51,7 @@ OSM features inside the course: buildings 8, golf=bunker 27, golf=cartpath 5, go
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 3 sets; lidar pads: 36 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture+segment pads, joint chain assignment) for 3 sets; lidar pads: 30 candidate pads near hole starts (6 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/veenker/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2023

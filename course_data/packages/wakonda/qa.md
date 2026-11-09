@@ -1,6 +1,6 @@
 # Wakonda Club (Des Moines, IA) - Blue tees
 
-Built 2026-11-09T20:30:55Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-09T22:17:51Z. OSM way/102681377. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 9, golf=bunker 48, golf=cartpath 39, g
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 59 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 56 candidate pads near hole starts (3 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/wakonda/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2019)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2019
