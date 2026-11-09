@@ -1,0 +1,568 @@
+diff --git a/course_data/platform/package.py b/course_data/platform/package.py
+index 76468497a..d5218c335 100644
+--- a/course_data/platform/package.py
++++ b/course_data/platform/package.py
+@@ -939,7 +939,12 @@ def place_tees_v2(fc, per_hole_card, card_sets, pads=(), img_dir=None, slug=None
+             break
+     used += ["segment"] * bool(seg) + ["scene"] * bool(scene)
+     cands = lz.gather(osm_tees=tees, segment=seg, scene=scene, pads=list(pads), texture=texture)
+-    res = lz.localize_course(lines, greens, yards, cands)
++    canopy = None                                    # lidar canopy on each pad's sight line (vision_any raw stack)
++    for f in (os.path.join(CD, "vision_any", "mozingo" if slug == "mozingo_lake" else (slug or ""), "raw", "hag.tif"),):
++        if slug and os.path.exists(f):
++            canopy = lz.canopy_sampler(f)
++            used += ["canopy"] * bool(canopy)
++    res = lz.localize_course(lines, greens, yards, cands, canopy=canopy)
+     pt = place_tee_mod()
+     by_hole = pt.assign_tees_to_holes(lines, tees)
+     colours = {str(v).lower() for s in card_sets for v in (s, (card_sets.get(s) or {}).get("colour")) if v}
+diff --git a/course_data/product/mowing_line.py b/course_data/product/mowing_line.py
+new file mode 100644
+index 000000000..2601b221f
+--- /dev/null
++++ b/course_data/product/mowing_line.py
+@@ -0,0 +1,331 @@
++"""Mowing line: where the mown rough ends and the long grass starts, per hole side, from the imagery itself.
++
++Why (platform/ERROR_BUDGET_1109.md "Mowing line"): product/native_auto.py decides WHICH hole sides have native and
++draws a band that starts 10 yds beyond the package fairway. On the hand-traced native courses the real inner edge is
++8-30 yds from that on 40-50 % of the corridor (Gateway 8 / 11 / 13 / 15 / 16 / 18, Spirit Hollow 17 R): the band
++starts on mown rough, or leaves 20 yds of fescue as rough. This module keeps native_auto's side decision (and its
++course gate) and replaces the band's inner edge by the detected mown / unmown boundary.
++
++Per hole (corridor frame of mapper/common.py: x = yds right of the tee line, a = yds along it), on a 1-yd grid:
++  features   NAIP texture (5x5 / 9x9 local std of grey, NIR), NDVI, ExG, grey of the two NAIP years, lidar
++             height-above-ground share >= 0.25 m, the Sentinel-2 native P (summer vs dormant, 10 m), each also
++             relative to the hole's own fairway (F) and its near rough 1-6 yds off the fairway (N)
++  unmown p   a LightGBM pixel model on those features (no position feature: it must not learn "10 yds out");
++             labels = hand-truth native vs not, open ground only. mowing_line_model/model.txt is the fit on every
++             truth course; the evaluation uses leave-one-course-out fits (platform/eval_mowing_line.py)
++  line       per side, per STEP_A yds along: the distance e beyond the mown edge that best splits "mown inside,
++             unmown outside" (expected wrong cells: sum p inside + sum (1 - p) outside), smoothed along the hole by
++             a Viterbi pass (SMOOTH per yd of change), with a cart-path prior (the line often runs along the path:
++             PATH_BONUS cells of credit at the path's far edge). e = NONE means no unmown ground at that station.
++  band       native where d >= e(a) on the sides native_auto fires; trees, water, sand, OB and fairway stay on top.
++
++    import mowing_line as ML
++    lines = ML.course_lines(slug, pkg, frames, sides)            # {ref: {side: {"a": [...], "e": [...]}}}
++    pkg2 = ML.apply_lines(pkg, frames, sides, lines, p)          # in place of native_auto.apply_sides
++"""
++from __future__ import annotations
++
++import copy
++import json
++import os
++import sys
++
++import numpy as np
++
++HERE = os.path.dirname(os.path.abspath(__file__))
++CD = os.path.dirname(HERE)
++for _p in (os.path.join(CD, "mapper"), HERE):
++    if _p not in sys.path:
++        sys.path.insert(0, _p)
++import common as M  # noqa: E402
++import native_auto as NA  # noqa: E402
++import native_confirm as NC  # noqa: E402
++
++MODEL_DIR = os.path.join(HERE, "mowing_line_model")
++SRC = NA.SRC
++XS = np.arange(-75.0, 75.01, 1.0)
++AS = np.arange(130.0, 400.01, 1.0)
++NK = ("ndvi", "gray", "tex", "ntex", "tex9", "exg")
++STEP_A = 5.0            # yds along per station
++STEP_D = 2.0            # yds per distance bin
++D_MAX = 44.0            # the line is searched 0..D_MAX yds beyond the mown edge; the last state = no native
++D_MIN = 2.0             # never closer to the fairway than this
++SMOOTH = 0.6            # Viterbi cost per yd the line moves between neighbouring stations (cells)
++PATH_BONUS = 12.0       # cells of credit for a line within PATH_TOL yds beyond a cart path
++PATH_TOL = 4.0
++MIN_N = 4               # cells per (station, distance bin) to count as evidence
++W_IN = 1.0              # cost of an unmown cell inside the line (left as rough)
++W_OUT = 1.0             # cost of a mown cell outside the line (called native)
++REACH = NC.REACH
++PATH_TAGS = ("path", "service", "track", "footway")
++
++
++# ----------------------------------------------------------------------------- grid
++def cart_paths(osm_fc):
++    """[[lon, lat], ...] lines of the cart paths / service tracks in a raw OSM FeatureCollection."""
++    out = []
++    for f in (osm_fc or {}).get("features", []):
++        p, g = f.get("properties") or {}, f.get("geometry") or {}
++        if g.get("type") == "LineString" and (p.get("golf") == "cartpath" or p.get("highway") in PATH_TAGS):
++            out.append(g["coordinates"])
++    return out
++
++
++def hole_grid(pkg, fj, h, rs, paths=()):
++    """The 1-yd corridor grid of one hole: {shape, d (yds beyond this hole's fairway / first cut / green), haz,
++    othermown, hag, chm, s2, y<i>_<NK>, dpath} (flat arrays, row = along, col = x)."""
++    import shapely
++    from pyproj import Transformer
++    from shapely.geometry import LineString
++    from shapely.ops import unary_union
++    XX, YY = np.meshgrid(XS, AS)
++    xy = np.c_[XX.ravel(), YY.ravel()]
++    ll = M.xy_to_ll(fj, xy)
++    g = dict(shape=XX.shape)
++    mown = NC.mown_xy(fj, h)
++    has = mown is not None and not mown.is_empty
++    g["d"] = (shapely.distance(mown, shapely.points(xy)) if has else np.abs(xy[:, 0]) - 15.0).astype(np.float32)
++    allmown, haz = NA._union(fj, pkg, NA.MOWN_LIES), NA._union(fj, pkg, NA.HAZ_LIES)
++    g["othermown"] = shapely.contains_xy(allmown, xy[:, 0], xy[:, 1]) if allmown is not None else np.zeros(len(xy), bool)
++    g["haz"] = shapely.contains_xy(haz, xy[:, 0], xy[:, 1]) if haz is not None else np.zeros(len(xy), bool)
++    tr = rs.get("_tr")
++    if tr is None:
++        tr = rs["_tr"] = Transformer.from_crs("EPSG:4326", rs["crs"], always_xy=True)
++    E, N = tr.transform(ll[:, 0], ll[:, 1])
++    g["hag"] = NA._sample(rs["hag"], E, N).astype(np.float32)
++    if "chm" in rs:
++        g["chm"] = NA._sample(rs["chm"], E, N).astype(np.float32)
++    if "s2" in rs:
++        g["s2"] = NA._sample(rs["s2"], E, N).astype(np.float32)
++    for i, nd in enumerate(rs["naip"]):
++        for k in NK:
++            g[f"y{i}_{k}"] = NA._sample((nd[k], nd["t"]), E, N).astype(np.float32)
++    ls = []
++    for c in paths:
++        q = M.ll_to_xy(fj, c)
++        if q[:, 1].max() > 100 and q[:, 1].min() < 430 and np.abs(q[:, 0]).min() < 110:
++            ls.append(LineString(q))
++    g["dpath"] = (shapely.distance(unary_union(ls), shapely.points(xy)).astype(np.float32) if ls
++                  else np.full(len(xy), 999.0, np.float32))
++    return g
++
++
++def features(g):
++    """({name: (H, W) float32}, {tree, open, d}) of a hole grid. No position feature."""
++    from scipy import ndimage
++    sh = g["shape"]
++
++    def R(k):
++        return np.asarray(g[k]).reshape(sh)
++    hag = R("hag")
++    tree = np.nan_to_num(hag) >= NA.TREE_HAG
++    if "chm" in g:
++        tree |= np.nan_to_num(R("chm")) >= NA.TREE_CHM
++    d = R("d")
++    open_ = ~tree & ~R("haz") & ~R("othermown")
++    F = (d <= 0) & ~tree
++    N = (d >= 1) & (d < 6) & open_
++
++    def sm(v):
++        return ndimage.uniform_filter(np.nan_to_num(v.astype(np.float32)), 5)
++    f = {}
++    f["hag25"] = sm((np.nan_to_num(hag) >= 0.25) & ~tree)
++    f["hagm"] = sm(np.clip(np.nan_to_num(hag), 0, 2.5) * ~tree)
++    f["s2"] = R("s2").astype(np.float32) if "s2" in g else np.full(sh, np.nan, np.float32)
++    ys = [i for i in (0, 1) if f"y{i}_ndvi" in g]
++    per = {k: [] for k in NK}
++    import warnings
++    with warnings.catch_warnings():
++        warnings.simplefilter("ignore")
++        for i in ys:
++            for k in NK:
++                v = sm(R(f"y{i}_{k}"))
++                rF = np.nanmedian(v[F]) if F.sum() > 20 else np.nan
++                rN = np.nanmedian(v[N]) if N.sum() > 20 else rF
++                per[k].append((v, v - rF, v - rN))
++        for k in NK:
++            if not per[k]:
++                for nm in ("", "_dF", "_dN", "_mdN"):
++                    f[k + nm] = np.full(sh, np.nan, np.float32)
++                continue
++            f[k] = np.mean([p[0] for p in per[k]], 0)
++            f[k + "_dF"] = np.nanmean([p[1] for p in per[k]], 0)
++            dn = np.array([p[2] for p in per[k]])
++            f[k + "_dN"] = np.nanmean(dn, 0)
++            f[k + "_mdN"] = np.nanmin(dn, 0) if k in ("tex", "ntex", "tex9") else np.nanmax(dn, 0)
++        for k in ("hag25", "hagm"):
++            rF = np.nanmedian(f[k][F]) if F.sum() > 20 else 0.0
++            f[k + "_dF"] = f[k] - rF
++    return f, dict(tree=tree, open=open_, d=d)
++
++
++FEATURES = sorted(["hag25", "hagm", "s2", "hag25_dF", "hagm_dF"] + [k + s for k in NK for s in ("", "_dF", "_dN", "_mdN")])
++
++
++def matrix(f, sel=None):
++    X = np.stack([f[k] if sel is None else f[k][sel] for k in FEATURES], -1).astype(np.float32)
++    return X.reshape(-1, len(FEATURES))
++
++
++# ----------------------------------------------------------------------------- model
++def fit_model(X, y, w=None, seed=0):
++    import lightgbm as lgb
++    m = lgb.LGBMClassifier(n_estimators=150, num_leaves=15, learning_rate=0.06, min_child_samples=200, subsample=0.7,
++                           subsample_freq=1, colsample_bytree=0.7, reg_lambda=5.0, verbose=-1, n_jobs=2,
++                           random_state=seed)
++    m.fit(X, y, sample_weight=w)
++    return m.booster_
++
++
++def load_model(path=None):
++    import lightgbm as lgb
++    path = path or os.path.join(MODEL_DIR, "model.txt")
++    return lgb.Booster(model_file=path) if os.path.exists(path) else None
++
++
++def unmown_p(g, model, f=None, m=None):
++    """(H, W) P(unmown) of every cell (nan where the cell is not open ground)."""
++    if f is None:
++        f, m = features(g)
++    p = np.asarray(model.predict(matrix(f))).reshape(g["shape"]).astype(np.float32)
++    p[~m["open"]] = np.nan
++    return p
++
++
++# ----------------------------------------------------------------------------- the line
++def detect(g, p, side, m=None, params=None):
++    """The mowing line of one side: {"a": station centres (yds along), "e": yds beyond the mown edge (NONE = no
++    native at that station), "cost"}. p = unmown_p; cells that are not open ground carry no evidence."""
++    P = dict(step_a=STEP_A, step_d=STEP_D, d_max=D_MAX, d_min=D_MIN, smooth=SMOOTH, path_bonus=PATH_BONUS,
++             path_tol=PATH_TOL, w_in=W_IN, w_out=W_OUT, min_n=MIN_N)
++    P.update(params or {})
++    sh = g["shape"]
++    d = np.asarray(g["d"]).reshape(sh)
++    X = np.tile(XS, (sh[0], 1))
++    A = np.repeat(AS, sh[1]).reshape(sh)
++    sm = (X < 0) if side == "L" else (X > 0)
++    ok = sm & np.isfinite(p) & (d > 0) & (np.abs(X) <= REACH)
++    ja = np.floor((A - AS[0]) / P["step_a"]).astype(int)
++    nj = int(ja.max()) + 1
++    edges = np.arange(0.0, P["d_max"] + 1e-6, P["step_d"])          # bin k = [edges[k], edges[k+1])
++    nk = len(edges)                                                 # the last bin is open-ended (d >= d_max)
++    kd = np.minimum(np.floor(d / P["step_d"]).astype(int), nk - 1)
++    idx = (ja * nk + kd)[ok]
++    sp = np.bincount(idx, weights=p[ok], minlength=nj * nk).reshape(nj, nk)
++    sn = np.bincount(idx, minlength=nj * nk).reshape(nj, nk).astype(float)
++    sp[sn < P["min_n"]] = 0.0
++    sn[sn < P["min_n"]] = 0.0
++    # state s = 0..nk: the line at edges[s] (s = nk: no native). cost = unmown inside + mown outside
++    inside = np.c_[np.zeros(nj), np.cumsum(sp, 1)]                  # sum of p over bins < s
++    outside = np.c_[np.cumsum((sn - sp)[:, ::-1], 1)[:, ::-1], np.zeros(nj)]     # sum of (1 - p) over bins >= s
++    C = P["w_in"] * inside + P["w_out"] * outside
++    smin = int(np.ceil(P["d_min"] / P["step_d"]))
++    C[:, :smin] = 1e9
++    dpath = np.asarray(g["dpath"]).reshape(sh)
++    if P["path_bonus"] > 0:
++        near = sm & (dpath <= 1.5) & (d > 0)
++        if near.any():
++            for j in np.unique(ja[near]):
++                dj = d[near & (ja == j)]
++                far = float(np.percentile(dj, 90)) + 1.0            # the path's far edge at this station
++                if far < P["d_max"]:
++                    s = np.arange(nk + 1)
++                    hit = (s < nk) & (np.abs(s * P["step_d"] - far) <= P["path_tol"])
++                    C[j, hit] -= P["path_bonus"]
++    pos = np.r_[edges, P["d_max"] + 3 * P["step_d"]]                # the "none" state sits a little beyond d_max
++    T = P["smooth"] * P["step_a"] * np.abs(pos[:, None] - pos[None, :]) / P["step_a"]
++    best = C[0].copy()
++    arg = []
++    for j in range(1, nj):
++        tot = best[:, None] + T
++        arg.append(tot.argmin(0))
++        best = tot.min(0) + C[j]
++    s = int(best.argmin())
++    path = [s]
++    for a in arg[::-1]:
++        s = int(a[s])
++        path.append(s)
++    path = np.array(path[::-1])
++    e = np.where(path >= nk, np.nan, path * P["step_d"])
++    return dict(a=(AS[0] + (np.arange(nj) + 0.5) * P["step_a"]).tolist(), e=[None if not np.isfinite(v) else float(v) for v in e],
++                cost=float(best.min()), n=float(sn.sum()))
++
++
++def band_mask(g, line, side):
++    """(H, W) bool: the native band of one side = cells at least e(a) beyond the mown edge."""
++    sh = g["shape"]
++    d = np.asarray(g["d"]).reshape(sh)
++    X = np.tile(XS, (sh[0], 1))
++    A = np.repeat(AS, sh[1]).reshape(sh)
++    a = np.asarray(line["a"], float)
++    e = np.array([np.inf if v is None else v for v in line["e"]], float)
++    step = a[1] - a[0] if len(a) > 1 else STEP_A
++    j = np.clip(np.floor((A - (a[0] - step / 2)) / step).astype(int), 0, len(a) - 1)
++    sm = (X < 0) if side == "L" else (X > 0)
++    return sm & (np.abs(X) <= REACH) & (d >= e[j]) & (d > 0)
++
++
++def mask_polys(mask, min_area=30.0):
++    """Polygons (corridor yds) of a grid mask, small holes and specks removed."""
++    import rasterio.features as RF
++    from affine import Affine
++    from scipy import ndimage
++    from shapely.geometry import shape
++    from shapely.ops import unary_union
++    mk = ndimage.binary_closing(mask, np.ones((3, 3), bool))
++    mk = ndimage.binary_opening(mk, np.ones((3, 3), bool))
++    if not mk.any():
++        return []
++    aff = Affine(1.0, 0, XS[0] - 0.5, 0, 1.0, AS[0] - 0.5)
++    gs = [shape(gm) for gm, v in RF.shapes(mk.astype(np.uint8), mask=mk, transform=aff) if v == 1]
++    u = unary_union(gs).buffer(0).simplify(1.0)
++    return M.polys_of(u, min_area)
++
++
++# ----------------------------------------------------------------------------- course
++def course_lines(slug, pkg, frames, sides, model=None, rs=None, osm_fc=None, params=None, grids=None):
++    """{ref: {side: line}} for the listed sides ({ref: ["L", "R"]}). model: a lightgbm Booster (default: the
++    shipped one); rs: native_auto.course_rasters(slug); osm_fc: raw OSM for the cart-path prior (optional)."""
++    model = model or load_model()
++    if model is None:
++        return {}
++    rs = rs or NA.course_rasters(slug)
++    paths = cart_paths(osm_fc)
++    out = {}
++    for ref, ss in sides.items():
++        if not ss or ref not in frames or ref not in pkg["holes"]:
++            continue
++        g = (grids or {}).get(ref) or hole_grid(pkg, frames[ref], pkg["holes"][ref], rs, paths)
++        f, m = features(g)
++        p = unmown_p(g, model, f, m)
++        out[ref] = {s: dict(detect(g, p, s, m, params), _mask=band_mask(g, detect(g, p, s, m, params), s)) for s in ss}
++    return out
++
++
++def apply_lines(pkg, frames, sides, lines, p=None):
++    """native_auto.apply_sides with the band's inner edge at the detected mowing line. A fired side with no line
++    (no model / rasters) keeps the 10-yd band."""
++    out = copy.deepcopy(pkg)
++    for ref, ss in sides.items():
++        if ref not in out["holes"] or ref not in frames or not ss:
++            continue
++        h = out["holes"][ref]
++        zones = list(h.get("zones_ll") or [])
++        rec = {}
++        for s in ss:
++            ln = (lines.get(ref) or {}).get(s)
++            if ln is None:
++                polys = M.polys_of(NC.insert_geom(frames[ref], h, s, NC.beyond_width(None)), 4.0)
++                rec[s] = "band 10 yds (no line)"
++            else:
++                polys = mask_polys(ln["_mask"])
++                ev = [v for v in ln["e"] if v is not None]
++                rec[s] = dict(median_e=float(np.median(ev)) if ev else None, stations=len(ln["e"]), with_native=len(ev))
++            for q in polys:
++                ring = M.xy_to_ll(frames[ref], np.asarray(q.exterior.coords)[:-1])
++                zones.append(dict(lie="native", poly=[[round(float(x), 7), round(float(y), 7)] for x, y in ring],
++                                  src=SRC, p=float((p or {}).get(ref, {}).get(s, 1.0))))
++        h["zones_ll"] = zones
++        h.setdefault("verification", {})["native_auto"] = dict(sides=NC.answer_of({s: s in ss for s in NC.SIDES}),
++                                                               p=(p or {}).get(ref), mowing_line=rec)
++    return out
+diff --git a/course_data/tees/localize.py b/course_data/tees/localize.py
+index 7f5826d4d..5bfa5319c 100644
+--- a/course_data/tees/localize.py
++++ b/course_data/tees/localize.py
+@@ -98,6 +98,15 @@ PARAMS = dict(
+                            # were hand-checked on NAIP + 3DEP and 5 estimated truth tees corrected: 24 truth courses
+                            # 249 -> 250 matches, regret 5.36 -> 5.11; leave-one-course-out picks 45 in every fold
+                            # over {off, 30, 45} (platform/ERROR_BUDGET.md "Far cap"). None = off.
++    joint=False,           # course-level solve (localize_course): one pad serves one hole. A pad two holes put a set
++    share_start_yd=30.0,   # on goes to the hole that loses most without it (MAP cost of its chain re-solved with
++                           # the pad banned); the others are re-solved without it. Holes whose lines start within
++                           # share_start_yd of each other may share (a 9-hole course carded as 18, a real shared tee).
++                           # gateway_national 2 Back sat on hole 18's rear pad at p 0.49 vs 0.48
++                           # (platform/ERROR_BUDGET_1109.md "Joint tee assignment").
++    canopy_w=0.3,          # lidar canopy on the sight line from a pad (localize_course(canopy=)): cost per yd of
++    canopy_hag_m=5.0,      # line 15-150 yds out with HAG >= canopy_hag_m, beyond canopy_free_yd, at most
++    canopy_free_yd=6.0, canopy_cap_yd=40.0, canopy_from_yd=15.0, canopy_to_yd=150.0,
+ )
+ 
+ 
+@@ -331,12 +340,76 @@ def _unary(c, t, P):
+     return p, t - p, err, cost
+ 
+ 
+-def localize_hole(line, green, own, borrow=(), yardages=None, params=None):
++def canopy_sampler(path):
++    """lidar height-above-ground raster (vision_any/<slug>/raw/hag.tif) -> f(lats, lons) -> metres (nan off the
++    raster), for localize_course(canopy=). None when the file is missing / unreadable."""
++    try:
++        import rasterio
++        from pyproj import Transformer
++        with rasterio.open(path) as src:
++            a = src.read(1).astype(np.float32)
++            nd = src.nodata
++            tf, crs = src.transform, src.crs
++            units = str(src.tags().get("units", "")).split()
++        if nd is not None:
++            a[a == nd] = np.nan
++        if len(units) == 2 and units[1] == "m":                    # vision_any/fetch_any.py: uint8 in 0.25 m units
++            a *= float(units[0])
++        tr = Transformer.from_crs("EPSG:4326", crs, always_xy=True)
++        inv = ~tf
++    except Exception:                                              # noqa: BLE001  (optional evidence)
++        return None
++
++    def f(lats, lons):
++        x, y = tr.transform(np.asarray(lons, float), np.asarray(lats, float))
++        c, r = inv * (np.asarray(x), np.asarray(y))
++        c, r = np.floor(c).astype(int), np.floor(r).astype(int)
++        ok = (r >= 0) & (r < a.shape[0]) & (c >= 0) & (c < a.shape[1])
++        out = np.full(len(ok), np.nan, np.float32)
++        out[ok] = a[r[ok], c[ok]]
++        return out
++    return f
++
++
++def _blocked_yd(fr, lop, q, canopy, P):
++    """yds of the sight line from tee point q (15-150 yds out, toward the hole line ~220 yds on) under lidar canopy."""
++    L = lop.dist_to_green(q)
++    far = min(P["canopy_to_yd"], 0.8 * L)
++    if far <= P["canopy_from_yd"]:
++        return 0.0
++    tgt = lop.point_at_distance(max(L - max(220.0, far), 0.0))
++    d = (tgt[0] - q[0], tgt[1] - q[1])
++    n = math.hypot(*d)
++    if n < 1.0:
++        return 0.0
++    ts = np.arange(P["canopy_from_yd"], min(far, n) + 1e-9, 1.0)
++    ll = [fr.inv(q[0] + t * d[0] / n, q[1] + t * d[1] / n) for t in ts]
++    h = canopy([a for a, _ in ll], [b for _, b in ll])
++    return float(np.sum(np.nan_to_num(h, nan=0.0) >= P["canopy_hag_m"]))
++
++
++def _canopy_cost(blocked, P):
++    return P["canopy_w"] * min(max(0.0, blocked - P["canopy_free_yd"]), P["canopy_cap_yd"])
++
++
++def localize_hole(line, green, own, borrow=(), yardages=None, params=None, canopy=None, ban=(), info=None):
+     """{set: result} for one hole (module docstring 2-3). own / borrow = merged candidates
+-    ({id, coords [(lat, lon)], source, p, sources})."""
++    ({id, coords [(lat, lon)], source, p, sources}). canopy: canopy_sampler() or None; ban: pad ids this hole may
++    not use (the course-level joint solve); info: a dict that receives map_cost."""
+     P = dict(PARAMS, **(params or {}))
+     fr, lop = pt._hole_frame(line, green)
+     cands = _hole_cands(fr, lop, own, P) + _hole_cands(fr, lop, borrow, P, borrowed=True)
++    if ban:
++        cands = [c for c in cands if c["tee_id"] not in ban]
++    use_canopy = canopy is not None and P.get("canopy_w", 0) > 0
++    for c in cands:
++        c["blocked_yd"] = _blocked_yd(fr, lop, c["centroid_xy"], canopy, P) if use_canopy else 0.0
++        c["canopy_cost"] = _canopy_cost(c["blocked_yd"], P)
++    ownl = [c["canopy_cost"] for c in cands if not c["borrowed"] and abs(c["offset_yd"]) <= P["off_free_yd"]]
++    base_cc = min(ownl or [c["canopy_cost"] for c in cands], default=0.0)
++    for c in cands:              # relative to the clearest of the hole's own pads on its line: a tee chute every
++        c["canopy_cost"] = max(0.0, c["canopy_cost"] - base_cc)   # pad looks down costs nothing (la_nickell 1),
++                                                                  # and a walk-back gains nothing from the canopy
+     names = sorted((n for n, y in (yardages or {}).items() if y), key=lambda n: -float(yardages[n]))
+     if not names:
+         return {}
+@@ -350,7 +423,7 @@ def localize_hole(line, green, own, borrow=(), yardages=None, params=None):
+             p, e, err, cost = _unary(c, t, P)
+             if err > (P["borrow_err_yd"] if c["borrowed"] else P["max_err_yd"]):
+                 continue
+-            opts.append((i, p, e, err, cost))
++            opts.append((i, p, e, err, cost + c["canopy_cost"]))
+         opts.append((WB, y, 0.0, None, P["walkback"]))      # walk-back: no bias (no evidence)
+         return opts
+ 
+@@ -402,6 +475,8 @@ def localize_hole(line, green, own, borrow=(), yardages=None, params=None):
+         per_b.append(dict(b=float(b), opts=opts, map_cost=float(best[-1].min()) + prior, path=path, lz=lz,
+                           marg=[logf[i] + logb[i] for i in range(len(names))]))
+     top = min(per_b, key=lambda r: r["map_cost"])
++    if info is not None:
++        info["map_cost"] = top["map_cost"]
+     lzs = np.array([r["lz"] for r in per_b])
+     wb = np.exp(lzs - lzs.max())
+     wb /= wb.sum()
+@@ -465,6 +540,8 @@ def localize_hole(line, green, own, borrow=(), yardages=None, params=None):
+                      sources=c["sources"], p_real=round(c["p"], 3))
+             if c["borrowed"]:
+                 r["borrowed"] = True
++            if use_canopy:
++                r["canopy_blocked_yd"] = round(c["blocked_yd"], 0)
+         r.update(sigma_along_yd=round(math.sqrt(var_al), 1), sigma_lat_yd=round(math.sqrt(var_la), 1),
+                  sigma_yd=round(math.sqrt(var_al + var_la), 1), p_assign=round(p_assign, 3),
+                  bias_yd=round(top["b"], 1), bias_mean_yd=round(float(np.sum(wb * np.array([q["b"] for q in per_b]))), 1),
+@@ -570,11 +647,13 @@ def card_checked_point(line, green, tagged, untagged, yards, params=None):
+ 
+ 
+ # ----------------------------------------------------------------------------- course
+-def localize_course(lines, greens, yardages, cands, params=None, borrow=True):
++def localize_course(lines, greens, yardages, cands, params=None, borrow=True, canopy=None):
+     """lines {ref: [(lat, lon)]}, greens OSM rings, yardages {ref: {set: yards}}, cands = merged candidates
+-    (merge_candidates) -> {ref: {green, tees: {set: {...}}}} (place_tee.place_course_sets shape)."""
++    (merge_candidates) -> {ref: {green, tees: {set: {...}}}} (place_tee.place_course_sets shape).
++    canopy: canopy_sampler() or None. PARAMS joint: all holes are solved together so that one pad serves one hole."""
++    P = dict(PARAMS, **(params or {}))
+     by_hole = pt.assign_tees_to_holes(lines, cands, max_offset_yd=45.0)
+-    out = {}
++    prob = {}
+     for ref, line in lines.items():
+         yds = {n: y for n, y in (yardages.get(ref) or {}).items() if y}
+         if not yds:
+@@ -583,9 +662,58 @@ def localize_course(lines, greens, yardages, cands, params=None, borrow=True):
+         own = by_hole.get(ref, [])
+         mine = {id(t) for t in own}
+         others = [t for t in cands if id(t) not in mine] if borrow else []
+-        res = localize_hole(line, g, own, others, yds, params)
++        prob[ref] = dict(line=line, g=g, own=own, others=others, yds=yds, ban=set())
++
++    def solve(ref, ban=None):
++        q = prob[ref]
++        info = {}
++        res = localize_hole(q["line"], q["g"], q["own"], q["others"], q["yds"], params, canopy=canopy,
++                            ban=q["ban"] if ban is None else ban, info=info)
++        return res, info.get("map_cost", 0.0)
++
++    sol = {ref: solve(ref) for ref in prob}
++    joint_log = []
++    if P.get("joint"):
++        fr = pt.Frame(*next(iter(lines.values()))[0])
++        start = {ref: fr.fwd(*prob[ref]["line"][0]) for ref in prob}
++
++        def may_share(a, b):
++            return math.hypot(start[a][0] - start[b][0], start[a][1] - start[b][1]) <= P["share_start_yd"]
++
++        for _ in range(4 * max(len(prob), 1)):                 # every round bans one pad for one or more holes
++            users = {}
++            for ref, (res, _c) in sol.items():
++                for r in res.values():
++                    if r.get("tee_id") is not None and r.get("method") != "walkback":
++                        users.setdefault(r["tee_id"], set()).add(ref)
++            conf = None
++            for tid, hs in sorted(users.items(), key=lambda kv: str(kv[0])):
++                hs = sorted(hs)
++                clash = [h for h in hs if any(not may_share(h, o) for o in hs if o != h)]
++                if len(clash) >= 2:
++                    conf = (tid, clash)
++                    break
++            if conf is None:
++                break
++            tid, hs = conf
++            alt = {h: solve(h, prob[h]["ban"] | {tid}) for h in hs}
++            loss = {h: alt[h][1] - sol[h][1] for h in hs}
++            owner = next((h for h in hs if any(t.get("id") == tid for t in prob[h]["own"])), None)
++            keep = max(hs, key=lambda h: (round(loss[h], 6), h == owner))
++            for h in hs:
++                if h != keep and not may_share(h, keep):
++                    prob[h]["ban"].add(tid)
++                    sol[h] = alt[h]
++                    joint_log.append(dict(pad=tid, kept_by=keep, taken_from=h, loss_keep=round(loss[keep], 2),
++                                          loss_other=round(loss[h], 2)))
++    out = {}
++    for ref, (res, _c) in sol.items():
++        g = prob[ref]["g"]
+         out[ref] = dict(green=dict(lat=g[0], lon=g[1]) if g else None,
+                         sets_without_box=[n for n, r in res.items() if r["method"] == "walkback"], tees=res)
++        moved = [j for j in joint_log if j["taken_from"] == ref]
++        if moved:
++            out[ref]["joint"] = moved
+     return out
+ 
+ 
+@@ -605,7 +733,7 @@ def gather(osm_tees=(), segment=None, scene=None, pads=(), texture=(), use=("osm
+     return merge_candidates(c)
+ 
+ 
+-def positions(lines, greens, yardages, cands, params=None):
++def positions(lines, greens, yardages, cands, params=None, canopy=None):
+     """platform/package.py entry point: tee_positions-shaped dict."""
+     return dict(schema="tees/positions", method=VERSION + " (joint chain + bias, merged OSM / segment / scene / "
+-                "lidar / texture pads)", holes=localize_course(lines, greens, yardages, cands, params))
++                "lidar / texture pads)", holes=localize_course(lines, greens, yardages, cands, params, canopy=canopy))
