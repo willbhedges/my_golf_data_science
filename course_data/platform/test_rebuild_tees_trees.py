@@ -135,3 +135,21 @@ def test_pevely_farms_retee_stays_on_the_card():
             assert RT.hav_yd(t["tee_ll"], pkg["holes"][k]["tees"][s]["tee_ll"]) <= RT.MAX_MOVE_YD, (k, s)
             if c:
                 assert abs(t["measured_yards"] - c) <= max(0.15 * c, abs(pkg["holes"][k]["tees"][s]["measured_yards"] - c)) + 1, (k, s, t["measured_yards"], c)
+
+
+def test_strip_native_auto_removes_only_the_s4n_band():
+    """Committed packages carry the shipped S4n band (trained on the truth courses): a held-out budget strips it
+    before re-adding the leave-one-course-out band (ERROR_BUDGET_1109.md)."""
+    sq = [ll(0, 0), ll(10, 0), ll(10, 10)]
+    pkg = dict(stages=dict(native_auto="ok: 1 holes"), holes={"1": dict(
+        zones_ll=[dict(lie="native", poly=sq, src="auto:native_side", p=0.9),
+                  dict(lie="native", poly=sq, src="osm"), dict(lie="fairway", poly=sq, src="osm")],
+        verification=dict(native_auto=dict(sides="L"), other=1))})
+    out, n = RT.strip_native_auto(pkg)
+    assert n == 1
+    assert [z["src"] for z in out["holes"]["1"]["zones_ll"]] == ["osm", "osm"]
+    assert "native_auto" not in out["holes"]["1"]["verification"] and out["holes"]["1"]["verification"]["other"] == 1
+    assert "stripped" in out["stages"]["native_auto"]
+    assert len(pkg["holes"]["1"]["zones_ll"]) == 3                      # input untouched
+    out2, n2 = RT.strip_native_auto(out)
+    assert n2 == 0 and out2["stages"]["native_auto"] == out["stages"]["native_auto"]

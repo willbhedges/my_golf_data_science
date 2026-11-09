@@ -25,6 +25,12 @@ water  vision_any/water_filter.filter_package (as gapfill now runs it): false vi
        DTM channel), then the yard frame refreshed. Run it on its own
        (--layers water) to score the water rule alone.
 Everything else in the package (OSM zones, OB, card, greens, routing) is the committed build.
+
+S4n (product/native_auto.py) is stripped by default: the committed packages built since 2026-11-03 21:38 carry the
+native band of the SHIPPED classifier, which was trained on the truth courses. A held-out budget re-adds the band
+with leave-one-course-out p (ERROR_BUDGET_1109.md); keeping the committed band too would leak the training labels
+(11-09: Annbriar's in-sample band, gate shut held out, and a second band on every fired course). --keep-native-auto
+keeps it (e.g. to score a committed package as built).
 """
 from __future__ import annotations
 
@@ -307,6 +313,28 @@ def rewater(pkg, slug, piped=False):
                  f"{pp.get('zones_cut', 0)} zones cut; {vs}")
 
 
+# ----------------------------------------------------------------------------- native (S4n)
+NATIVE_AUTO_SRC = "auto:native_side"          # product/native_auto.SRC
+
+
+def strip_native_auto(pkg):
+    """(package without the S4n native band zones and their verification / stage records, zones removed)."""
+    out = copy.deepcopy(pkg)
+    n = 0
+    for h in out.get("holes", {}).values():
+        for key in ("zones_ll", "zones"):
+            z = h.get(key)
+            if isinstance(z, list):
+                keep = [q for q in z if not (isinstance(q, dict) and q.get("src") == NATIVE_AUTO_SRC)]
+                n += len(z) - len(keep)
+                h[key] = keep
+        if isinstance(h.get("verification"), dict):
+            h["verification"].pop("native_auto", None)
+    if n and isinstance(out.get("stages"), dict) and "native_auto" in out["stages"]:
+        out["stages"]["native_auto"] = "stripped by rebuild_tees_trees (held-out runs re-add it)"
+    return out, n
+
+
 # ----------------------------------------------------------------------------- main
 def main():
     sys.path.insert(0, HERE)
@@ -325,6 +353,8 @@ def main():
     ap.add_argument("--fw-min", type=float, default=2.0, help="yds: a smaller edge band is grid noise (1 m), none")
     ap.add_argument("--piped", action="store_true", help="water: also cut piped OSM stream crossings")
     ap.add_argument("--fw-lie", default="fairway", choices=("fairway", "first_cut"))
+    ap.add_argument("--keep-native-auto", action="store_true",
+                    help="keep the committed S4n native band (default: stripped, see the module doc)")
     a = ap.parse_args()
     layers = set(a.layers.split(","))
     k = a.k if a.k is not None else json.load(open(os.path.join(CD, "vision_any", "model_v2", "model.json")))["settings"]["trees"]["k_m"]
@@ -337,6 +367,12 @@ def main():
         pp = os.path.join(ROOT, cfg["package"]) if cfg.get("package") else os.path.join(CD, "packages", slug, "package.json")
         pkg = json.load(open(pp))
         notes = []
+        if not a.keep_native_auto:
+            pkg, n = strip_native_auto(pkg)
+            if n:
+                notes.append(f"S4n native band stripped ({n} zones)")
+                if not layers & {"tees", "trees", "fairway", "water"}:
+                    pkg = _load("rtt_platform_package_n", os.path.join(HERE, "package.py")).reframe(pkg)
         if "tees" in layers:
             pkg, n = retee(pkg, os.path.dirname(pp), slug)
             notes.append(n)
