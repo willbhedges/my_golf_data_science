@@ -7,6 +7,9 @@ name: nccga-v2
 #   optional "refine_swings": 16000 (+ "refine_offsets": [0], default [0]): the wind cells of those tee offsets get a
 #   second solve stage on aim +/-10 yds with that many fresh common swings (v2_course.refined_solver; MC SE of a
 #   club-vs-club margin ~0.004 -> ~0.0015 strokes)
+#   optional "wind_split": 3 splits each refined offset's wind grid over that many jobs (tee-shot holes dealt round
+#   robin; the merge joins them), and "wind_holes": [8, 10] limits the wind jobs to those holes (the merge keeps the
+#   stored grid's other holes) (Gateway National 2026-11-09: 13 refined holes x 183 cells did not fit 300 min)
 #   optional "holes": [3, 17] limits the decide jobs to those holes (e.g. a close call re-run with more draws; the
 #   merge keeps the other holes' decisions); "offsets": [] then skips the wind grids.
 # Jobs: one wind job per tee offset (all temperatures; holes split over the runner's cores), `decide_jobs` jobs
@@ -46,8 +49,12 @@ jobs:
               q = json.load(open(r))
               for b in q.get("offsets", [0]):
                   rf = int(q.get("refine_swings", 0)) if b in q.get("refine_offsets", [0]) else 0
-                  inc.append(dict(kind="wind", slug=q["slug"], which=q.get("which", "truth"), back=b,
-                                  temps=",".join(str(t) for t in q["temps"]), part=str(b), refine=rf))
+                  ns = int(q.get("wind_split", 1)) if rf else 1
+                  for j in range(ns):
+                      inc.append(dict(kind="wind", slug=q["slug"], which=q.get("which", "truth"), back=b,
+                                      temps=",".join(str(t) for t in q["temps"]),
+                                      part=str(b) if ns == 1 else f"{b} {j}/{ns}", wpart=f"{j}/{ns}", refine=rf,
+                                      holes=",".join(str(h) for h in q.get("wind_holes", []))))
               for j in range(int(q.get("decide_jobs", 3))):
                   inc.append(dict(kind="decide", slug=q["slug"], which=q.get("which", "truth"), back=0, temps="",
                                   part=f"{j}/{int(q.get('decide_jobs', 3))}", draws=int(q.get("draws", 64)),
@@ -88,6 +95,13 @@ jobs:
           NP=$(nproc)
           echo "holes: $HOLES; cores: $NP"
           if [ "${{ matrix.kind }}" = "wind" ]; then
+            if [ -n "${{ matrix.wpart }}" ]; then
+              # wind_split: this job's share of the tee-shot holes (a refined card-tee grid does not fit one job)
+              J=$(echo "${{ matrix.wpart }}" | cut -d/ -f1); NJ=$(echo "${{ matrix.wpart }}" | cut -d/ -f2)
+              HOLES=$(python3 -c "
+          h='$HOLES'.split(); print(' '.join(h[$J::$NJ]))")
+              echo "wind part $J/$NJ: $HOLES"
+            fi
             # split holes over the cores; each process writes its own part
             i=0; pids=""
             for grp in $(python3 -c "
