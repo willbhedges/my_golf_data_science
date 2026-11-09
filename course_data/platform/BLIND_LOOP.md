@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): after 14 courses - 4 usable as is, 3 usable with 1-3 flagged confirms, 1 usable without a card, 6 not shown (4 unmapped tier D, 2 tier C), 0 shown wrong. Tier A 7 / 7 usable; tier C 1 / 3 (Royal Scot, by joint routing); tier D 0 / 4.**
+**Headline (updated at every course): after 15 courses - 5 usable as is, 3 usable with 1-3 flagged confirms, 1 usable without a card, 6 not shown (4 unmapped tier D, 2 tier C), 0 shown wrong. Tier A 8 / 8 usable; tier C 1 / 3; tier D 0 / 4.**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -98,6 +98,7 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | 12 | Zintel Creek GC, Kennewick WA | A | **usable with 3 confirms, all flagged** (25 s; 11 s cached): 18 / 18 holes right; the OpenGolfAPI card arrived after the 15 s budget and the first answer was built without it (bug: the late-card flag was overwritten, so no second-phase rebuild); with the card: 3 sets, yardages within 10 on 17 holes (18: card 455 vs 417), two dog-leg picks more than 40 yds off the line (5, 12) carry the "confirm the line" flag | fast path: late card not picked up | 9a2 (this commit): late card always triggers the rebuild | usable with 3 confirms |
 | 13 | Hawk's Point GC, Vidalia GA | D | **failed: blocked, routing** (8 s) | outline only | open | blocked |
 | 14 | The GC at Cedar Creek, Onalaska WI | A | **usable as is** (34 s incl. the late card; 15 s cached): 18 / 18 holes right, golfify card, every yardage within 5, 3 sets, one green from the detector, picks on the fairways | - | - | usable as is |
+| 15 | Falls Village GC, Durham NC | A | **usable as is** (34 s incl. the late card; 20 s cached): 18 / 18 holes right, golfify card, yardages within 6, 12 sets, tree-lined corridors mapped, picks on the fairways; one flagged wide aim (18, Driver +60 round the dog-leg) | - | - | usable as is |
 
 ## Time per course by stage (Actions, runner-minutes)
 
