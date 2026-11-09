@@ -1,5 +1,5 @@
 """Course module for The Falls Golf Club (Blue tees), generated from package.json by
-course_data/platform/package.py on 2026-11-04T02:13:51Z. Do not edit; rebuild with
+course_data/platform/package.py on 2026-11-09T16:35:03Z. Do not edit; rebuild with
 
   python course_data/platform/package.py build course_data/requests/package_the_falls_ofallon.json
 

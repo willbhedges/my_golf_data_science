@@ -1,6 +1,6 @@
 # The Falls Golf Club (O'Fallon, MO) - Blue tees
 
-Built 2026-11-04T02:13:51Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
+Built 2026-11-09T16:35:03Z. OSM relation/3939928. Scorecard: file (course_data/library/the_falls_ofallon/card_review.json). Tee set: name.
 
 ## Coverage
 
