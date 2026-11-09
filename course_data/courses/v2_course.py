@@ -562,6 +562,30 @@ def attach_greens(cfg, which, course, M):
         hd["green_poly"] = np.column_stack([d @ fwd, d @ right])
 
 
+def footprint_ends(cfg, which, course, M):
+    """{hole: yds along this base's tee line where the hand-checked map ends} (the far edge of the package's
+    hand:footprint rough box), for the page's "lands past the hand-checked map" badge (Gateway audit 2026-11-09 item
+    9: the badge used 345 from every base; Middle 3's map ends 282 from its tee)."""
+    pkg = json.load(open(os.path.join(ROOT, cfg["truth_package" if which.startswith("truth") else "package"])))
+    holes = pkg["holes"]
+    holes = holes if isinstance(holes, list) else [dict(v, ref=k) for k, v in holes.items()]
+    by = {str(h.get("ref")): h for h in holes}
+    if os.path.join(CD, "imagery") not in sys.path:
+        sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as RD
+    out = {}
+    for k, hd in course.HOLES.items():
+        h = by.get(str(k)) or {}
+        fp = [z for z in (h.get("zones_ll") or []) if z.get("src") == "hand:footprint"]
+        if not fp or k not in course.FRAMES:
+            continue
+        fr = RD.Frame.from_json(course.FRAMES[k])
+        px = fr.ll_to_px(np.asarray(fp[0]["poly"], float))
+        tee, fwd, right, ppy = M.frame(hd)
+        out[k] = round(float(((px - tee) / ppy @ fwd).max()), 1)
+    return out
+
+
 def putts(d_yds, off=0.0):
     return np.interp(np.asarray(d_yds, float) * 3.0, PUTT_FT, PUTT_TOUR) + off
 
@@ -1108,6 +1132,7 @@ def golfer_text(t):
     OB, sand, trees and long-grass shares are dropped from the text only: the picks and numbers are unchanged), and
     any other sentence naming a hazard is left out."""
     t = re.sub(r",\s*(sand|trees|long grass|water|OB)\s+\d+%", "", t or "")
+    t = re.sub(r",\s*first cut 0%", "", t)            # no first-cut class on a hand map that has none (audit nit)
     t = re.sub(r"\s*\(Edge hazards[^)]*\)", "", t)
     parts = re.split(r"(?<=[.!?])\s+(?=[A-Z~])", t.strip())
     return " ".join(x for x in parts if x and not HAZ_WORDS.search(x)).strip()
@@ -1228,6 +1253,7 @@ def build_page(slug, which, out=None, data_out=None):
     if not getattr(yb.par3_plan, "_floored", False):
         yb.par3_plan = floored_plan(yb.par3_plan)
     p3z = par3_zones(cfg, which) if course.PAR3 else {}
+    foot_a1 = footprint_ends(cfg, which, course, M)
     BW.FN = {}
     base = meta["tee_set"]
     sets = [s for s in (cfg.get("sets") or list(meta["tee_sets"])) if s in meta["tee_sets"]]
@@ -1276,6 +1302,8 @@ def build_page(slug, which, out=None, data_out=None):
         d["haz"] = [] if calm else hazard_outlines(p3z.get(h, []) if h in course.PAR3 else course.HOLES[h].get("zones", []))
         d["key"] = str(h)
         d["label"] = str(h)
+        if h in foot_a1:
+            d["foot_a1"] = foot_a1[h]
         d["bearing"] = course.BEARINGS.get(h)
         b0, opts = tee_options(h)
         d["base_set"], d["tee_opts"] = b0, opts
@@ -1327,6 +1355,7 @@ def build_page(slug, which, out=None, data_out=None):
                 forecast=[dict(date=r["date"], hour=r["hour"], mph=r["wind_mph"], gust=r["gust_mph"],
                                dir=r["wind_from_deg"], temp=r["temp_f"]) for r in fc["hourly"]],
                 fetched=fc.get("fetched_utc", ""), draws=int(cfg.get("draws", 64)),
+                aim_limit=float(D.AIM_LIMIT), p3_bag=cfg.get("par3_bag"),
                 temp_k=float(M.central()["temp_k"]))
     if data_out:
         json.dump(data, open(data_out, "w"), separators=(",", ":"))

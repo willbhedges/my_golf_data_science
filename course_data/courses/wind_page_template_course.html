@@ -244,11 +244,17 @@ function solveTee(h){
   const g0 = {}; for(const [g, tw] of tempWeights(GB, h.calm ? h.calm.temp : tF)) for(const [c, v] of Object.entries(g["0_0"].clubs)){
     g0[c] = g0[c] || {ev:0, aim:0}; g0[c].ev += tw*v.ev; g0[c].aim += tw*v.aim; }
   const calmQuick = Object.keys(g0).filter(c => !HYPO(c)).sort((a,b) => g0[a].ev - g0[b].ev)[0];
-  if(h.calm && T.back === 0 && out[h.calm.pick] && pick === calmQuick){
-    const c = h.calm.pick;
-    pick = c; aim = h.calm.aim + (out[c].aim - g0[c].aim); tie = h.calm.tie; bayes = true;
+  const book = h.calm && T.back === 0 && out[h.calm.pick] ? h.calm.pick : null;
+  const quickMargin = out[order[1]].ev - out[order[0]].ev;
+  let split = false;
+  /* the book's club is shown only when the wind model, here and now, picks the same club; when the two models
+     disagree the page shows the wind model's pick and says so (Gateway audit 2026-11-09 item 4: Middle 16 showed the
+     book's Driver while the wind model had 4-wood by 0.032) */
+  if(book && pick === book){
+    pick = book; aim = h.calm.aim + (out[book].aim - g0[book].aim); tie = h.calm.tie; bayes = true;
     order.splice(order.indexOf(pick), 1); order.unshift(pick); }
-  return {rel, out, order, pick, aim, tie, bayes, T, tF, margin: out[order[1]].ev - out[order[0]].ev};
+  else if(book && pick === calmQuick) split = true;       /* the models disagree even without the wind */
+  return {rel, out, order, pick, aim, tie, bayes, split, book, calmQuick, quickMargin, T, tF, margin: out[order[1]].ev - out[order[0]].ev};
 }
 /* par-3 club from d.p3club: "Sat: PW; Sun: GW" (per forecast day) or "PW (138); 9-iron ties" -> the club */
 function p3clubFor(h){
@@ -264,6 +270,24 @@ function p3clubFor(h){
   }
   return s.trim().split(/[ (,;]/)[0];
 }
+/* par-3 club from the live "Plays" number (config par3_ladder: the expected-strokes-best club for each number,
+   par3_ladder.py): follows Custom wind, tee time, start hole, refetch and Move this tee. No club when no club in the
+   bag carries within 6.5 yds of the number (the 210-255 gap, partial wedges). Falls back to d.p3club. */
+function p3Pick(h, r){
+  const bs = h.by_set && (h.by_set[st.set] || h.by_set[h.base_set]);
+  const L = bs && bs.ladder;
+  if(!L || !D.p3_bag) return null;
+  const n = r.play, s = n - L.p0;
+  let best = L.steps[0];
+  for(const x of L.steps) if(Math.abs(x[0] - s) < Math.abs(best[0] - s)) best = x;
+  const near = Math.min(...Object.values(D.p3_bag).map(c => Math.abs(c - n)));
+  if(near > 6.5){
+    const cs = Object.entries(D.p3_bag).sort((a, b) => a[1] - b[1]);
+    const lo = cs.filter(c => c[1] <= n).pop(), hi = cs.find(c => c[1] >= n);
+    return {gap: true, lo, hi};
+  }
+  return {club: best[1], runner: best[2], tie: best[5], carry: D.p3_bag[best[1]]};
+}
 function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
 function solvePar3(h){
   const rel = ((st.from - h.bearing) % 360 + 360) % 360;
@@ -278,7 +302,8 @@ function solvePar3(h){
   const mod = windMod(st.mph); const b = S3.boxes[String(mod)];
   /* temperature, as on the tee shots (carry x (1 - k (70 - T)), D.temp_k per F): a cold day plays longer */
   const tF = tempFor(h), tk = D.temp_k || 0, tmul = 1 / (1 - tk * (70 - tF));
-  return {rel, plays, mod, box:b, S3, setName, tF, tmul, play: b.play * plays / S3.center * tmul};
+  const adj = (st.adj && st.adj[h.key]) || 0;                       /* Move this tee on a par 3: the whole number moves with it */
+  return {rel, plays, mod, box:b, S3, setName, tF, tmul, adj, play: (b.play + adj) * plays / S3.center * tmul};
 }
 const P = (h, p) => [(p[0]-h.x0)*h.s, (p[1]-h.y0)*h.s];
 const at = (h, along, lat) => [h.tee[0]+(along*h.f[0]+lat*h.r[0])*h.ppy, h.tee[1]+(along*h.f[1]+lat*h.r[1])*h.ppy];
@@ -301,8 +326,8 @@ function windArrow(h, rel, vb){
   const dx = Math.sin(a)*L, dy = -Math.cos(a)*L;
   return `<g opacity=".95"><circle cx="${cx}" cy="${cy}" r="${23*u}" fill="rgba(10,20,15,.6)"/>
     <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx*0.5}" y2="${cy+dy*0.5}" stroke="#fff" stroke-width="${3*u}" stroke-linecap="round"/>
-    <polygon points="${cx+dx},${cy+dy} ${cx+dx*0.42-dy*0.42},${cy+dy*0.42+dx*0.42} ${cx+dx*0.42+dy*0.42},${cy+dy*0.42-dx*0.42}" fill="#ffc928" stroke="#fff" stroke-width="${1.2*u}" stroke-linejoin="round"/>
-    <text x="${cx}" y="${cy+37*u}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="${14*u}" text-anchor="middle" stroke="rgba(0,0,0,.75)" stroke-width="${3*u}" paint-order="stroke">${Math.round(st.mph)} mph</text></g>`;
+    <polygon points="${cx+dx},${cy+dy} ${cx+dx*0.42-dy*0.42},${cy+dy*0.42+dx*0.42} ${cx+dx*0.42+dy*0.42},${cy+dy*0.42-dx*0.42}" fill="#fff" stroke="#1a1a1a" stroke-width="${1.2*u}" stroke-linejoin="round"/>
+    <text x="${cx}" y="${cy+37*u}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="${14*u}" text-anchor="middle" stroke="rgba(0,0,0,.75)" stroke-width="${3*u}" paint-order="stroke">wind ${Math.round(st.mph)}</text></g>`;
 }
 /* holes 2 and 9 have two screenshots (Gold box "B", Black box "F"): show one per hole, by the chosen tees */
 const shown = (h) => !/^[29][FB]$/.test(h.key) || (h.key.endsWith("B") === (st.set === "Gold"));
@@ -335,7 +360,7 @@ function render(){
   const T0 = h.kind === "tee" ? teeOf(h) : null, P3 = h.kind === "tee" ? null : solvePar3(h);
   document.getElementById("hPar").textContent = h.kind === "tee"
     ? `Par ${h.par} · ${T0.card + (st.adj[h.key] || 0)} yds · from the ${T0.name.replace(/^the /i, "")} tee` + (st.adj[h.key] ? ` (moved ${Math.abs(st.adj[h.key])} ${st.adj[h.key] > 0 ? "back" : "up"})` : "")
-    : `Par 3 · ${Math.round(P3.S3.center)} yds · from the ${String(P3.setName).replace(/^the /i, "")} tee`;
+    : `Par 3 · ${Math.round(P3.S3.center + P3.adj)} yds · from the ${String(P3.setName).replace(/^the /i, "")} tee` + (P3.adj ? ` (moved ${Math.abs(P3.adj)} ${P3.adj > 0 ? "back" : "up"})` : "");
   renderTeeCtl(h);
   const badges = [];
   if(h.kind === "tee"){
@@ -382,25 +407,33 @@ function render(){
     document.getElementById("hAdj").hidden = true;
     if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     const calm = solveTeeCalm(h);
-    if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
+    if(r.split) badges.push(`<span class="pill tie">Models split · calm-day book: ${r.book}${h.calm ? " by " + h.calm.margin.toFixed(3) : ""}; wind model: ${r.pick} by ${r.margin.toFixed(3)} · a coin flip</span>`);
+    else if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     else if(r.bayes && h.calm && h.calm.runner && (h.calm.margin < 0.03 || (h.calm.p != null && h.calm.p < 0.8)))
       badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers` : ""}</span>`);
-    if(calm !== r.pick && r.T.back === 0) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
+    else if(!r.bayes && r.margin < 0.03)
+      badges.push(`<span class="pill tie">Close call · ${r.order[1]} +${r.margin.toFixed(3)} (wind model)</span>`);
+    if(calm !== r.pick && r.T.back === 0 && !r.split) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
+    const Lim = D.aim_limit || 40;
+    if(Math.abs(aimC + best.drift) >= Lim - 1) badges.push(`<span class="pill chg">Aim at the edge of the solved range (${Lim} yds): the best line may be further out</span>`);
     const mv = best.drift + best.kick + cL;
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
     document.getElementById("hAim").innerHTML = `Aim at the dot (anywhere on the blue bar is within 0.005 strokes)${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}, ${Math.round(r.tF)}°F.${r.bayes ? " Same club as the book (this wind and temperature don't change it)." : ""}`;
     const allC = Object.keys(r.out).sort((a,b) => r.out[a].ev - r.out[b].ev);
     const rows = allC.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
-      const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (d < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
+      const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (d <= -0.01 ? `better by ${(-d).toFixed(3)} here` : Math.abs(d) < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
       return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"${HYPO(c) ? ' style="font-style:italic;opacity:.8"' : ""}><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${lost}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>To green</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. To green: yards from where that club finishes to the middle of the green. Tap any club to see its own best aim and pattern; tap ★ to go back. The hybrid (~235 carry) is hypothetical, not in your bag: it shows whether such a club would be the play.</div>`;
     const be = best.e;
-    const past = best.total - B > 345;
+    const past = best.total - B > (h.foot_a1 || 345);
     if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
     if(Math.abs(B - r.T.want) > 5) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B)} yds ${B >= 0 ? "back" : "up"}</span>`);
     document.getElementById("hElev").innerHTML = be ? (B ? `Elevation measured from the ${h.base_set} tee. ` : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
     let note = h.note || "";
+    if(note && h.calm && r.T.back === 0 && !/^Calm-day/.test(note)) note = `Calm-day book (no wind, ${Math.round(h.calm.temp)}°F): ` + note;
+    if(note && h.calm && r.T.back === 0 && r.pick !== h.calm.pick)
+      note = `In this wind and temperature the wind model picks ${r.pick} by ${r.margin.toFixed(3)} over ${r.order[1]}; the calm-day book is below for comparison. ` + note;
     if(r.T.back !== 0) note = `The calm-day book (club, aim, fairway / trouble shares, yards in) is for the ${h.base_set} tee, so it is not shown here: from this tee use the play and the club table above (solved ${Math.abs(r.T.back)} yds ${r.T.back > 0 ? "back" : "up"} the line).` +
       (Math.abs(r.T.back) >= 100 ? " This tee is placed by moving the " + h.base_set + " tee along the line, not from its own box: a rough guide." : "") +
       (h.map_note ? ` Map (yds from the ${h.base_set} tee): ${h.map_note}` : "");
@@ -413,20 +446,26 @@ function render(){
       <polygon points="${bp}" fill="rgba(37,208,255,.45)" stroke="#25d0ff" stroke-width="${2*U}"/>${windArrow(h, r.rel, vb)}`;
     document.getElementById("playLbl").textContent = "Play it like";
     const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
-    const tc = document.getElementById("topClub"), p3c = p3clubFor(h);
+    const tc = document.getElementById("topClub"), pk = p3Pick(h, r), p3c = pk ? (pk.gap ? "" : pk.club) : p3clubFor(h);
     tc.className = ""; tc.textContent = p3c || ("Plays " + Math.round(r.play));
-    document.getElementById("topKey").textContent = p3c ? `Plays ${Math.round(r.play)} yds` : `Box ${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds`;
+    document.getElementById("topKey").textContent = p3c ? `Plays ${Math.round(r.play)} yds` + (pk && pk.carry ? ` · ${pk.club} carries ${pk.carry}` : "") + (pk && pk.tie ? ` · ${pk.runner} a tie` : "")
+      : (pk && pk.gap ? (pk.lo && pk.hi ? `Between clubs: ${pk.lo[0]} ${pk.lo[1]} / ${pk.hi[0]} ${pk.hi[1]}` : pk.hi ? `Shorter than a full ${pk.hi[0]} (${pk.hi[1]})` : `Longer than the ${pk.lo[0]} (${pk.lo[1]})`) : `Box ${Math.round(r.box.lo + r.adj)}–${Math.round(r.box.hi + r.adj)} yds`);
     /* breakdown: box target (calm, flat) + elevation + wind = plays like; rounded parts add up exactly */
-    const T = Math.round(r.box.play), calmP = r.S3.plays["0_0"] / r.S3.center;
-    const eY = Math.round(r.box.play * calmP - r.box.play), tY = Math.round(r.play - r.play / r.tmul);
+    const bpa = r.box.play + r.adj, T = Math.round(bpa), calmP = r.S3.plays["0_0"] / r.S3.center;
+    const eY = Math.round(bpa * calmP - bpa), tY = Math.round(r.play - r.play / r.tmul);
     const wY = Math.round(r.play) - T - eY - tY;
     const sg = v => v > 0 ? "+" + v : v < 0 ? "−" + (-v) : "±0";
     const ae = document.getElementById("hAdj"); ae.hidden = false;
     ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>` +
       (D.temp_k ? `<span class="${tY > 0 ? "up" : tY < 0 ? "dn" : ""}">${sg(tY)} at ${Math.round(r.tF)}°F</span>` : "");
-    if(Math.abs(r.play - r.S3.center) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center)} on the card</span>`);
+    if(Math.abs(r.play - r.S3.center - r.adj) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center + r.adj)}${r.adj ? " (moved tee)" : ""} on the card</span>`);
+    if(pk && pk.gap) badges.push(`<span class="pill tie">No club in the bag carries ${Math.round(r.play)}: play the number</span>`);
     document.getElementById("hAim").textContent = `Aim at the blue box (best spot for any pin). ${relWords(r.rel, st.mph)}.` + (h.p3_source ? "" : ` DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`);
-    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front}</td><td>${Math.round(r.S3.center)}</td><td>${r.S3.back}</td></tr><tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo)}–${Math.round(r.box.hi)} yds</td></tr></tbody></table></div>`;
+    const A = r.adj, mc = r.S3.ladder && r.S3.ladder.map_center;
+    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front + A}</td><td>${Math.round(r.S3.center + A)}${A ? ` (${A > 0 ? "+" : "−"}${Math.abs(A)})` : ""}</td><td>${r.S3.back + A}</td></tr>` +
+      (mc ? `<tr><td>Map</td><td></td><td>${Math.round(mc)}</td><td></td></tr>` : "") +
+      `<tr class="best"><td>Box</td><td colspan="3">${Math.round(r.box.lo + A)}–${Math.round(r.box.hi + A)} yds</td></tr></tbody></table></div>` +
+      (mc && Math.abs(mc - r.S3.center) >= 2 ? `<div class="sub">The card says ${Math.round(r.S3.center)} to the centre; the map measures ${Math.round(mc)} from this tee. Check the plaque or a laser and use Move this tee to match it.</div>` : "");
     document.getElementById("hNote").textContent = h.note || "";
     const ge = h.elev;
     document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this, the wind${D.temp_k ? " and the temperature (your numbers are 70°F numbers)" : ""}.` : "";
@@ -440,9 +479,14 @@ function renderTeeCtl(h){
   document.querySelectorAll("#set button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.set));
   const multi = (D.offsets || [0]).length > 1;            // tee picker only once offset grids exist
   document.getElementById("setRow").hidden = !multi; if(!multi) st.set = D.base_set;
-  const row = document.getElementById("adjRow"); row.hidden = h.kind !== "tee" || !multi;
-  const a = st.adj[h.key] || 0; document.getElementById("adj").value = a;
-  document.getElementById("adjLbl").textContent = a === 0 ? "at the card spot" : `${Math.abs(a)} yds ${a > 0 ? "back" : "up"}`;
+  /* tee shots: the solve exists every 20 yds, so the slider moves in 20s (none on a base with one solved tee);
+     par 3s: the number is continuous, 5-yd steps */
+  const row = document.getElementById("adjRow"), sl = document.getElementById("adj");
+  const solved = h.kind === "tee" ? Object.keys(h.G || {"0": 1}).length : 0;
+  row.hidden = h.kind === "tee" ? (!multi || solved < 2) : false;
+  sl.step = h.kind === "tee" ? 20 : 5; sl.min = h.kind === "tee" ? -60 : -30; sl.max = h.kind === "tee" ? 60 : 30;
+  const a = st.adj[h.key] || 0; sl.value = a;
+  document.getElementById("adjLbl").textContent = (a === 0 ? "at the card spot" : `${Math.abs(a)} yds ${a > 0 ? "back" : "up"}`) + (h.kind === "tee" ? " · solved every 20 yds" : "");
 }
 function solveTeeCalm(h){ if(h.calm) return h.calm.pick; const g = h.grid["0_0"].clubs; return Object.keys(g).filter(c => !HYPO(c)).sort((a,b) => g[a].ev - g[b].ev)[0]; }
 function aimMark(x, y){ const u = U, c = (w, col) => `<g stroke="${col}" stroke-width="${w*u}" fill="none"><line x1="${x-13*u}" y1="${y}" x2="${x+13*u}" y2="${y}"/><line x1="${x}" y1="${y-13*u}" x2="${x}" y2="${y+13*u}"/><circle cx="${x}" cy="${y}" r="${5*u}"/></g>`; return c(3.4, "#1a1a1a") + c(1.6, "#ffc928") + `<circle cx="${x}" cy="${y}" r="${1.8*u}" fill="#e5202a" stroke="#1a1a1a" stroke-width="${.5*u}"/>`; }

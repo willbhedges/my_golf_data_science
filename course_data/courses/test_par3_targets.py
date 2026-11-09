@@ -93,7 +93,7 @@ def test_page_number_is_the_carry_to_the_aim(tmp_path):
 def test_template_formula_unchanged():
     """par3_targets relies on the template's solvePar3 number; fail loudly if that formula changes."""
     html = open(os.path.join(HERE, "wind_page_template_course.html")).read()
-    assert re.search(r"play:\s*b\.play\s*\*\s*plays\s*/\s*S3\.center\s*\*\s*tmul", html)
+    assert re.search(r"play:\s*\(b\.play\s*\+\s*adj\)\s*\*\s*plays\s*/\s*S3\.center\s*\*\s*tmul", html)
 
 
 def test_eagle_knoll_switched_on_with_every_par3():

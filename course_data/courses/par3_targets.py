@@ -69,6 +69,10 @@ def install(cfg, BW, base_set):
     if T is None or getattr(BW, "_p3_targets", False):
         return
     hole0, sets0 = BW.par3_hole, BW.par3_sets
+    lad = {}
+    if cfg.get("par3_ladder"):                  # live club by the page's number (par3_ladder.py; audit 2026-11-09 item 1)
+        lp = cfg["par3_ladder"]
+        lad = json.load(open(lp if os.path.isabs(lp) else os.path.join(ROOT, lp)))
     hide = {s: {str(h) for h in hs} for s, hs in (cfg.get("par3_club_hide") or {}).items()}
 
     def clubs_of(t, set_name, h):
@@ -103,6 +107,9 @@ def install(cfg, BW, base_set):
                           for k in grid["par3"][str(h)]}
             S["aim_dist"] = float(A)
             S["p3club"] = clubs_of(t, o["name"], h)
+            L = (lad.get(o["name"]) or {}).get(str(h))
+            if L:
+                S["ladder"] = dict(p0=L["p0"], map_center=L.get("map_center"), steps=L["steps"])
         return out
     BW.par3_hole, BW.par3_sets = par3_hole, par3_sets
     BW._p3_targets = True
