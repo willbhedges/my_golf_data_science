@@ -7,7 +7,8 @@ course-page pipeline exactly as an app request, graded hole by hole. Protocol + 
   blind20.py rerun slug.. | done -> bumps "rev" in those request files (commit + push = rebuild them)
   blind20.py status            -> the status.json rows of the courses built so far
   blind20.py timing RUN_ID..   -> timing.json (job and step minutes by stage, from the Actions API through `gh`)
-  blind20.py sheets [slug..]   -> contact sheets for grading (hole picture + tee, green, line, zones, the pick)
+  blind20.py sheets slug..     -> course_data/requests/blind_sheets.json (commit + push = grading renders on Actions:
+                                  blind20_sheets.py on a fresh NAIP fetch -> blind20/sheets/<slug>/*.jpg)
 
 Outputs: course_data/library/gate/gate_b20_<slug>/ (group "gate": same pipeline, never in index.json or the app).
 """
@@ -272,7 +273,12 @@ if __name__ == "__main__":
     elif cmd == "timing":
         timing(sys.argv[2:])
     elif cmd == "sheets":
-        import blind20_sheets
-        blind20_sheets.main(sys.argv[2:])
+        # request the grading sheets of the named courses (commit + push the file = one blind-sheets run)
+        f = os.path.join(CD, "requests", "blind_sheets.json")
+        d = rj(f) or {"rev": 0}
+        d = dict(slugs=[s if s.startswith("b20_") else "b20_" + s for s in sys.argv[2:]], rev=d["rev"] + 1,
+                 note="blind loop grading renders (.github/workflows/blind_sheets.yml)")
+        json.dump(d, open(f, "w"), indent=1)
+        print("git add", os.path.relpath(f, ROOT))
     else:
         print(__doc__)

@@ -1,0 +1,67 @@
+name: blind-sheets
+
+# Grading sheets for the blind loop (course_data/platform/BLIND_LOOP.md): each listed course's built package drawn on
+# an independent NAIP fetch (newest year), hole by hole, for the by-eye grade.
+# Trigger: push course_data/requests/blind_sheets.json {"slugs": ["b20_crow_canyon", ...], "rev": n}
+# Output: course_data/platform/blind20/sheets/<slug>/{overview,holes_NN}.jpg + sheets.json (about 1.5 MB per course).
+on:
+  push:
+    paths:
+      - "course_data/requests/blind_sheets.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blind-sheets-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/blind_sheets.json
+            /course_data/platform/blind20/
+            /course_data/library/gate/gate_b20_*/
+            /course_data/imagery/*.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests numpy scipy pillow shapely pyproj rasterio pystac-client planetary-computer opencv-python-headless
+      - name: Fetch NAIP + render
+        run: |
+          for S in $(python3 -c "import json;print(' '.join(json.load(open('course_data/requests/blind_sheets.json'))['slugs']))"); do
+            D=course_data/library/gate/gate_$S
+            [ -f "$D/package.json" ] || { echo "$S: no package.json (not built)"; continue; }
+            BB=$(python3 course_data/platform/blind20/blind20_sheets.py --course-dir "$D" --bbox)
+            echo "$S bbox $BB"
+            rm -rf /tmp/img && mkdir -p /tmp/img
+            python -u course_data/imagery/fetch_imagery.py --bbox "$BB" --margin 0 --year latest --lo-res 1.0 --no-dem \
+              --max-mb 400 --name "$S" --out /tmp/img 2>&1 | grep -v '^ ' | tail -n 8 || true
+            [ -f /tmp/img/naip_rgb.tif ] || { echo "$S: no NAIP"; continue; }
+            python3 course_data/platform/blind20/blind20_sheets.py --course-dir "$D" --img /tmp/img \
+              --out course_data/platform/blind20/sheets/$S || echo "$S: render failed"
+          done
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f course_data/platform/blind20/sheets
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' "blind-sheets: grading renders (GitHub Actions run ${{ github.run_id }})" "" \
+            "Co-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase --autostash origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep $((i * 10))
+          done
+          exit 1
