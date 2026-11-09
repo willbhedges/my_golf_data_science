@@ -403,6 +403,8 @@ def install_engine(eng, M, D):
             pass
     if eng.get("green_putting"):
         install_green_putting(M, eng["green_putting"])
+    if eng.get("aim_limit"):
+        install_aim_limit(D, float(eng["aim_limit"]))
     ft = eng.get("flight_trees")
     if ft and ft.get("mode") == "lidar" and lidar_opts(ft) is not None:
         o = lidar_opts(ft)
@@ -412,6 +414,24 @@ def install_engine(eng, M, D):
         M.ev_curve = flight_tree_ev_curve(M, float(os.environ.get("V2_FLIGHT_HEIGHT") or ft.get("height_yds", 20.0)),
                                           float(os.environ.get("V2_FLIGHT_PHIT") or ft.get("p_hit", 0.7)),
                                           drop_of=eng.get("_drop_of"))
+
+
+def install_aim_limit(D, L):
+    """config engine "aim_limit": the aim search bound (yds either side of the tee line, landing aim incl. wind drift;
+    decide.AIM_LIMIT, default 40) and the decide aim grid (+/- L + 20). Gateway National audit 2026-11-09 item 6: on the
+    dogleg 8th the 2-wood's best line sat on the 40-yd bound and the Driver's (about -50) beyond it, so the page showed
+    a bound as an optimum. decide.robust_aim's default bounds are bound at its definition, so it is wrapped."""
+    if getattr(D, "_aim_limit", None) == L:
+        return
+    base = getattr(D, "_robust_aim0", None) or D.robust_aim
+    D._robust_aim0 = base
+    D.AIM_LIMIT = L
+    D.AIMS = np.arange(-(L + 20.0), L + 20.0 + 1e-9, 0.5)
+
+    def robust_aim(aims, curve, lo=-L, hi=L):
+        return base(aims, curve, lo, hi)
+    D.robust_aim = robust_aim
+    D._aim_limit = L
 
 
 def flight_heights(f, kind="wood", carry=275.0):
@@ -838,6 +858,9 @@ def run_wind(slug, which, back, temps, out, swings=2500, refine=0):
     import wind_grid as WG
     WG.osm_bearings = lambda: {}
     import wind_grid_v2 as WG2
+    if getattr(D, "_aim_limit", None):           # config engine aim_limit: the wind grid's aim curve covers it + drift
+        L = float(D._aim_limit)
+        WG2.AIMS = np.arange(-(L + 35.0), L + 35.0 + 1e-9, 0.5)
     WG2.TEMPS = [float(t) for t in temps]
     WG2.N = swings
     if refine:

@@ -25,7 +25,7 @@ def solve(h, P, wind=None):
         r = D.robust_aim(D.AIMS, ev)
         aims = np.arange(r["aim"] - 10, r["aim"] + 10.01, 0.5)
         ev2, (a, l, lie, s) = M.ev_curve(R, S, hd, c, P, z2, aims, wind=hk)
-        r2 = D.robust_aim(aims, ev2, lo=max(-40, aims[0]), hi=min(40, aims[-1]))
+        r2 = D.robust_aim(aims, ev2, lo=max(-D.AIM_LIMIT, aims[0]), hi=min(D.AIM_LIMIT, aims[-1]))
         j = int(np.argmin(np.abs(aims - r2["aim"])))
         res[c] = dict(aim=r2["aim"], ev=r2["ev"], s=(1.0 + s[:, j]), lie=lie[:, j])
     o = sorted(res, key=lambda c: res[c]["ev"])

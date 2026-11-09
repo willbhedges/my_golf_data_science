@@ -55,7 +55,11 @@ EXTRA = {
           # from it to the trees is the same fescue (NIR/red 1.03-1.13 vs turf 1.3; native_auto 8 R p 0.89)
           N([(225, 22), (240, 19), (250, 14), (260, 8), (268, 0), (280, -20), (300, -25)], [(225, 45), (300, 45)],
             "fescue inside the dogleg: fairway right edge to the trees")],
+    # 2026-11-09 audit item 3 (checked on NAIP 2023 RGB + CIR): the tufted strip left runs in to 5-8 yds off the
+    # fairway at 250-340 (CIR grey / dark red, textured), not only x -48..-33
     "9": [N([(140, -48), (300, -48)], [(140, -33), (300, -33)], "fescue strip left"),
+          N([(250, -50), (340, -50)], [(250, -24), (270, -21), (285, -19), (300, -14), (315, -16), (330, -20), (340, -22)],
+            "unmown strip left, in to the fairway edge (250-340)"),
           N([(140, 30), (340, 30)], [(140, 45), (340, 45)], "fescue before the tree line right")],
     "10": [N([(140, -70), (345, -70)], [(140, -45), (345, -45)], "prairie left"),
            N([(140, 52), (300, 30), (345, 30)], [(140, 70), (345, 70)], "prairie beyond the cart path right")],
@@ -72,7 +76,11 @@ EXTRA = {
     "15": [N([(140, -70), (345, -70)], [(140, -15), (170, -20), (200, -20), (230, -28), (260, -33), (300, -38), (345, -40)], "prairie left"),
            N([(230, 73), (260, 63), (290, 53), (320, 43), (345, 41)], [(230, 103), (260, 90), (290, 80), (320, 70), (345, 66)], "fescue right beyond the cart path")],
     # 2026-11-09 eye check C: the inner right band (x 25-38) was mown rough; the fescue runs from the cart path out
-    "16": [N([(140, -70), (300, -70)], [(140, -32), (220, -34), (300, -30)], "prairie left"),
+    # 2026-11-09 audit item 2 (NAIP 2023 RGB + CIR): the tufted mound with a stone edge in the fairway's right notch,
+    # 264-298 yds, x +6..+43 (it was rough after the Nov 9 right-band edit)
+    "16": [Z("native", poly((8, 297), (25, 298), (38, 292), (43, 282), (40, 270), (30, 264), (18, 266), (10, 272), (6, 285)),
+             "fescue mound right of the fairway, inside the cart path"),
+           N([(140, -70), (300, -70)], [(140, -32), (220, -34), (300, -30)], "prairie left"),
            N([(140, 33), (170, 38), (180, 45), (200, 51), (220, 57), (260, 55), (280, 52), (300, 49)], [(140, 70), (300, 70)], "fescue right from the cart path out")],
     # 2026-11-09 eye check C: the fescue swings out with the cart path from 260 (was a straight strip 15-30 yds too close)
     "18": [N([(140, -46), (170, -46), (200, -48), (230, -48), (260, -52), (290, -75), (320, -90), (345, -90)], [(140, -18), (200, -22), (245, -30), (275, -36), (290, -42), (305, -48), (320, -58), (345, -64)], "fescue left between the cart path and the rough")],
