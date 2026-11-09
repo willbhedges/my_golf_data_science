@@ -252,8 +252,11 @@ function solveTee(h){
 }
 /* par-3 club from d.p3club: "Sat: PW; Sun: GW" (per forecast day) or "PW (138); 9-iron ties" -> the club */
 function p3clubFor(h){
-  if(!h.p3club) return "";
-  let s = String(h.p3club);
+  /* the picked set's own club line when the page carries one ("" = no club shown for that set) */
+  const bs = h.by_set && h.by_set[st.set];
+  const line = (bs && typeof bs.p3club === "string") ? bs.p3club : h.p3club;
+  if(!line) return "";
+  let s = String(line);
   if(/^\s*[A-Za-z]{3}\w*\s*:/.test(s)){
     const day = String(D.day_labels[st.src === "d1" ? 1 : 0] || "").split(" ")[0];
     const parts = s.split(/;\s*/).map(x => x.split(/:\s*/));

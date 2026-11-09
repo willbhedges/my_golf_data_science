@@ -114,5 +114,25 @@ def test_eagle_knoll_switched_on_with_every_par3():
 def test_other_courses_keep_decade():
     import glob
     for p in glob.glob(os.path.join(HERE, "*", "config.json")):
-        if os.path.basename(os.path.dirname(p)) != "eagle_knoll":
+        if os.path.basename(os.path.dirname(p)) not in ("eagle_knoll", "gateway_national"):   # switched on per course
             assert "par3_targets" not in json.load(open(p)), p
+
+
+def test_club_line_per_set_and_hidden(monkeypatch):
+    """by_set[set].p3club carries each set's own club; config par3_club_hide blanks it (Gateway Tips 14)."""
+    import types
+    import par3_targets as PT
+    t = {"clubs": {"sat": {"pick": "4-iron", "runner": "5-iron"}}, "boxes": {m: {"lat": [-2, 2], "dep": [-3, 1], "aim": [0, -1]}
+                                                                         for m in ("-1", "0", "1", "2", "3")}}
+    T = {"sets": {"Back": {"14": dict(t, clubs={"sat": {"pick": "5-iron", "runner": "6-iron"}})}, "The Tips": {"14": t}}}
+    BW = types.SimpleNamespace()
+    BW.course = types.SimpleNamespace(PAR3={14: {"tee": (0.0, 0.0), "flag": (0.0, -10.0), "center": 200.0}})
+    BW.frame = lambda tee, flag, center: (np.zeros(2), np.array([0.0, -1.0]), np.array([1.0, 0.0]), 1.0)
+    BW.par3_hole = lambda h: {}
+    BW.par3_sets = lambda h, opts, grid: {o["name"]: {} for o in opts}
+    monkeypatch.setattr(PT, "load", lambda cfg: T)
+    PT.install({"par3_targets": "x", "par3_club_hide": {"The Tips": [14]}}, BW, "Back")
+    monkeypatch.setitem(sys.modules, "wind_grid", types.SimpleNamespace(plays_like=lambda A, sp, d: A))
+    out = BW.par3_sets(14, [{"name": "Back", "yards": 200}, {"name": "The Tips", "yards": 240}], {"par3": {"14": {"0_0": 0}}})
+    assert out["Back"]["p3club"] == "Sat: 5-iron" and out["The Tips"]["p3club"] == ""
+    assert BW.par3_hole(14)["p3club"] == "Sat: 5-iron"

@@ -10,7 +10,11 @@ The page data keep their shape, so the template needs no change:
   * by_set[set].plays[cell] = (plays_like(A, cell) + dz) x card / A with A = card + calm aim depth: the template
     computes play = box.play x plays / card x temperature, which then equals plays_like(A) + dz at the aim, and its
     breakdown chips (target / elevation / wind / temperature) still add up (elevation = dz exactly).
-  * d["p3club"]: the club line ("PW, 9-iron a tie") for the forecast days, for a template that wants to show it.
+  * d["p3club"]: the club line ("PW, 9-iron a tie") for the forecast days, for a template that wants to show it;
+    by_set[set]["p3club"] the same for each offered set (the template shows the picked set's club). Config
+    "par3_club_hide" {set: [hole, ...]} blanks it ("": the page shows "Plays N" instead) where the club pick means
+    nothing (Gateway 2026-11-09: The Tips / Champions 14 and 17 need 218-232 carry, in the gap between the 210 long
+    iron and the 255 4-wood, so "4-iron" lands 14-33 short; Forward 12 is a 90-yd wedge).
 """
 import json
 import os
@@ -65,6 +69,10 @@ def install(cfg, BW, base_set):
     if T is None or getattr(BW, "_p3_targets", False):
         return
     hole0, sets0 = BW.par3_hole, BW.par3_sets
+    hide = {s: {str(h) for h in hs} for s, hs in (cfg.get("par3_club_hide") or {}).items()}
+
+    def clubs_of(t, set_name, h):
+        return "" if str(h) in hide.get(set_name, ()) else club_line(t)
 
     def par3_hole(h):
         d = hole0(h)
@@ -73,7 +81,7 @@ def install(cfg, BW, base_set):
             p = BW.course.PAR3[h]
             tee, f, r, ppy = BW.frame(p["tee"], p["flag"], p["center"])
             d["boxes"] = boxes_for(t, tee, f, r, ppy, p["center"], p["center"])
-            d["p3club"] = club_line(t)
+            d["p3club"] = clubs_of(t, base_set, h)
             d["p3_source"] = "expected strokes"
         return d
 
@@ -94,6 +102,7 @@ def install(cfg, BW, base_set):
             S["plays"] = {k: (WG.plays_like(A, *[int(x) for x in k.split("_")]) + dz) * yards / A
                           for k in grid["par3"][str(h)]}
             S["aim_dist"] = float(A)
+            S["p3club"] = clubs_of(t, o["name"], h)
         return out
     BW.par3_hole, BW.par3_sets = par3_hole, par3_sets
     BW._p3_targets = True
