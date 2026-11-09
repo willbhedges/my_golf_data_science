@@ -869,6 +869,9 @@ def lidar_pads(fc, dem_path):
 
 
 PAD_OFF_COURSE_YD = 20.0     # a pad this far outside every leisure=golf_course outline is not a tee
+PAD_MIN_BOXES = 9            # OSM maps the tee boxes (at least this many): pads must then be near one, or behind a hole
+PAD_NEAR_BOX_YD = 40.0       # ... within this of a mapped box
+PAD_BACK_YD, PAD_BACK_SIDE_YD = 90.0, 25.0   # ... or within 25 yds of the first leg's backward extension (90 yds)
 
 
 def pads_on_course(pads, fc):
@@ -892,7 +895,28 @@ def pads_on_course(pads, fc):
                 crs.append(shape(g).buffer(0))
         except Exception:                                        # noqa: BLE001
             continue
-    if not bld and not crs:
+    # where a tee can be on a course whose tee boxes OSM maps: near a mapped box, or behind a hole's first leg
+    # (an unmapped back tee). A pad 60-80 yds to the side of the hole's start that happens to give the card yardage is
+    # not the tee (Kittansett 10, blind loop 2026-11-09).
+    from shapely.geometry import LineString
+    boxes, backs = [], []
+    for f in (fc or {}).get("features", []):
+        pr, g = f.get("properties") or {}, f.get("geometry") or {}
+        try:
+            if pr.get("golf") == "tee" and g.get("type") in ("Polygon", "MultiPolygon", "Point"):
+                boxes.append(shape(g))
+            elif pr.get("golf") == "hole" and g.get("type") == "LineString" and len(g["coordinates"]) >= 2:
+                (x0, y0), (x1, y1) = g["coordinates"][0], g["coordinates"][1]
+                k0 = math.cos(math.radians(y0))
+                dx, dy = (x1 - x0) * k0, y1 - y0
+                n = math.hypot(dx, dy) or 1.0
+                b = PAD_BACK_YD * 0.9144 / 111320.0
+                backs.append(LineString([(x0, y0), (x0 - dx / n * b / k0, y0 - dy / n * b)]))
+        except Exception:                                        # noqa: BLE001
+            continue
+    T = unary_union(boxes) if len(boxes) >= PAD_MIN_BOXES else None
+    K = unary_union(backs) if backs else None
+    if not bld and not crs and T is None:
         return pads, 0
     B = unary_union(bld) if bld else None
     C = unary_union(crs) if crs else None
@@ -901,9 +925,12 @@ def pads_on_course(pads, fc):
         lat, lon = p["centroid"]
         pt = Point(lon, lat)
         k = math.cos(math.radians(lat))
+        yd = 111320.0 * k / 0.9144
         if B is not None and B.distance(pt) * 111320.0 * k < 2.0:
             continue
-        if C is not None and not C.contains(pt) and C.distance(pt) * 111320.0 * k / 0.9144 > PAD_OFF_COURSE_YD:
+        if C is not None and not C.contains(pt) and C.distance(pt) * yd > PAD_OFF_COURSE_YD:
+            continue
+        if T is not None and T.distance(pt) * yd > PAD_NEAR_BOX_YD and (K is None or K.distance(pt) * yd > PAD_BACK_SIDE_YD):
             continue
         keep.append(p)
     return keep, len(pads) - len(keep)

@@ -24,6 +24,7 @@ GDAL_ENV = dict(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_
                 GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE="TRUE", GDAL_HTTP_MAX_RETRY="2")
 STRIPS = 8
 SCORE_YEARS = 4
+SCORE_RES = 2.4          # metres for the year-scoring reads (naip_years' own is 1.2: 4x the pixels, same ranking signal)
 
 
 def _read_strips(items, bounds, res):
@@ -71,7 +72,7 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
         def sc(y):
             try:
                 with rasterio.Env(**GDAL_ENV):
-                    arr, crs, tr = NY.read_year(y["items"], bbox)
+                    arr, crs, tr = NY.read_year(y["items"], bbox, res=SCORE_RES)
                 return y["year"], NY._score_array(arr, crs, tr, polys, {})
             except Exception as ex:                                  # noqa: BLE001
                 return y["year"], ex

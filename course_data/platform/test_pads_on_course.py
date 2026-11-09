@@ -37,3 +37,16 @@ def test_drops_roof_and_far_outside_keeps_course_and_edge():
 def test_no_outline_no_buildings_keeps_everything():
     pads = [pad(-100.0, 40.0), pad(-101.0, 41.0)]
     assert pk.pads_on_course(pads, {"features": []}) == (pads, 0)
+
+
+def test_pad_far_to_the_side_of_mapped_tees_is_dropped():
+    """Kittansett 10: the boxes are mapped; a pad 70 yds to the side is not a tee, one 60 yds straight back is."""
+    feats = [{"type": "Feature", "properties": {"golf": "tee"}, "geometry": sq(-100.0 + i * 0.01, 40.0, 0.00005)} for i in range(9)]
+    feats.append({"type": "Feature", "properties": {"golf": "hole", "ref": "1"},
+                  "geometry": {"type": "LineString", "coordinates": [[-100.0, 40.0], [-100.0, 40.003]]}})
+    fc = {"features": feats}
+    side = pad(-100.00075, 40.0)          # ~70 yds west of the box
+    back = pad(-100.0, 39.9995)           # ~60 yds straight back of the hole line
+    near = pad(-100.0002, 40.0001)        # ~20 yds from the box
+    keep, n = pk.pads_on_course([side, back, near], fc)
+    assert [p["id"] for p in keep] == [back["id"], near["id"]] and n == 1

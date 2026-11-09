@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): 2 of 6 usable as is, 1 usable without a card, 3 blocked / not shown (2 unmapped tier D, 1 half-mapped tier C: all routing)**
+**Headline (updated at every course): after 8 courses - 3 usable as is (Crow Canyon, Chevy Chase, Kittansett), 1 usable with 1 confirm (Cedar Glen), 1 usable without a card (Pheasant Ridge), 3 not shown (Sunset, Glenwild: unmapped, nothing to route; Candler Park: half-mapped, mis-routed, stopped by the gate). Every tier-A course is usable; no tier-C / D course is.**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -90,6 +90,8 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | 4 | Glenwild GC & Spa, Park City UT | D | **failed: blocked, routing** (29 s) | same as 2: OSM has only the outline | open | blocked |
 | 5 | Candler Park GC, Decatur GA (9 holes) | C | **wrong** (20 s): 7 of 9 holes built (1 and 8 missing); 4 plays across a road and houses, 6 across another fairway; the card yardages "match" because the tees were slid to fit | routing: OSM maps 8 greens + 8 tees and no hole lines; routing v2 + structure paired them wrongly. Not fixed here (bigger than 10 min). Guard added: the course-page publish gate now runs in the fast path -> "7 holes built, the card has 9" | this commit (gate) | **blocked (not shown)** |
 | 6 | Chevy Chase GC, Wheeling IL | A | **usable as is** (32 s incl. a late card; 11 s cached): 18 / 18 holes right, OpenGolfAPI card, every measured yardage within 6 of the card, 4 sets, water / OB / trees on the map, Driver / 4-wood / Long iron picks land on fairway (15: Driver +40 round the dog-leg; 9's back tee is a lidar pad at the card yardage) | - | - | usable as is |
+| 7 | Cedar Glen GC, Saugus MA (9 holes) | A | **usable with 1 confirm** (31 s; 6 s cached): 9 / 9 holes right, OpenGolfAPI card, 8 yardages within 1 yd; hole 5 measures 265 against a card 350 (the hole on the ground is the 265; the sheet flags it in orange); 4-wood / Driver picks fit the tree-lined corridors | card: one hole's card yardage does not fit the map (OpenGolfAPI) | not fixed (flagged) | usable with 1 confirm |
+| 8 | The Kittansett Club, Marion MA | A | **usable with 1 confirm** (64 s cold: year scoring 37 s; 17 s cached): 18 / 18 holes right, golfify card, yardages within 4; hole 10's back tee was a lidar pad 62 yds to the side of the mapped boxes that happened to give the card 352; marsh / beach / OB mapped; picks sensible (4: Driver +40 across the corner of a dog-leg: confirm the line) | tees: a lidar pad far from every mapped box taken for the card yardage; time: year scoring at 1.2 m | this commit: pads must be within 40 yds of a mapped box or behind the hole's first leg (when OSM maps >= 9 boxes); year scoring reads at 2.4 m | **usable as is** apart from the wide aim on 4 (10: tee_axis 347 vs card 352) |
 
 ## Time per course by stage (Actions, runner-minutes)
 
@@ -138,5 +140,10 @@ a re-score a few minutes (number below when measured).
    of 104 pads dropped; hole 16's back tee moved from a house onto its box.
 3. **OSM transport** (`fastpath/osm_api.py`): the OSM API instead of Overpass / Geofabrik (seconds instead of 19 min on
    Actions for this course; the Overpass mirrors and Geofabrik do not answer from the session container at all).
+5. **Publish gate in the fast path** (`fastpath/fast.py`): `library/course_page.publish_gate` (hole count vs card,
+   pars, routing walks) -> status blocked, never shown. Candler Park: 7 of 9 holes.
+6. **Lidar pads far from the mapped boxes** (`package.py pads_on_course`, test added): Kittansett 10.
+7. **Card search budget** (15 s; a late card is cached and the course rebuilt: two-phase) and **year scoring** (newest
+   4 covering years, 2.4 m reads; newest year when OSM has no turf).
 4. **Lie raster** (`fastpath/solve.py raster_lie_at`): the solve's lie lookup from a label raster of the hole's zone
    stack; 4x faster on a tree-heavy map, same picks except exact ties.
