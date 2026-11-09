@@ -1,0 +1,200 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "gate_b20_crow_canyon",
+ "course": "Crow Canyon Country Club",
+ "bbox_snwe": [
+  37.781592,
+  -121.968662,
+  37.796086,
+  -121.950865
+ ],
+ "grid": {
+  "crs": "EPSG:32610",
+  "res_m": 1.0,
+  "width": 1826,
+  "height": 1868,
+  "bounds": [
+   590680,
+   4181962,
+   592506,
+   4183830
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   590680.0,
+   0.0,
+   -1.0,
+   4183830.0
+  ],
+  "ll_bbox_wsen": [
+   -121.97024233485364,
+   37.78032822130063,
+   -121.94927117765201,
+   37.7973452276615
+  ]
+ },
+ "fetched_utc": "2026-11-09T21:27:15Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_NoCAL_Wildfires_B5b_2018-hag-2m-6-0",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 3333082,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_NoCAL_Wildfires_B5b_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_ContraCostaCo_2007-hag-2m-5-0",
+     "when": "2007-05-01T00:00:00.000000Z",
+     "cells": 77570,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_ContraCostaCo_2007",
+      "end_datetime": "2007-05-01T00:00:00.000000Z",
+      "start_datetime": "2007-04-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9999073576767651,
+   "file": "hag.tif",
+   "mb": 1.58,
+   "frac_gt_2_5m": 0.5423003088859233
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_NoCAL_Wildfires_B5b_2018-dtm-2m-6-0",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 832769,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_NoCAL_Wildfires_B5b_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_ContraCostaCo_2007-dtm-2m-5-0",
+     "when": "2007-05-01T00:00:00.000000Z",
+     "cells": 19619,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_ContraCostaCo_2007",
+      "end_datetime": "2007-05-01T00:00:00.000000Z",
+      "start_datetime": "2007-04-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9995848685768967,
+   "mb": 2.3
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_CA_NoCAL_Wildfires_B5b_2018-classification-2m-6-0",
+     "when": "2018-01-01T00:00:00.000000Z",
+     "cells": 3316050,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_CA_NoCAL_Wildfires_B5b_2018",
+      "end_datetime": "2018-01-01T00:00:00.000000Z",
+      "start_datetime": "2018-01-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_ContraCostaCo_2007-classification-2m-5-1",
+     "when": "2007-05-01T00:00:00.000000Z",
+     "cells": 260,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_ContraCostaCo_2007",
+      "end_datetime": "2007-05-01T00:00:00.000000Z",
+      "start_datetime": "2007-04-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "CA_ContraCostaCo_2007-classification-2m-5-0",
+     "when": "2007-05-01T00:00:00.000000Z",
+     "cells": 70718,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "CA_ContraCostaCo_2007",
+      "end_datetime": "2007-05-01T00:00:00.000000Z",
+      "start_datetime": "2007-04-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.3,
+   "counts": {
+    "0": 23940,
+    "1": 1262132,
+    "2": 2124896
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023010212"
+  ],
+  "mb": 0.46,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W123",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 852742,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.04
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 13.52,
+    "items": [
+     "ca_m_3712109_sw_10_060_20220519"
+    ],
+    "acquired": [
+     "2022-05-19"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2020,
+    "file": "naip_2020.tif",
+    "mb": 13.78,
+    "items": [
+     "ca_m_3712109_sw_10_060_20200525"
+    ],
+    "acquired": [
+     "2020-05-25"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
