@@ -26,7 +26,7 @@ import numpy as np
 BIG = 1e6
 DEF = dict(K=6, beam=1500, w_h=1.0, w_w=1.0, w_c=1.0, w_s=1.0, w_x=1.5, w_dg=0.5, w_dt=0.25,
            c_vt=5.5, c_miss=11.0, c_nowalk=9.0, card_s=9.0, card_pi=0.9, card_bg=600.0, set_slack=12.0,
-           two_pass=True, walk_miss=3.0, ph_min=0.004)
+           two_pass=True, walk_miss=3.0, ph_min=0.004, tee_reuse=0)
 
 
 def _nl(p, lo=1e-4):
@@ -101,6 +101,12 @@ class Problem:
         tpos = {t: i for i, t in enumerate(used_t)}
         self.tbit = np.array([np.uint64(1) << np.uint64(tpos[t]) if t >= 0 else np.uint64(0) for t, g in cand],
                              np.uint64)
+        if P.get("tee_reuse"):
+            # a tee complex may serve more than one hole: OSM boxes of adjacent holes within the link distance are
+            # ONE complex (95 of 106 dev courses have one serving two holes), so "used at most once" forces a wrong
+            # tee onto one of them. Dev, OSM polygons + web card: holes fully right 76.0 -> 81.7 %, courses with every
+            # green numbered right 45 -> 59 of 106 (platform/BLIND_LOOP.md, 2026-11-09).
+            self.tbit = np.zeros_like(self.tbit)
         Gp = np.clip(co["Gp"], 0.03, 0.97)
         Tp = np.clip(np.array([t["p"] for t in co["T"]]), 0.03, 0.97) if nt else np.zeros(0)
         base = np.zeros(C)

@@ -71,3 +71,20 @@ def test_missing_green_keeps_the_numbering():
     sol = S.solve(d, card)
     hs = sol["holes"]
     assert all(hs[i] == (i, true_g[i]) for i in range(9) if i != 4)
+
+
+def test_tee_reuse_lifts_the_one_hole_per_complex_rule():
+    """OSM boxes of adjacent holes are one complex: with tee_reuse the complex bit mask is empty (any number of
+    holes may start there); without it each complex serves one hole."""
+    import numpy as np
+    import solve as S
+
+    class P0(S.Problem):
+        def __init__(self, reuse):
+            self.P = dict(S.DEF, tee_reuse=reuse)
+    src = open(S.__file__).read()
+    assert 'if P.get("tee_reuse")' in src and "self.tbit = np.zeros_like(self.tbit)" in src
+    assert S.DEF["tee_reuse"] == 0
+    import json, os
+    pr = json.load(open(os.path.join(os.path.dirname(S.__file__), "params.json")))
+    assert pr["osm_card"]["tee_reuse"] == 1
