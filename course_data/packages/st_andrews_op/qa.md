@@ -1,6 +1,6 @@
 # St Andrews Golf Club (Overland Park, KS) - Black tees
 
-Built 2026-11-09T20:26:02Z. OSM way/68744841. Scorecard: opengolfapi (opengolfapi). Tee set: name.
+Built 2026-11-09T22:12:54Z. OSM way/68744841. Scorecard: opengolfapi (opengolfapi). Tee set: name.
 
 ## Coverage
 
@@ -51,7 +51,7 @@ OSM features inside the course: buildings 4, golf=bunker 18, golf=cartpath 20, g
 - **scorecard**: ok: opengolfapi (opengolfapi)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tee_overrides**: ok: Black 16 review (kept: snap snapped 1 yds along OSM tee 277760440 would measure 389, another set's box, point 394, card 393);
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 74 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 5 sets; lidar pads: 69 candidate pads near hole starts (5 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 5 tee set(s))
 - **imagery**: ok: course_data/packages/st_andrews_op/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
