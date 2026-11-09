@@ -203,3 +203,79 @@ between reaching the green and not: the 4-wood finishes on the green 35 % of the
 for the hole, fairway 3.22, the creek 8 %, sand 6 %). The 2-wood gets there 32 % of the time and goes through into
 the rough 41 %. The Driver goes long (rough 77 %, 3.86). Into the wind or on a cold, soft morning, the 2-wood is the
 better club; the page's wind grid makes that call by the hole.
+
+### 4c. The Actions re-solve (run 42650772096, 6a3c37956; 16:03-17:49Z)
+
+Back rev 2 + Middle rev 1. Every job finished in 15-45 min: without flight trees a refined card-tee cell is ~4 s,
+against ~25 s on Eagle Knoll. 256 prior draws per hole, the card-tee grids refined on 16,000 swings (3 jobs each),
+9 coarse offsets. The merge fetched NAIP 2023 0.3 m for the photos, wired the par-3 targets (`par3_targets.json`,
+PAR3.md), and built Middle as a solved alt base. The calm-day book is decided at the forecast temperature per hole
+(Sat: 39 F on 1 to 49 F on 18).
+
+**Back, calm-day book** (aim yds right of the line, 0.005 window, margin over the runner +/- paired SE, share of the
+256 what-if golfers the pick wins):
+
+| hole | pick | window | runner | margin +/- SE | p | note |
+|---|---|---|---|---|---|---|
+| 1 | Driver -7 | -10..-4 | 2-wood | 0.049 +/- 0.002 | 0.98 | |
+| 2 | Driver +17.5 | +14..+21 | 2-wood | 0.069 +/- 0.002 | 1.00 | from the real pad (was +2.5) |
+| 3 | Driver -8.5 | -11..-6 | 4-wood | 0.057 +/- 0.002 | 0.97 | 4-wood if the driver 95 % width is over 89 yds |
+| 5 | Driver -1 | -3.5..+1.5 | 2-wood | 0.088 +/- 0.003 | 0.99 | |
+| 6 | Driver +6 | +3..+9 | 2-wood | 0.113 +/- 0.002 | 1.00 | |
+| 8 | 2-wood -40 | -40..-37.5 | 4-wood | 0.017 +/- 0.002 | 0.71 | **close call**; aim on the +/-40 bound (below) |
+| 9 | 4-wood 0 | -2.5..+2.5 | Driver | 0.019 +/- 0.002 | 0.71 | **close call**; Driver if the width is under 62 |
+| 10 | 4-wood -16 | -18..-14 | 2-wood | 0.020 +/- 0.006 | 0.62 | **close call**; 2-wood when cold or into the wind (below) |
+| 11 | Driver +19 | +16.5..+21.5 | 4-wood | 0.029 +/- 0.002 | 0.84 | **close call** (was 4-wood +6.5 on the old map) |
+| 13 | Driver +4.5 | +1..+8 | 2-wood | 0.118 +/- 0.003 | 1.00 | |
+| 15 | Driver +12 | +8.5..+15.5 | 2-wood | 0.095 +/- 0.003 | 1.00 | |
+| 16 | 4-wood +4 | +1..+7.5 | 2-wood | 0.020 +/- 0.001 | 0.86 | **close call** (was 4-wood -1.5, 0.059) |
+| 18 | Driver +13.5 | +10..+17 | 2-wood | 0.132 +/- 0.003 | 1.00 | |
+
+Every margin is more than 3 SE (z 3.1-75). 10 is the least resolved (z 3.1).
+
+**Middle, calm-day book:** 1 Driver -4.5 (0.027 vs 4-wood, p 0.81), 2 Driver +21.5 (0.040), 3 Driver -8 (0.081),
+5 Driver -1.5 (0.042), 6 Driver +7.5 (0.037), 8 4-wood -40 (0.098), 9 4-wood +0.5 (0.053), 10 4-wood -13 (0.180),
+11 **Driver +19.5, 0.012 +/- 0.002 over 4-wood (p 0.67)**, 13 Driver +10 (0.095), 15 Driver +6.5 (0.041),
+16 **Driver +25, 0.017 +/- 0.004 over 4-wood (p 0.59: close; the Driver finishes on the green 7.5 % of the time,
+in the pond 12 %)**, 18 Driver +6.5 (0.140).
+
+### 4d. Wind grids: Monte Carlo check and wind / temperature sensitivity
+
+* **Fresh swings** (`opt/grid_se.py`: 169 Back card-tee cells at 50 F, 0 and 10 mph; the top 3 clubs
+  re-optimised +/-6 yds on 16,000 new swings). The pick differs in 2 cells: 8 at 10 mph from 120 and 240, 4-wood vs
+  2-wood, |margin| <= 0.005, both labelled TIE on the page. 8 cells are within 2 SE on the fresh swings, all on 8, 9
+  and 11 at 10 mph; their stored margins are 0.003-0.02.
+* **The +/-40 aim bound on 8.** On 8 at 10 mph from 60 / 300 the stored margin is 0.020 and the fresh check gives
+  0.002. The check has no bound, and the Driver's best aim on the dogleg is about -50 (calm central curve: Driver
+  -50 4.337, 2-wood -40 4.273, 2-wood -42 4.276). So the bound does not change the calm pick (2-wood by 0.06 even
+  against an unbounded Driver). In a 10-mph crosswind, Driver at -45..-50 is about level with the 2-wood. On the
+  course: 2-wood over the left side is the play; Driver only if you can start it 45-50 left of the line.
+* **Calm pick vs every 5-mph cell** (`opt/wind_sens.py`, refined grid):
+  * Back at 50 F: every hole keeps its club except 10 (into the wind -> 2-wood by 0.02-0.09) and 8 (5 mph
+    helping -> 4-wood by 0.004, a tie).
+  * Back at 35 F: 10 calm is already 2-wood (by 0.007), and any helping wind gives 4-wood by 0.05-0.10. 8: into
+    the wind -> Driver (0.003).
+  * Middle: 16 with a helping wind -> Driver (0.03-0.06); 6, 8 and 9 change in 1-3 of the 12 10-mph directions.
+  * Sunday's forecast and Saturday's NNW 8-9 mph are read off these grids by the page, hole by hole.
+* **10 is temperature-sensitive.** The Back calm pick is 2-wood at 35 F, 4-wood at 50 F, and the book at the
+  hole's 45 F is 4-wood by 0.020. The page interpolates between the grid temperatures, so it shows 2-wood on a cold
+  calm morning and 4-wood once it warms up. The Saturday 11:06 forecast cell (45 F, NNW 8, slightly into) shows
+  2-wood (screenshot checked).
+
+### 4e. Page (final)
+
+The merge built `wind_page/index.html` from the new grids, the Middle alt base, NAIP 2023 photos and the par-3
+targets. qa_page.js on The Tips, Champions, Back, Middle and Forward: 18 / 18 holes each, 0 problems. I looked at the
+phone screenshots of every Back par 3 (4, 7, 12, 14, 17: sharp; the box sits on the green, short of centre) and of
+the tee shots that changed (2, 10, 11), and at Middle 16. Par-3 club line: each set shows its own club
+(`by_set.p3club`). The Tips / Champions 14 and 17 and Forward 12 show only "Plays N" (config `par3_club_hide`).
+
+### 4f. Still uncertain
+
+* Will's dispersion and the 8-iron / short-iron carries are assumed, as on Eagle Knoll. 3, 8, 9 and 11 flip with the
+  driver width (89 / 87 / 62 / 83 yds).
+* The tee sheet is not posted: the NCCGA's 2025 setup mixed boxes. Middle is solved; The Tips / Champions /
+  Forward are the Back line moved.
+* Middle 3's long drives land past the hand-checked footprint (auto layers there).
+* The map fixes were made on 2023 imagery. Fescue edges are good to +/-3-5 yds (reviewers' estimate).
+* The forecast is from Nov 9; the weather workflow refresh (~Nov 12, 13) rebuilds the page but not the book.
