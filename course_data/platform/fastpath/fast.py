@@ -167,7 +167,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             f.result()
     tc.join(max(0.0, CARD_BUDGET_S - (time.time() - t0)))
     if tc.is_alive():
-        T["card"] = f"still searching after {CARD_BUDGET_S} s: built without it (a later run reads the cached answer)"
+        T["card_late"] = f"still searching after {CARD_BUDGET_S} s: built without it (a later run reads the cached answer)"
     lap("fetch (card || imagery)", t0)
     t0 = time.time()
     import package as pk

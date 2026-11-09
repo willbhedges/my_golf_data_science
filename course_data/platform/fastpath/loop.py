@@ -28,9 +28,10 @@ def one(c):
         import traceback
         r = dict(status="failed", stage="crash", why=f"{type(e).__name__}: {e}"[:300], trace=traceback.format_exc()[-1200:])
     r["wall"] = round(time.time() - t0, 1)
-    if isinstance((r.get("timing") or {}).get("card"), str):          # phase 2: the card arrived after the first answer
+    if (r.get("timing") or {}).get("card_late"):          # phase 2: the card arrived after the first answer
         t1 = time.time()
-        if fast.wait_card(90):
+        fast.wait_card(90)
+        if True:
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
                 r2 = fast.build(None, slug=c["slug"], row=c, log=lambda *a: None)
             r2["wall"] = r["wall"]
@@ -58,6 +59,13 @@ def one(c):
             print("   phase 2:", r["phase2"])
         print("   warnings", len(pkg.get("warnings") or []), [w[:110] for w in (pkg.get("warnings") or [])[:6]])
         print("   picks", {k: f"{v['pick']} {v['aim']:+.0f}" for k, v in dec.items()})
+        print("   flagged picks", {k: v["check"] for k, v in dec.items() if v.get("check")})
+        S = pkg.get("tee_set")
+        print("   yardage misfits > 10", {k: (h["yards"].get(S), h["tees"][S].get("measured_yards")) for k, h in pkg["holes"].items()
+                                           if isinstance(h.get("yards"), dict) and h["yards"].get(S) and (h.get("tees") or {}).get(S, {}).get("measured_yards")
+                                           and abs(h["yards"][S] - h["tees"][S]["measured_yards"]) > 10},
+              "| tees not on a box", {k: h["tees"][S].get("method") for k, h in pkg["holes"].items() if (h.get("tees") or {}).get(S)
+                                      and not str(h["tees"][S].get("method", "")).startswith(("tee_", "tagged", "review")) or "capped" in str((h.get("tees") or {}).get(S, {}).get("method", ""))})
         print("   sheet", r.get("sheet"))
     elif r.get("trace"):
         print(r["trace"])
