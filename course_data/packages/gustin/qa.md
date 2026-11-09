@@ -1,6 +1,6 @@
 # A. L. Gustin Golf Course (Columbia, MO) - Black tees
 
-Built 2026-11-09T20:21:51Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-09T22:10:05Z. OSM way/449108205. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -49,7 +49,7 @@ OSM features inside the course: buildings 6, golf=bunker 38, golf=cartpath 13, g
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 47 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 45 candidate pads near hole starts (2 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/gustin/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2020)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2020

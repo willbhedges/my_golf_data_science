@@ -1,6 +1,6 @@
 # Hodge Park Golf Course (Kansas City, MO) - Blue tees
 
-Built 2026-11-09T20:22:41Z. OSM way/195221873. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-09T22:10:36Z. OSM way/195221873. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -52,7 +52,7 @@ OSM features inside the course: buildings 1, golf=bunker 3, golf=cartpath 18, go
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
 - **tee_overrides**: ok: Blue 3 review (inside OSM tee 279486929); White 1 review (inside OSM tee 279486921), 3 review (inside OSM tee 279486929), 17 review (inside OSM tee 279487481);
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 34 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 29 candidate pads near hole starts (5 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (18 holes, 3 tee set(s))
 - **imagery**: ok: course_data/packages/hodge_park/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2018)
 - **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2018
