@@ -3,7 +3,7 @@
 Started 2026-11-09. Owner: the blind-loop agent. Code: `course_data/platform/blind20/blind20.py`; the fixed list:
 `course_data/platform/blind20/blind20.json`. This file was written (list + protocol) before any course was run.
 
-**Headline (updated at every course): after 18 courses - 5 usable as is, 3 usable with 1-3 flagged confirms, 1 usable without a card, 9 not shown (5 unmapped tier D, 4 tier C), 0 shown wrong. Tier A 8 / 8 usable; tier C 1 / 5; tier D 0 / 5.**
+**Headline (updated at every course): FINAL at the pause, all 20 courses - 5 usable as is, 5 usable with 1-3 flagged confirms, 1 usable without a card (one tee set), 9 not shown (5 unmapped tier D, 4 tier C), 0 shown wrong. Tier A 9 / 9 usable, tier B 1 / 1, tier C 1 / 5 shown, tier D 0 / 5. Cold build of a mapped course 20-64 s (median about 32 s), 6-20 s with the fetch cache.**
 
 **Change of method, 2026-11-09 evening (manager / Will):** the 1-hour Actions course-page path is no longer used.
 Courses are built by the local fast path, one command, about 30 s cold: `python3 course_data/platform/fastpath/fast.py
@@ -55,6 +55,58 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 6. **Re-scoring later:** `python3 course_data/platform/blind20/blind20.py rerun done` bumps `rev` in the request files
    of every course run so far; commit + push those files = one course-page run. The list never changes.
 
+## State at the pause (2026-11-09 night) and how to resume
+
+All 20 courses of the fixed list have been through the loop on the local fast path (rows below). Nothing is running.
+
+```bash
+# one course, cold or cached (raw fetches are kept in course_data/platform/fastpath/cache/, not committed)
+python3 course_data/platform/fastpath/fast.py "Royal Scot Golf Course, New Franken, WI"
+# the blind list: build + one contact sheet per course (cache/contact/NN_<slug>.jpg), by loop order
+python3 course_data/platform/fastpath/loop.py 1 3 6          # re-run after a fix: seconds each from the cache
+# full grading sheets of one course (zoom): tee / green insets per hole
+python3 course_data/platform/blind20/blind20_sheets.py --course-dir <cache/packages/slug> --img <.../imagery> --out DIR
+# held-out accuracy (24 truth courses, 331 tee shots; cached decisions): about 5 min cold, less when little changed
+python3 course_data/platform/fastpath/variants.py no_native && \
+  python3 course_data/platform/fastpath/evalfast.py --tag no_native --auto-dir course_data/platform/fastpath/cache/variants/no_native
+python3 course_data/platform/fastpath/rebuild_truth.py && python3 course_data/platform/fastpath/evalfast.py --tag rebuilt \
+  --auto-dir course_data/platform/fastpath/cache/variants/rebuilt      # after a fix in shared pipeline code (slow: ~1 min / course)
+# joint routing bench (hole lines hidden): prep + models + eval, about 2 min
+C=/tmp/joint_cache; python3 course_data/zero_tap/joint/prep.py --source osm --out $C
+python3 course_data/zero_tap/joint/run.py scores --cache $C --source osm
+python3 course_data/zero_tap/joint/run.py eval --cache $C --source osm --split dev --card 1
+python3 course_data/platform/fastpath/route_joint.py fit $C           # refit model_osm.pkl (dev only)
+python3 -m pytest -q course_data/platform/fastpath course_data/platform/test_pads_on_course.py \
+  course_data/platform/test_sanity.py course_data/geometry/test_landuse_ob.py course_data/zero_tap/joint/test_joint.py
+```
+
+Needs: python 3.11 with requests, pystac-client, planetary-computer (`python3 -m pip install ...`: the container's
+`pip` is another Python's); hosts api.openstreetmap.org (OSM; Overpass and Geofabrik do not answer from the session
+container), planetarycomputer.microsoft.com + naipeuwest.blob.core.windows.net, elevation.nationalmap.gov,
+dataforgood-fb-data.s3.amazonaws.com, api.opengolfapi.org, www.golfify.io, www.allsquaregolf.com, course.bluegolf.com,
+www.golfpass.com, www.bing.com / html.duckduckgo.com.
+
+Open items, in the order I would take them:
+
+1. **Card consensus across golfify + GolfPass + Hole19** with a name-collision guard (state + distance to the course
+   centre). Down River has two different cards (golfify 390 / 240 / 500 ..., Hole19 355 / 218 / 453 ...); a search for
+   "Sunset Golf Course" returned a Pennsylvania course's card. Pheasant Ridge has no card on any source reachable.
+2. **Order evidence for the joint solver**: cart paths (green -> next tee), clubhouse / car-park start, 9 / 18 green
+   at the clubhouse. Pairs are already about 90 % right; what is left is numbering.
+3. **Gate = margin + card fit + vision check.** Margin >= 4 with every routed length within 15 yds of the card: test
+   20 shown / 20 right, dev 14 / 12. The by-eye corridor check (precision 84 %, 68 % of wrong pairs caught on 5
+   courses) is the third vote; one model call per course on a contact sheet at precompute time would do the same job.
+4. **Unnumbered hole lines** (Brookhaven): how many of the "lines present" tier-C courses have ways with no ref is
+   not known; one pass over a national OSM extract would count them (no bulk OSM host from the container).
+5. **Unmapped courses (tier D, 25 % of US courses; 5 of the 20)**: the green / tee detector feeding the same solver
+   was NOT started. The handoff's number for perception scenes + card is about 14 % of courses fully right.
+6. Not measured, by decision: the time-vs-accuracy table per stage. What exists: dropping the lidar trees entirely
+   costs 43 -> 32 of 70 matches and +0.39 strokes / round on the 5-course sample; Meta canopy trees (the choice made)
+   were never scored against the lidar layer; the fast solve (decide quick, n 2000, lie raster) was never compared with
+   the 48-draw full solve. The fast path also has no OB evidence layer, no S2 native sides, no wind grids.
+7. Truth-course rebuild (`rebuild_truth.py`) hangs on some courses: 13 of 24 finished in 15 min.
+8. Cosmetic: the default set can come out as "Blue (L)" when a card lists the same yardages twice.
+
 ## The list (loop order)
 
 | # | tier | course | town | OSM | index: holes / OSM hole lines / greens / tees | card | slug |
@@ -102,6 +154,8 @@ course at a time: build, grade, fix generally + test, re-run this and every earl
 | 16 | Brookhaven CC, Brookhaven MS | C | **wrong, unflagged** (28 s): OSM has 18 hole lines but NO ref on any of them, no greens, no tees; the build numbered the lines in file order, dropped the card (every card yardage None), took pars from length (68) and showed it; by eye six lines end on no visible green | numbering: unnumbered hole lines (S2a) | this commit: `route_joint.route_lines` - the joint solve with every pair fixed to its line orders them against the card (walks + clubhouse), written back as numbered ways; shown only with min margin >= 4 (test) | **blocked (not shown)**, 15 s cached: card attached, 15 of 18 yardages within 10, min margin 3.3 < 4 and 18 (442 on the card) on a 327-yd line: "the numbering is not certain" |
 | 17 | The Heights GC San Diego, CA | C | **blocked (not shown)** (29 s; 10 s cached): sparse OSM (index: 5 hole lines, 3 greens, 12 tees for a 9-hole course); 18 lines found inside the outline (a second course's), no card on any source; gate: green-to-tee walks up to 1,338 yds, holes 5 and 10 share a green | resolve / multi-course + routing + no card | open; gate works | blocked |
 | 18 | Remsen GC, Remsen IA | D | **failed: blocked, routing** (18 s) | outline only | open | blocked |
+| 19 | Maplewood GC, Renton WA | A | **usable with 1 flagged confirm** (34 s incl. the late card; 18 s cached): 18 / 18 holes right, OpenGolfAPI card, every yardage within 2, 3 sets, picks on the fairways; 5 (2-wood -60 across the dog-leg) carries the confirm flag | - | - | usable with 1 flagged confirm |
+| 20 | Twisted Pine GC, Hazlehurst GA (9 holes) | B | **usable with 2-3 flagged confirms** (20 s; 6 s cached): 9 / 9 holes right, AllSquare card, yardages within 6; back tees of 2 / 3 / 9 are a walk-back and two lidar pads at the card yardage (not on mapped boxes), 7 has a wide dog-leg aim | - | - | usable with 2-3 flagged confirms |
 
 ## Time per course by stage (Actions, runner-minutes)
 
