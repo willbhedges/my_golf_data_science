@@ -3,7 +3,7 @@
 Scope: the wind / temperature / pressure / elevation / carry / roll rules behind the Gateway page, checked against an
 independent trajectory model built for this review (`second_pass/physics/`). Nothing in the engine or the Gateway
 data was edited. Section 5 gives the corrections as values of the engine's own knobs, ranked by size, for the
-integrator. Checkpoint 1 (02:26-03:30Z); sections marked "to come" follow.
+integrator. Checkpoint 1 at 02:35Z Nov 13 (sections 0-6); section 2e and section 7 added 02:50Z.
 
 ## 0. Summary
 
@@ -96,8 +96,8 @@ steady mean profile; launch conditions are assumed, not measured.
   0.04 % of ball speed per F. The model turns it into -3.2 yds (driver) and -1.9 (mid iron) at 45 F, on top of the
   air. Magazine robot tests give larger numbers (frozen balls); the range used is 0.02-0.07 % per F.
 * A ball carried in a trouser pocket starts a hole near 70-80 F and cools toward the air with a time constant of
-  roughly 15-25 minutes (my estimate from conduction through a 43 mm rubber sphere, not a measurement), so over a
-  14-minute hole it loses about half of its warmth. Swapping to a pocket-warm ball of the same model on each tee recovers most of item 1. That is allowed
+  roughly 12-23 minutes (a conduction estimate, section 7, not a measurement), so over a 14-minute hole it loses
+  half to two thirds of its warmth. Swapping to a pocket-warm ball of the same model on each tee recovers most of item 1. That is allowed
   between holes (Rule 6.3a; with the one-ball local rule it must be the same model). Warming a ball with a hand
   warmer or heater during the round is not (Rule 4.2a).
 * **Pressure and humidity.** At the hole times Saturday's sea-level pressure is 1027-1028 hPa and Sunday's
@@ -151,12 +151,30 @@ The engine widens the pattern x1.07 per 10 mph of head wind and narrows it x0.94
 At this weekend's 2-4 mph along the line that is 1-2 % of a 65-yd pattern: under 1 yd. No change now; for a 15 mph
 day the iron value should be about double the engine's.
 
-### 2e. Gusts (to come: flight-averaged turbulence)
+### 2e. Gusts and the scatter they add
 
-The forecast gusts are 6-9 mph on a 4-5 mph mean. With the engine's own rule (sigma = (gust - mean) / 3) that is
-~1 mph of turbulence: 1.5 yds of extra lateral sigma and ~2 yds of carry sigma, in quadrature with 17 and 9 yds of
-swing scatter: under 0.2 yd of pattern width. The tee-shot wind grid ignores gusts (the par-3 solve includes them);
-at 15 mph gusting 25 the carry scatter would grow by ~25 %, so the grid should carry it on a windy weekend.
+A forecast gust is a ~3-second peak, about mean + 3 sigma of the turbulence, so sigma = (gust - mean) / 3 (the
+engine's rule; the neutral surface-layer value for open ground is 0.17 x the mean, gust 1.5 x the mean). A ball does
+not feel a point gust: it averages the gust field over 6.5 s and ~230 yds of path. With a 100 m turbulence length
+scale that keeps 0.73 of sigma (0.58 with 50 m). Extra scatter, in quadrature with the swing's own (driver 17.5 yds
+lateral, 8.8 carry; mid iron 9.2 / 5.6):
+
+| wind (mean, gust) | turbulence felt by a flight | driver lateral sigma (wind across) | driver carry sigma (wind along) | mid iron lateral | mid iron carry |
+|---|---|---|---|---|---|
+| Sat 4.5, gust 8 | 0.85 mph | 17.5 -> 17.6 | 8.8 -> 8.9 | 9.2 -> 9.3 | 5.6 -> 5.9 |
+| Sun 3.5, gust 6 | 0.6 mph | 17.5 -> 17.5 | 8.8 -> 8.8 | 9.2 -> 9.2 | 5.6 -> 5.75 |
+| 10, gust 17 | 1.7 mph | 17.5 -> 17.7 | 8.8 -> 9.5 | 9.2 -> 9.6 | 5.6 -> 7.0 |
+| 15, gust 25 | 2.4 mph | 17.5 -> 18.0 | 8.8 -> 10.4 | 9.2 -> 10.0 | 5.6 -> 8.8 |
+
+* This weekend gusts add under 0.3 yd to any sigma. Nothing to change.
+* Gusts widen DEPTH far more than width, and irons far more than the driver: at 15 gusting 25 a mid iron's carry
+  sigma grows by half. The tee-shot wind grid calls `wind.adjust` without `gust_mph`, so it has no gust scatter at
+  all; the par-3 solve passes it. On a windy weekend the grid should pass the gust too.
+* The engine's rule uses the point sigma, not the flight average, so where it is used it over-states the added
+  scatter by about a third (10.9 vs 8.8 for the mid iron at 15 gusting 25). Scale `sig_w` by 0.75 when it matters.
+* A fade or a draw does not ride or fight a crosswind differently in the model: the drift of a 4-deg fade, a
+  straight ball and a 4-deg draw in a 10 mph crosswind is the same to 0.1 yd (the wind adds to the curve). The
+  engine's "curvature riding / fighting the wind is not modelled" loses nothing.
 
 ## 3. Gateway, this weekend
 
@@ -273,6 +291,42 @@ are module globals used inside `adjust`; `temp_k` is a `central()` keyword). The
   settles item 1 for his ball (the study's range is 0.02-0.07 % per F).
 * An anemometer reading at 2 m on the first tee: the forecast models differ by a factor of two.
 * Turf: how far the practice-range and first-fairway balls run.
+
+## 7. Validation of the reference model against published numbers
+
+Tour launch conditions (driver 167 mph / 10.9 deg / 2686 rpm; 6-iron 127 / 14.1 / 6231), sea level, 77 F, wind
+uniform with height. `physics/validate.py`, `results/validate.json`.
+
+| check | published | reference (fit) | linear set | Smits set | engine rule |
+|---|---|---|---|---|---|
+| 6-iron, 20 mph head / tail | -39 / +23 (TrackMan) | **-41 / +22** | -51 / +33 | -47 / +26 | -30 / +18 |
+| driver, 10 mph head / tail | -12 to -18 / +9 to +11 | -17 / +14 | -15 / +12 | -22 / +19 | -15 / +11 |
+| driver, 20 mph head / tail | -41 / +33 on a 300 carry (Golf.com) | -38 / +24 | -34 / +20 | -48 / +35 | -36 / +21 |
+| driver, 40 F -> 100 F air | +9 (TrackMan), ~+12 (Rice) | +13.6 | +12.4 | +20.6 | +12.4 |
+| 6-iron, 40 F -> 100 F air | ~+8 (TrackMan) | +11.5 | +15.6 | +17.8 | +8.2 |
+| driver at 5,280 ft | +6.1 % (Titleist) | +6.5 % | +5.5 % | +10.7 % | none |
+| driver, 10 mph crosswind | 10-15 yds on a 250-yd drive (rules of thumb) | 16.1 (lag-time formula 17.0) | 15.2 | 17.4 | 11.4 |
+| 6-iron, 10 mph crosswind | ~5 (Hole19) to ~12 (aim-off charts) | 14.9 | 20.2 | 15.5 | 7.9 |
+| ball speed -> carry | ~2 yds per mph (driver) | 2.0 driver, 1.6 6-iron | 2.2 / 1.3 | 1.5 / 1.6 | |
+
+* The reference reproduces TrackMan's 6-iron wind figure to 2 yds and Titleist's altitude rule to 0.4 %, neither of
+  which it was fitted to. It over-predicts TrackMan's own temperature figures by about half (13.6 vs 9-12 for the
+  driver, 11.5 vs 8 for the 6-iron); that is why section 5 leaves the engine's air coefficient alone and does not
+  use the reference's larger air response.
+* The crosswind rows are where the published material is weakest: I found no measured drift table, only rules of
+  thumb that are quoted for shorter, lower flights and for the wind a golfer feels at 2 m (about 0.7 of the 10 m
+  wind over open grass). 1.5 yds per mph of FORECAST wind is the physics for a 6.5-7 s flight; if Will knows from
+  experience that a 10 mph crosswind moves his 6-iron 10 yds, that is 1.0 per mph of felt wind and the two agree.
+* Launch assumptions: re-solving Will's driver at 13.5 deg / 2200 rpm or 10 deg / 2900 rpm, or his mid iron at
+  16 deg / 5400 or 13 deg / 6800, moves every sensitivity above by under 6 % (cold: -8.6 to -9.3 yds for the
+  driver at 45 F with a cold ball; 10 mph head: -18.1 to -19.9; drift 16.6 to 18.2).
+* Wind profile check against the forecast itself: Open-Meteo's 80 m wind is 1.15-1.2 x its 10 m wind at the playing
+  hours on both days (the neutral log law gives 1.36), so by day the profile correction is about half of the 7-9 %
+  in section 2b. At 7-8 am Saturday the layers are decoupled (2 mph at 10 m, 8 mph at 80 m): a high ball will find
+  wind that cannot be felt on the tee.
+* How fast a ball cools (first conduction mode of a 42.7 mm rubber sphere, surface coefficient 12-30 W/m2/K): time
+  constant 12-23 minutes; 72-84 % of the pocket warmth is left after 4 minutes, 31-54 % after a 14-minute hole.
+  A ball that sat in a car overnight starts Saturday at 25-35 F, colder than the air at 9:00.
 
 Sources: Bearman & Harvey, Aeronautical Quarterly 27 (1976) 112; Smits & Smith, Science and Golf II (1994) 340;
 Penner, Can. J. Phys. 80 (2002) 931 and Rep. Prog. Phys. 66 (2003) 131; Haake, Science and Golf (1991); Carlsson et
