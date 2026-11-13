@@ -72,9 +72,18 @@ def _task(t):
             WG2.SPEEDS = [int(s) for s in t["speeds"]]
         if t.get("dirs"):
             WG2.DIRS = [int(s) for s in t["dirs"]]
+        if t.get("c2f"):                     # coarse-to-fine aim sweep (fast.c2f_aim): the same records, fewer aims
+            import fast
+            WG2.solve = fast.wind_solve(M._fastsolve, WG2)
+        if t.get("adaptive"):                # adaptive Sobol grid in one C call per (hole, temperature): adaptive.py
+            import adaptive
+            WG2.solve = adaptive.install(M, D, WG2, cap=t["adaptive"])
+            t = dict(t, refine=0)
         if t["refine"]:
             WG2.solve = vc.refined_solver(M, D, WG2, t["refine"])
         WG2.main()
+        if t.get("adaptive"):
+            t = dict(t, stats=dict(adaptive.STATS))
     return dict(t, secs=time.time() - t0)
 
 
@@ -106,6 +115,8 @@ def plan(a, course, M):
             for h in w_holes:
                 tasks.append(dict(kind="wind", hole=h, back=b, temps=temps, swings=a.swings_wind,
                                   refine=refine if b in r_off else 0, speeds=a.speeds, dirs=a.dirs,
+                                  c2f=bool(a.c2f and a.engine == "fast"),
+                                  adaptive=(a.adaptive_cap if b in r_off else a.adaptive_cap_other) if a.adaptive else 0,
                                   out=os.path.join(parts, f"v2wind_{b:g}_{h}.json"),
                                   log=os.path.join(parts, f"log_wind_{b:g}_{h}.txt")))
     return tasks, order
@@ -172,7 +183,7 @@ def solve(a):
     wall = time.time() - t0
     json.dump(dict(slug=a.slug, which=a.which, engine=a.engine, swings=a.swings or "mc", jobs=jobs, wall_s=round(wall, 1),
                    task_cpu_s=round(sum(r["secs"] for r in done), 1),
-                   tasks=[dict(kind=r["kind"], hole=r["hole"], back=r.get("back"), refine=r.get("refine"),
+                   tasks=[dict(kind=r["kind"], hole=r["hole"], back=r.get("back"), refine=r.get("refine"), stats=r.get("stats"),
                                secs=round(r["secs"], 2)) for r in done]),
               open(os.path.join(out, "run_meta.json"), "w"), indent=1)
     print(f"done in {wall:.0f}s -> {out}")
@@ -260,6 +271,12 @@ def main():
     ap.add_argument("--swings", choices=["mc", "sobol", "antithetic"], default=None,
                     help="opt-in swing set (fast engine only). mc = the engine's (default, identical outputs); sobol = "
                          "scrambled Sobol points: NOT the engine's numbers, ~8x less Monte Carlo noise (README)")
+    ap.add_argument("--c2f", type=int, default=1, help="1 (default): coarse-to-fine aim sweep in the wind grids "
+                                                       "(same records as the full sweep); 0: every aim")
+    ap.add_argument("--adaptive", type=int, default=0, help="1: adaptive Sobol wind grids (adaptive.py): NOT the "
+                                                            "engine's numbers; see README")
+    ap.add_argument("--adaptive-cap", type=int, default=4096, help="swing cap, refined (card-tee) offsets")
+    ap.add_argument("--adaptive-cap-other", type=int, default=4096, help="swing cap, the other offsets")
     ap.add_argument("--ref")
     ap.add_argument("--show", type=int, default=8)
     a = ap.parse_args()

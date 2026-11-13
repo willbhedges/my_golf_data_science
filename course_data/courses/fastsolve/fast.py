@@ -82,10 +82,16 @@ def lib():
     L = ctypes.CDLL(so)
     d, i = ctypes.c_double, ctypes.c_int
     L.fs_ev.argtypes = [c_i8p, c_dp, i, i, d, d, d, c_dp, c_dp, c_dp, i, c_dp, i, d, i, i, ctypes.POINTER(Lidar),
-                        c_dp, c_dp, c_dp, c_dp, c_dp, c_dp, c_i8p, c_dp, i, c_i8p]
+                        c_dp, c_dp, c_dp, c_dp, c_dp, c_dp, c_i8p, c_dp, i, c_i8p, i, c_dp]
     L.fs_ev.restype = None
     L.fs_fill.argtypes = [c_dp, ctypes.c_long, c_dp, i, d, d, ctypes.c_int8, c_i8p, i]
     L.fs_fill.restype = None
+    L.fs_fill_rect.argtypes = [c_dp, i, i, c_dp, i, d, d, ctypes.c_int8, c_i8p, i, i, i, i]
+    L.fs_fill_rect.restype = None
+    L.fs_fill_prep.argtypes = [c_dp, i, c_dp, i, i, i, i, i, c_fp, c_u8p]
+    L.fs_fill_prep.restype = None
+    L.fs_fill_band.argtypes = [c_dp, i, c_dp, i, d, d, ctypes.c_int8, c_i8p, i, i, i, i, c_fp, c_u8p, d]
+    L.fs_fill_band.restype = None
     L.fs_water_entry.argtypes = [c_i8p, i, i, d, d, d, d, d, c_dp, i]
     L.fs_water_entry.restype = None
     L.fs_blocked.argtypes = [c_i8p, c_dp, i, i, d, d, d, d, d, d, d, c_u8p, i]
@@ -156,24 +162,80 @@ def make_raster(M, slow_cls):
             self.a, self.l = g["a"], g["l"]
             AA, LL = g["AA"], g["LL"]
             shape = AA.shape
+            self.green, self.dist, self.AA, self.LL = g["green"], g["dist"], AA, LL
+            base = g.get("base") if jitter_seed is None else None
+            if (base is not None and base[0] is hd["zones"] and base[1] == (len(hd["zones"]), M.CHECKED_HALF_WIDTH,
+                                                                           id(hd.get("checked_extra_px")))):
+                # the un-jittered map of this hole / tee was painted before in this process (decide's ladder,
+                # sensitivities and width sweep build it ~33 times): the same arrays, shared read-only
+                self.lie, self.native_depth, self.entry_dist, self.blocked = base[2]
+                return
             lie = np.zeros(shape[0] * shape[1], np.int8)
             rng = np.random.default_rng(jitter_seed) if jitter_seed is not None else None
-            for name, poly in hd["zones"]:
-                poly = _f64(poly)
+            zk = hd["zones"]
+            zc = g.get("zones")
+            if zc is None or zc[0] is not zk or len(zc[1]) != len(zk):
+                # per zone: the polygon and its bounding box in the tee frame (yds), for the index rectangle
+                zl = []
+                for name, poly in zk:
+                    poly = _f64(poly)
+                    d = (poly - tee) / ppy
+                    fa, fl = d @ fwd, d @ right
+                    zl.append((CODE[name], poly, float(fa.min()), float(fa.max()), float(fl.min()), float(fl.max())))
+                zc = g["zones"] = (zk, zl)
+            pad = (jitter_yds * 8.0 if rng is not None else 0.0) + 3.0          # yds: > any jitter (8 sigma) + cells
+            band = g.get("band") if rng is not None else None
+            if rng is not None and (band is None or band[0] is not zk or band[1] != pad):
+                # per zone, once: its index rectangle, inside mask and distance to its outline (fs_fill_prep)
+                bl = []
+                for code, poly, fa0, fa1, fl0, fl1 in zc[1]:
+                    r = (max(int(np.floor((fa0 - pad - M.A0) / M.RES)), 0), min(int(np.ceil((fa1 + pad - M.A0) / M.RES)), shape[0] - 1),
+                         max(int(np.floor((fl0 - pad - M.L0) / M.RES)), 0), min(int(np.ceil((fl1 + pad - M.L0) / M.RES)), shape[1] - 1))
+                    if r[1] < r[0] or r[3] < r[2]:
+                        bl.append(None)
+                        continue
+                    n_ = (r[1] - r[0] + 1) * (r[3] - r[2] + 1)
+                    dist, base_ = np.empty(n_, np.float32), np.empty(n_, np.uint8)
+                    L.fs_fill_prep(_p(g["pts"], c_dp), shape[1], _p(poly, c_dp), len(poly), *r, _p(dist, c_fp), _p(base_, c_u8p))
+                    bl.append((r, dist, base_))
+                band = g["band"] = (zk, pad, bl)
+            for zi, (code, poly, fa0, fa1, fl0, fl1) in enumerate(zc[1]):
                 dx = dy = 0.0
                 if rng is not None:
                     dx, dy = rng.normal(0, jitter_yds * ppy / 1.414, 2)
-                L.fs_fill(_p(g["pts"], c_dp), len(lie), _p(poly, c_dp), len(poly), float(dx), float(dy), CODE[name],
-                          _p(lie, c_i8p), nt)
+                    sh = float(np.hypot(dx, dy))
+                    if sh > 7.0 * jitter_yds * ppy:                              # never in practice: no rectangle
+                        L.fs_fill(_p(g["pts"], c_dp), len(lie), _p(poly, c_dp), len(poly), float(dx), float(dy),
+                                  code, _p(lie, c_i8p), nt)
+                        continue
+                    if band[2][zi] is not None:
+                        r, dist, base_ = band[2][zi]
+                        L.fs_fill_band(_p(g["pts"], c_dp), shape[1], _p(poly, c_dp), len(poly), float(dx), float(dy),
+                                       code, _p(lie, c_i8p), *r, _p(dist, c_fp), _p(base_, c_u8p), sh * 1.001 + 1e-6)
+                    continue
+                L.fs_fill_rect(_p(g["pts"], c_dp), shape[0], shape[1], _p(poly, c_dp), len(poly), 0.0, 0.0,
+                               code, _p(lie, c_i8p),
+                               max(int(np.floor((fa0 - pad - M.A0) / M.RES)), 0), min(int(np.ceil((fa1 + pad - M.A0) / M.RES)), shape[0] - 1),
+                               max(int(np.floor((fl0 - pad - M.L0) / M.RES)), 0), min(int(np.ceil((fl1 + pad - M.L0) / M.RES)), shape[1] - 1))
             lie = lie.reshape(shape)
-            lie[(lie == CODE["rough"]) & (np.abs(LL) > M.CHECKED_HALF_WIDTH)] = CODE["unverified"]
+            far = g.get("far")
+            if far is None or far[0] != M.CHECKED_HALF_WIDTH:
+                far = g["far"] = (M.CHECKED_HALF_WIDTH, np.abs(LL) > M.CHECKED_HALF_WIDTH)
+            lie[(lie == CODE["rough"]) & far[1]] = CODE["unverified"]
             self.lie = lie
             self.green = g["green"]
             self.dist = g["dist"]
             self.AA, self.LL = AA, LL
             nat = lie == CODE["native"]
-            self.native_depth = (ndimage.distance_transform_edt(nat) * M.RES if nat.any()
-                                 else np.zeros(shape, np.float64))
+            nd = np.zeros(shape, np.float64)
+            ra, rl = np.flatnonzero(nat.any(1)), np.flatnonzero(nat.any(0))
+            if len(ra):
+                # the distance transform on the native cells' bounding box + 1 ring: the nearest non-native cell of a
+                # native cell is never further than the ring (clamping a cell into the box only brings it closer)
+                a0_, a1_ = max(ra[0] - 1, 0), min(ra[-1] + 2, shape[0])
+                l0_, l1_ = max(rl[0] - 1, 0), min(rl[-1] + 2, shape[1])
+                nd[a0_:a1_, l0_:l1_] = ndimage.distance_transform_edt(nat[a0_:a1_, l0_:l1_]) * M.RES
+            self.native_depth = nd
             self._water_entry()
             rings = hd.get("checked_extra_px") if getattr(slow_cls, "_checked_extra", False) else None
             if rings:                                    # v2_course.install_checked_extra
@@ -187,6 +249,11 @@ def make_raster(M, slow_cls):
                 if m.any():
                     lie[m] = CODE["rough"]
             self._blocked()
+            if jitter_seed is None and os.environ.get("FASTSOLVE_RASTER_CACHE", "1") != "0":
+                for arr in (self.lie, self.native_depth, self.entry_dist, self.blocked):
+                    arr.flags.writeable = False
+                g["base"] = (hd["zones"], (len(hd["zones"]), M.CHECKED_HALF_WIDTH, id(hd.get("checked_extra_px"))),
+                             (self.lie, self.native_depth, self.entry_dist, self.blocked))
 
         def _water_entry(self):
             self.entry_dist = self.dist.copy()
@@ -404,12 +471,13 @@ class Fast:
             mode = None                                  # e.g. the legacy constant-height flight check: not ported
         return (mode if ok else None), ok_r
 
-    def sums(self, R, S, hd, club, P, z, aims, wind=None, ksplit=None, full=False, threads=None):
+    def sums(self, R, S, hd, club, P, z, aims, wind=None, ksplit=None, full=False, threads=None, shots=None,
+             block=0):
         """-> (sum_all, vA, vB, v_all[, (a, l, lie, s)]) per aim: sums over the swings of S (strokes after the tee
         shot) and of 1.0 + S (all swings, swings [0, ksplit), swings [ksplit, n)); see kernel.c fs_ev."""
         M = self.M
         L = lib()
-        car, dev, roll = M.shots(hd, club, P, z, wind)
+        car, dev, roll = shots if shots is not None else M.shots(hd, club, P, z, wind)
         car, dev, roll = _f64(car), _f64(dev), _f64(roll)
         aims = _f64(aims)
         n, m = len(car), len(aims)
@@ -440,12 +508,15 @@ class Fast:
             po = (_p(oa, c_dp), _p(ol, c_dp), _p(olie, c_i8p), _p(os_, c_dp))
         else:
             po = (None, None, None, None)
+        blk = np.empty((m, (n + block - 1) // block)) if block else None
         L.fs_ev(_p(lie, c_i8p), _p(S, c_dp), lie.shape[0], lie.shape[1], float(M.A0), float(M.L0), 1.0 / M.RES,
                 _p(car, c_dp), _p(dev, c_dp), _p(roll, c_dp), n, _p(aims, c_dp), m, float(P["rough_roll"]),
                 int(bool(P.get("v1_roll", False))), n if ksplit is None else int(ksplit),
                 ctypes.byref(lid) if lid is not None else None,
                 _p(st, c_dp), _p(sa, c_dp), _p(sb, c_dp), _p(vt, c_dp), *po, threads or nthreads(),
-                _p(pad, c_i8p) if pad is not None else None)
+                _p(pad, c_i8p) if pad is not None else None, int(block), _p(blk, c_dp) if block else None)
+        if block:                                 # (aims x blocks) sums of S over blocks of `block` swings
+            return blk
         self.calls += 1
         if full:
             return st, sa, sb, vt, (oa, ol, olie, os_)
@@ -510,6 +581,100 @@ class Fast:
         ev = 1.0 + sums[0] / n
         call = _Call(self, (R, S, hd, club, P, z, aims, wind), n, k, sums)
         return ev, tuple(_LazyArr(call, i) for i in range(4))
+
+
+# ------------------------------------------------------------------------------------------------ coarse-to-fine
+C2F_STEP = 6            # coarse aims: every 6th point of the 0.5-yd grid (3 yds)
+C2F_DELTA = 0.08        # every coarse aim within this of the coarse minimum gets its neighbourhood swept in full
+C2F_PAD = 18            # grid points (9 yds) swept in full beyond what robust_aim reads (4-yd smoothing + spline)
+C2F_STATS = dict(curves=0, aims_full=0, aims_done=0, fallback=0, rounds=0)
+
+
+def c2f_aim(F, R, S, hd, club, P, z, aims, wind, lo, hi):
+    """decide.robust_aim(aims, EV curve, lo, hi) without sweeping every aim: the kernel is run on a 3-yd coarse grid,
+    then on every 0.5-yd aim (a) near any coarse aim within C2F_DELTA strokes of the coarse minimum (every basin
+    that can hold the optimum: a multi-basin dog-leg curve gets each basin swept) and (b) within C2F_PAD points of
+    everything robust_aim reads for its answer (the +/-3-yd Brent bracket and the whole 0.005 window). The aims not
+    swept are filled by linear interpolation only so that the engine's robust_aim can run unchanged on a full-length
+    array; the EV at a swept aim is the same number as in the full sweep (an aim's EV does not depend on which other
+    aims are evaluated). If more than 70 % of the grid ends up needed, the full sweep is done instead."""
+    D, M = F.D, F.M
+    n = z.shape[1]
+    m = len(aims)
+    shots = M.shots(hd, club, P, z, wind)
+    ev = np.full(m, np.nan)
+    known = np.zeros(m, bool)
+    C2F_STATS["curves"] += 1
+    C2F_STATS["aims_full"] += m
+
+    def sweep(idx):
+        idx = idx[~known[idx]]
+        if len(idx):
+            ev[idx] = 1.0 + F.sums(R, S, hd, club, P, z, aims[idx], wind, shots=shots)[0] / n
+            known[idx] = True
+            C2F_STATS["aims_done"] += len(idx)
+
+    def grow(mask, k):
+        i = np.flatnonzero(mask)
+        out = np.zeros(m, bool)
+        for a_, b_ in zip(np.maximum(i - k, 0), np.minimum(i + k, m - 1)):
+            out[a_:b_ + 1] = True
+        return out
+    inside = (aims >= lo - 1e-9) & (aims <= hi + 1e-9)
+    coarse = np.zeros(m, bool)
+    coarse[::C2F_STEP] = True
+    coarse[-1] = True
+    sweep(np.flatnonzero(coarse))
+    cin = coarse & grow(inside, C2F_STEP)
+    best = np.nanmin(np.where(cin, ev, np.inf))
+    need = grow(cin & (ev <= best + C2F_DELTA), C2F_STEP + C2F_PAD)
+    for _ in range(8):
+        if (need | known).mean() > 0.7:
+            C2F_STATS["fallback"] += 1
+            sweep(np.arange(m))
+            return ev, D.robust_aim(aims, ev, lo=lo, hi=hi)
+        sweep(np.flatnonzero(need))
+        C2F_STATS["rounds"] += 1
+        k = np.flatnonzero(known)
+        fill = np.interp(aims, aims[k], ev[k])
+        r = D.robust_aim(aims, fill, lo=lo, hi=hi)
+        used = (aims >= min(r["window"][0], r["aim"] - 3.5)) & (aims <= max(r["window"][1], r["aim"] + 3.5))
+        # a basin the dense sweep uncovered below the coarse estimate widens the candidate set
+        best = min(best, float(np.min(np.where(inside & known, ev, np.inf))))
+        more = grow(used, C2F_PAD) | grow(cin & (ev <= best + C2F_DELTA), C2F_STEP + C2F_PAD)
+        if not (more & ~known).any():
+            return fill, r
+        need = more
+    sweep(np.arange(m))
+    C2F_STATS["fallback"] += 1
+    return ev, D.robust_aim(aims, ev, lo=lo, hi=hi)
+
+
+def wind_solve(F, WG2):
+    """wind_grid_v2.solve with the aim sweep done coarse-to-fine (c2f_aim): the same record."""
+    M, D = F.M, F.D
+    W = WG2.W
+
+    def solve(h, P, R, S, z, speed, rel):
+        hd = M.HOLES[h]
+        res = {}
+        for c in M.ALL_CLUBS:
+            hook = WG2.wind_hook(c, speed, rel) if speed else None
+            dr = hook(*M.club_numbers(hd, c, P))[4] if hook else 0.0
+            _, r = c2f_aim(F, R, S, hd, c, P, z, WG2.AIMS, hook, -D.AIM_LIMIT - dr, D.AIM_LIMIT - dr)
+            carry0, total0, width0, depth0 = M.CLUBS[c]
+            carry = carry0 * (1.0 - P["temp_k"] * (70.0 - P["temp_f"]))
+            roll = P["soft_roll"] if P.get("soft_roll") is not None else (total0 - carry0) * P["roll_mult"]
+            tup = (carry, carry + roll, P["width"][c], depth0 * P["depth_mult"])
+            c2, t2, w2, d2, drift = W.adjust(tup, speed, rel, club_name=c) if speed else tup + (0.0,)
+            res[c] = dict(aim=r["aim"], ev=r["ev"], zone=r["window"], carry=float(c2), total=float(t2),
+                          width=float(w2), drift=float(drift), at_bound=r["at_bound"])
+        real = [c for c in res if c not in M.HYPOTHETICAL]
+        best = min(real, key=lambda c: res[c]["ev"])
+        runner = min((c for c in real if c != best), key=lambda c: res[c]["ev"])
+        return dict(pick=best, margin=res[runner]["ev"] - res[best]["ev"], runner=runner, clubs=res)
+    solve._c2f = True
+    return solve
 
 
 # ------------------------------------------------------------------------------------------------ swing sets

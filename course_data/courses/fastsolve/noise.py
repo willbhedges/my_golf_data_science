@@ -7,8 +7,8 @@ For each hole, at one world (central, one temperature, one wind cell) and for ev
   reference  the EV curve on the decide aim grid from --ref pseudo-random swings (kernel; SE ~ 0.0005 strokes)
   estimators (each re-run with --seeds different seeds, the whole aim curve from the same N swings, then
               decide.robust_aim exactly as the engine):
-      mc16k      the engine's swings (model.draws_z, numpy default_rng), N = 16,000          <- today's refine stage
-      sobol16k   scrambled Sobol points (5-D: lateral, carry, mishit, mishit carry, roll), N = 16,384
+      mc2500 / mc16k   the engine's swings (model.draws_z, numpy default_rng): today's coarse / refine stage
+      sobol512 .. sobol16k   scrambled Sobol points (5-D: lateral, carry, mishit, mishit carry, roll)
       anti16k    antithetic pairs (z -> -z, u -> 1 - u), N = 16,000
       mc64k / mc256k   the engine's swings, 4x / 16x as many
   reported   SD over seeds of each club's aim and EV, the RMS error of the EV against the reference, how often the
@@ -41,6 +41,7 @@ def main():
     ap.add_argument("--speed", type=int, default=0)
     ap.add_argument("--rel", type=int, default=0)
     ap.add_argument("--ref", type=int, default=1000000)
+    ap.add_argument("--est", default="", help="estimators to run (default all)")
     ap.add_argument("--out")
     a = ap.parse_args()
     import v2_course as vc
@@ -52,12 +53,19 @@ def main():
     F = fast.install(M, D)
     mc = F.slow_draws_z
     EST = {
-        "mc16k": lambda s: mc(16000, 5000 + s),
+        "mc2500": lambda s: mc(2500, 5000 + s),                     # today's coarse stage
+        "mc16k": lambda s: mc(16000, 5000 + s),                     # today's refine stage
+        "sobol512": lambda s: fast.sobol_draws(512, 5000 + s),
+        "sobol1024": lambda s: fast.sobol_draws(1024, 5000 + s),
+        "sobol2048": lambda s: fast.sobol_draws(2048, 5000 + s),
+        "sobol4096": lambda s: fast.sobol_draws(4096, 5000 + s),
         "sobol16k": lambda s: fast.sobol_draws(16384, 5000 + s),
         "anti16k": lambda s: fast.antithetic_draws(16000, 5000 + s),
         "mc64k": lambda s: mc(64000, 5000 + s),
         "mc256k": lambda s: mc(256000, 5000 + s),
     }
+    if a.est:
+        EST = {k: v for k, v in EST.items() if k in a.est.split(",")}
     holes = [h for h in M.HOLES if not a.holes or str(h) in a.holes.split(",")]
     clubs = [c for c in M.ALL_CLUBS if c not in M.HYPOTHETICAL]
     out = {}

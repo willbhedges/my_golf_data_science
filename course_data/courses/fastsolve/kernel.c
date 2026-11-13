@@ -158,9 +158,9 @@ typedef struct { __m512d s[NB]; } group_out;
 
 /* One swing at 8 * NB consecutive aims (lanes = aims: neighbouring raster cells, the same roll length, and the per-aim
  * sums become vector adds in swing order). Returns the strokes after the tee shot per aim. */
-static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g, const lidar_t *L,
+static inline __attribute__((always_inline)) void group(const int8_t *lie_pad, const double *S, const grid_v *g, const lidar_t *L,
                          double c, double dv, double rl, float need, const __m512d *aimv,
-                         double rough_roll, int v1_roll, group_out *out)
+                         double rough_roll, int v1_roll, group_out *out, const int nb)
 {
     const __m512d zero = _mm512_setzero_pd(), two = _mm512_set1_pd(2.0), eps = _mm512_set1_pd(1e-9);
     const __m512d rr = _mm512_set1_pd(rough_roll), dev = _mm512_set1_pd(dv);
@@ -170,7 +170,7 @@ static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g
     __m256i lie[NB];
     __mmask8 stop[NB];
     __mmask8 any = 0;
-    for (int b = 0; b < NB; b++) {
+    for (int b = 0; b < nb; b++) {
         a[b] = _mm512_set1_pd(c);
         l[b] = _mm512_add_pd(dev, aimv[b]);
         stop[b] = 0;
@@ -185,7 +185,7 @@ static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g
         __m512d d_land[NB], ha[NB], hl[NB];
         __m256 acc[NB];
         __mmask8 live = 0;
-        for (int b = 0; b < NB; b++) {
+        for (int b = 0; b < nb; b++) {
             if (L->has_drop) {
                 __m512d r = _mm512_roundscale_pd(_mm512_mul_pd(_mm512_sub_pd(l[b], dl0), inv_d), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
                 r = _mm512_min_pd(_mm512_max_pd(r, zero), dlmax);
@@ -205,7 +205,7 @@ static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g
             const int ca = cell(pa, L->ga0, L->inv_c, L->nga) * L->ngl;
             const int da = L->has_drop ? cell(pa, L->da0, L->inv_d, L->nda) * L->ndl : 0;
             live = 0;
-            for (int b = 0; b < NB; b++) {
+            for (int b = 0; b < nb; b++) {
                 __m512d t = _mm512_sub_pd(yf, _mm512_mul_pd(fv, d_land[b]));
                 __mmask8 m1 = _mm512_cmp_pd_mask(_mm512_add_pd(t, dmin), tmax, _CMP_LT_OQ) & (__mmask8)~stop[b];
                 live |= (__mmask8)~stop[b];
@@ -234,12 +234,12 @@ static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g
             }
             if (!live) break;
         }
-        for (int b = 0; b < NB; b++) {
+        for (int b = 0; b < nb; b++) {
             a[b] = _mm512_mask_mov_pd(a[b], stop[b], ha[b]);
             l[b] = _mm512_mask_mov_pd(l[b], stop[b], hl[b]);
         }
     }
-    for (int b = 0; b < NB; b++) {
+    for (int b = 0; b < nb; b++) {
         lie[b] = lie_v(lie_pad, cell_v(g, a[b], l[b]));
         left[b] = _mm512_set1_pd(rl);
         left[b] = _mm512_mask_mul_pd(left[b], _mm256_cmpeq_epi32_mask(lie[b], c_rough), left[b], rr);
@@ -247,7 +247,7 @@ static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g
         any |= _mm512_cmp_pd_mask(left[b], eps, _CMP_GT_OQ);
     }
     if (any) {
-        for (int b = 0; b < NB; b++) {
+        for (int b = 0; b < nb; b++) {
             __m512d den = _mm512_max_pd(hypot_v(a[b], l[b]), eps);
             ua[b] = _mm512_div_pd(a[b], den);
             ul[b] = _mm512_div_pd(l[b], den);
@@ -255,9 +255,9 @@ static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g
         for (;;) {
             __mmask8 mv[NB];
             any = 0;
-            for (int b = 0; b < NB; b++) { mv[b] = _mm512_cmp_pd_mask(left[b], eps, _CMP_GT_OQ); any |= mv[b]; }
+            for (int b = 0; b < nb; b++) { mv[b] = _mm512_cmp_pd_mask(left[b], eps, _CMP_GT_OQ); any |= mv[b]; }
             if (!any) break;
-            for (int b = 0; b < NB; b++) {
+            for (int b = 0; b < nb; b++) {
                 if (!mv[b]) continue;
                 __m512d st = _mm512_min_pd(left[b], two);
                 a[b] = _mm512_mask_add_pd(a[b], mv[b], a[b], _mm512_mul_pd(ua[b], st));
@@ -273,15 +273,16 @@ static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g
             }
         }
     }
-    for (int b = 0; b < NB; b++)
+    for (int b = 0; b < nb; b++)
         out->s[b] = _mm512_i32gather_pd(cell_v(g, a[b], l[b]), S, 8);
 }
 
 static void ev_simd(const int8_t *lie_pad, const double *S, int na, int nl, double a0, double l0, double inv,
                     const double *car, const double *dev, const double *roll, int n,
                     const double *aims, int m, double rough_roll, int v1_roll, int ksplit, const lidar_t *L,
-                    double *sum_all, double *vA, double *vB, double *v_all, int nthreads)
+                    double *sum_all, double *vA, double *vB, double *v_all, int nthreads, int bs, double *blk)
 {
+    int nblk = (bs > 0 && blk) ? (n + bs - 1) / bs : 0;
     grid_v g;
     g.a0 = _mm512_set1_pd(a0); g.l0 = _mm512_set1_pd(l0); g.inv = _mm512_set1_pd(inv);
     g.amax = _mm512_set1_pd((double)(na - 1)); g.lmax = _mm512_set1_pd((double)(nl - 1)); g.nl = _mm512_set1_pd((double)nl);
@@ -297,9 +298,19 @@ static void ev_simd(const int8_t *lie_pad, const double *S, int na, int nl, doub
             aimv[b] = _mm512_loadu_pd(ab + 8 * b);
             sS[b] = sV[b] = sA[b] = sB[b] = _mm512_setzero_pd();
         }
+        __m512d sK[NB];
+        for (int b = 0; b < NB; b++) sK[b] = _mm512_setzero_pd();
         group_out o;
         for (int i = 0; i < n; i++) {
-            group(lie_pad, S, &g, L, car[i], dev[i], roll[i], L ? L->need[i] : 0.0f, aimv, rough_roll, v1_roll, &o);
+            group(lie_pad, S, &g, L, car[i], dev[i], roll[i], L ? L->need[i] : 0.0f, aimv, rough_roll, v1_roll, &o, NB);
+            if (nblk) {                           /* per-block sums (blocks of bs swings) for the adaptive solver */
+                for (int b = 0; b < NB; b++) sK[b] = _mm512_add_pd(sK[b], o.s[b]);
+                if ((i + 1) % bs == 0 || i == n - 1) {
+                    double kb[8 * NB];
+                    for (int b = 0; b < NB; b++) { _mm512_storeu_pd(kb + 8 * b, sK[b]); sK[b] = _mm512_setzero_pd(); }
+                    for (int k = 0; k < W && ch * W + k < m; k++) blk[(size_t)(ch * W + k) * nblk + i / bs] = kb[k];
+                }
+            }
             for (int b = 0; b < NB; b++) {
                 __m512d v = _mm512_add_pd(one, o.s[b]);
                 sS[b] = _mm512_add_pd(sS[b], o.s[b]);
@@ -354,13 +365,14 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
            const double *aims, int m, double rough_roll, int v1_roll, int ksplit,
            const lidar_t *L,
            double *sum_all, double *vA, double *vB, double *v_all,
-           double *oa, double *ol, int8_t *olie, double *os, int nthreads, const int8_t *lie_pad)
+           double *oa, double *ol, int8_t *olie, double *os, int nthreads, const int8_t *lie_pad, int bs, double *blk)
 {
     if (nthreads < 1) nthreads = 1;
+    int nblk = (bs > 0 && blk) ? (n + bs - 1) / bs : 0;
 #ifdef FS_SIMD
     if (lie_pad != NULL && !oa && m >= 8) {
         ev_simd(lie_pad, S, na, nl, a0, l0, inv, car, dev, roll, n, aims, m, rough_roll, v1_roll, ksplit, L,
-                sum_all, vA, vB, v_all, nthreads);
+                sum_all, vA, vB, v_all, nthreads, bs, blk);
         return;
     }
 #else
@@ -369,7 +381,7 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
     #pragma omp parallel for schedule(dynamic, 2) num_threads(nthreads) if (nthreads > 1 && m > 1)
     for (int j = 0; j < m; j++) {
         double aim = aims[j];
-        double sa = 0.0, sb = 0.0, st_all = 0.0, v_tot = 0.0;
+        double sa = 0.0, sb = 0.0, st_all = 0.0, v_tot = 0.0, sk = 0.0;
         int i = 0;
         for (; i < n; i++) {
             double c = car[i];
@@ -403,6 +415,10 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
             double v = 1.0 + s;
             v_tot += v;
             if (i < ksplit) sa += v; else sb += v;
+            if (nblk) {
+                sk += s;
+                if ((i + 1) % bs == 0 || i == n - 1) { blk[(size_t)j * nblk + i / bs] = sk; sk = 0.0; }
+            }
             if (oa) {
                 size_t o = (size_t)i * m + j;
                 oa[o] = a; ol[o] = l; olie[o] = (int8_t)lie; os[o] = s;
@@ -415,68 +431,154 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
 /* Path(poly).contains_points(pts) -> lie[inside] = code. matplotlib's point_in_path_impl (even-odd, crossings of the
  * +X ray, its exact inequality), only evaluated where the point's y lies inside the polygon's y range (outside it no
  * edge straddles the ray, so the result is "outside" there by the same arithmetic). */
+typedef struct { double *vx, *vy; int *cnt, *edges; int nv, nb; double ymin, ymax, xmin, xmax, h; } poly_t;
+
+static int poly_build(poly_t *p, const double *poly, int nv, double dx, double dy)
+{
+    p->nv = nv; p->nb = 512;
+    p->vx = (double *)malloc(sizeof(double) * nv); p->vy = (double *)malloc(sizeof(double) * nv);
+    p->ymin = INFINITY; p->ymax = -INFINITY; p->xmin = INFINITY; p->xmax = -INFINITY;
+    for (int k = 0; k < nv; k++) {
+        p->vx[k] = poly[2 * k] + dx; p->vy[k] = poly[2 * k + 1] + dy;
+        if (p->vy[k] < p->ymin) p->ymin = p->vy[k];
+        if (p->vy[k] > p->ymax) p->ymax = p->vy[k];
+        if (p->vx[k] < p->xmin) p->xmin = p->vx[k];
+        if (p->vx[k] > p->xmax) p->xmax = p->vx[k];
+    }
+    /* edges bucketed by y so a point only meets the edges that can straddle its ray */
+    int nb = p->nb;
+    p->h = (p->ymax - p->ymin) / nb;
+    p->cnt = (int *)calloc(nb + 1, sizeof(int));
+    p->edges = NULL;
+    if (!(p->h > 0)) return 0;
+    for (int pass = 0; pass < 2; pass++) {
+        int *pos = NULL;
+        if (pass == 1) {
+            for (int b = 0; b < nb; b++) p->cnt[b + 1] += p->cnt[b];
+            p->edges = (int *)malloc(sizeof(int) * (p->cnt[nb] > 0 ? p->cnt[nb] : 1));
+            pos = (int *)malloc(sizeof(int) * nb);
+            memcpy(pos, p->cnt, sizeof(int) * nb);
+        }
+        for (int k = 0; k < nv; k++) {
+            int k0 = k == 0 ? nv - 1 : k - 1;
+            double lo = p->vy[k0] < p->vy[k] ? p->vy[k0] : p->vy[k], hi = p->vy[k0] < p->vy[k] ? p->vy[k] : p->vy[k0];
+            int b0 = (int)floor((lo - p->ymin) / p->h) - 1, b1 = (int)floor((hi - p->ymin) / p->h) + 1;
+            if (b0 < 0) b0 = 0;
+            if (b1 > nb - 1) b1 = nb - 1;
+            for (int b = b0; b <= b1; b++) { if (pass == 0) p->cnt[b + 1]++; else p->edges[pos[b]++] = k; }
+        }
+        free(pos);
+    }
+    return 1;
+}
+
+static void poly_free(poly_t *p) { free(p->vx); free(p->vy); free(p->cnt); free(p->edges); }
+
+/* matplotlib's point_in_path_impl for one point */
+static inline int pip(const poly_t *p, double tx, double ty)
+{
+    if (!(ty > p->ymin && ty <= p->ymax)) return 0;
+    if (tx > p->xmax + 1.0 || tx < p->xmin - 1.0) return 0;
+    int b = (int)floor((ty - p->ymin) / p->h);
+    if (b < 0) b = 0;
+    if (b > p->nb - 1) b = p->nb - 1;
+    int in = 0;
+    for (int e = p->cnt[b]; e < p->cnt[b + 1]; e++) {
+        int k = p->edges[e];
+        int k0 = k == 0 ? p->nv - 1 : k - 1;
+        double vtx0 = p->vx[k0], vty0 = p->vy[k0], vtx1 = p->vx[k], vty1 = p->vy[k];
+        int yflag0 = (vty0 >= ty), yflag1 = (vty1 >= ty);
+        if (yflag0 != yflag1) {
+            if ((((vty1 - ty) * (vtx0 - vtx1)) >= ((vtx1 - tx) * (vty0 - vty1))) == yflag1) in ^= 1;
+        }
+    }
+    return in;
+}
+
+static void fill_impl(const double *pts, long npts, const double *poly, int nv, double dx, double dy, int8_t code,
+                      int8_t *lie, int nthreads, int nl, int ia0, int ia1, int il0, int il1);
+
 void fs_fill(const double *pts, long npts, const double *poly, int nv, double dx, double dy, int8_t code,
              int8_t *lie, int nthreads)
 {
+    fill_impl(pts, npts, poly, nv, dx, dy, code, lie, nthreads, 0, 0, 0, 0, 0);
+}
+
+/* The same fill, only visiting the grid rows / columns [ia0, ia1] x [il0, il1] (the caller's index rectangle that
+ * contains the polygon's bounding box with a margin: outside the bounding box a point is outside the polygon). */
+void fs_fill_rect(const double *pts, int na, int nl, const double *poly, int nv, double dx, double dy, int8_t code,
+                  int8_t *lie, int ia0, int ia1, int il0, int il1)
+{
+    if (ia1 < ia0 || il1 < il0) return;
+    fill_impl(pts, (long)na * nl, poly, nv, dx, dy, code, lie, 1, nl, ia0, ia1, il0, il1);
+}
+
+static void fill_impl(const double *pts, long npts, const double *poly, int nv, double dx, double dy, int8_t code,
+                      int8_t *lie, int nthreads, int nl, int ia0, int ia1, int il0, int il1)
+{
     if (nv < 2) return;
-    double *vx = (double *)malloc(sizeof(double) * nv), *vy = (double *)malloc(sizeof(double) * nv);
-    double ymin = INFINITY, ymax = -INFINITY, xmin = INFINITY, xmax = -INFINITY;
-    for (int k = 0; k < nv; k++) {
-        vx[k] = poly[2 * k] + dx; vy[k] = poly[2 * k + 1] + dy;
-        if (vy[k] < ymin) ymin = vy[k];
-        if (vy[k] > ymax) ymax = vy[k];
-        if (vx[k] < xmin) xmin = vx[k];
-        if (vx[k] > xmax) xmax = vx[k];
-    }
-    /* edges bucketed by y so a point only meets the edges that can straddle its ray */
-    int nb = 512;
-    double h = (ymax - ymin) / nb;
-    if (!(h > 0)) { free(vx); free(vy); return; }
-    int *cnt = (int *)calloc(nb + 1, sizeof(int));
-    for (int pass = 0; pass < 1; pass++) {
-        for (int k = 0; k < nv; k++) {
-            int k0 = k == 0 ? nv - 1 : k - 1;
-            double lo = vy[k0] < vy[k] ? vy[k0] : vy[k], hi = vy[k0] < vy[k] ? vy[k] : vy[k0];
-            int b0 = (int)floor((lo - ymin) / h) - 1, b1 = (int)floor((hi - ymin) / h) + 1;
-            if (b0 < 0) b0 = 0;
-            if (b1 > nb - 1) b1 = nb - 1;
-            for (int b = b0; b <= b1; b++) cnt[b + 1]++;
-        }
-    }
-    for (int b = 0; b < nb; b++) cnt[b + 1] += cnt[b];
-    int *edges = (int *)malloc(sizeof(int) * (cnt[nb] > 0 ? cnt[nb] : 1));
-    int *pos = (int *)malloc(sizeof(int) * nb);
-    memcpy(pos, cnt, sizeof(int) * nb);
-    for (int k = 0; k < nv; k++) {
-        int k0 = k == 0 ? nv - 1 : k - 1;
-        double lo = vy[k0] < vy[k] ? vy[k0] : vy[k], hi = vy[k0] < vy[k] ? vy[k] : vy[k0];
-        int b0 = (int)floor((lo - ymin) / h) - 1, b1 = (int)floor((hi - ymin) / h) + 1;
-        if (b0 < 0) b0 = 0;
-        if (b1 > nb - 1) b1 = nb - 1;
-        for (int b = b0; b <= b1; b++) edges[pos[b]++] = k;
-    }
+    poly_t p;
+    if (!poly_build(&p, poly, nv, dx, dy)) { poly_free(&p); return; }
     if (nthreads < 1) nthreads = 1;
+    long ntot = nl ? (long)(ia1 - ia0 + 1) * (il1 - il0 + 1) : npts;
+    int wl = nl ? il1 - il0 + 1 : 1;
     #pragma omp parallel for schedule(static) num_threads(nthreads) if (nthreads > 1)
-    for (long i = 0; i < npts; i++) {
-        double tx = pts[2 * i], ty = pts[2 * i + 1];
-        if (!(ty > ymin && ty <= ymax)) continue;
-        if (tx > xmax + 1.0 || tx < xmin - 1.0) continue;
-        int b = (int)floor((ty - ymin) / h);
-        if (b < 0) b = 0;
-        if (b > nb - 1) b = nb - 1;
-        int in = 0;
-        for (int e = cnt[b]; e < cnt[b + 1]; e++) {
-            int k = edges[e];
-            int k0 = k == 0 ? nv - 1 : k - 1;
-            double vtx0 = vx[k0], vty0 = vy[k0], vtx1 = vx[k], vty1 = vy[k];
-            int yflag0 = (vty0 >= ty), yflag1 = (vty1 >= ty);
-            if (yflag0 != yflag1) {
-                if ((((vty1 - ty) * (vtx0 - vtx1)) >= ((vtx1 - tx) * (vty0 - vty1))) == yflag1) in ^= 1;
-            }
-        }
-        if (in) lie[i] = code;
+    for (long q = 0; q < ntot; q++) {
+        long i = nl ? (long)(ia0 + q / wl) * nl + il0 + q % wl : q;
+        if (pip(&p, pts[2 * i], pts[2 * i + 1])) lie[i] = code;
     }
-    free(vx); free(vy); free(cnt); free(edges); free(pos);
+    poly_free(&p);
+}
+
+/* Prior-draw maps: each draw shifts a zone polygon by a few px. Once per hole, for the UNSHIFTED polygon and every
+ * cell of its index rectangle: inside or not (base) and the distance from the cell centre to the polygon's outline
+ * (dist, px). In a draw a cell further from the outline than the shift (+ a margin) is on the same side of the
+ * shifted polygon as of the unshifted one, so only the band along the outline is tested again (fs_fill_band). */
+void fs_fill_prep(const double *pts, int nl, const double *poly, int nv, int ia0, int ia1, int il0, int il1,
+                  float *dist, uint8_t *base)
+{
+    poly_t p;
+    int ok = nv >= 2 && poly_build(&p, poly, nv, 0.0, 0.0);
+    int wl = il1 - il0 + 1;
+    for (int ia = ia0; ia <= ia1; ia++)
+        for (int il = il0; il <= il1; il++) {
+            size_t o = (size_t)(ia - ia0) * wl + (il - il0);
+            double tx = pts[2 * ((size_t)ia * nl + il)], ty = pts[2 * ((size_t)ia * nl + il) + 1];
+            base[o] = ok ? (uint8_t)pip(&p, tx, ty) : 0;
+            double best = INFINITY;
+            for (int k = 0; k < nv; k++) {
+                int k0 = k == 0 ? nv - 1 : k - 1;
+                double ex = poly[2 * k] - poly[2 * k0], ey = poly[2 * k + 1] - poly[2 * k0 + 1];
+                double px = tx - poly[2 * k0], py = ty - poly[2 * k0 + 1];
+                double l2 = ex * ex + ey * ey, t = l2 > 0 ? (px * ex + py * ey) / l2 : 0.0;
+                t = t < 0 ? 0 : (t > 1 ? 1 : t);
+                double qx = px - t * ex, qy = py - t * ey, d2 = qx * qx + qy * qy;
+                if (d2 < best) best = d2;
+            }
+            dist[o] = (float)(sqrt(best) * 0.999);       /* rounded down */
+        }
+    if (nv >= 2) poly_free(&p);
+}
+
+void fs_fill_band(const double *pts, int nl, const double *poly, int nv, double dx, double dy, int8_t code, int8_t *lie,
+                  int ia0, int ia1, int il0, int il1, const float *dist, const uint8_t *base, double thr)
+{
+    if (nv < 2) return;
+    poly_t p;
+    if (!poly_build(&p, poly, nv, dx, dy)) { poly_free(&p); return; }
+    int wl = il1 - il0 + 1;
+    float th = (float)thr;
+    for (int ia = ia0; ia <= ia1; ia++) {
+        const float *dr = dist + (size_t)(ia - ia0) * wl;
+        const uint8_t *br = base + (size_t)(ia - ia0) * wl;
+        int8_t *lr = lie + (size_t)ia * nl + il0;
+        const double *pr = pts + 2 * ((size_t)ia * nl + il0);
+        for (int k = 0; k < wl; k++) {
+            int in = dr[k] > th ? br[k] : pip(&p, pr[2 * k], pr[2 * k + 1]);
+            if (in) lr[k] = code;
+        }
+    }
+    poly_free(&p);
 }
 
 /* Raster._water_entry: entry_dist (pre-filled with dist) at the water cells. */
@@ -682,6 +784,327 @@ void fs_strokes(const strokes_t *p, const int8_t *lie, const double *dist, const
         S[i] = s;
     }
     free(sl); free(slp);
+}
+
+/* ------------------------------------------------------------------------------------------------ adaptive grid
+ * One call per (hole, tee offset, temperature): every wind cell and club, no Python in between.
+ * Per cell: (1) every club's EV on a coarse aim grid from n_coarse swings finds its basin(s); (2) the 0.5-yd aims of
+ * that window are evaluated on n0 swings, kept as sums per block of `bs` swings; (3) racing: the paired block
+ * differences (common swings) against the leader give each club's gap and its standard error; a club worse than the
+ * leader by more than tq x SE is dropped; (4) the cell stops when the runner-up is separated at 99 % and the
+ * leader's aim (block jackknife) is within aim_tol yds at 99 %, else the swings of the clubs still alive are doubled,
+ * up to cap. Swings: whatever z holds (scrambled Sobol from Python), the same for every club and cell.
+ * The per-ball arithmetic is the kernel above (group / roll_out); the aim is the minimum of the 1-yd Gaussian-smoothed
+ * curve (parabola through the three lowest points, reported to 0.5 yd), the zone its 0.005-stroke window. */
+typedef struct {
+    double rho, kappa, skew, mis_slight, ms_lo, ms_hi, ms_lat, mis_heavy, mh_lo, mh_hi, mh_lat, bias, roll_noise;
+    double rough_roll;
+    int v1_roll;
+} shot_t;
+
+typedef struct {
+    int n_coarse, n0, cap, bs, cstep, half;
+    double window, aim_tol, delta, drop_t;
+    int min_all;            /* every club gets at least this many swings on its window */
+} adapt_t;
+
+typedef struct {
+    const int8_t *lie_g, *lie_pad; const double *S; int na, nl; double a0, l0, inv;
+    double rough_roll; int v1_roll;
+#ifdef FS_SIMD
+    grid_v g;
+#endif
+} gctx;
+
+/* strokes after the tee shot for one swing at `cnt` aims (cnt <= 32) */
+static inline void vals(const gctx *x, double c, double dv, double rl, const double *aims, int cnt, double *out)
+{
+#ifdef FS_SIMD
+    if (x->lie_pad) {
+        double ab[32];
+        int nb = (cnt + 7) / 8;
+        for (int k = 0; k < 8 * nb; k++) ab[k] = aims[k < cnt ? k : cnt - 1];
+        __m512d aimv[NB];
+        for (int b = 0; b < nb; b++) aimv[b] = _mm512_loadu_pd(ab + 8 * b);
+        group_out o;
+        group(x->lie_pad, x->S, &x->g, NULL, c, dv, rl, 0.0f, aimv, x->rough_roll, x->v1_roll, &o, nb);
+        double buf[32];
+        for (int b = 0; b < nb; b++) _mm512_storeu_pd(buf + 8 * b, o.s[b]);
+        for (int k = 0; k < cnt; k++) out[k] = buf[k];
+        return;
+    }
+#endif
+    for (int k = 0; k < cnt; k++) {
+        double a, l; int lie;
+        roll_out(x->lie_g, x->na, x->nl, x->a0, x->l0, x->inv, c, dv + aims[k], rl, x->rough_roll, x->v1_roll, &a, &l, &lie);
+        out[k] = x->S[(size_t)cell(a, x->a0, x->inv, x->na) * x->nl + cell(l, x->l0, x->inv, x->nl)];
+    }
+}
+
+static double tq995(int df)
+{
+    static const int d[] = {1, 2, 3, 4, 5, 6, 7, 9, 11, 15, 23, 31, 47, 63, 127, 255, 1000000};
+    static const double t[] = {63.66, 9.925, 5.841, 4.604, 4.032, 3.707, 3.499, 3.250, 3.106, 2.947, 2.807, 2.744, 2.685, 2.656, 2.615, 2.595, 2.576};
+    for (int i = 0; i < 17; i++) if (df <= d[i]) return t[i];
+    return 2.576;
+}
+
+/* smoothed-curve minimum on a window: cur[0..w) at aims aim_w0 + k * step. Returns the grid index of the minimum
+ * inside [klo, khi] and fills sm; *xmin = continuous aim (parabola), */
+static int smooth_min(const double *cur, int w, int klo, int khi, const double *gw, double *sm, double *xfrac)
+{
+    int best = -1;
+    for (int k = 0; k < w; k++) {
+        double v = 0.0;
+        for (int j = -8; j <= 8; j++) {
+            int q = k + j;
+            if (q < 0) q = 0;
+            if (q > w - 1) q = w - 1;
+            v += gw[j + 8] * cur[q];
+        }
+        sm[k] = v;
+        if (k >= klo && k <= khi && (best < 0 || v < sm[best])) best = k;
+    }
+    *xfrac = 0.0;
+    if (best > klo && best < khi && best > 0 && best < w - 1) {
+        double y0 = sm[best - 1], y1 = sm[best], y2 = sm[best + 1], den = y0 - 2.0 * y1 + y2;
+        if (den > 1e-15) {
+            double f = 0.5 * (y0 - y2) / den;
+            *xfrac = f < -0.5 ? -0.5 : (f > 0.5 ? 0.5 : f);
+        }
+    }
+    return best;
+}
+
+void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na, int nl, double a0, double l0, double inv,
+             const double *z, int zcap, int ncell, int nclub, const double *par, const double *lim, const int *hyp,
+             const shot_t *sp, double aim0, double step, int naims, const adapt_t *op,
+             double *out_club, double *out_cell, long long *balls_out, int nthreads)
+{
+    gctx x;
+    x.lie_g = lie_g; x.lie_pad = lie_pad; x.S = S; x.na = na; x.nl = nl; x.a0 = a0; x.l0 = l0; x.inv = inv;
+    x.rough_roll = sp->rough_roll; x.v1_roll = sp->v1_roll;
+#ifdef FS_SIMD
+    x.g.a0 = _mm512_set1_pd(a0); x.g.l0 = _mm512_set1_pd(l0); x.g.inv = _mm512_set1_pd(inv);
+    x.g.amax = _mm512_set1_pd((double)(na - 1)); x.g.lmax = _mm512_set1_pd((double)(nl - 1)); x.g.nl = _mm512_set1_pd((double)nl);
+#endif
+    const int bs = op->bs, cap = op->cap < zcap ? op->cap : zcap, nbmax = cap / bs;
+    double gw[17], gs = 0.0, sd = 1.0 / step;
+    for (int j = -8; j <= 8; j++) { gw[j + 8] = exp(-0.5 * (j / sd) * (j / sd)); gs += gw[j + 8]; }
+    for (int j = 0; j < 17; j++) gw[j] /= gs;
+    const double *zl = z, *zc = z + zcap, *um = z + 2 * (size_t)zcap, *uf = z + 3 * (size_t)zcap, *ur = z + 4 * (size_t)zcap;
+    const double rq = sqrt(1.0 - sp->rho * sp->rho), k0 = sqrt(2.0 / M_PI);
+    long long balls = 0;
+    if (nthreads < 1) nthreads = 1;
+    #pragma omp parallel num_threads(nthreads) reduction(+:balls) if (nthreads > 1)
+    {
+        double *car = (double *)malloc(sizeof(double) * 3 * (size_t)cap * nclub);
+        double *bsum = (double *)malloc(sizeof(double) * (size_t)nclub * nbmax * naims);
+        double *aims = (double *)malloc(sizeof(double) * naims);
+        double *cur = (double *)malloc(sizeof(double) * 4 * naims);
+        int *w0 = (int *)malloc(sizeof(int) * 6 * nclub);
+        double *caim = (double *)malloc(sizeof(double) * 6 * nclub);
+        for (int k = 0; k < naims; k++) aims[k] = aim0 + k * step;
+        #pragma omp for schedule(dynamic, 1)
+        for (int ce = 0; ce < ncell; ce++) {
+            int *w1 = w0 + nclub, *nsw = w0 + 2 * nclub, *alive = w0 + 3 * nclub, *kaim = w0 + 4 * nclub, *klo = w0 + 5 * nclub;
+            double *cev = caim + nclub, *zlo = caim + 2 * nclub, *zhi = caim + 3 * nclub, *gap = caim + 4 * nclub, *gse = caim + 5 * nclub;
+            int khi_[64];
+            /* ---- shots of every club (model.shots, per swing) */
+            for (int c = 0; c < nclub; c++) {
+                const double *p = par + ((size_t)ce * nclub + c) * 5;
+                double carry = p[0], roll = p[1], sl = p[2], sc = p[3], drift = p[4];
+                double *cc = car + (size_t)c * 3 * cap, *dd = cc + cap, *rr = dd + cap;
+                for (int i = 0; i < cap; i++) {
+                    double dev = sl * zl[i];
+                    double cv = carry + sc * (rq * zc[i] - sp->rho * zl[i]);
+                    if (sp->kappa != 0.0) cv = cv - sp->kappa * sl * (fabs(zl[i]) - k0);
+                    if (sp->skew != 0.0) {
+                        double s_ = sp->skew;
+                        int same = (zl[i] > 0) == (s_ > 0) && zl[i] != 0.0;
+                        dev = same ? dev * (1 + fabs(s_)) : dev * (1 - fabs(s_) / 2);
+                    }
+                    int slight = um[i] < sp->mis_slight;
+                    int heavy = um[i] >= sp->mis_slight && um[i] < sp->mis_slight + sp->mis_heavy;
+                    if (slight) cv = carry * (sp->ms_lo + (sp->ms_hi - sp->ms_lo) * uf[i]);
+                    if (heavy) cv = carry * (sp->mh_lo + (sp->mh_hi - sp->mh_lo) * uf[i]);
+                    if (slight) dev = dev * sp->ms_lat;
+                    if (heavy) dev = dev * sp->mh_lat;
+                    dev = dev + sp->bias + drift;
+                    double rl = roll * (1 + sp->roll_noise * (2 * ur[i] - 1));
+                    cc[i] = cv; dd[i] = dev; rr[i] = rl > 0.0 ? rl : 0.0;
+                }
+            }
+            #define EVAL(c_, i0_, i1_, n0_, n1_) do {                                                       \
+                const double *cc_ = car + (size_t)(c_) * 3 * cap, *dd_ = cc_ + cap, *rr_ = dd_ + cap;        \
+                double *bb_ = bsum + (size_t)(c_) * nbmax * naims;                                           \
+                for (int q_ = (i0_); q_ <= (i1_); q_ += 32) {                                                \
+                    int cnt_ = (i1_) - q_ + 1 < 32 ? (i1_) - q_ + 1 : 32;                                    \
+                    double acc_[32], v_[32];                                                                 \
+                    for (int k_ = 0; k_ < cnt_; k_++) acc_[k_] = 0.0;                                        \
+                    for (int i_ = (n0_); i_ < (n1_); i_++) {                                                 \
+                        vals(&x, cc_[i_], dd_[i_], rr_[i_], aims + q_, cnt_, v_);                            \
+                        for (int k_ = 0; k_ < cnt_; k_++) acc_[k_] += v_[k_];                                \
+                        if ((i_ + 1) % bs == 0) {                                                            \
+                            for (int k_ = 0; k_ < cnt_; k_++) { bb_[(size_t)(i_ / bs) * naims + q_ + k_] = acc_[k_]; acc_[k_] = 0.0; } \
+                        }                                                                                    \
+                    }                                                                                        \
+                    balls += (long long)cnt_ * ((n1_) - (n0_));                                              \
+                }                                                                                            \
+            } while (0)
+            /* mean curve of club c on its window from the first nb blocks, optionally leaving block `skip` out */
+            #define CURVE(c_, nb_, skip_, dst_) do {                                                         \
+                const double *bb_ = bsum + (size_t)(c_) * nbmax * naims;                                     \
+                int w_ = w1[c_] - w0[c_] + 1, used_ = 0;                                                     \
+                for (int k_ = 0; k_ < w_; k_++) (dst_)[k_] = 0.0;                                            \
+                for (int b_ = 0; b_ < (nb_); b_++) {                                                         \
+                    if (b_ == (skip_)) continue;                                                             \
+                    used_++;                                                                                 \
+                    for (int k_ = 0; k_ < w_; k_++) (dst_)[k_] += bb_[(size_t)b_ * naims + w0[c_] + k_];     \
+                }                                                                                            \
+                for (int k_ = 0; k_ < w_; k_++) (dst_)[k_] = 1.0 + (dst_)[k_] / ((double)used_ * bs);        \
+            } while (0)
+            int n_now = op->n0;
+            /* ---- stage 1: basin search on a coarse aim grid */
+            for (int c = 0; c < nclub; c++) {
+                const double *lm = lim + ((size_t)ce * nclub + c) * 2;
+                int kl = (int)ceil((lm[0] - 1e-9 - aim0) / step), kh = (int)floor((lm[1] + 1e-9 - aim0) / step);
+                if (kl < 0) kl = 0;
+                if (kh > naims - 1) kh = naims - 1;
+                klo[c] = kl; khi_[c] = kh;
+                const double *cc = car + (size_t)c * 3 * cap, *dd = cc + cap, *rr = dd + cap;
+                int nc = 0;
+                double ca[512];
+                int ci[512];
+                for (int k = kl; k <= kh; k += op->cstep) { ci[nc] = k; ca[nc] = aims[k]; nc++; }
+                if (ci[nc - 1] != kh) { ci[nc] = kh; ca[nc] = aims[kh]; nc++; }
+                double *cs = cur;
+                for (int k = 0; k < nc; k++) cs[k] = 0.0;
+                for (int q = 0; q < nc; q += 32) {
+                    int cnt = nc - q < 32 ? nc - q : 32;
+                    double v[32];
+                    for (int i = 0; i < op->n_coarse; i++) {
+                        vals(&x, cc[i], dd[i], rr[i], ca + q, cnt, v);
+                        for (int k = 0; k < cnt; k++) cs[q + k] += v[k];
+                    }
+                    balls += (long long)cnt * op->n_coarse;
+                }
+                int bi = 0;
+                for (int k = 1; k < nc; k++) if (cs[k] < cs[bi]) bi = k;
+                int lo_i = ci[bi], hi_i = ci[bi];
+                for (int k = 0; k < nc; k++)            /* other basins that could hold the optimum */
+                    if (cs[k] <= cs[bi] + op->delta * op->n_coarse) { if (ci[k] < lo_i) lo_i = ci[k]; if (ci[k] > hi_i) hi_i = ci[k]; }
+                w0[c] = lo_i - op->half; w1[c] = hi_i + op->half;
+                if (w0[c] < 0) w0[c] = 0;
+                if (w1[c] > naims - 1) w1[c] = naims - 1;
+                nsw[c] = 0; alive[c] = 1;
+            }
+            int leader = -1, runner = -1, sep = 0, aim_ok = 0;
+            double se_run = 0.0, mar = 0.0;
+            for (;;) {
+                /* ---- stage 2: the windows of the clubs still alive, up to n_now swings; widen a window when the
+                 * minimum or the 0.005 zone comes within the smoothing radius of its edge */
+                for (int c = 0; c < nclub; c++) {
+                    if (!alive[c]) continue;
+                    if (nsw[c] < n_now) { EVAL(c, w0[c], w1[c], nsw[c], n_now); nsw[c] = n_now; }
+                    for (int tries = 0; tries < 12; tries++) {
+                        int w = w1[c] - w0[c] + 1, nb_ = nsw[c] / bs;
+                        double *cu = cur, *sm = cur + naims, xf;
+                        CURVE(c, nb_, -1, cu);
+                        int kl = klo[c] - w0[c], kh = khi_[c] - w0[c];
+                        if (kl < 0) kl = 0;
+                        if (kh > w - 1) kh = w - 1;
+                        int b = smooth_min(cu, w, kl, kh, gw, sm, &xf);
+                        double aim = aims[w0[c] + b] + xf * step;
+                        aim = floor(aim / 0.5 + 0.5) * 0.5;
+                        if (aim < aims[w0[c] + kl]) aim = aims[w0[c] + kl];
+                        if (aim > aims[w0[c] + kh]) aim = aims[w0[c] + kh];
+                        int ka = (int)floor((aim - aims[w0[c]]) / step + 0.5);
+                        double smb = sm[b] < sm[ka] ? sm[b] : sm[ka];
+                        int za = ka, zb = ka;
+                        while (za > kl && sm[za - 1] <= smb + op->window) za--;
+                        while (zb < kh && sm[zb + 1] <= smb + op->window) zb++;
+                        int grow_lo = (za < 9 || b < 9) && w0[c] > 0 && w0[c] > klo[c] - 9;
+                        int grow_hi = (zb > w - 10 || b > w - 10) && w1[c] < naims - 1 && w1[c] < khi_[c] + 9;
+                        if (!grow_lo && !grow_hi) {
+                            kaim[c] = w0[c] + ka; caim[c] = aim; cev[c] = cu[ka];
+                            zlo[c] = aims[w0[c] + za]; zhi[c] = aims[w0[c] + zb];
+                            break;
+                        }
+                        if (grow_lo) { int n0_ = w0[c] - op->half < 0 ? 0 : w0[c] - op->half; EVAL(c, n0_, w0[c] - 1, 0, nsw[c]); w0[c] = n0_; }
+                        if (grow_hi) { int n1_ = w1[c] + op->half > naims - 1 ? naims - 1 : w1[c] + op->half; EVAL(c, w1[c] + 1, n1_, 0, nsw[c]); w1[c] = n1_; }
+                        if (tries == 11) { kaim[c] = w0[c] + ka; caim[c] = aim; cev[c] = cu[ka]; zlo[c] = aims[w0[c] + za]; zhi[c] = aims[w0[c] + zb]; }
+                    }
+                }
+                /* ---- stage 3: racing on paired block differences against the leader */
+                leader = -1;
+                for (int c = 0; c < nclub; c++) if (!hyp[c] && (leader < 0 || cev[c] < cev[leader])) leader = c;
+                runner = -1; sep = 1;
+                int nbL = nsw[leader] / bs;
+                const double *bL = bsum + (size_t)leader * nbmax * naims;
+                for (int c = 0; c < nclub; c++) {
+                    if (c == leader || hyp[c]) continue;
+                    int nb_ = nsw[c] / bs < nbL ? nsw[c] / bs : nbL;       /* blocks both clubs have */
+                    const double *bC = bsum + (size_t)c * nbmax * naims;
+                    double m1 = 0.0, m2 = 0.0;
+                    for (int b = 0; b < nb_; b++) {
+                        double d = (bC[(size_t)b * naims + kaim[c]] - bL[(size_t)b * naims + kaim[leader]]) / bs;
+                        m1 += d; m2 += d * d;
+                    }
+                    m1 /= nb_;
+                    double var = (m2 / nb_ - m1 * m1) * nb_ / (nb_ - 1);
+                    gap[c] = cev[c] - cev[leader];
+                    gse[c] = sqrt((var > 0 ? var : 0.0) / nb_);
+                    double t = tq995(nb_ - 1);
+                    if (alive[c] && m1 > (t > op->drop_t ? t : op->drop_t) * gse[c] && nsw[c] >= op->min_all) alive[c] = 0;
+                    if (runner < 0 || cev[c] < cev[runner]) runner = c;
+                }
+                mar = cev[runner] - cev[leader];
+                se_run = gse[runner];
+                {
+                    int nb_ = nsw[runner] / bs < nbL ? nsw[runner] / bs : nbL;
+                    sep = mar > tq995(nb_ - 1) * se_run;
+                }
+                /* ---- the leader's aim: block jackknife */
+                {
+                    int w = w1[leader] - w0[leader] + 1;
+                    double *cu = cur + 2 * naims, *sm = cur + 3 * naims, xf, s1 = 0.0, s2 = 0.0;
+                    int kl = klo[leader] - w0[leader], kh = khi_[leader] - w0[leader];
+                    if (kl < 0) kl = 0;
+                    if (kh > w - 1) kh = w - 1;
+                    for (int b = 0; b < nbL; b++) {
+                        CURVE(leader, nbL, b, cu);
+                        int bi = smooth_min(cu, w, kl, kh, gw, sm, &xf);
+                        double aj = aims[w0[leader] + bi] + xf * step;
+                        s1 += aj; s2 += aj * aj;
+                    }
+                    double mean = s1 / nbL, v = s2 / nbL - mean * mean;
+                    double se_aim = sqrt((v > 0 ? v : 0.0) * (nbL - 1));
+                    gse[leader] = se_aim;
+                    aim_ok = tq995(nbL - 1) * se_aim <= op->aim_tol;
+                }
+                if ((sep && aim_ok) || n_now >= cap) break;
+                n_now *= 2;
+                if (n_now > cap) n_now = cap;
+                alive[leader] = 1;
+                if (sep) { for (int c = 0; c < nclub; c++) if (c != leader && nsw[c] >= op->min_all) alive[c] = 0; }
+                else { for (int c = 0; c < nclub; c++) if (hyp[c]) alive[c] = 0; }
+            }
+            #undef EVAL
+            #undef CURVE
+            for (int c = 0; c < nclub; c++) {
+                double *o = out_club + ((size_t)ce * nclub + c) * 6;
+                const double *lm = lim + ((size_t)ce * nclub + c) * 2;
+                o[0] = caim[c]; o[1] = cev[c]; o[2] = zlo[c]; o[3] = zhi[c];
+                o[4] = (caim[c] <= lm[0] + 1 || caim[c] >= lm[1] - 1) ? 1.0 : 0.0; o[5] = nsw[c];
+            }
+            double *oc = out_cell + (size_t)ce * 8;
+            oc[0] = leader; oc[1] = runner; oc[2] = mar; oc[3] = se_run; oc[4] = nsw[leader];
+            oc[5] = sep; oc[6] = aim_ok; oc[7] = gse[leader];
+        }
+        free(car); free(bsum); free(aims); free(cur); free(w0); free(caim);
+    }
+    *balls_out = balls;
 }
 
 int fs_max_threads(void)
