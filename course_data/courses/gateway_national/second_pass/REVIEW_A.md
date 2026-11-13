@@ -1,6 +1,7 @@
 # Review A: holes 1-6 as Will would read them on the tee (Back first, then Middle)
 
-Status: **version 1 (Fri Nov 13)**. Page reviewed: `wind_page/index.html` at commit cee080946 (Actions run
+Status: **version 2 (Fri Nov 13)**: checked against the Dec 2023 lidar grass heights, which retracted one
+version-1 proposal (hole 2 left) and shrank another (hole 1 right). Page reviewed: `wind_page/index.html` at commit cee080946 (Actions run
 43358518302). Map reviewed: `truth/package.json` `zones_ll` (identical to `truth/course.py`, checked to 0.02 yd),
 painted in list order, later zone wins. Read-only review: nothing in the map, engine or page was changed.
 
@@ -9,14 +10,14 @@ painted in list order, later zone wins. Read-only review: nothing in the map, en
 **No hole 1-6 has a hole-10-type error.** I looked for an unpenalised creek, ditch, pond edge, tree line or yard
 under or beside every Driver / 2-wood / 4-wood oval, from both tees, on NAIP 2023 and on a lidar ground-relief
 image. There is none. Driver is the right club on all five long holes from both tees, and the aims sit where I
-would put them. Two picks are close calls a map edit could tip (hole 1 Middle, hole 4 club). The problems below
-are ranked by how likely they are to change what Will does.
+would put them. One pick is a close call the map could tip (hole 4's club, 7-iron by 0.03). The problems below
+are ranked by how likely they are to change what Will does. None is likely to.
 
 | # | hole | verdict | problem | effect |
 |---|---|---|---|---|
 | 1 | 4 (par 3) | doubt | fescue mound behind and back-right of the green is not in the map (hole 4 has no hand zones at all) | box and "safe miss" are right; long is priced as rough. Club is a 0.03 call between 7- and 6-iron, and the mound favours the 7 |
-| 2 | 1 Middle | doubt (close call) | right fescue starts 5-8 yds nearer the fairway than mapped at the neck, exactly where the Middle Driver finishes | Driver beats 4-wood by only 0.030; I estimate the edit costs the Driver about 0.01. Needs a re-solve |
-| 3 | 2 | fine | left "fescue" at 290-350 is drawn from the fairway edge; the first 8-10 yds are mown rough at the foot of the berm | map too harsh on the left, so the aim sits 2-3 yds too far right. Fixing it firms up Driver from Middle (now 0.026) |
+| 2 | 1 | fine (Middle is a close call) | right fescue starts 3-4 yds nearer the fairway than mapped at 270-345 (lidar), where the Middle Driver finishes | Driver beats 4-wood by 0.030 from Middle; I estimate the edit costs the Driver about 0.005. Worth one re-solve |
+| 3 | 2 | fine | none: the left fescue edge matches the lidar to 1-2 yds (my version-1 proposal 2a is withdrawn) | - |
 | 4 | 3 | fine | tree row right of the fairway is unmapped for 7 yds in front of the OB line beyond 345 yds (Back) / 282 (Middle) | about 0.5 % of Middle drives; no change expected |
 | 5 | 1 | fine | no OB right of the road (x > 57) | under 0.1 % of drives |
 | 6 | all | page wording | elevation line reads "1 ft below the tee, so it carries -1 yds" (hole 1); par-3 headline "Plays 181 yds - 7-iron carries 174" with no word about release | Will will ask about both |
@@ -35,9 +36,13 @@ fairway polygon (no); water erased by the hand "rough footprint" inside a landin
 - Ground relief from `raw/dtm.tif` (height minus its 50-m mean) for every hole, to find ditches the photo hides.
 - Scratch renders are deleted at the end; every polygon below is given in lon/lat and in frame yards.
 
-Caveats. `raw/naip_2023.tif` is 0.6 m, not 0.3 m, so edges are good to about 1-2 yds. The 2023 lidar grids did not
-load usefully in my renderer (my bug), so grass height is taken from F1's tables, not re-measured. Lie shares I
-quote are my own Gaussian estimates from the page's 95 % widths, not engine output. I ran no re-solves.
+- Grass and tree height (highest minus lowest return per 0.5-m cell) from F2's lidar grids: Dec 2023 on holes 1
+  and 2 (mown 4-6 cm, standing 20-80 cm: a sharp edge), the older flight on 3-6 (good for trees, weak for grass).
+
+Caveats. `raw/naip_2023.tif` is 0.6 m, not 0.3 m, so photo edges are good to about 1-2 yds. The August photo
+misled me once: on hole 2 a smooth dark-green band read as mown rough and the lidar shows it standing 25-35 cm.
+Where photo and lidar disagree below I follow the lidar. Lie shares I quote are my own Gaussian estimates from the
+page's 95 % widths, not engine output. I ran no re-solves.
 
 ## Hole 4 (par 3, 180 Back / 153 Middle): doubt
 
@@ -56,6 +61,8 @@ Seen on `h4`, `h4z` (green surround at 6.5 px/yd).
     continues left along the back of the green to x -14. Frame (Back):
     `[[-14,196],[-6,193],[4,191],[11,187],[16,181],[20,176],[27,176],[29,184],[26,192],[20,199],[10,203],[-2,204],[-12,202]]`.
     lon/lat: `[[-90.1522513,38.6548269],[-90.1523294,38.6548615],[-90.1524298,38.6548907],[-90.1524959,38.6549322],[-90.1525379,38.6549874],[-90.1525712,38.6550332],[-90.1526438,38.6550422],[-90.1526777,38.6549797],[-90.1526597,38.6549108],[-90.1526089,38.6548461],[-90.1525117,38.6548008],[-90.1523889,38.6547772],[-90.1522819,38.6547806]]`
+  - Lidar: the older flight shows only scattered returns over the mound (it is weak for grass everywhere on 3-6),
+    so this rests on the photo's texture and F1's Sentinel-2 series.
   - Why it matters: the box centre is 14-16 yds short of the mound, about two depth-sigmas for a 7-iron, so roughly
     2 % of tee shots. It will not move the box more than a yard. It does settle the club question below.
   - Test: re-run `opt/par3_target.py` and `opt/par3_ladder.py` for hole 4 with 4a, then with 4b.
@@ -73,9 +80,10 @@ Seen on `h4`, `h4z` (green surround at 6.5 px/yd).
   five more words on the page.
 - Green outline is 1-2 yds inside the visible surface on the right and back (F1 said the same). No effect.
 
-## Hole 1 (par 4, 376 Back / 354 Middle): Back fine, Middle doubt
+## Hole 1 (par 4, 376 Back / 354 Middle): fine (Middle is the close call the page says it is)
 
-Seen on `ov1`, `h1` (landing 180-380), `h1R` (right side at 7 px/yd), `m1` (Middle), relief `dt1`.
+Seen on `ov1`, `h1` (landing 180-380), `h1R` (right side at 7 px/yd), `m1` (Middle), relief `dt1`, lidar height
+`h1_hag`.
 
 - **Picture.** Fairway 45-50 yds wide at 240-300 (Back), a neck at 300-320 where a tongue of rough cuts in from the
   right, fescue berms both sides (both show as ridges on the relief), cart path on the left at x -40, a road on
@@ -83,19 +91,32 @@ Seen on `ov1`, `h1` (landing 180-380), `h1R` (right side at 7 px/yd), `m1` (Midd
   x -45..-38) is what Will's "does this hole think the cart path is a creek?" was about. The crossing at 45-60 yds
   is real (there is a bridge and a channel on the relief); the strip north of it up the path is doubtful. Neither
   touches any club that reaches the fairway.
-- **Right fescue is nearer than mapped.** On `h1R` the bright tufted growth starts at x +27..+28 from 255 to 345;
-  the native polygon starts at +32..+35. So 5-8 yds of fescue are priced as rough. F1 measured 3-6 yds.
-  - **Proposal 1a, add `native`** (the missing strip; confidence 0.7). Frame (Back):
-    `[[27,252],[27,300],[28,322],[29,345],[35.5,345],[34,300],[32,252]]` (Middle frame: 22 yds less along).
-    lon/lat: `[[-90.1411491,38.6620747],[-90.1414881,38.6623672],[-90.1416357,38.6625068],[-90.1417904,38.6626525],[-90.1417399,38.6626885],[-90.1414337,38.662406],[-90.1411103,38.6621024]]`.
+- **Right fescue is 3-4 yds nearer than mapped at 270-345.** Dec 2023 lidar, median height in cm across the
+  right side (x = yds right of the Back line):
+
+  | along | x 26 | 29 | 32 | 35 | 38 | mapped edge |
+  |---|---|---|---|---|---|---|
+  | 260 | 9 | 6 | 5 | 6 | 19 | 32 |
+  | 280 | 5 | 6 | 35 | 38 | 25 | 33 |
+  | 300 | 8 | 21 | 80 | 63 | 21 | 34 |
+  | 320 | 5 | 7 | 26 | 46 | 34 | 34.5 |
+  | 340 | 5 | 9 | 61 | 55 | 21 | 35 |
+
+  Standing grass starts at x +30..+31 from 270 on (+29 in a bulge at 300); at 260, beside the bunkers, it starts
+  at +37, so there the map is 5 yds too harsh. The photo's bright band at +27..+30 is short. This is F1's finding,
+  which fell under the lead's 3-yd rule. Left side: standing from x -47..-50, mapped from -40..-42 (the cart path
+  is inside the band): slightly harsh, fine.
+  - **Proposal 1a, add `native`** (the missing strip; confidence 0.8). Frame (Back):
+    `[[30,268],[29,290],[28.5,300],[29.5,312],[30.5,345],[35.5,345],[34,300],[32.5,268]]`
+    (Middle frame: `[[31,246],[30,268],[29.5,278],[30.5,290],[31.5,323],[36.4,323],[35,278],[33.5,246]]`).
+    lon/lat: `[[-90.1412388,38.6621888],[-90.1414019,38.6623173],[-90.1414765,38.6623755],[-90.1415534,38.6624542],[-90.1417787,38.6626608],[-90.1417399,38.6626885],[-90.1414337,38.662406],[-90.1412194,38.6622026]]`.
     Paint it before the hand fairway and sand zones.
-  - Back: Driver aim -8, 95 % edge +28. The strip takes about 1.6 % of drives, about 0.01 strokes against a
-    0.051 margin. No change.
-  - **Middle: Driver aim -5 finishes in the neck; the strip takes about 2.2 % of drives (4-wood 0.6 %).** That is
-    about 0.01 off a 0.030 margin. **Question to test: re-solve hole 1 Middle with 1a.** I expect Driver by about
-    0.02 with the aim 1-2 yds further left.
-- **Would a DECADE player hit Driver from Middle?** Fescue to fescue is about 73 yds at the neck (left of the path
-  at -48, right at +25) against a 70-yd pattern, and it leaves 72 yds instead of 100. That is on the Driver side of
+  - Back: Driver aim -8, 95 % edge +28: the strip takes under 1 % of drives. No change.
+  - Middle: Driver aim -5 finishes in the neck; the strip takes about 1 % of drives (4-wood 0.3 %), about 0.005
+    off a 0.030 margin. **Question to test: re-solve hole 1 Middle with 1a.** I expect Driver to hold at about 0.025
+    with the aim a yard further left.
+- **Would a DECADE player hit Driver from Middle?** Fescue to fescue is about 78 yds at the neck (left of the path
+  at -48, right at +30) against a 70-yd pattern, and it leaves 72 yds instead of 100. That is on the Driver side of
   the 65-yd rule, narrowly. Driver is defensible; the page is right to badge it "close call". Back is a clear Driver.
 - **Proposal 1b, add `ob`** right of the road (confidence 0.5 that it is OB rather than just dead; minor). Frame:
   `[[57,-10],[57,420],[110,420],[110,-10]]`. lon/lat:
@@ -106,21 +127,25 @@ Seen on `ov1`, `h1` (landing 180-380), `h1R` (right side at 7 px/yd), `m1` (Midd
 
 ## Hole 2 (par 4, 422 / 397): fine
 
-Seen on `ov2`, `h2`, relief `dt2`.
+Seen on `ov2`, `h2`, relief `dt2`, lidar height `h2_hag`.
 
-- **Picture.** Pond left to 285 yds (right edge x -28 at 250-280), fairway x -20..+40 at 287, cart path right at
-  +40, fescue berm beyond it, maintenance building from +70. Driver aim +8.5 is fairway centre, away from the
-  pond. Carry 262 lands level with the pond's last 20 yds, 37 yds right of its edge: two sigmas. Right club, right aim.
-- **Left "fescue" block (282-350, x -68..-17) is drawn from the fairway edge.** The relief shows the berm crest at
-  x -40 and its foot at about -28; the photo shows a smooth dark-green band from the fairway edge (-17) out to about
-  -27, then brown fescue. F1's lidar put the first standing grass at -26..-31. So 8-10 yds of mown rough are priced
-  as fescue, for a Driver that finishes 287-312.
-  - **Proposal 2a, add `rough`** over the inner strip, painted after the native zones and before the hand fairway
-    (confidence 0.65). Frame (Back): `[[-27,300],[-27,352],[-17,352],[-19,341],[-18,331],[-18,321],[-20,311],[-24,301]]`.
-    lon/lat: `[[-90.145421,38.6614364],[-90.1457915,38.6611219],[-90.1458687,38.6611777],[-90.1457749,38.6612331],[-90.1457113,38.6612992],[-90.1456401,38.6613597],[-90.1455534,38.661409],[-90.1454513,38.6614471]]`
-  - Direction of the error: the map is too harsh, so today's answer is the cautious one. Expect the aim to move
-    2-3 yds left and the Driver's margin to grow. **Test on Middle**, where Driver leads the 2-wood by only 0.026.
-- The same berm carries fescue on to about 395-460 yds; the polygon stops at 350. Beyond any tee shot.
+- **Picture.** Pond left to 285 yds (right edge x -28 at 250-280), fairway x -14..+40 at 287, cart path right at
+  +40, fescue berm beyond it (standing from +45 on the lidar, as mapped), maintenance building from +70. Driver
+  aim +8.5 is a few yards left of the fairway's centre, well clear of the pond. Carry 262 lands level with the pond's last 20 yds, 37 yds right of its edge: two sigmas. Right club, right aim.
+- **Left fescue block: the map is right. Version-1 proposal 2a is withdrawn.** On the August photo the 10 yds
+  next to the fairway look like smooth mown rough. The Dec 2023 lidar says otherwise (median height, cm):
+
+  | along | x -33 | -30 | -27 | -24 | -21 | -18 | -15 | mapped edge |
+  |---|---|---|---|---|---|---|---|---|
+  | 295 | 35 | 33 | 14 | 5 | 5 | 5 | 5 | -26 |
+  | 310 | 25 | 26 | 29 | 34 | 37 | 6 | 5 | -20 |
+  | 325 | 21 | 26 | 25 | 25 | 29 | 7 | 6 | -18 |
+  | 340 | 17 | 21 | 25 | 28 | 37 | 8 | 5 | -19 |
+
+  Standing grass starts at x -19..-20 from 305 on, which is where the polygon's edge is; the fairway edge is
+  10 yds further right at this point of the hole on the lidar image. The lead's F1 edit is in and correct. The
+  block's outer third (x -68..-52) is mown on the lidar, but that is beyond any miss that matters.
+- The standing grass continues, narrower, past 350 where the polygon stops. Beyond any tee shot from either tee.
 - Numbers: Driver 295 total leaves 122 to a green 31 yds right of the line: right. Wind 3 behind, 3 right-to-left:
   right.
 
@@ -151,9 +176,9 @@ Seen on `ov3`, `h3`, `h3b` (330-600), `m3`, `m3R` (right side from Middle at 7 p
 
 ## Hole 5 (par 4, 452 / 421): fine
 
-Seen on `ov5`, `h5`, relief `dt5`.
+Seen on `ov5`, `h5`, relief `dt5`, lidar tree height `h5_tree`.
 
-- Pond in front of the tee ends at 85 yds: no club is affected. Fairway x -25..+25 at 287. Left: 15-20 yds of
+- No trees anywhere in the landing area (lidar). Pond in front of the tee ends at 85 yds: no club is affected. Fairway x -25..+25 at 287. Left: 15-20 yds of
   rough, then a brushy berm (mapped native -62..-42: matches the ridge on the relief). Right: rough, cart path at
   +40, fescue berm between the two paths (mapped +46..+66: matches). No ditch.
 - Driver aim +3.5: fescue 43 right and 46 left. Balanced. The bunker at 240-255 (x -25..-10) is short of the 262
@@ -163,10 +188,11 @@ Seen on `ov5`, `h5`, relief `dt5`.
 
 ## Hole 6 (par 5, 530 / 500): fine
 
-Seen on `ov6`, `h6`, `m6`, relief `dt6`.
+Seen on `ov6`, `h6`, `m6`, relief `dt6`, lidar tree height `h6_tree`.
 
 - Fairway x -22..+25 at 287, ending at 350 where the cart path crosses (no ditch at the break: checked on the
-  relief). Left: a tree row on a ridge from 250 yds (mapped, x -75..-35), and a wet basin behind it. Right: cart
+  relief). Left: a tree row on a ridge from 250 yds (mapped x -75..-35; the lidar crowns sit inside the mapped outline to
+  2-3 yds), and a low basin behind it. Right: cart
   path at +45, berm, second path.
 - Driver aim +5.5, right of centre, away from the trees. Correct side.
 - Both side bands are harsher than the ground (F1 said so): the left native strip (x -48..-30, 255-345) is thin
