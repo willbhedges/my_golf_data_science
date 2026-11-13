@@ -74,7 +74,34 @@ def load_holes(set_name):
     got = {}
     orig = PK._par3
 
+    FEAT = {}
+    if os.environ.get("P3_FEATURES"):
+        # 2026-11-13 second pass: F2's corrected surrounds for 12 / 14 / 17 (opt/par3_features.json, a frozen copy):
+        # long grass and tree crowns from the Dec 2020 / Dec 2023 lidar, bunkers and green outlines re-traced.
+        # Paint order: native, mown islands, the package's other zones (a replaced bunker = the package sand zone
+        # nearest the new one, within 15 yds), tree crowns last.
+        FEAT = json.load(open(os.path.join(HERE, "par3_features.json")))["holes"]
+
     def cap(fr, green_ll, gpoly, zones, length, k):
+        if str(k) in FEAT:
+            ed = FEAT[str(k)]
+            px = lambda e: np.asarray(fr.ll_to_px(np.asarray(e["polygon_ll"], float)[:, :2]), float)   # noqa: E731
+            keep = [(lie, np.asarray(poly, float)) for lie, poly in zones if lie not in ("native", "recovery")]
+            for e in ed:
+                if e["action"] == "replace" and e["kind"] == "sand":
+                    q = px(e)
+                    sand = [(i, float(np.hypot(*(z[1].mean(0) - q.mean(0))) / PK.PPY)) for i, z in enumerate(keep) if z[0] == "sand"]
+                    if sand and min(sand, key=lambda t: t[1])[1] <= 15:
+                        keep[min(sand, key=lambda t: t[1])[0]] = ("sand", q)
+                    else:
+                        raise ValueError("par3_features: hole %s: no package bunker near %s" % (k, e["target"]))
+                elif e["action"] == "replace" and e["kind"] == "green":
+                    gpoly = [list(map(float, pt[:2])) for pt in e["polygon_ll"]]
+                elif not (e["action"] == "add" and e["kind"] in ("native", "rough", "trees")):
+                    raise ValueError("par3_features: hole %s: unhandled edit %s %s" % (k, e["action"], e["kind"]))
+            zones = ([("native", px(e)) for e in ed if e["action"] == "add" and e["kind"] == "native"]
+                     + [("rough", px(e)) for e in ed if e["action"] == "add" and e["kind"] == "rough"] + keep
+                     + [("recovery", px(e)) for e in ed if e["action"] == "add" and e["kind"] == "trees"])
         p = orig(fr, green_ll, gpoly, zones, length, k)
         tee = np.array(PK.TEE_PX, float)
         flag = fr.ll_to_px([green_ll])[0]

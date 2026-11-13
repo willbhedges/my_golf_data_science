@@ -43,7 +43,9 @@ EXTRA = {
           N([(140, 28), (200, 28), (260, 32), (345, 35)], [(140, 52), (345, 52)], "fescue right (tufted, tan / grey CIR)")],
     "2": [N([(265, -70), (345, -70)], [(265, -40), (300, -36), (345, -34)], "prairie left beyond the pond")],
     "3": [N([(140, -70), (345, -70)], [(140, -45), (345, -43)], "prairie left of the cart path"),
-          N([(140, 18), (220, 20), (345, 22)], [(140, 30), (220, 30), (345, 32)], "fescue strip before the tree line right")],
+          # 2026-11-13 (F1): the "fescue strip before the tree line right" (x +18..+32) is a bare track / thin rough
+          # (no lidar height, no dormant-grass signal): removed. Trees (LATE) and the yard beyond are unchanged.
+          ],
     "5": [N([(140, -70), (345, -70)], [(140, -30), (200, -30), (250, -38), (300, -40), (345, -40)], "prairie left"),
           N([(140, 32), (345, 34)], [(140, 45), (345, 46)], "fescue between the rough and the cart path right"),
           N([(140, 56), (345, 58)], [(140, 70), (345, 70)], "prairie beyond the cart path right")],
@@ -138,8 +140,14 @@ for _r, _eds in _FA.items():
             if e["action"] != "add" or e["kind"] not in ("native", "rough"):
                 raise ValueError("features_applied.json: hole %s: unhandled edit %s %s" % (_r, e["action"], e["kind"]))
             if e["kind"] == _k:
-                _z.append(Z(_k, poly(*[(x, a) for x, a in e["polygon_frame_x_along"]]),
-                            "second pass (lidar height): " + e["target"][:70]))
+                if e.get("polygon_ll"):                 # WGS84 ring -> this hole's corridor frame (x, along)
+                    import numpy as _np
+                    import corridor as _CO
+                    _yd = _CO.frame_of(_CO.frames(S)[_r], 1.0).ll_to_yds(_np.asarray(e["polygon_ll"], float)[:, :2])
+                    _pts = [(float(x), float(-y)) for x, y in _yd]
+                else:
+                    _pts = [(x, a) for x, a in e["polygon_frame_x_along"]]
+                _z.append(Z(_k, poly(*_pts), "second pass (lidar height): " + e["target"][:70]))
     EXTRA[_r] = _z
 # 16, the mound right of the fairway at 264-298 (x +6..+43, white stones on its left edge): tufted on NAIP Aug 2023, but
 # the Dec 2023 lidar has its grass at 0.036 m (the fescue block across the fairway reads 0.22 m in the same flight) and

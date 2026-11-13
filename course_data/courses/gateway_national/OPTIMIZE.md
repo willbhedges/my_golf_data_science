@@ -279,3 +279,105 @@ the tee shots that changed (2, 10, 11), and at Middle 16. Par-3 club line: each 
 * Middle 3's long drives land past the hand-checked footprint (auto layers there).
 * The map fixes were made on 2023 imagery. Fescue edges are good to +/-3-5 yds (reviewers' estimate).
 * The forecast is from Nov 9; the weather workflow refresh (~Nov 12, 13) rebuilds the page but not the book.
+
+## 5. Nov 12-13 second pass (integrator)
+
+One integrator (this section) with four specialists writing proposals only (`second_pass/`: PHYSICS.md, MODEL.md,
+FEATURES_1_9.md, FEATURES_10_18.md, WILL_REVIEW.md). Golfer's rules for this pass: his stated carries as given, one
+normal shot pattern per club, one club and one aim per hole; only real external conditions vary (forecast wind and
+temperature, firm or frozen ground, tee position). No "if you are hitting it well / badly" cases on the page.
+
+### 5a. The audit's 13 findings on the built page
+
+Status per finding: AUDIT.md, last section. In short: 1, 4, 5, 6, 9, 10, 11, 12 fixed; 7 and 8 fixed as designed with
+a residual (the par-3 number is still the card's by default; 20 / 40 up on a Back tee shows the card-tee solve with a
+pill); 2 right; 3 over-corrected (re-fixed here); 13 mostly.
+
+### 5b. New evidence for the map
+
+* **Sentinel-2 NDVI, Nov 8 + 10 2026 (10 m, cloud-free)**, `second_pass/s2/`: fairway 0.87, mown rough ~0.80, dormant
+  prairie / fescue 0.50-0.65. It shows what is dormant warm-season grass today. It cannot tell standing from cut, and
+  unmown cool-season grass stays green, so it is used to confirm or reject a mapped band, not to trace one alone.
+* **USGS 3DEP lidar point clouds of Dec 2020 and Dec 2023** (F2 / F1): grass height on a 0.5 m grid (mown 0.02-0.04 m,
+  standing fescue / prairie 0.10-0.35 m). The direct measure of long grass, late in the season.
+* **The summer photo misleads on unirrigated rough:** tan and "textured" in August (NAIP), short and green in
+  November. That is how the right side of 9 and the inside of 8's dogleg were mapped as fescue on Nov 9.
+* Every applied edit was looked at by me on a render (NAIP 2023 RGB + CIR at 4-9 px / yd, NDVI, lidar height) before
+  and after (`opt/lie_render.py`, the engine's own lie raster).
+
+### 5c. Map edits (rule from Fri 03:00Z: apply only if a Back or Middle aim moves >= 3 yds or a club changes)
+
+Aim in yds right (+) / left (-) of the tee line; central world, 16,000 swings (SE 0.001-0.004), Nov 13 forecast
+temperatures, second-pass physics. "v5" = the published page's calm book.
+
+| hole | edge, old -> new | evidence | Back pick / aim, v5 -> now |
+|---|---|---|---|
+| 8 | ground left of the fairway at 240-345 (x -65..-128): "unverified" (priced as half trees) -> rough | outside the +/-65-yd hand corridor; looked at on NAIP + NDVI: mown rough, then the cart path (`engine.checked_extra_ll`) | 2-wood -41 -> **Driver -44.5** (0.057 over 2-wood). This artefact alone was worth 0.05 to the Driver |
+| 8 | unmown square inside the bend (299-336, x -88..-48): unmapped -> native | NAIP 2023 tufted block ringed by a mown bank; F1 confirms the position (6-9 yds larger east); standing now: not settled | part of the above (the Driver finishes 285, short of it; from Middle it stops the Driver: Middle 8 4-wood -35.5) |
+| 8 | right side at 220-312: native from the fairway edge (two bands) -> native from the lidar brush line (x 47 / 45 / 34 / 28 / 21 / 9 / -7 at 220 / 250 / 260 / 270 / 280 / 290 / 300) | F1: no standing grass in the Dec 2020 lidar, NDVI Nov 2024-26 0.76-0.84; mown collar visible on NAIP | part of the above |
+| 9 | right "fescue" band x +30..+45, 140-340 -> removed (rough) | mowing stripes on NAIP 2023; NDVI 0.87 (= fairway); F1: no lidar height out to the trees | 4-wood +3 -> **Driver +13** (0.025 over 2-wood, 0.039 over 4-wood): close call |
+| 9 | left inner edge at 250-340: x -24 / -19 / -14 / -16 / -22 -> -34 / -29 / -19 / -22 / -27 / -28 (250 / 265 / 280 / 300 / 320 / 340) | worn line on NAIP; NDVI edge; F1 lidar within 1-4 yds at 270-340 | part of the above |
+| 10 | long grass: hand bands (left x < -45, right x > 30-52) -> lidar polygons (left from x -55..-60 beyond the bunkers, a band across 300-315 behind the green, right strip between the two cart paths) | F2, Dec 2020 lidar; checked on the lidar render | 4-wood -16 -> **2-wood -20.5** (0.060 over 4-wood): the aim is the green centre; the club is the colder, shorter ball (5d) |
+| 16 | left native inner edge at 235-300: x -30..-34 -> -26 at 235 to -18 at 295 (lidar polygons, whole hole) | F2, Dec 2023 lidar (0.22 m in the block); my NAIP read was -27..-22 | 4-wood -3 -> 4-wood **+6.5** (0.108 over 2-wood, 0.111 over long iron) |
+| 16 | mound right at 264-298 (x +6..+43): native (lost-ball) -> a penal lie priced as "sand" | tufted in every summer photo, 0.036 m in the Dec 2020 and Dec 2023 lidar (the block across the fairway reads 0.22 m), stone wall on its fairway face. Deliberate: found but awkward, between rough and native; the engine has no heavy-rough lie | part of the above. As native: aim +4; as plain rough: +7.5, 2-wood only 0.038 behind |
+
+Tested and NOT applied (under the rule): lidar long grass on 11, 13, 15, 18 (aims moved 0.5-2 yds: the Nov 9 hand
+bands stay); 18 Back tee 17 yds forward onto pad B (F2, confidence 0.7: Driver aim 14.5 -> 12.5, same club; the hole
+may play ~17 shorter than the card from that pad); fairway right edges 2-5 yds narrower on 10 / 15 / 18; 8 fairway
+left edge 3-7 yds inside the OSM line at 240-290; tree lines 3-15 yds further from play on 8, 9, 14, 17, 18 (the map
+is conservative); OSM greens and bunkers 1.5-3 yds off on 10-18; par-3 surrounds on 12, 14, 17 (no par-3 target
+re-solve). My own notes that fell under the rule: 1 right native 5-8 yds further right at 290-340, 2 native right of
+the cart path from x +48.
+
+Process errors of this pass, so they are not repeated: (1) `opt/map_edits.py` splices by the OLD trace's zone
+counts; run twice on already-edited zones it dropped hole 9's right tree zone (request rev 4 was solved on that).
+It is now always applied from the v5 zones. (2) trace.py first read the specialists' working JSON and applied only
+"add" edits, which silently deleted 16's mound (rev 5). It now reads a frozen copy
+(`truth/gateway_national/features_applied.json`) and raises on any other action.
+
+### 5d. Physics (PHYSICS.md), adopted behind `config.engine.physics` (Gateway only)
+
+| change | old -> new | check | effect this weekend |
+|---|---|---|---|
+| carry lost per F below 70 | 0.00075 (air only) -> 0.00135 | air 0.00075 (0.39 % of carry per 1 % of density: Titleist altitude rule 0.40) + a ball at air temperature ~0.0004 (about 1 % of ball speed at 45 F) + the 1027-1031 hPa high ~0.0002 | Driver about 4 yds shorter at 45 F; par 3s +2 to +4 yds |
+| crosswind drift | 1.14 yds / mph for the driver, 0.8 mid iron -> 1.5 for every full shot | lag formula W (T - x / v0): driver 6.8 s, 250 m, 75 m/s -> 17 yds at 10 mph; 6-iron 6.3 s -> 16 | aims 1-2.5 yds further up wind |
+| head / tail multipliers | 1.0-1.3 -> 2-wood 1.2, 4-wood 1.3, long iron 1.5, mid iron 1.65, 8-iron 2.0 | mid iron -9 % into 10 mph (rule of thumb 1 % per mph) | par 3s +/-1 yd |
+
+Golfer's answers (Nov 13): he will rotate balls from a pocket as best he can (gives back ~1.5-2 yds of Driver carry
+against a fully cold ball), and his carries were measured in Lawrence KS at ~850-900 ft (Gateway is ~410 ft: costs
+~1.5 yds). The two cancel within a yard, so 0.00135 stays.
+
+Not changed: roll. The fairways are dry (0.43 in of rain in three weeks, none since Nov 3) and Saturday starts
+frozen (24 F overnight, 35 F at 9:00): the stated totals are a fair centre, firm is the likely side (5e).
+
+Also fixed: from a moved tee (The Tips / Champions / Forward grids) the putting-green polygon stayed in card-tee
+yards, so on the drivable 10th the "green" sat 20-60 yds off. Back and Middle were not affected.
+
+### 5e. Frozen or firm ground (roll x1.25 / x1.5), a condition like wind
+
+| hole | normal | x1.25 | x1.5 |
+|---|---|---|---|
+| 8 | Driver -46 (0.056) | Driver -46.5 (0.042) | Driver -48.5 (0.028) |
+| 9 | Driver +15 (0.030) | Driver +15.5 (0.020) | Driver +16 (0.007: a tie with 2-wood) |
+| 10 | 2-wood -20.5 (0.060) | 2-wood -20.5 (0.019) | **4-wood -21.5 (0.015)** |
+| 16 | 4-wood (0.108) | 4-wood (0.087) | 4-wood (0.057) |
+
+(Run before the last 8 / 9 edge edits; those moved the aims 1.5-2 yds.) The page carries one condition pill, on 10:
+"Frozen or very firm ground (drives running 35+ yds): 4-wood, same line".
+
+### 5f. Page
+
+* Par 3s: the number uses the new temperature rule; a crosswind line ("The wind moves the ball about 6 yds right:
+  start it that far left of the box", 1.4 yds per mph); the club still follows the live number.
+* One aim number per hole, the one at the top; the calm note keeps club, margin and shares. "what-if worlds" ->
+  "N% sure". Pattern break-even sentences dropped. The hybrid he does not own sorts last.
+* Footer: temperature rule and tee-slider wording corrected.
+
+### 5g. Honest list of what is still uncertain
+
+* Whether the long grass is standing on Nov 14. The lidar is Dec 2020 / Dec 2023, the photo Aug 2023; the Nov 2026
+  satellite shows dormancy, not height. 8's square and 16's mound are the two that matter.
+* 9 (Driver vs 2-wood vs 4-wood within 0.04) and 10 (2-wood vs 4-wood, decided by 4 yds of carry and the turf) are
+  coin flips in strokes. 8's Driver rests on the left side being open rough (F1 confirms).
+* Tee positions: 18 Back may be 17 yds forward of the mapped point; par 3 on 4 is 176 from the pad centre (card 180).
+* Tee time (9:00 assumed; a frost delay is likely on Saturday) and the tee set.

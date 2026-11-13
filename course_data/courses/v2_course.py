@@ -1453,6 +1453,8 @@ def build_page(slug, which, out=None, data_out=None):
         data["simple"] = True
     for d_ in holes:
         cn = (pt_.get("condition_notes") or {}).get(str(d_.get("key")))
+        if isinstance(cn, dict):                       # {tee set: text}: a note for one base set only
+            cn = cn.get(d_.get("base_set"))
         if cn and d_.get("kind") == "tee":
             d_["cond_note"] = cn
     if cfg.get("par3_drift_per_mph"):
