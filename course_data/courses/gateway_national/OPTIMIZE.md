@@ -1,5 +1,24 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 3, Nov 13 (page editor: wording only, after second_pass/AUDIT_R3.md; page built on 632c4927c)
+
+No solve, no map, no club, aim or table number changed (plain `v2_course.py page --slug gateway_national --which truth`, 53 s).
+
+1. **Level rule tells one story** (template; fires only where config `prefer_on_tie` exists, i.e. Gateway 10 and 11).
+   Strokes-lost column: the truly better club inside the band prints "level" instead of "better by 0.020 here" (Back 10
+   Sat; Tips / Champions 11 Driver; Middle 11 Driver, was "≈ tie"). Note: the book sentence becomes "Calm-day book (no
+   wind, 44 F): 2-wood and 4-wood are level (0.012 strokes apart)." and the "With 2-wood: fairway 47%" and hybrid
+   sentences go; the same on Back 10 Sunday, where the 4-wood wins outright and the book's 0.012 is inside the band.
+2. **Middle 10** (251 yds, 4-wood 261-269 total): `set_notes` pill "Runs out past the middle of the green: a smooth
+   swing is enough" (both days, both starts).
+3. **"N on the card" pill** no longer shown in simple mode: the header line prints the same number (26 phone states).
+4. **Back 1** Why sentence: 75% -> 76% fairway, the number of the book note below it.
+
+QA: qa_page.js on the five sets, 18 holes and 0 problems each. Against the 632c4927c page (qa.json, and all 360 states
+set x day x start x hole from rend.js): only badges, note and the strokes-lost cell differ; headline club, aim line,
+plays-like, carry / total / to-green / width identical everywhere. Hazard-word scan of the rendered text: 0 hits.
+`test_v2_course_landing.py`: 5 pass, 1 fails (Eagle Knoll cloud shape) the same way without this change.
+
 ## Round 2, Nov 13 (strategy lead, second shift; running log, newest checkpoint last)
 
 Starting point: version 9 of the page (f50e64f7b). Tools of this shift: scratchpad `r2/` (walk.js: every hole of the

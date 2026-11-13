@@ -447,7 +447,7 @@ function render(){
     document.getElementById("hAim").innerHTML = `Aim at the dot (anywhere on the blue bar is within 0.005 strokes)${Math.abs(mv) > 2 ? (D.simple ? `; the ball finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} of the dot, at the dashed spot${why ? ` (${why})` : ""}` : `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}`) : ""}. ${relWords(r.rel, st.mph)}, ${Math.round(r.tF)}°F.${r.bayes ? " Same club as the book (this wind and temperature don't change it)." : ""}`;
     const allC = Object.keys(r.out).sort((a,b) => (D.simple ? (HYPO(a) - HYPO(b)) : 0) || r.out[a].ev - r.out[b].ev);   /* D.simple: the club not in the bag goes last */
     const rows = allC.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
-      const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (d <= -0.01 ? `better by ${(-d).toFixed(3)} here` : Math.abs(d) < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
+      const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (r.pref && d < 0 && -d < h.prefer.within ? "level" : d <= -0.01 ? `better by ${(-d).toFixed(3)} here` : Math.abs(d) < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
       return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"${HYPO(c) ? ' style="font-style:italic;opacity:.8"' : ""}><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${lost}</td></tr>`;}).join("");
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>To green</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. To green: yards from where that club finishes to the middle of the green. Tap any club to see its own best aim and pattern; tap ★ to go back. The hybrid (~235 carry) is hypothetical, not in your bag: it shows whether such a club would be the play.</div>`;
     const be = best.e;
@@ -464,6 +464,11 @@ function render(){
     /* D.simple (config page_text.simple): one aim number per hole, the one at the top (it includes the wind); the
        calm-day note keeps the club, the margin and the shares */
     if(D.simple) note = note.replace(/, about \d+ yds in\./, ".").replace(/ Aim .*? is within 0\.005\./, "").replace(/; it beats [^.;]*? in (\d+)% of \d+ what-if worlds/, "").replace(/ Driver-pattern break-even[^.]*?yds\./, "").replace(/ Same club for any driver pattern[^.]*?yds\./, "");
+    /* the level rule (prefer_on_tie) is in force: the pill and the table say "level", so the book's sentence says the
+       same thing instead of naming its own club, its margin and that club's fairway share (audit round 3, Back 10) */
+    if((r.pref || (h.prefer && r.pick === h.prefer.club && h.calm && h.calm.runner === r.pick && h.calm.margin < h.prefer.within)) && note && h.calm && r.T.back === 0)
+      note = `Calm-day book (no wind, ${Math.round(h.calm.temp)}°F): ` + (h.calm.runner === r.pick && h.calm.pick !== r.pick
+        ? `${h.calm.pick} and ${r.pick} are level (${h.calm.margin.toFixed(3)} strokes apart).` : `${r.pick} is level with the best club.`);
     if(h.why && r.T.back === 0 && !own) note = (r.pick === (h.calm && h.calm.pick) || r.pref || (h.prefer && r.pick === h.prefer.club) ? h.why + " " : "") + note;   /* also when the level-rule club wins outright (10 on Sunday) */
     if(h.set_note && h.set_note[st.set]) badges.push(`<span class="pill chg">${h.set_note[st.set]}</span>`);
     if(h.cond_note && (r.T.back === 0 || !D.simple)) badges.push(`<span class="pill chg">${h.cond_note}</span>`);
@@ -491,7 +496,8 @@ function render(){
     const ae = document.getElementById("hAdj"); ae.hidden = false;
     ae.innerHTML = `<span>${T} target</span><span class="${eY > 0 ? "up" : eY < 0 ? "dn" : ""}">${sg(eY)} elevation</span><span class="${wY > 0 ? "up" : wY < 0 ? "dn" : ""}">${sg(wY)} wind</span>` +
       (D.temp_k ? `<span class="${tY > 0 ? "up" : tY < 0 ? "dn" : ""}">${sg(tY)} at ${Math.round(r.tF)}°F</span>` : "");
-    if(Math.abs(r.play - r.S3.center - r.adj) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center + r.adj)}${r.adj ? " (moved tee)" : ""} on the card</span>`);
+    /* not in D.simple: there the header line already shows this same card yardage */
+    if(!D.simple && Math.abs(r.play - r.S3.center - r.adj) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center + r.adj)}${r.adj ? " (moved tee)" : ""} on the card</span>`);
     if(pk && pk.gap) badges.push(`<span class="pill tie">No club in the bag carries ${Math.round(r.play)}: play the number</span>`);
     /* the other club takes over within 3 yds of this tee's distance (a tee marker a few steps forward or back, or the
        card / map difference): say at which distance to the middle of the green, in today's air */
