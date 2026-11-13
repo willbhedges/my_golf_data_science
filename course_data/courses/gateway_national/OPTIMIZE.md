@@ -1,5 +1,14 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 8b, Nov 13 (Second shot mode: the table fits a 375-px phone)
+
+The seven-column table was wider than the card (the last columns, "vs best" among them, were clipped inside the
+section, so the page-width check did not see it). Now: "vs best" is the second column, the first cell is two lines
+(GO / LAY UP over the club), 13-px cells with 3-px side padding, "Trbl" for Trouble; the top bar shows the club only
+and the strip "Lay up · 243 total · leaves 33". `opt/qa_mode_fit.js <page> <out>`: at 375 and 430 px every th and
+last td right edge <= the section's right edge in the mode on 3, 6, 13, 18 and in Lay up mode on 10 (all fit:
+last column ends at 340 of 351 and 395 of 406).
+
 ## Round 8, Nov 13 (par 5s: the Second shot mode, a menu of every option from any spot; PAR5.md)
 
 * `opt/par5_menu.py` -> `par5_menu.json` (config `par5_menu`, 0.66 MB): from 180-340 yds out on the line of play and

@@ -401,8 +401,10 @@ function ssHtml(h, E0, E, sel, spots){
   const where = num ? `${SS.start} yds from the middle of the green, on the hole's line of play (the middle of the fairway at that distance, not the straight tee-to-green line)${E0.nofw ? "; there is no mown fairway at this distance" : ""}`
                     : `where the ${SS.start === "D" ? "Driver" : "2-wood"} finishes from the ${String(st.set).replace(/^the /i, "")} tee`;
   const top = `<b>From ${E.d}: ${say}.</b>${ctl}Start: ${where}. ${E.d} to the middle, ${E.f} to the front edge, ${SS.lie === "F" ? "fairway" : "rough"} lie. Tap a row to see that shot.`;
-  const tr = rows.map(r => `<tr data-club="${r.c}" class="${r === sel ? "best sel" : ""}"><td class="${cls(r.c)}" style="white-space:nowrap">${r === sel ? "● " : ""}${KD(r)}: ${NM(r.c)}${r === best ? " ★" : ""}</td><td>${r.tot}</td><td>${r.lv}</td><td>${r.k === "g" ? r.rc + "%" : "–"}</td><td>${r.g}%</td><td>${r.x}%</td><td>${r === best ? "0" : "+" + (r.ev - best.ev).toFixed(2)}</td></tr>`).join("");
-  const table = `<div style="overflow-x:auto"><table style="font-size:14px"><thead><tr><th>Shot</th><th>Total</th><th>Leaves</th><th>Front</th><th>Green</th><th>Trouble</th><th>vs best</th></tr></thead><tbody>${tr}</tbody></table></div><div class="sub">★ best on expected strokes; vs best = strokes that choice costs. Each club at its own best line. Total: yards a solid one goes. Leaves: yards to the middle of the green. Front: share that carry to the front edge. Green: share that finish on it. Trouble: share lost or blocked (a stroke or more gone).</div>`;
+  /* seven columns on a 375-px phone: a two-line first cell (tag over club), "vs best" second, 13-px cells, 3-px side padding */
+  const C = 'style="padding:5px 3px;font-size:13px"', CH = 'style="padding:5px 3px;font-size:11px;letter-spacing:.03em"';
+  const tr = rows.map(r => `<tr data-club="${r.c}" class="${r === sel ? "best sel" : ""}"><td class="${cls(r.c)}" ${C}><span style="font-size:11px;letter-spacing:.05em;text-transform:uppercase;opacity:.8">${r === sel ? "● " : ""}${KD(r)}</span><br>${NM(r.c)}${r === best ? " ★" : ""}</td><td ${C}>${r === best ? "0" : "+" + (r.ev - best.ev).toFixed(2)}</td><td ${C}>${r.tot}</td><td ${C}>${r.lv}</td><td ${C}>${r.k === "g" ? r.rc + "%" : "–"}</td><td ${C}>${r.g}%</td><td ${C}>${r.x}%</td></tr>`).join("");
+  const table = `<div style="overflow-x:auto"><table style="table-layout:auto"><thead><tr><th ${CH}>Shot</th><th ${CH}>vs best</th><th ${CH}>Total</th><th ${CH}>Leaves</th><th ${CH}>Front</th><th ${CH}>Green</th><th ${CH}>Trbl</th></tr></thead><tbody>${tr}</tbody></table></div><div class="sub">★ best on expected strokes; vs best = strokes that choice costs. Each club at its own best line. Total: yards a solid one goes. Leaves: yards to the middle of the green. Front: share that carry to the front edge. Green: share that finish on it. Trbl (trouble): share lost or blocked (a stroke or more gone).</div>`;
   const out = [];
   if(go.length) out.push(`Go, ${NM(go[0].c)}: ${go[0].g}% on the green, ${go[0].ar}% around it, ${go[0].x}% in trouble.`);
   if(lay.length) out.push(`Lay up, ${NM(lay[0].c)}: leaves ${lay[0].lv}; ${lay[0].ar < 5 ? lay[0].fw + "% fairway, " : ""}${lay[0].x}% in trouble.`);
@@ -608,8 +610,8 @@ function render(){
         ${teeMark(tp2[0], tp2[1], r.T.name + " tee")}`;
       document.getElementById("playLbl").textContent = "Second shot";
       const pe2 = document.getElementById("hPlay"); pe2.textContent = `${H2.KD(sel)}: ${H2.NM(sel.c)}`; pe2.className = "play " + cls(sel.c);
-      const tc2 = document.getElementById("topClub"); tc2.textContent = `${H2.KD(sel)}: ${H2.NM(sel.c)}`; tc2.className = cls(sel.c);
-      document.getElementById("topKey").textContent = `${sel.tot} total · leaves ${sel.lv} · ${sel.w} wide`;
+      const tc2 = document.getElementById("topClub"); tc2.textContent = sel.c; tc2.className = cls(sel.c);      /* the top bar keeps the club only: it must not wrap */
+      document.getElementById("topKey").textContent = `${H2.KD(sel)} · ${sel.tot} total · leaves ${sel.lv}`;
       document.getElementById("hAim").innerHTML = H2.top;
       document.getElementById("hTable").innerHTML = H2.table;
       const hs2 = document.getElementById("hSecond"); hs2.hidden = false; hs2.innerHTML = H2.below;
