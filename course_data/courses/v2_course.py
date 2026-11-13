@@ -657,8 +657,8 @@ def mark_tall_grass(also_ll, course):
         zones = list(hd["zones"])
         for p in np.asarray(fr.ll_to_px(np.asarray(pts, float)), float):
             hit = [i for i, z in enumerate(zones) if z[0] == "water" and _Path(np.asarray(z[1], float)).contains_point(p)]
-            if not hit:
-                raise SystemExit(f"tall_grass_alt.also_ll: no water zone at {p} on hole {k}")
+            if not hit:          # the zone is no longer in the map (Gateway 10's band, removed Nov 13): nothing to retype
+                continue
             for i in hit:
                 zones[i] = ("native",) + tuple(zones[i][1:])
         hd["zones"] = zones
