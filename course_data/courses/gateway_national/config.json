@@ -112,8 +112,8 @@
     "Back": "Why Driver, narrowly: it gets 20-30 yds closer, but only half the balls find fairway; the 2-wood and 4-wood find more fairway and are almost as good."
    },
    "10": {
-    "Back": "Why: a wood at the left half of the green. Miss left of the flag, not right. About 5 balls in 6 finish on or around the green; an iron to the right fairway instead costs about 0.3 strokes.",
-    "Middle": "Why: 4-wood at the left half of the green. Miss left of the flag, not right. About 6 balls in 7 finish on or around the green; an iron to the right fairway instead costs about 0.25 strokes."
+    "Back": "Why: a wood at the left half of the green. Miss left of the flag, not right. About 7 balls in 8 finish on or around the green; an iron to the right fairway instead costs about 0.4 strokes.",
+    "Middle": "Why: 4-wood at the left half of the green. Miss left of the flag, not right. About 9 balls in 10 finish on or around the green; an iron to the right fairway instead costs about 0.3 strokes."
    },
    "11": {
     "Back": "Why Driver, narrowly: it leaves about 30 yds less; the 4-wood is straighter (71% fairway against 58%)."
@@ -136,7 +136,7 @@
    "10": {
     "club": "4-wood",
     "within": 0.03,
-    "text": "4-wood and 2-wood are level here: the 4-wood misses the green complex less often"
+    "text": "The woods are level here: the 4-wood is the straighter one"
    },
    "11": {
     "club": "4-wood",
@@ -144,14 +144,14 @@
     "text": "Driver and 4-wood are level here: the 4-wood is the straighter one"
    }
   },
-  "prefer_source": "2026-11-13: Back 10, the two woods are within 0.01-0.03 at 35-50 F; the 4-wood has 4 points fewer penalty balls (16% against 20%) and wins on frozen ground and with a wider pattern (HOLE10.md section 7); 11: from Middle the Driver leads the 4-wood by 0.004 (a tie) and the 4-wood wins with the long-grass edges 3 yds closer, on frozen ground or with a 15 % wider pattern; Back 11 (0.024) is outside the band",
+  "prefer_source": "2026-11-13: Back 10, the two woods are within 0.01-0.03 at 35-50 F; the 4-wood has 4 points fewer penalty balls (16% against 20%) and wins on frozen ground and with a wider pattern (HOLE10.md section 7); 11: from Middle the Driver leads the 4-wood by 0.004 (a tie) and the 4-wood wins with the long-grass edges 3 yds closer, on frozen ground or with a 15 % wider pattern; Back 11 (0.024) is outside the band. 2026-11-13 afternoon (10's right side mown, HOLE10.md section 8): Back 10 the 2-wood now leads by 0.04-0.06 calm and Saturday and the 4-wood wins Sunday, so the rule no longer fires there at the forecast; it stays for warmer cells and for The Tips / Champions, where the three woods to the right fairway are within 0.03 (text made general)",
   "par3_notes": {
    "4": "The safe miss is pin-high left."
   },
   "set_notes": {
    "10": {
-    "The Tips": "Green is out of reach from here: 4-wood at the right fairway, leaves about 65",
-    "Champions": "Green is out of reach from here: 4-wood at the right fairway, leaves about 65",
+    "The Tips": "Green is out of reach from here: a wood at the right fairway",
+    "Champions": "Green is out of reach from here: a wood at the right fairway",
     "Middle": "Runs out past the middle of the green: a smooth swing is enough"
    }
   },
@@ -170,7 +170,7 @@
       "club": "Long iron",
       "within": 0.04
      },
-     "note": "Carry the fairway sand (195-200 out) or stay short? Carry it: the long iron flies it. Short of it is the mid iron; the table has the cost. A wood runs out of fairway at 270"
+     "note": "Carry the fairway sand (195-200 out) or stay short? Carry it: the long iron flies it. Short of it is the mid iron; the table has the cost. A wood at the right fairway finishes beside the green, about 25 yds from the middle"
     },
     "Middle": {
      "label": "Lay up",
@@ -267,8 +267,7 @@
   "native_penalty_area_source": "golfer's ground truth 2026-11-13: 'All of the native grass is penalty area generally if it is that height - no finding it, too thick and tall.' Every standing tall-native zone is priced by the engine's water rule (the ball is gone from the first yard in: one stroke + a shot from rough at the point where it crossed the edge) instead of the depth-ramp lost-ball model (25 % lost at the edge rising to 65 %, stroke and distance). 16's short-grass mound stays its penal-lie class; mown areas stay rough. Hole 10: the whole band between the ditch and the right-hand fairway is staked penalty area (his drawing), mapped as water in trace.py LATE['10'].",
   "tall_grass_alt": {
    "rule": "lost_ball",
-   "also_ll": {"10": [[-90.14518366, 38.65819363]]},
-   "source": "golfer 2026-11-13: the tall grass may be played as a lost ball (re-tee) instead of a one-stroke drop; he decides on the day. Second rule set, solved separately (truth/v2_lost, truth_middle/v2_lost; fastsolve run.py --tall-grass lost) and switched on the page; never the default. A ball finishing in a tall-grass zone costs one stroke and the same shot again (closed form, v2_course.lost_ball_ev). Mapped water and ditches stay one stroke + drop. also_ll: hole 10's band between the ditch and the right fairway (his first drawing, mapped as a water-typed zone) is tall grass for this switch."
+   "source": "golfer 2026-11-13: the tall grass may be played as a lost ball (re-tee) instead of a one-stroke drop; he decides on the day. Second rule set, solved separately (truth/v2_lost, truth_middle/v2_lost; fastsolve run.py --tall-grass lost) and switched on the page; never the default. A ball finishing in a tall-grass zone costs one stroke and the same shot again (closed form, v2_course.lost_ball_ev). Mapped water and ditches stay one stroke + drop. (also_ll, hole 10's band beside the right fairway, removed 2026-11-13 afternoon: the band is mown rough and no longer in the map.)"
   }
  },
  "tall_grass_alt": {
@@ -284,7 +283,7 @@
   "tag": "Tall grass: lost ball (re-tee)",
   "page_text": {
    "why": {
-    "10": {"Back": "Why 4-wood: at the left half of the green, and the shorter wood because it loses fewer balls. Miss left of the flag, not right. About 6 balls in 7 finish on or around the green; an iron to the right fairway instead costs about 0.2 strokes.", "Middle": "Why: 4-wood at the left half of the green. Miss left of the flag, not right. About 6 balls in 7 finish on or around the green; an iron to the right fairway instead costs about 0.15 strokes."},
+    "10": {"Back": "Why: a wood at the left half of the green. Miss left of the flag, not right. About 7 balls in 8 finish on or around the green; an iron to the right fairway instead costs about 0.4 strokes.", "Middle": "Why: 4-wood at the left half of the green. Miss left of the flag, not right. About 9 balls in 10 finish on or around the green; an iron to the right fairway instead costs about 0.3 strokes."},
     "11": {"Back": "Why 4-wood, narrowly: it is the straighter club (71% fairway against the Driver's 58%) and loses fewer balls; the Driver leaves about 25 yds less and is level on strokes."},
     "13": {"Back": "Why Driver: a par 5 with 69% fairway; nothing in reach that a shorter club avoids."},
     "16": {"Back": "Why 4-wood: it stops at the mouth of the narrow part (75% fairway); the Driver runs through the fairway half the time and the 2-wood a quarter of the time."}

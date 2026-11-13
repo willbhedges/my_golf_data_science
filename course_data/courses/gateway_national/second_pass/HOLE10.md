@@ -188,3 +188,47 @@ lay-up's wedge from 66-88 yds 3.03-3.07. **Break-even: about 40 % of tee balls i
 Aim regret (2-wood): aiming 26 L when the band is really mown costs 0.025 strokes; aiming 19.5 L when the band is
 really dead costs 0.05; 24 L costs at most 0.011 either way. Hence map (b) on the page: aim at the left half of
 the green, and the 4-wood when the two woods are within the tie band (4 points fewer penalty balls).
+
+## 8. Nov 13 afternoon: played the hole
+
+Will, after a practice round: "It matches what the LiDAR says as far as all the data stuff", then "Hole 10 it is clear
+on the right, just some brush around the creek, but sort of accounted for." So the right side is section 7's map (a).
+
+Map (commit 0061ee7b2; only hole 10's zones differ in `hand_zones_ll.json`, `truth/package.json`, both course modules):
+* the band between the ditch and the right fairway (his first drawing) is removed: mown rough. Right of the green to
+  the cart path was never mapped dead. The ditch polygon (photo wall to lidar bank top, 3.5-5.5 yds) is kept as it is:
+  on NAIP 2023 it covers the dark line, the olive bank and the tufted lip; no brush shows outside it.
+* the tall grass on the left now comes up to the outer lip of the two upper left greenside bunkers (edge moved 2-6 yds
+  toward the green at 266-297; the map had a 1-2 yd strip of rough between sand and tall grass there, the photo none).
+* config: `engine.tall_grass_alt.also_ll` (the band counted as tall grass for the Lost ball switch) removed.
+
+Re-solve (commit 281442149): hole 10 only, book + card grid + every offset grid, 128 draws, both rule sets, merged
+into `truth/v2`, `truth/v2_lost`, `truth_middle/v2`, `truth_middle/v2_lost` (every other hole's records identical).
+Lay-up grid (`opt/layup10.py grid --kernel`, both rule sets) re-run.
+
+| calm book | before | after |
+|---|---|---|
+| Back, Drop | 2-wood 26 L, 0.012 over 4-wood, 3.79, 19 % dropped, best iron +0.25 | **2-wood 20 L, 0.042 over 4-wood, 3.71, 12 % dropped, long iron +0.34, 8-iron +0.45** |
+| Back, Lost ball | 4-wood 29 L, 0.034 over 2-wood, 3.88 | 2-wood 18.5 L, 0.033 over 4-wood, 3.72, long iron +0.32, 8-iron +0.43 |
+| Middle, Drop | 4-wood 23 L, 0.229 over long iron, 3.73, 14 % | 4-wood 18.5 L, 0.205 over 2-wood, 3.66, 10 %, long iron +0.27, 8-iron +0.41 |
+| Middle, Lost ball | 4-wood 23.5 L, 0.167 over long iron | 4-wood 17 L, 0.251 over long iron, 3.68 |
+
+On the page (forecast cells, 9:00 start, hole 10 at 11:06), Drop / Lost ball:
+
+| tee | Saturday | Sunday | calm 44 F |
+|---|---|---|---|
+| Back | 2-wood 12 L, 4-wood +0.059 / 2-wood 11 L, +0.053 (was 4-wood 20 L on the level rule) | 4-wood 25 L, 2-wood +0.063 / +0.064 (was 30 L) | 2-wood 20 L, +0.046 / 18 L, +0.042 |
+| Middle | 4-wood 10 L / 9 L (was 15 L) | 4-wood 22 L / 20 L (was 27 L) | 4-wood 19 L / 17 L |
+| The Tips, Champions | Driver 17 R, 2-wood +0.028, 4-wood +0.031 / 4-wood 17 R on the level rule | 4-wood 7 R / 6 R, Driver level | 4-wood 9 R, Driver level |
+| Forward | long iron 15 L (was 17 L) | 25 L (was 28 L) | 22 L |
+
+Going at the green over the best iron to the right fairway: Back 0.38-0.39 (was 0.26-0.31), Middle 0.31 Saturday and
+0.17 Sunday (was 0.26 / 0.14).
+
+Page words: the level rule on 10 (4-wood shown when within 0.03) no longer fires for Back at the forecast (the
+2-wood leads by 0.05-0.06 Saturday, the 4-wood wins Sunday outright); it is kept for warmer cells and for the back
+tees, where the three woods to the right fairway are within 0.03, with a general text ("The woods are level here:
+the 4-wood is the straighter one"). Why line: "about 7 balls in 8 ... about 0.4 strokes" (Middle: 9 in 10, 0.3), the
+same in both rule sets. The Tips / Champions pill names no club ("a wood at the right fairway"). Lay up mode now
+stars the 4-wood to the right fairway (15 R Saturday, leaves 27, about 0.2 behind going at the green): with the right
+side mown a wood there loses nothing; the irons follow (long iron +0.18, mid iron +0.21, 8-iron +0.29 behind it).
