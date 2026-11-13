@@ -154,25 +154,96 @@ static inline __m256i lie_v(const int8_t *lie_pad, __m256i idx)
     return _mm256_and_si256(_mm256_i32gather_epi32((const int *)lie_pad, idx, 1), _mm256_set1_epi32(0xFF));
 }
 
-/* swings [i0, i0 + 8 * NB) of one aim: strokes after the tee shot into sbuf (swing order) */
-static inline void group_plain(const int8_t *lie_pad, const double *S, const grid_v *g,
-                               const double *car, const double *dev, const double *roll, double aim,
-                               double rough_roll, int v1_roll, double *sbuf)
+typedef struct { __m512d s[NB]; } group_out;
+
+/* One swing at 8 * NB consecutive aims (lanes = aims: neighbouring raster cells, the same roll length, and the per-aim
+ * sums become vector adds in swing order). Returns the strokes after the tee shot per aim. */
+static inline void group(const int8_t *lie_pad, const double *S, const grid_v *g, const lidar_t *L,
+                         double c, double dv, double rl, float need, const __m512d *aimv,
+                         double rough_roll, int v1_roll, group_out *out)
 {
     const __m512d zero = _mm512_setzero_pd(), two = _mm512_set1_pd(2.0), eps = _mm512_set1_pd(1e-9);
-    const __m512d rr = _mm512_set1_pd(rough_roll), aimv = _mm512_set1_pd(aim);
+    const __m512d rr = _mm512_set1_pd(rough_roll), dev = _mm512_set1_pd(dv);
     const __m256i c_rough = _mm256_set1_epi32(ROUGH), c_fw = _mm256_set1_epi32(FAIRWAY);
     const __m256i c_fc = _mm256_set1_epi32(FIRST_CUT), c_sand = _mm256_set1_epi32(SAND);
     __m512d a[NB], l[NB], left[NB], ua[NB], ul[NB];
     __m256i lie[NB];
+    __mmask8 stop[NB];
     __mmask8 any = 0;
     for (int b = 0; b < NB; b++) {
-        a[b] = _mm512_loadu_pd(car + 8 * b);
-        l[b] = _mm512_add_pd(_mm512_loadu_pd(dev + 8 * b), aimv);
+        a[b] = _mm512_set1_pd(c);
+        l[b] = _mm512_add_pd(dev, aimv[b]);
+        stop[b] = 0;
+    }
+    if (L) {
+        /* v2_course.lidar_flight_ev_curve: the descent through the crowns, step by step (the steps are the same for
+         * every aim of a swing; the lateral position, the ground drop and the crowns are per aim) */
+        const __m512d dmin = _mm512_set1_pd(L->dmin), tmax = _mm512_set1_pd(L->tmax);
+        const __m512d gl0 = _mm512_set1_pd(L->gl0), inv_c = _mm512_set1_pd(L->inv_c), glmax = _mm512_set1_pd((double)(L->ngl - 1));
+        const __m512d dl0 = _mm512_set1_pd(L->dl0), inv_d = _mm512_set1_pd(L->inv_d), dlmax = _mm512_set1_pd((double)(L->ndl - 1));
+        const __m256 needv = _mm256_set1_ps(need);
+        __m512d d_land[NB], ha[NB], hl[NB];
+        __m256 acc[NB];
+        __mmask8 live = 0;
+        for (int b = 0; b < NB; b++) {
+            if (L->has_drop) {
+                __m512d r = _mm512_roundscale_pd(_mm512_mul_pd(_mm512_sub_pd(l[b], dl0), inv_d), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+                r = _mm512_min_pd(_mm512_max_pd(r, zero), dlmax);
+                __m256i ix = _mm256_add_epi32(_mm512_cvttpd_epi32(r), _mm256_set1_epi32(cell(c, L->da0, L->inv_d, L->nda) * L->ndl));
+                d_land[b] = _mm512_i32gather_pd(ix, L->dg, 8);
+            } else {
+                d_land[b] = zero;
+            }
+            acc[b] = _mm256_setzero_ps();
+            ha[b] = hl[b] = zero;
+        }
+        for (int k = 0; k < L->nf; k++) {
+            double f = L->F[k], pa = c * f;
+            if (!(pa >= L->min_along)) continue;
+            const __m512d fv = _mm512_set1_pd(f), yf = _mm512_set1_pd(L->y[k]);
+            const __m256 seg = _mm256_set1_ps((float)(c * L->stepf * L->seg[k]));
+            const int ca = cell(pa, L->ga0, L->inv_c, L->nga) * L->ngl;
+            const int da = L->has_drop ? cell(pa, L->da0, L->inv_d, L->nda) * L->ndl : 0;
+            live = 0;
+            for (int b = 0; b < NB; b++) {
+                __m512d t = _mm512_sub_pd(yf, _mm512_mul_pd(fv, d_land[b]));
+                __mmask8 m1 = _mm512_cmp_pd_mask(_mm512_add_pd(t, dmin), tmax, _CMP_LT_OQ) & (__mmask8)~stop[b];
+                live |= (__mmask8)~stop[b];
+                if (!m1) continue;
+                __m512d pl = _mm512_mul_pd(l[b], fv);
+                __m512d clear = t;
+                if (L->has_drop) {
+                    __m512d r = _mm512_roundscale_pd(_mm512_mul_pd(_mm512_sub_pd(pl, dl0), inv_d), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+                    r = _mm512_min_pd(_mm512_max_pd(r, zero), dlmax);
+                    clear = _mm512_add_pd(t, _mm512_i32gather_pd(_mm256_add_epi32(_mm512_cvttpd_epi32(r), _mm256_set1_epi32(da)), L->dg, 8));
+                } else {
+                    clear = _mm512_add_pd(t, zero);
+                }
+                __m512d r = _mm512_roundscale_pd(_mm512_mul_pd(_mm512_sub_pd(pl, gl0), inv_c), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+                r = _mm512_min_pd(_mm512_max_pd(r, zero), glmax);
+                __m256i ci = _mm256_add_epi32(_mm512_cvttpd_epi32(r), _mm256_set1_epi32(ca));
+                __m512d top = _mm512_cvtps_pd(_mm256_i32gather_ps(L->top, ci, 4));
+                __m512d base = _mm512_cvtps_pd(_mm256_i32gather_ps(L->base, ci, 4));
+                __mmask8 ins = m1 & _mm512_cmp_pd_mask(clear, top, _CMP_LT_OQ) & _mm512_cmp_pd_mask(clear, base, _CMP_GT_OQ);
+                if (!ins) continue;
+                acc[b] = _mm256_mask_add_ps(acc[b], ins, acc[b], seg);
+                __mmask8 st = ins & _mm256_cmp_ps_mask(acc[b], needv, _CMP_GE_OQ);
+                ha[b] = _mm512_mask_mov_pd(ha[b], st, _mm512_set1_pd(pa));
+                hl[b] = _mm512_mask_mov_pd(hl[b], st, pl);
+                stop[b] |= st;
+            }
+            if (!live) break;
+        }
+        for (int b = 0; b < NB; b++) {
+            a[b] = _mm512_mask_mov_pd(a[b], stop[b], ha[b]);
+            l[b] = _mm512_mask_mov_pd(l[b], stop[b], hl[b]);
+        }
+    }
+    for (int b = 0; b < NB; b++) {
         lie[b] = lie_v(lie_pad, cell_v(g, a[b], l[b]));
-        left[b] = _mm512_loadu_pd(roll + 8 * b);
+        left[b] = _mm512_set1_pd(rl);
         left[b] = _mm512_mask_mul_pd(left[b], _mm256_cmpeq_epi32_mask(lie[b], c_rough), left[b], rr);
-        left[b] = _mm512_mask_mov_pd(left[b], _mm256_cmpge_epi32_mask(lie[b], c_sand), zero);     /* HAZ: codes >= 3 */
+        left[b] = _mm512_mask_mov_pd(left[b], _mm256_cmpge_epi32_mask(lie[b], c_sand) | stop[b], zero);  /* HAZ: codes >= 3 */
         any |= _mm512_cmp_pd_mask(left[b], eps, _CMP_GT_OQ);
     }
     if (any) {
@@ -203,7 +274,49 @@ static inline void group_plain(const int8_t *lie_pad, const double *S, const gri
         }
     }
     for (int b = 0; b < NB; b++)
-        _mm512_storeu_pd(sbuf + 8 * b, _mm512_i32gather_pd(cell_v(g, a[b], l[b]), S, 8));
+        out->s[b] = _mm512_i32gather_pd(cell_v(g, a[b], l[b]), S, 8);
+}
+
+static void ev_simd(const int8_t *lie_pad, const double *S, int na, int nl, double a0, double l0, double inv,
+                    const double *car, const double *dev, const double *roll, int n,
+                    const double *aims, int m, double rough_roll, int v1_roll, int ksplit, const lidar_t *L,
+                    double *sum_all, double *vA, double *vB, double *v_all, int nthreads)
+{
+    grid_v g;
+    g.a0 = _mm512_set1_pd(a0); g.l0 = _mm512_set1_pd(l0); g.inv = _mm512_set1_pd(inv);
+    g.amax = _mm512_set1_pd((double)(na - 1)); g.lmax = _mm512_set1_pd((double)(nl - 1)); g.nl = _mm512_set1_pd((double)nl);
+    const int W = 8 * NB;
+    int nch = (m + W - 1) / W;
+    #pragma omp parallel for schedule(dynamic, 1) num_threads(nthreads) if (nthreads > 1 && nch > 1)
+    for (int ch = 0; ch < nch; ch++) {
+        double ab[8 * NB];
+        for (int k = 0; k < W; k++) ab[k] = aims[ch * W + k < m ? ch * W + k : m - 1];     /* pad with the last aim */
+        __m512d aimv[NB], sS[NB], sV[NB], sA[NB], sB[NB];
+        const __m512d one = _mm512_set1_pd(1.0);
+        for (int b = 0; b < NB; b++) {
+            aimv[b] = _mm512_loadu_pd(ab + 8 * b);
+            sS[b] = sV[b] = sA[b] = sB[b] = _mm512_setzero_pd();
+        }
+        group_out o;
+        for (int i = 0; i < n; i++) {
+            group(lie_pad, S, &g, L, car[i], dev[i], roll[i], L ? L->need[i] : 0.0f, aimv, rough_roll, v1_roll, &o);
+            for (int b = 0; b < NB; b++) {
+                __m512d v = _mm512_add_pd(one, o.s[b]);
+                sS[b] = _mm512_add_pd(sS[b], o.s[b]);
+                sV[b] = _mm512_add_pd(sV[b], v);
+                if (i < ksplit) sA[b] = _mm512_add_pd(sA[b], v); else sB[b] = _mm512_add_pd(sB[b], v);
+            }
+        }
+        double buf[4][8 * NB];
+        for (int b = 0; b < NB; b++) {
+            _mm512_storeu_pd(buf[0] + 8 * b, sS[b]); _mm512_storeu_pd(buf[1] + 8 * b, sA[b]);
+            _mm512_storeu_pd(buf[2] + 8 * b, sB[b]); _mm512_storeu_pd(buf[3] + 8 * b, sV[b]);
+        }
+        for (int k = 0; k < W && ch * W + k < m; k++) {
+            sum_all[ch * W + k] = buf[0][k]; vA[ch * W + k] = buf[1][k];
+            vB[ch * W + k] = buf[2][k]; v_all[ch * W + k] = buf[3][k];
+        }
+    }
 }
 
 /* 1 when the written-out hypot equals libm's on a sample of the engine's range (then it is used) */
@@ -245,12 +358,12 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
 {
     if (nthreads < 1) nthreads = 1;
 #ifdef FS_SIMD
-    int simd = (lie_pad != NULL) && !L && !oa;
-    grid_v g;
-    g.a0 = _mm512_set1_pd(a0); g.l0 = _mm512_set1_pd(l0); g.inv = _mm512_set1_pd(inv);
-    g.amax = _mm512_set1_pd((double)(na - 1)); g.lmax = _mm512_set1_pd((double)(nl - 1)); g.nl = _mm512_set1_pd((double)nl);
+    if (lie_pad != NULL && !oa && m >= 8) {
+        ev_simd(lie_pad, S, na, nl, a0, l0, inv, car, dev, roll, n, aims, m, rough_roll, v1_roll, ksplit, L,
+                sum_all, vA, vB, v_all, nthreads);
+        return;
+    }
 #else
-    int simd = 0;
     (void)lie_pad;
 #endif
     #pragma omp parallel for schedule(dynamic, 2) num_threads(nthreads) if (nthreads > 1 && m > 1)
@@ -258,21 +371,6 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
         double aim = aims[j];
         double sa = 0.0, sb = 0.0, st_all = 0.0, v_tot = 0.0;
         int i = 0;
-#ifdef FS_SIMD
-        if (simd) {
-            double sbuf[8 * NB];
-            for (; i + 8 * NB <= n; i += 8 * NB) {
-                group_plain(lie_pad, S, &g, car + i, dev + i, roll + i, aim, rough_roll, v1_roll, sbuf);
-                for (int k = 0; k < 8 * NB; k++) {
-                    double s = sbuf[k];
-                    st_all += s;
-                    double v = 1.0 + s;
-                    v_tot += v;
-                    if (i + k < ksplit) sa += v; else sb += v;
-                }
-            }
-        }
-#endif
         for (; i < n; i++) {
             double c = car[i];
             double lat0 = dev[i] + aim;
@@ -433,6 +531,157 @@ void fs_blocked(const int8_t *lie, const double *dist, int na, int nl, double a0
             }
         }
     }
+}
+
+/* ------------------------------------------------------------------------------------------------ strokes raster
+ * model.Raster.strokes (+ v2_course.install_green_putting's wrapper), cell by cell, the same expressions in the same
+ * order. interp() is numpy's np.interp (compiled_base.c arr_interp): slope = (fp[j+1] - fp[j]) / (xp[j+1] - xp[j]),
+ * value = slope * (x - xp[j]) + fp[j], fp[j] when x == xp[j], end values outside. */
+typedef struct {
+    int nd;
+    const double *DIST, *T_fw, *T_ro, *T_sa, *T_rec;
+    double long_slope;
+    int am, broadie, v1;
+    double am_off, am_slope, m_rough, m_sand;
+    double first_cut, trees, one_m_trees, tree_restricted, punch_adv, punch_fail;
+    double lost_edge, lost_deep, lost_ramp, block_sev, sd, unverified;
+    int green_putting, nputt;
+    const double *PUTT_FT, *PUTT_TOUR;
+    double SY[3], SF[3], SR[3], SS[3];
+    double gap_r, gap_s, mult_r, mult_s, mult_fc, putt_off;
+} strokes_t;
+
+static inline double interp(double x, const double *xp, const double *fp, const double *sl, int n)
+{
+    if (x != x) return x;
+    if (x > xp[n - 1]) return fp[n - 1];
+    if (x < xp[0]) return fp[0];
+    int lo = 0, hi = n - 1;                 /* xp[lo] <= x <= xp[hi] */
+    while (hi - lo > 1) {
+        int mid = (lo + hi) >> 1;
+        if (x >= xp[mid]) lo = mid; else hi = mid;
+    }
+    if (x >= xp[hi]) lo = hi;               /* x == xp[n - 1] */
+    if (lo == n - 1) return fp[lo];
+    if (xp[lo] == x) return fp[lo];
+    return sl[lo] * (x - xp[lo]) + fp[lo];
+}
+
+static inline double clip(double x, double lo, double hi)
+{
+    double r = x > lo ? x : lo;             /* np.clip = minimum(maximum(x, lo), hi) */
+    return r < hi ? r : hi;
+}
+
+typedef struct { const strokes_t *p; const double *s_fw, *s_ro, *s_sa, *s_rec; } sctx;
+
+static inline double tour(const sctx *c, const double *T, const double *sl, double d)
+{
+    const strokes_t *p = c->p;
+    double b = d - p->DIST[p->nd - 1];
+    double beyond = (b > 0.0 ? b : 0.0) * p->long_slope;
+    return interp(clip(d, p->DIST[0], p->DIST[p->nd - 1]), p->DIST, T, sl, p->nd) + beyond;
+}
+
+/* table("fairway" / "rough" / "sand", d, P) for one d */
+static inline void tables(const sctx *c, double d, int want_sand, double *fw_t, double *ro_t, double *sa_t, double *fw_tour)
+{
+    const strokes_t *p = c->p;
+    double fw = tour(c, p->T_fw, c->s_fw, d);
+    double tro = tour(c, p->T_ro, c->s_ro, d);
+    double tsa = want_sand ? tour(c, p->T_sa, c->s_sa, d) : 0.0;
+    *fw_tour = fw;
+    if (!p->am) { *fw_t = fw; *ro_t = tro; *sa_t = tsa; return; }
+    double off = p->am_off + p->am_slope * (clip(d, 20.0, 450.0) - 150.0);
+    *fw_t = fw + off;
+    *ro_t = fw + off + p->m_rough * (tro - fw);
+    *sa_t = want_sand ? fw + off + p->m_sand * (tsa - fw) : 0.0;
+}
+
+void fs_strokes(const strokes_t *p, const int8_t *lie, const double *dist, const double *native_depth,
+                const double *entry, const uint8_t *blocked, const uint8_t *green, long ncell, double *S, int nthreads)
+{
+    int nd = p->nd;
+    double *sl = (double *)malloc(sizeof(double) * 4 * nd);
+    double *slp = (double *)malloc(sizeof(double) * (p->nputt > 0 ? p->nputt : 1));
+    const double *Ts[4] = {p->T_fw, p->T_ro, p->T_sa, p->T_rec};
+    for (int t = 0; t < 4; t++)
+        for (int i = 0; i + 1 < nd; i++) sl[t * nd + i] = (Ts[t][i + 1] - Ts[t][i]) / (p->DIST[i + 1] - p->DIST[i]);
+    for (int i = 0; i + 1 < p->nputt; i++) slp[i] = (p->PUTT_TOUR[i + 1] - p->PUTT_TOUR[i]) / (p->PUTT_FT[i + 1] - p->PUTT_FT[i]);
+    double sF[2], sR[2], sS[2];
+    for (int i = 0; i < 2; i++) {
+        sF[i] = (p->SF[i + 1] - p->SF[i]) / (p->SY[i + 1] - p->SY[i]);
+        sR[i] = (p->SR[i + 1] - p->SR[i]) / (p->SY[i + 1] - p->SY[i]);
+        sS[i] = (p->SS[i + 1] - p->SS[i]) / (p->SY[i + 1] - p->SY[i]);
+    }
+    sctx c = {p, sl, sl + nd, sl + 2 * nd, sl + 3 * nd};
+    if (nthreads < 1) nthreads = 1;
+    #pragma omp parallel for schedule(static) num_threads(nthreads) if (nthreads > 1)
+    for (long i = 0; i < ncell; i++) {
+        double d = dist[i];
+        int li = lie[i];
+        double fw, ro, sa, fwt;
+        tables(&c, d, li == SAND, &fw, &ro, &sa, &fwt);
+        double rec = 0.0;
+        int need_rec = (li == RECOVERY || li == NATIVE || li == UNVERIFIED || (p->block_sev > 0 && blocked[i]));
+        if (need_rec) {
+            if (p->broadie) {
+                rec = tour(&c, p->T_rec, c.s_rec, d);
+                if (p->am) rec = fw + 1.3 * (rec - fwt);
+            } else {
+                double d2 = d - p->punch_adv;
+                d2 = d2 > 20.0 ? d2 : 20.0;
+                double f2, r2, s2, t2;
+                tables(&c, d2, 0, &f2, &r2, &s2, &t2);
+                rec = 1.0 + 0.5 * (f2 + r2) + p->punch_fail;
+            }
+        }
+        double sd_cost = p->v1 ? 2.0 + ro : p->sd;
+        double s;
+        switch (li) {
+        case FAIRWAY: s = fw; break;
+        case FIRST_CUT: s = fw + p->first_cut * (ro - fw); break;
+        case SAND: s = sa; break;
+        case RECOVERY:
+            s = p->v1 ? p->trees * rec + p->one_m_trees * ro : p->trees * rec + p->one_m_trees * (ro + p->tree_restricted);
+            break;
+        case NATIVE: {
+            double pl = p->v1 ? p->lost_deep
+                              : p->lost_edge + (p->lost_deep - p->lost_edge) * clip(native_depth[i] / p->lost_ramp, 0.0, 1.0);
+            s = pl * sd_cost + (1 - pl) * rec;
+            break;
+        }
+        case WATER: {
+            double f2, r2, s2, t2;
+            tables(&c, p->v1 ? d : entry[i], 0, &f2, &r2, &s2, &t2);
+            s = 1.0 + r2;
+            break;
+        }
+        case OB: s = sd_cost; break;
+        case UNVERIFIED:
+            s = (1 - p->unverified) * ro + p->unverified * (p->trees * rec + p->one_m_trees * (ro + p->tree_restricted));
+            break;
+        default: s = ro;
+        }
+        if (p->block_sev > 0 && blocked[i]) {
+            double m = rec - s;
+            s = s + p->block_sev * (m > 0.0 ? m : 0.0);
+        }
+        if (p->green_putting) {
+            if (d < p->SY[2] && (li == FAIRWAY || li == FIRST_CUT || li == ROUGH || li == SAND)) {
+                double iF = interp(d, p->SY, p->SF, sF, 3);
+                double delta = iF - p->SF[2];
+                if (li == SAND) delta = delta + p->mult_s * (interp(d, p->SY, p->SS, sS, 3) - iF - p->gap_s);
+                else if (li == ROUGH) delta = delta + p->mult_r * (interp(d, p->SY, p->SR, sR, 3) - iF - p->gap_r);
+                else if (li == FIRST_CUT) delta = delta + p->mult_fc * (interp(d, p->SY, p->SR, sR, 3) - iF - p->gap_r);
+                s = s + delta;
+            }
+            if (green && green[i] && (li == FAIRWAY || li == FIRST_CUT || li == ROUGH))
+                s = interp(d * 3.0, p->PUTT_FT, p->PUTT_TOUR, slp, p->nputt) + p->putt_off;
+        }
+        S[i] = s;
+    }
+    free(sl); free(slp);
 }
 
 int fs_max_threads(void)

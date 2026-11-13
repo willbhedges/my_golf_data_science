@@ -29,6 +29,8 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "kernel.c")
 CFLAGS = ["-O3", "-march=native", "-ffp-contract=off", "-fopenmp", "-fPIC", "-shared"]
+if os.environ.get("FASTSOLVE_CFLAGS"):                # experiments only (README "Rejected: fast-math"): e.g. "-Ofast"
+    CFLAGS = [c for c in CFLAGS if c != "-ffp-contract=off"] + os.environ["FASTSOLVE_CFLAGS"].split()
 THREADS = int(os.environ.get("FASTSOLVE_THREADS", "0") or 0)        # 0 = every core
 
 _LIB = None
@@ -36,6 +38,17 @@ c_dp = ctypes.POINTER(ctypes.c_double)
 c_fp = ctypes.POINTER(ctypes.c_float)
 c_i8p = ctypes.POINTER(ctypes.c_int8)
 c_u8p = ctypes.POINTER(ctypes.c_uint8)
+
+
+class Strokes(ctypes.Structure):
+    _fields_ = ([("nd", ctypes.c_int)] + [(k, c_dp) for k in ("DIST", "T_fw", "T_ro", "T_sa", "T_rec")]
+                + [("long_slope", ctypes.c_double)] + [(k, ctypes.c_int) for k in ("am", "broadie", "v1")]
+                + [(k, ctypes.c_double) for k in (
+                    "am_off", "am_slope", "m_rough", "m_sand", "first_cut", "trees", "one_m_trees", "tree_restricted",
+                    "punch_adv", "punch_fail", "lost_edge", "lost_deep", "lost_ramp", "block_sev", "sd", "unverified")]
+                + [("green_putting", ctypes.c_int), ("nputt", ctypes.c_int), ("PUTT_FT", c_dp), ("PUTT_TOUR", c_dp)]
+                + [(k, ctypes.c_double * 3) for k in ("SY", "SF", "SR", "SS")]
+                + [(k, ctypes.c_double) for k in ("gap_r", "gap_s", "mult_r", "mult_s", "mult_fc", "putt_off")])
 
 
 class Lidar(ctypes.Structure):
@@ -77,6 +90,8 @@ def lib():
     L.fs_water_entry.restype = None
     L.fs_blocked.argtypes = [c_i8p, c_dp, i, i, d, d, d, d, d, d, d, c_u8p, i]
     L.fs_blocked.restype = None
+    L.fs_strokes.argtypes = [ctypes.POINTER(Strokes), c_i8p, c_dp, c_dp, c_dp, c_u8p, c_u8p, ctypes.c_long, c_dp, i]
+    L.fs_strokes.restype = None
     L.fs_max_threads.restype = i
     L.fs_selfcheck.restype = i
     L.fs_simd.restype = i
@@ -189,6 +204,73 @@ def make_raster(M, slow_cls):
                          float(M.L0), float(M.RES), float(M.A1), float(M.L1), float(self.green[0]),
                          float(self.green[1]), _p(blk, c_u8p), nthreads())
             self.blocked = blk.astype(bool)
+
+    sq = slow_cls.strokes.__qualname__
+    green_wrapped = sq == "install_green_putting.<locals>.strokes"
+    if (sq == "Raster.strokes" or green_wrapped) and os.environ.get("FASTSOLVE_STROKES", "1") != "0":
+        tabs = [_f64(M.DIST)] + [_f64(M.TOUR[k]) for k in ("fairway", "rough", "sand", "recovery")]
+
+        def strokes(self, P, length):
+            """model.Raster.strokes (+ the green-putting wrapper of v2_course) in C: fs_strokes."""
+            import v2_course as vc
+            p = Strokes()
+            p.nd = len(tabs[0])
+            p.DIST, p.T_fw, p.T_ro, p.T_sa, p.T_rec = (_p(t, c_dp) for t in tabs)
+            p.long_slope = float(M.LONG_SLOPE)
+            am = P["table"] == "am"
+            v1 = bool(P.get("v1_penalties"))
+            p.am, p.broadie, p.v1 = int(am), int(bool(P.get("broadie_recovery"))), int(v1)
+            if am:
+                p.am_off, p.am_slope, p.m_rough, p.m_sand = P["am_off"], P["am_slope"], P["m_rough"], P["m_sand"]
+            p.first_cut, p.trees, p.one_m_trees = P["first_cut"], P["trees"], 1 - P["trees"]
+            p.tree_restricted = 0.0 if v1 else P["tree_restricted"]
+            if not p.broadie:
+                p.punch_adv, p.punch_fail = P["punch_adv"], P["punch_fail"]
+            p.lost_deep = P["lost_deep"]
+            if not v1:
+                p.lost_edge, p.lost_ramp = P["lost_edge"], P["lost_ramp"]
+                p.sd = 1.0 + M.tee_value(length, P)
+            p.block_sev = P.get("block_sev", 0)
+            p.unverified = 0.0 if v1 else M.UNVERIFIED_TREES
+            keep = []
+            green = None
+            if green_wrapped:
+                p.green_putting = 1
+                off = float(M._engine_opts["green_putting"].get("am_putt_off", 0.10))
+                ft, pt = _f64(vc.PUTT_FT), _f64(vc.PUTT_TOUR)
+                keep += [ft, pt]
+                p.nputt, p.PUTT_FT, p.PUTT_TOUR = len(ft), _p(ft, c_dp), _p(pt, c_dp)
+                st = vc.SHORT_TOUR
+                p.SY, p.SF = (ctypes.c_double * 3)(*vc.SHORT_YDS), (ctypes.c_double * 3)(*st["fairway"])
+                p.SR, p.SS = (ctypes.c_double * 3)(*st["rough"]), (ctypes.c_double * 3)(*st["sand"])
+                p.gap_r = st["rough"][-1] - st["fairway"][-1]
+                p.gap_s = st["sand"][-1] - st["fairway"][-1]
+                tab_am = P.get("table") == "am"
+                p.mult_r = 1.0 if not tab_am else P["m_rough"]
+                p.mult_s = 1.0 if not tab_am else P["m_sand"]
+                p.mult_fc = p.mult_r * P["first_cut"]
+                p.putt_off = off if tab_am else 0.0
+                gp = self.hd.get("green_poly")
+                tee, fwd, right, ppy = M.frame(self.hd)
+                if self.hd.get("green_poly_px") is not None:
+                    dd = (np.asarray(self.hd["green_poly_px"], float) - tee) / ppy
+                    gp = np.column_stack([dd @ fwd, dd @ right])
+                if gp is not None:
+                    gp = _f64(gp)
+                    g = _geometry(M, self.hd)[0]
+                    green = np.zeros(self.lie.size, np.uint8)
+                    L.fs_fill(_p(g["pts_frame"], c_dp), green.size, _p(gp, c_dp), len(gp), 0.0, 0.0, 1,
+                              _p(green, c_i8p), nthreads())
+            lie = np.ascontiguousarray(self.lie, np.int8)
+            blk = np.ascontiguousarray(self.blocked).view(np.uint8)
+            nd_, en = _f64(self.native_depth), _f64(self.entry_dist)
+            S = np.empty(self.lie.shape, np.float64)
+            L.fs_strokes(ctypes.byref(p), _p(lie, c_i8p), _p(_f64(self.dist), c_dp), _p(nd_, c_dp), _p(en, c_dp),
+                         _p(blk, c_u8p), _p(green, c_u8p) if green is not None else None, lie.size, _p(S, c_dp),
+                         nthreads())
+            return S
+        FastRaster.strokes = strokes
+        FastRaster._fast_strokes = True
 
     FastRaster.__name__ = "FastRaster"
     FastRaster._fast = True
@@ -303,6 +385,7 @@ class Fast:
         self.M, self.D = M, D
         self.slow_ev_curve = M.ev_curve
         self.slow_raster = M.Raster
+        self.slow_finish = M.finish
         self.mode = None
         self.calls = 0
 
@@ -339,7 +422,7 @@ class Fast:
             lie = np.ascontiguousarray(lie, np.int8)
         S = _f64(S)
         pad = None
-        if L.simd and lid is None and not full:
+        if L.simd and not full:
             pad = getattr(R, "_lie_pad", None)        # the lie raster + 3 readable bytes (32-bit gathers)
             if pad is None or pad[1] is not R.lie or not np.array_equal(pad[0][:lie.size], lie.ravel()):
                 buf = np.zeros(lie.size + 8, np.int8)
@@ -429,13 +512,44 @@ class Fast:
         return ev, tuple(_LazyArr(call, i) for i in range(4))
 
 
-def install(M, D=None, raster=True):
+# ------------------------------------------------------------------------------------------------ swing sets
+def sobol_draws(n, seed):
+    """model.draws_z's rows (z_lat, z_car, u_mishit, u_frac, u_roll) from a scrambled Sobol sequence instead of
+    independent draws: the same marginal distributions, a far more even cover of the 5-D swing space (noise.py)."""
+    from scipy.stats import norm, qmc
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        u = qmc.Sobol(5, scramble=True, seed=seed).random(int(n))
+    u = np.clip(u, 1e-12, 1 - 1e-12)
+    return np.vstack([norm.ppf(u[:, 0]), norm.ppf(u[:, 1]), u[:, 2], u[:, 3], u[:, 4]])
+
+
+def antithetic_draws(n, seed):
+    """Antithetic pairs: n / 2 independent swings and their mirror images (z -> -z, u -> 1 - u)."""
+    r = np.random.default_rng(seed)
+    h = int(n) // 2
+    z, u = r.standard_normal((2, h)), r.random((3, h))
+    return np.vstack([np.hstack([z, -z]), np.hstack([u, 1.0 - u])])
+
+
+def install(M, D=None, raster=True, swings=None):
     """Point this process's engine at the C kernels. Returns the Fast handle (F.slow_ev_curve / F.slow_raster are the
-    engine's own, for A/B). Idempotent."""
+    engine's own, for A/B). Idempotent. swings="sobol" (opt-in, NOT the engine's numbers: see README "Lower-variance
+    swings") also replaces model.draws_z by scrambled Sobol points."""
     F = getattr(M, "_fastsolve", None)
     if F is not None:
         return F
     F = Fast(M, D)
+    F.slow_draws_z = M.draws_z
+    swings = swings or os.environ.get("FASTSOLVE_SWINGS") or None
+    if swings == "sobol":
+        M.draws_z = sobol_draws
+    elif swings == "antithetic":
+        M.draws_z = antithetic_draws
+    elif swings not in (None, "mc"):
+        raise ValueError(f"unknown swing set {swings!r}")
+    F.swings = swings or "mc"
     F.mode, ok_r = F._check()
     if F.mode is not None:
         M.ev_curve = F.ev_curve
@@ -449,5 +563,5 @@ def uninstall(M):
     F = getattr(M, "_fastsolve", None)
     if F is None:
         return
-    M.ev_curve, M.Raster = F.slow_ev_curve, F.slow_raster
+    M.ev_curve, M.Raster, M.draws_z = F.slow_ev_curve, F.slow_raster, F.slow_draws_z
     M._fastsolve = None

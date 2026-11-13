@@ -30,14 +30,14 @@ for p in (COURSES, HERE):
 _STATE = {}
 
 
-def _activate(slug, which, engine):
+def _activate(slug, which, engine, swings=None):
     import v2_course as vc
     course, meta, M, D = vc.activate(slug, which)
     if engine == "fast":
         import fast
         fast.THREADS = 1                     # one kernel thread per worker process: the workers are the parallelism
         fast.lib()                           # compile before the fork
-        fast.install(M, D)
+        fast.install(M, D, swings=swings)
     _STATE.update(vc=vc, course=course, M=M, D=D, slug=slug, which=which)
     return course, M, D
 
@@ -155,7 +155,7 @@ def solve(a):
     a.out = out
     os.makedirs(out, exist_ok=True)
     t0 = time.time()
-    course, M, D = _activate(a.slug, a.which, a.engine)
+    course, M, D = _activate(a.slug, a.which, a.engine, a.swings)
     tasks, order = plan(a, course, M)
     jobs = a.jobs or os.cpu_count()
     print(f"{len(tasks)} tasks ({sum(t['kind'] == 'decide' for t in tasks)} decide, "
@@ -170,7 +170,7 @@ def solve(a):
             print(f"  [{len(done)}/{len(tasks)}] {what}: {r['secs']:.1f}s  (elapsed {time.time() - t0:.0f}s)", flush=True)
     merge(out, order)
     wall = time.time() - t0
-    json.dump(dict(slug=a.slug, which=a.which, engine=a.engine, jobs=jobs, wall_s=round(wall, 1),
+    json.dump(dict(slug=a.slug, which=a.which, engine=a.engine, swings=a.swings or "mc", jobs=jobs, wall_s=round(wall, 1),
                    task_cpu_s=round(sum(r["secs"] for r in done), 1),
                    tasks=[dict(kind=r["kind"], hole=r["hole"], back=r.get("back"), refine=r.get("refine"),
                                secs=round(r["secs"], 2)) for r in done]),
@@ -257,6 +257,9 @@ def main():
     ap.add_argument("--swings-wind", type=int, default=2500)
     ap.add_argument("--jobs", type=int, default=0)
     ap.add_argument("--engine", choices=["fast", "slow"], default="fast")
+    ap.add_argument("--swings", choices=["mc", "sobol", "antithetic"], default=None,
+                    help="opt-in swing set (fast engine only). mc = the engine's (default, identical outputs); sobol = "
+                         "scrambled Sobol points: NOT the engine's numbers, ~8x less Monte Carlo noise (README)")
     ap.add_argument("--ref")
     ap.add_argument("--show", type=int, default=8)
     a = ap.parse_args()
