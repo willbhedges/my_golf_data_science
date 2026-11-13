@@ -75,6 +75,8 @@ def lib():
     bdir = os.environ.get("FASTSOLVE_BUILD") or os.path.join(HERE, "_build")
     os.makedirs(bdir, exist_ok=True)
     so = os.path.join(bdir, f"kernel_{tag}.so")
+    if os.environ.get("FASTSOLVE_SO"):                # a prebuilt library (compiler experiments: PGO, README)
+        so = os.environ["FASTSOLVE_SO"]
     if not os.path.exists(so):
         tmp = so + f".{os.getpid()}.tmp"
         subprocess.run([cc] + CFLAGS + ["-o", tmp, SRC, "-lm"], check=True)

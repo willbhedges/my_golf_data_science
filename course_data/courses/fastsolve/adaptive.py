@@ -31,7 +31,7 @@ class Adapt(ctypes.Structure):
 
 
 DEFAULTS = dict(n_coarse=128, n0=512, cap=4096, bs=64, cstep=6, half=20, window=0.005, aim_tol=1.0, delta=0.04,
-                drop_t=3.0, min_all=512, seed=31)
+                drop_t=3.0, min_all=512, seed=31, f32=int(os.environ.get("FASTSOLVE_F32", "0") or 0))
 STATS = dict(cells=0, balls=0, ties=0, aim_wide=0, grids=0)
 
 
@@ -43,6 +43,8 @@ def _lib():
                               ctypes.POINTER(Shot), d, d, i, ctypes.POINTER(Adapt), c_dp, c_dp,
                               ctypes.POINTER(ctypes.c_longlong), i]
         L.fs_grid.restype = None
+        L.fs_set_f32.argtypes = [i]
+        L.fs_set_f32.restype = None
         L._grid = True
     return L
 
@@ -84,6 +86,7 @@ def grid(M, D, WG2, h, P, R, S, cells, z, opts):
     hyp = (ctypes.c_int * nk)(*[int(c in M.HYPOTHETICAL) for c in clubs])
     oc, oe = np.empty((nc, nk, 6)), np.empty((nc, 8))
     balls = ctypes.c_longlong(0)
+    L.fs_set_f32(int(bool(opts.get("f32"))))
     P_ = lambda a, t: a.ctypes.data_as(t)                                  # noqa: E731
     L.fs_grid(P_(lie, c_i8p), P_(pad, c_i8p) if L.simd else None, P_(S, c_dp), lie.shape[0], lie.shape[1], float(M.A0),
               float(M.L0), 1.0 / M.RES, P_(z, c_dp), z.shape[1], nc, nk, P_(par, c_dp), P_(lim, c_dp), hyp,

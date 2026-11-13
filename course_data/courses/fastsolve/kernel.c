@@ -277,6 +277,80 @@ static inline __attribute__((always_inline)) void group(const int8_t *lie_pad, c
         out->s[b] = _mm512_i32gather_pd(cell_v(g, a[b], l[b]), S, 8);
 }
 
+/* float32 lanes (opt-in, fs_set_f32; adaptive grid only): the same roll-out on 16 aims per register, positions and
+ * the value raster in single precision (a position is good to ~3e-5 yd, so about 1 ball in 10^4 reads the neighbouring
+ * cell at some step). NOT the engine's bits; the per-aim sums stay in double. */
+typedef struct { __m512 a0, l0, inv, amax, lmax; __m512i nl; } grid_f;
+static int g_f32 = 0;
+void fs_set_f32(int on) { g_f32 = on; }
+
+static inline __m512i cell_f(const grid_f *g, __m512 a, __m512 l)
+{
+    const __m512 zero = _mm512_setzero_ps();
+    __m512 ra = _mm512_roundscale_ps(_mm512_mul_ps(_mm512_sub_ps(a, g->a0), g->inv), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+    __m512 rl = _mm512_roundscale_ps(_mm512_mul_ps(_mm512_sub_ps(l, g->l0), g->inv), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+    ra = _mm512_min_ps(_mm512_max_ps(ra, zero), g->amax);
+    rl = _mm512_min_ps(_mm512_max_ps(rl, zero), g->lmax);
+    return _mm512_add_epi32(_mm512_mullo_epi32(_mm512_cvttps_epi32(ra), g->nl), _mm512_cvttps_epi32(rl));
+}
+
+static inline __m512i lie_f(const int8_t *lie_pad, __m512i idx)
+{
+    return _mm512_and_si512(_mm512_i32gather_epi32(idx, (const int *)lie_pad, 1), _mm512_set1_epi32(0xFF));
+}
+
+#define NF 2
+static inline __attribute__((always_inline)) void group_f(const int8_t *lie_pad, const float *Sf, const grid_f *g,
+                         float c, float dv, float rl, const __m512 *aimv, float rough_roll, int v1_roll,
+                         __m512 *out, const int nb)
+{
+    const __m512 zero = _mm512_setzero_ps(), two = _mm512_set1_ps(2.0f), eps = _mm512_set1_ps(1e-9f);
+    const __m512 rr = _mm512_set1_ps(rough_roll), dev = _mm512_set1_ps(dv);
+    const __m512i c_rough = _mm512_set1_epi32(ROUGH), c_fw = _mm512_set1_epi32(FAIRWAY);
+    const __m512i c_fc = _mm512_set1_epi32(FIRST_CUT), c_sand = _mm512_set1_epi32(SAND);
+    __m512 a[NF], l[NF], left[NF], ua[NF], ul[NF];
+    __m512i lie[NF];
+    __mmask16 any = 0;
+    for (int b = 0; b < nb; b++) {
+        a[b] = _mm512_set1_ps(c);
+        l[b] = _mm512_add_ps(dev, aimv[b]);
+        lie[b] = lie_f(lie_pad, cell_f(g, a[b], l[b]));
+        left[b] = _mm512_set1_ps(rl);
+        left[b] = _mm512_mask_mul_ps(left[b], _mm512_cmpeq_epi32_mask(lie[b], c_rough), left[b], rr);
+        left[b] = _mm512_mask_mov_ps(left[b], _mm512_cmpge_epi32_mask(lie[b], c_sand), zero);
+        any |= _mm512_cmp_ps_mask(left[b], eps, _CMP_GT_OQ);
+    }
+    if (any) {
+        for (int b = 0; b < nb; b++) {
+            __m512 den = _mm512_max_ps(_mm512_sqrt_ps(_mm512_add_ps(_mm512_mul_ps(a[b], a[b]), _mm512_mul_ps(l[b], l[b]))), eps);
+            ua[b] = _mm512_div_ps(a[b], den);
+            ul[b] = _mm512_div_ps(l[b], den);
+        }
+        for (;;) {
+            __mmask16 mv[NF];
+            any = 0;
+            for (int b = 0; b < nb; b++) { mv[b] = _mm512_cmp_ps_mask(left[b], eps, _CMP_GT_OQ); any |= mv[b]; }
+            if (!any) break;
+            for (int b = 0; b < nb; b++) {
+                if (!mv[b]) continue;
+                __m512 st = _mm512_min_ps(left[b], two);
+                a[b] = _mm512_mask_add_ps(a[b], mv[b], a[b], _mm512_mul_ps(ua[b], st));
+                l[b] = _mm512_mask_add_ps(l[b], mv[b], l[b], _mm512_mul_ps(ul[b], st));
+                left[b] = _mm512_mask_sub_ps(left[b], mv[b], left[b], st);
+                __m512i nw = lie_f(lie_pad, cell_f(g, a[b], l[b]));
+                __mmask16 was_fw = _mm512_cmpeq_epi32_mask(lie[b], c_fw);
+                if (!v1_roll) was_fw |= _mm512_cmpeq_epi32_mask(lie[b], c_fc);
+                __mmask16 into = mv[b] & was_fw & _mm512_cmpeq_epi32_mask(nw, c_rough);
+                left[b] = _mm512_mask_mul_ps(left[b], into, left[b], rr);
+                left[b] = _mm512_mask_mov_ps(left[b], mv[b] & _mm512_cmpge_epi32_mask(nw, c_sand), zero);
+                lie[b] = _mm512_mask_mov_epi32(lie[b], mv[b], nw);
+            }
+        }
+    }
+    for (int b = 0; b < nb; b++)
+        out[b] = _mm512_i32gather_ps(cell_f(g, a[b], l[b]), Sf, 4);
+}
+
 static void ev_simd(const int8_t *lie_pad, const double *S, int na, int nl, double a0, double l0, double inv,
                     const double *car, const double *dev, const double *roll, int n,
                     const double *aims, int m, double rough_roll, int v1_roll, int ksplit, const lidar_t *L,
@@ -352,6 +426,7 @@ int fs_simd(void) { return 1; }
 #else
 int fs_selfcheck(void) { return 0; }
 int fs_simd(void) { return 0; }
+void fs_set_f32(int on) { (void)on; }
 #endif
 
 /* EV curve of one club: n swings x m aims. Per aim j, in swing order (numpy's mean(axis=0) order):
@@ -813,6 +888,7 @@ typedef struct {
     double rough_roll; int v1_roll;
 #ifdef FS_SIMD
     grid_v g;
+    grid_f gf; const float *Sf;        /* float32 lanes (fs_set_f32): Sf = S in single precision, or NULL */
 #endif
 } gctx;
 
@@ -820,6 +896,17 @@ typedef struct {
 static inline void vals(const gctx *x, double c, double dv, double rl, const double *aims, int cnt, double *out)
 {
 #ifdef FS_SIMD
+    if (x->lie_pad && x->Sf) {
+        float ab[32], buf[32];
+        int nb = (cnt + 15) / 16;
+        for (int k = 0; k < 16 * nb; k++) ab[k] = (float)aims[k < cnt ? k : cnt - 1];
+        __m512 aimv[NF], o[NF];
+        for (int b = 0; b < nb; b++) aimv[b] = _mm512_loadu_ps(ab + 16 * b);
+        group_f(x->lie_pad, x->Sf, &x->gf, (float)c, (float)dv, (float)rl, aimv, (float)x->rough_roll, x->v1_roll, o, nb);
+        for (int b = 0; b < nb; b++) _mm512_storeu_ps(buf + 16 * b, o[b]);
+        for (int k = 0; k < cnt; k++) out[k] = buf[k];
+        return;
+    }
     if (x->lie_pad) {
         double ab[32];
         int nb = (cnt + 7) / 8;
@@ -887,6 +974,14 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
 #ifdef FS_SIMD
     x.g.a0 = _mm512_set1_pd(a0); x.g.l0 = _mm512_set1_pd(l0); x.g.inv = _mm512_set1_pd(inv);
     x.g.amax = _mm512_set1_pd((double)(na - 1)); x.g.lmax = _mm512_set1_pd((double)(nl - 1)); x.g.nl = _mm512_set1_pd((double)nl);
+    float *Sf = NULL;
+    if (g_f32 && lie_pad) {
+        Sf = (float *)malloc(sizeof(float) * (size_t)na * nl);
+        for (size_t i = 0; i < (size_t)na * nl; i++) Sf[i] = (float)S[i];
+        x.gf.a0 = _mm512_set1_ps((float)a0); x.gf.l0 = _mm512_set1_ps((float)l0); x.gf.inv = _mm512_set1_ps((float)inv);
+        x.gf.amax = _mm512_set1_ps((float)(na - 1)); x.gf.lmax = _mm512_set1_ps((float)(nl - 1)); x.gf.nl = _mm512_set1_epi32(nl);
+    }
+    x.Sf = Sf;
 #endif
     const int bs = op->bs, cap = op->cap < zcap ? op->cap : zcap, nbmax = cap / bs;
     double gw[17], gs = 0.0, sd = 1.0 / step;
@@ -1105,6 +1200,9 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
         free(car); free(bsum); free(aims); free(cur); free(w0); free(caim);
     }
     *balls_out = balls;
+#ifdef FS_SIMD
+    free(Sf);
+#endif
 }
 
 int fs_max_threads(void)

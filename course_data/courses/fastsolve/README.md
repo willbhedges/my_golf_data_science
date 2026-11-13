@@ -60,6 +60,16 @@ value raster, 13 ms ball work), ladder + sensitivities + width sweep 1.9 s, star
   margin, margin SE and cross-fit margin identical to no racing in 18 of 18. A stopped club carries `draws: 16`; its
   EV is the pick's EV + its paired margin over those draws, its own aim is from 16 draws (up to 2.5 yds off).
 
+- **(5) compiler.** PGO (`-fprofile-generate` on the book + two wind grids of hole 8, then `-fprofile-use`): dropped.
+  Hole 10 book 3.2 -> 3.7 s, card grid 3.4 -> 3.7-3.9 s, offset grid 1.3 -> 1.3-1.4 s (two rounds, box shared).
+  `-flto`: dropped, one source file, nothing to link across (4.3 -> 4.3 s on hole 8's card grid).
+  `FASTSOLVE_SO=<file>` loads a prebuilt library for such experiments.
+- **float32 lanes** (`--f32 1` or `FASTSOLVE_F32=1`; adaptive wind grids only; 16 aims per register, positions and
+  value raster in single precision, sums in double): built, NOT the default. Card + one offset grid of 8 / 10 / 16:
+  16.8 -> 10.9 task-s in the one quiet pair of runs (-35 %; -20 to -30 % in two pairs with the box shared). All
+  1,098 cells keep their club, swing count and tie flag; the pick's aim moves by 0.5 yd in 2 cells (4 of 7,686 club
+  aims), EVs by at most 0.0002. Off because the bar for it was "aims unchanged", not "within 1 yd".
+
 ## 1. Profile of the existing engine (one process, this box)
 
 Engine = `spirit_hollow/v2/model.py` + `decide.py` + `wind_grid_v2.py` through `v2_course.py`. Gateway Back hole 8.
