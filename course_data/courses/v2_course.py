@@ -1451,6 +1451,8 @@ def build_page(slug, which, out=None, data_out=None):
     pt_ = cfg.get("page_text") or {}
     if pt_.get("simple"):
         data["simple"] = True
+    if pt_.get("close_margin"):
+        data["close_margin"] = float(pt_["close_margin"])
     for d_ in holes:
         cn = (pt_.get("condition_notes") or {}).get(str(d_.get("key")))
         if isinstance(cn, dict):                       # {tee set: text}: a note for one base set only

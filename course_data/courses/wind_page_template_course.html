@@ -409,9 +409,9 @@ function render(){
     const calm = solveTeeCalm(h);
     if(r.split) badges.push(`<span class="pill tie">Models split · calm-day book: ${r.book}${h.calm ? " by " + h.calm.margin.toFixed(3) : ""}; wind model: ${r.pick} by ${r.margin.toFixed(3)} · a coin flip</span>`);
     else if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
-    else if(r.bayes && h.calm && h.calm.runner && (h.calm.margin < 0.03 || (h.calm.p != null && h.calm.p < 0.8)))
-      badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? (D.simple ? `, ${Math.round(h.calm.p * 100)}% sure` : `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers`) : ""}</span>`);
-    else if(!r.bayes && r.margin < 0.03)
+    else if(r.bayes && h.calm && h.calm.runner && (h.calm.margin < (D.close_margin || 0.03) || (h.calm.p != null && h.calm.p < 0.8)))
+      badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? (D.simple ? "" : `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers`) : ""}</span>`);
+    else if(!r.bayes && r.margin < (D.close_margin || 0.03))
       badges.push(`<span class="pill tie">Close call · ${r.order[1]} +${r.margin.toFixed(3)} (wind model)</span>`);
     if(calm !== r.pick && r.T.back === 0 && !r.split) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
     const Lim = D.aim_limit || 40;
@@ -436,7 +436,7 @@ function render(){
       note = `In this wind and temperature the wind model picks ${r.pick} by ${r.margin.toFixed(3)} over ${r.order[1]}; the calm-day book is below for comparison. ` + note;
     /* D.simple (config page_text.simple): one aim number per hole, the one at the top (it includes the wind); the
        calm-day note keeps the club, the margin and the shares */
-    if(D.simple) note = note.replace(/ Aim .*? is within 0\.005\./, "").replace(/; it beats [^.;]*? in (\d+)% of \d+ what-if worlds/, "; $1% sure").replace(/ Driver-pattern break-even[^.]*?yds\./, "").replace(/ Same club for any driver pattern[^.]*?yds\./, "");
+    if(D.simple) note = note.replace(/ Aim .*? is within 0\.005\./, "").replace(/; it beats [^.;]*? in (\d+)% of \d+ what-if worlds/, "").replace(/ Driver-pattern break-even[^.]*?yds\./, "").replace(/ Same club for any driver pattern[^.]*?yds\./, "");
     if(h.cond_note) badges.push(`<span class="pill chg">${h.cond_note}</span>`);
     if(r.T.back !== 0) note = `The calm-day book (club, aim, fairway / trouble shares, yards in) is for the ${h.base_set} tee, so it is not shown here: from this tee use the play and the club table above (solved ${Math.abs(r.T.back)} yds ${r.T.back > 0 ? "back" : "up"} the line).` +
       (Math.abs(r.T.back) >= 100 ? " This tee is placed by moving the " + h.base_set + " tee along the line, not from its own box: a rough guide." : "") +
