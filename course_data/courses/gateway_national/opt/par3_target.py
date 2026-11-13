@@ -80,13 +80,16 @@ def load_holes(set_name):
         # long grass and tree crowns from the Dec 2020 / Dec 2023 lidar, bunkers and green outlines re-traced.
         # Paint order: native, mown islands, the package's other zones (a replaced bunker = the package sand zone
         # nearest the new one, within 15 yds), tree crowns last.
-        FEAT = json.load(open(os.path.join(HERE, "par3_features.json")))["holes"]
+        _FJ = json.load(open(os.path.join(HERE, "par3_features.json")))
+        FEAT = _FJ["holes"]
+        KEEP = set(_FJ.get("keep_existing", []))      # holes whose proposals only ADD zones (F1: 4 and 7)
 
     def cap(fr, green_ll, gpoly, zones, length, k):
         if str(k) in FEAT:
             ed = FEAT[str(k)]
             px = lambda e: np.asarray(fr.ll_to_px(np.asarray(e["polygon_ll"], float)[:, :2]), float)   # noqa: E731
-            keep = [(lie, np.asarray(poly, float)) for lie, poly in zones if lie not in ("native", "recovery")]
+            keep = [(lie, np.asarray(poly, float)) for lie, poly in zones
+                    if str(k) in KEEP or lie not in ("native", "recovery")]
             for e in ed:
                 if e["action"] == "replace" and e["kind"] == "sand":
                     q = px(e)
