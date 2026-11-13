@@ -12,8 +12,8 @@ maps   crossed design: K jittered maps (the map seeds of the first K prior draws
        map s mod K. The map jitter is independent of the value parameters. 0 = one map per draw (the engine).
 race   after the first RACE_START draws, every RACE_STEP draws: a club whose paired difference to the leader (each at
        its own best aim so far, same draws) exceeds TIE + RACE_T standard errors is not simulated any further. The
-       leader and the runner-up are never dropped, so pick, margin, margin SE, cross-fit and the swing-noise share
-       are over all draws. A dropped club is reported from the draws it has: its EV (and curve) are the pick's EV
+       leader, the runner-up and any club not RACE_T standard errors behind the runner-up are never dropped, so
+       pick, runner, margin, margin SE, cross-fit and the swing-noise share are over all draws. A dropped club is reported from the draws it has: its EV (and curve) are the pick's EV
        plus its paired margin to the pick over those draws, and it carries `draws` (< the book's).
 """
 import numpy as np
@@ -68,11 +68,14 @@ def _bayes(M, D, F, h, S, N, K, race, seed):
             real = sorted((c for c in alive if c not in M.HYPOTHETICAL), key=lambda c: rr[c]["ev"])
             lead, second = real[0], real[1]
             vl = interp_rows(AIMS, E[lead], rr[lead]["aim"])
+            v2 = interp_rows(AIMS, E[second], rr[second]["aim"])
             for c in list(alive):
                 if c in (lead, second):
                     continue
-                d = interp_rows(AIMS, E[c], rr[c]["aim"]) - vl
-                if d.mean() > TIE + RACE_T * d.std(ddof=1) / np.sqrt(n):
+                vc = interp_rows(AIMS, E[c], rr[c]["aim"])
+                d, d2 = vc - vl, vc - v2
+                if (d.mean() > TIE + RACE_T * d.std(ddof=1) / np.sqrt(n)
+                        and (c in M.HYPOTHETICAL or d2.mean() > RACE_T * d2.std(ddof=1) / np.sqrt(n))):
                     alive.remove(c)
     Mx = {c: np.vstack(E[c]) for c in M.ALL_CLUBS}
     MA = {c: np.vstack(EA[c]) for c in M.ALL_CLUBS}

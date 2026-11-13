@@ -46,6 +46,13 @@ value raster, 13 ms ball work), ladder + sensitivities + width sweep 1.9 s, star
   Prior-draw loop 4.1 -> 1.8 s a hole, book 6.7 -> 3.9 s a hole. Picks identical, pick aims identical (other clubs'
   aims within 0.5 yd), margins within 0.0007 on 8 / 10 / 16.
 
+- **(3) crossed design** (`--book-maps 16`, now the default; 0 = a map per draw): 16 jittered maps painted once per
+  hole, draw s uses map s mod 16: kept. Prior-draw loop 1.7 -> 1.3 s a hole, book 3.9 -> 3.6 s a hole. Against the
+  per-draw repaint over 6 prior seeds on 8 / 10 / 16: same pick and runner in 18 of 18 (one runner swap between two
+  clubs 0.001 apart), margin difference mean +0.0003 / +0.0002 / +0.0015, sd 0.0015-0.0021 (margin SE is 0.004-0.016,
+  unchanged), pick aim within 0.5 yd in 16 of 18 and 1.5 yd apart twice on hole 8, whose aim moves by the same
+  1.5 yds from prior seed to prior seed with a map per draw.
+
 ## 1. Profile of the existing engine (one process, this box)
 
 Engine = `spirit_hollow/v2/model.py` + `decide.py` + `wind_grid_v2.py` through `v2_course.py`. Gateway Back hole 8.

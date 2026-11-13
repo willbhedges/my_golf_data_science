@@ -309,7 +309,7 @@ def main():
     ap.add_argument("--adaptive-cap-other", type=int, default=2048, help="swing cap, the other offsets")
     ap.add_argument("--book-res", type=float, default=1.0, help="raster cell (yds) of the book's prior-draw maps and "
                     "value rasters (book.py; 0 = the engine's 0.5)")
-    ap.add_argument("--book-maps", type=int, default=0, help="book: K jittered maps per hole shared by the prior "
+    ap.add_argument("--book-maps", type=int, default=16, help="book: K jittered maps per hole shared by the prior "
                     "draws (book.py; 0 = a map per draw)")
     ap.add_argument("--book-race", type=int, default=0, help="book: 1 = stop simulating clearly worse clubs after "
                     "16 draws (book.py)")
