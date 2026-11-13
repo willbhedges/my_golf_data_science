@@ -1,5 +1,18 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 7, Nov 13 (hole 10: the Lay up mode is a lay-up table; second_pass/HOLE10_LAYUP.md)
+
+* `opt/layup10.py`: every club restricted to lay-up aims (finishing line 5 L..45 R of the tee line for irons,
+  5 R..45 R for woods), Back and Middle; `study` (Sat / Sun / calm / firm ground, shares, the next shot played out)
+  and `grid` (the page's wind and temperature cells -> `layup10.json`, config `layup_grid`).
+* Template: with `lay_grid` on the hole, Lay up = a table of the lay-up clubs at their lay-up aims, best starred
+  (`alt_play.prefer`: the long iron when within 0.04), rows tappable, cost-against-going pill and a note pill
+  (`alt_play.note`). Without a grid the mode works as before.
+* Answer: long iron over the fairway sand (Back 194-200 out, Middle 174-180) is the lay-up; mid iron short of it
+  costs 0.03-0.07 from Back and is the wrong number from Middle (8-iron there).
+* QA: five sets 18 holes 0 problems; qa.json and the 360 solver states identical to version 16; mode driven on
+  Back / Middle x Sat / Sun; off returns the same panel.
+
 ## Round 6, Nov 13 (par 5s: the second shot, go or lay up; PAR5.md; no tee-shot number changed)
 
 * `opt/par5_second.py` (new): from where the Driver and the 2-wood finish on 3, 6, 13, 18, every club off the deck x

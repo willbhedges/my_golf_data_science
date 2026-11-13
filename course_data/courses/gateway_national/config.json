@@ -165,16 +165,27 @@
      "label": "Lay up",
      "club": "Mid iron",
      "text": "Lay-up: mid iron to the right fairway",
-     "versus": "going at the green"
+     "versus": "going at the green",
+     "prefer": {
+      "club": "Long iron",
+      "within": 0.04
+     },
+     "note": "Carry the fairway sand (195-200 out) or stay short? Carry it: the long iron flies it. Short of it is the mid iron; the table has the cost. A wood runs out of fairway at 270"
     },
     "Middle": {
      "label": "Lay up",
      "club": "Mid iron",
      "text": "Lay-up: mid iron to the right fairway",
-     "versus": "going at the green"
+     "versus": "going at the green",
+     "prefer": {
+      "club": "Long iron",
+      "within": 0.04
+     },
+     "note": "Fairway sand is 174-180 from this tee: the long iron flies it by 20. The mid iron lands at it: to stay short take the 8-iron"
     }
    }
   },
+  "alt_play_source": "2026-11-13 golfer request (second_pass/HOLE10_LAYUP.md, opt/layup10.py): with config layup_grid the Lay up mode shows every club at its best lay-up aim (finishing line 5 L..45 R of the tee line for irons, 5 R..45 R for woods) and stars the best; prefer = the long iron when within 0.04 (Back at 35-45 F the 4-wood lay-up is 0.03 better on the table with 13 % of balls lost; with the next shot played out the long iron is best by 0.08); club / text are the fallback without a grid",
   "alt_play_source": "2026-11-13 golfer's request: a Lay up toggle on 10. Club from second_pass/HOLE10_REDTEAM.md (the practical lay-up from Back is the mid iron, leaves about 88, 97 % fairway; the long iron is 0.03 better on paper with 9 % in the sand); the page shows the club at its own best aim for the wind / temperature / tee, the yards left and the strokes it costs, all live from the grids. Back and Middle only: from The Tips / Champions the pick is already the fairway shot."
  },
  "engine": {
@@ -256,6 +267,7 @@
   "native_penalty_area_source": "golfer's ground truth 2026-11-13: 'All of the native grass is penalty area generally if it is that height - no finding it, too thick and tall.' Every standing tall-native zone is priced by the engine's water rule (the ball is gone from the first yard in: one stroke + a shot from rough at the point where it crossed the edge) instead of the depth-ramp lost-ball model (25 % lost at the edge rising to 65 %, stroke and distance). 16's short-grass mound stays its penal-lie class; mown areas stay rough. Hole 10: the whole band between the ditch and the right-hand fairway is staked penalty area (his drawing), mapped as water in trace.py LATE['10']."
  },
  "draws": 256,
+ "layup_grid": "course_data/courses/gateway_national/layup10.json",
  "par5_second": "course_data/courses/gateway_national/par5_second.json",
  "par5_second_source": "2026-11-13, golfer request: go for the green or lay up on the par 5s, and where (opt/par5_second.py, opt/par5_page.py, PAR5.md). Clubs off the deck are assumptions (DECK in par5_second.py): no Driver or 2-wood; 4-wood 240 carry (255 off a tee less 15), long iron 210, mid iron 185, 8-iron 162, 9-iron 150, PW 138, GW 126, SW 113; from rough 4 % shorter, 25 % wider, no 4-wood",
  "par3_targets": "course_data/courses/gateway_national/par3_targets.json",

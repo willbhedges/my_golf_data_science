@@ -1518,6 +1518,14 @@ def build_page(slug, which, out=None, data_out=None):
             s5 = (p5.get("holes") or {}).get(str(d_.get("key")))
             if s5 and d_.get("kind") == "tee":
                 d_["second"] = {s: v for s, v in s5.items() if v.get("base") == d_.get("base_set")}
+    # config "layup_grid": path of {"hole": key, "sets": {base set: {temp: {cell: {"clubs": {...}}}}}} (Gateway 10,
+    # opt/layup10.py): every club at its best lay-up aim, for the page's "Lay up" mode (alt_play) on that base's tee
+    if cfg.get("layup_grid"):
+        lg = json.load(open(os.path.join(ROOT, cfg["layup_grid"])))
+        for d_ in holes:
+            g_ = (lg.get("sets") or {}).get(d_.get("base_set"))
+            if g_ and d_.get("kind") == "tee" and str(d_.get("key")) == str(lg.get("hole")):
+                d_["lay_grid"] = g_
     if cfg.get("par3_drift_per_mph"):
         data["p3_drift"] = float(cfg["par3_drift_per_mph"])
     if cfg.get("temp_note"):

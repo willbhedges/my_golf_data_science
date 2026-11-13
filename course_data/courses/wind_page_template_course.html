@@ -360,6 +360,28 @@ function sibling(i){ const h = D.holes[i]; if(shown(h)) return i;
   const k = h.key.slice(0, -1) + (h.key.endsWith("B") ? "F" : "B"); const j = D.holes.findIndex(x => x.key === k); return j < 0 ? i : j; }
 function step(d){ let i = st.idx; for(let n = 0; n < D.holes.length; n++){ i = (i + d + D.holes.length) % D.holes.length; if(shown(D.holes[i])) return i; } return st.idx; }
 let U = 1, VB = [0, 0, 900, 900];
+/* config "layup_grid" (Gateway 10): h.lay_grid = the wind grid's cells with every club at its best LAY-UP aim (the
+   finishing line kept on the lay-up ground, never at the green); same interpolation as solveTee */
+function solveLay(h){
+  const rel = ((st.from - h.bearing) % 360 + 360) % 360;
+  const S = D.speeds; const mph = Math.min(st.mph, S[S.length-1]);
+  let i = 0; while(i < S.length-2 && mph > S[i+1]) i++;
+  const s0 = S[i], s1 = S[i+1], ws = (mph - s0)/(s1 - s0);
+  const d0 = Math.floor(rel/30)*30, d1 = (d0+30)%360, wd = (rel - d0)/30;
+  const corners = [[s0,d0,(1-ws)*(1-wd)],[s0,d1,(1-ws)*wd],[s1,d0,ws*(1-wd)],[s1,d1,ws*wd]];
+  const out = {}; const TW = tempWeights(h.lay_grid, tempFor(h));
+  for(const c of Object.keys(TW[0][0]["0_0"].clubs)){
+    const r = {ev:0,aim:0,lo:0,hi:0,total:0,carry:0,width:0,drift:0};
+    for(const [g, tw] of TW) for(const [sp,dd,w0] of corners){ const v = cell(g, sp, dd).clubs[c]; const w = w0*tw;
+      r.ev+=w*v.ev; r.aim+=w*v.aim; r.lo+=w*v.zone[0]; r.hi+=w*v.zone[1]; r.total+=w*v.total; r.carry+=w*v.carry; r.width+=w*v.width; r.drift+=w*v.drift; }
+    const e = h.elev && h.elev.clubs && h.elev.clubs[c];
+    r.kick = 0;
+    if(e){ const roll = r.total - r.carry; r.carry += e.dc; r.total = r.carry + roll * e.rf; r.kick = e.kick; r.e = e; }
+    out[c] = r;
+  }
+  return out;
+}
+let ALTC = null;     /* lay-up mode with a grid: the club row tapped while it is on (null = the best lay-up) */
 let ALT = null;      /* key of the hole whose other play (h.alt_play, e.g. "Lay up") is switched on; not saved */
 function render(){
   applySource();
@@ -399,8 +421,15 @@ function render(){
     if(ALT !== null && (ALT !== h.key || !altC)) ALT = null;
     const altOn = !!altC && ALT === h.key;
     const ab = document.getElementById("altBtn"); ab.hidden = !altC; if(altC){ ab.textContent = altC.label || "Other play"; ab.setAttribute("aria-pressed", altOn); }
-    const pickC = altOn ? altC.club : st.club[h.key] && r.out[st.club[h.key]] ? st.club[h.key] : r.pick;
-    const best = r.out[pickC], aimC = pickC === r.pick ? r.aim : best.aim;
+    /* with a lay-up grid the mode shows every club at its best lay-up aim: the best one is picked, a tapped row shows that club's */
+    const LAY = altOn && h.lay_grid && r.T.back === 0 ? solveLay(h) : null;
+    const layOrder = LAY ? Object.keys(LAY).filter(c => !HYPO(c)).sort((a,b) => LAY[a].ev - LAY[b].ev) : null;
+    /* alt_play.prefer {club, within}: that club is the starred lay-up when it is within `within` strokes of the best */
+    const layPref = !!(LAY && altC.prefer && LAY[altC.prefer.club] && layOrder[0] !== altC.prefer.club && LAY[altC.prefer.club].ev - LAY[layOrder[0]].ev < altC.prefer.within);
+    if(layPref){ layOrder.splice(layOrder.indexOf(altC.prefer.club), 1); layOrder.unshift(altC.prefer.club); }
+    if(!LAY) ALTC = null;
+    const pickC = LAY ? (ALTC && LAY[ALTC] ? ALTC : layOrder[0]) : altOn ? altC.club : st.club[h.key] && r.out[st.club[h.key]] ? st.club[h.key] : r.pick;
+    const best = LAY ? LAY[pickC] : r.out[pickC], aimC = !LAY && pickC === r.pick ? r.aim : best.aim;
     const B = r.T.back;                                    // tee moved B yds back along the line
     const star = P(h, at(h, best.total - B, aimC));
     const zl = P(h, at(h, best.total - B, best.lo)), zh = P(h, at(h, best.total - B, best.hi));
@@ -440,7 +469,7 @@ function render(){
       ${h.tee_offimage && !below ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
       ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? (D.simple ? " ↓ below the picture" : ` ↓ ${below} yds`) : ""))}
       ${windArrow(h, r.rel, vb)}`;
-    const own = pickC !== r.pick;
+    const own = !!LAY || pickC !== r.pick;
     /* config "par5_second" (Gateway par 5s): h.second {tee set: {d0 | d1: {club, lines, from, lay, go, alt}}}: the
        second shot from where the pick finishes (points = yds from the base tee along the line, yds right). Shown for
        the solved club only; the lay-up target is a hollow square on the Whole hole picture. */
@@ -463,7 +492,11 @@ function render(){
     const tc = document.getElementById("topClub"); tc.textContent = pickC; tc.className = cls(pickC);
     document.getElementById("topKey").textContent = `${Math.abs(aimC) < 0.5 ? "Aim on the line" : `Aim ${Math.abs(aimC).toFixed(0)} yds ${aimC < 0 ? "left" : "right"}`} · ${Math.round(best.total)} total` + (D.simple ? ` · ${wide} wide` : "");
     document.getElementById("hAdj").hidden = true; document.getElementById("hAdj").innerHTML = "";
-    if(altOn){ const d = best.ev - r.out[r.pick].ev, lv = toGreen(h, r.T.back, best);
+    if(LAY){ const d = best.ev - r.out[r.pick].ev, lv = toGreen(h, r.T.back, best), SH = c => c.replace(/^(Long|Mid) /, x => x.toLowerCase());
+      badges.push(`<span class="pill chg">Lay-up: ${SH(pickC)} to the right fairway${lv !== "" ? `, leaves about ${lv}` : ""}. ${d < 0.05 ? "Costs about the same as" : `Costs about ${d.toFixed(1)} strokes against`} ${altC.versus || ("the " + r.pick)}.</span>`);
+      if(pickC !== layOrder[0]){ const dl = best.ev - LAY[layOrder[0]].ev; badges.push(`<span class="pill chg">Best lay-up: ${SH(layOrder[0])} · ${dl < 0.01 ? "this one is level with it" : "this one costs +" + dl.toFixed(2)}</span>`); }
+      if(altC.note) badges.push(`<span class="pill tie">${altC.note}</span>`); }
+    else if(altOn){ const d = best.ev - r.out[r.pick].ev, lv = toGreen(h, r.T.back, best);
       badges.push(`<span class="pill chg">${altC.text || (altC.label + ": " + pickC)}${lv !== "" ? `, leaves about ${lv}` : ""}. ${d < 0.05 ? "Costs about the same as" : `Costs about ${d.toFixed(1)} strokes against`} ${altC.versus || ("the " + r.pick)}.</span>`); }
     else if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     const calm = solveTeeCalm(h);
@@ -483,10 +516,13 @@ function render(){
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
     document.getElementById("hAim").innerHTML = `Aim at the dot (anywhere on the blue bar is within 0.005 strokes)${Math.abs(mv) > 2 ? (D.simple ? `; the ball finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} of the dot, at the dashed spot${why ? ` (${why})` : ""}` : `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}`) : ""}. ${relWords(r.rel, st.mph)}, ${Math.round(r.tF)}°F.${r.bayes ? " Same club as the book (this wind and temperature don't change it)." : ""}`;
     const allC = Object.keys(r.out).sort((a,b) => (D.simple ? (HYPO(a) - HYPO(b)) : 0) || r.out[a].ev - r.out[b].ev);   /* D.simple: the club not in the bag goes last */
+    const layRows = LAY ? layOrder.map(c => { const v = LAY[c], d = v.ev - LAY[layOrder[0]].ev;
+      return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===layOrder[0]?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${c===layOrder[0] ? "—" : d < 0 ? "level" : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)}</td></tr>`;}).join("") : "";
     const rows = allC.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
       const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (r.pref && d < 0 && -d < h.prefer.within ? "level" : d <= -0.01 ? `better by ${(-d).toFixed(3)} here` : Math.abs(d) < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
       return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"${HYPO(c) ? ' style="font-style:italic;opacity:.8"' : ""}><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${lost}</td></tr>`;}).join("");
-    document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>To green</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. To green: yards from where that club finishes to the middle of the green. ${D.simple ? "The dashed oval is that club's pattern: 95% of your solid shots finish between its left and right edges (the yards-wide number on the picture), and 95% between its front and back. " : ""}Tap any club to see its own best aim and pattern; tap ★ to go back. The hybrid (~235 carry) is hypothetical, not in your bag: it shows whether such a club would be the play.</div>`;
+    if(LAY) document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Lay-up club</th><th>Carry</th><th>Total</th><th>Leaves</th><th>95% width</th><th>vs best lay-up</th></tr></thead><tbody>${layRows}</tbody></table></div><div class="sub">Every club at its best lay-up line (the right fairway, never at the green). ★ best lay-up on strokes. Leaves: yards from where it finishes to the middle of the green. Tap a club to see its lay-up line and pattern; tap Lay up again to go back.</div>`;
+    else document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Club</th><th>Carry</th><th>Total</th><th>To green</th><th>95% width</th><th>Strokes lost</th></tr></thead><tbody>${rows}</tbody></table></div><div class="sub">★ best club. To green: yards from where that club finishes to the middle of the green. ${D.simple ? "The dashed oval is that club's pattern: 95% of your solid shots finish between its left and right edges (the yards-wide number on the picture), and 95% between its front and back. " : ""}Tap any club to see its own best aim and pattern; tap ★ to go back. The hybrid (~235 carry) is hypothetical, not in your bag: it shows whether such a club would be the play.</div>`;
     const be = best.e;
     const past = best.total - B > (h.foot_a1 || 345);
     if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
@@ -634,12 +670,14 @@ document.getElementById("adj").addEventListener("input", e => { const h = D.hole
 document.getElementById("hTable").addEventListener("click", e => {
   const tr = e.target.closest("tr[data-club]"); if(!tr) return;
   const h = D.holes[st.idx]; const r = solveTee(h);
+  if(ALT === h.key && h.lay_grid && r.T.back === 0){ ALTC = tr.dataset.club === ALTC ? null : tr.dataset.club; render(); return; }   /* lay-up mode: that club's lay-up */
   if(tr.dataset.club === r.pick) delete st.club[h.key]; else st.club[h.key] = tr.dataset.club;
   ALT = null;
   render(); });
 document.querySelectorAll("#view button[data-v]").forEach(b => b.addEventListener("click", () => { st.view = b.dataset.v; render(); }));
 /* the other way to play a hole (h.alt_play): on for this hole only, never stored; it uses the tapped-club path */
 document.getElementById("altBtn").addEventListener("click", () => { const h = D.holes[st.idx];
+  ALTC = null;
   if(ALT === h.key) ALT = null; else { ALT = h.key; try{ delete st.club[h.key]; }catch(e){} }
   render(); });
 document.getElementById("strip").addEventListener("click", e => { const b = e.target.closest(".chip"); if(b){ st.idx = +b.dataset.i; render(); } });
