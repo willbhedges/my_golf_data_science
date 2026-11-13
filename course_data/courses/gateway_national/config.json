@@ -158,7 +158,9 @@
    },
    "drift_per_mph_275": 1.5,
    "source": "2026-11-13 second pass, second_pass/PHYSICS.md (independent trajectory model fitted to the TrackMan tour tables): the engine's 0.00075 / F is the air alone; a ball at air temperature adds ~0.0004 / F (about 1 % of ball speed at 45 F) and the weekend's 1027-1031 hPa high another ~0.0002 / F equivalent between 38 and 52 F -> 0.00135; crosswind drift 1.5 yds per mph for every full shot (was 1.14 for the driver, 0.8 for a mid iron); head / tail multipliers for the shorter clubs (mid iron 1.65: -9 % of carry into 10 mph)"
-  }
+  },
+  "native_penalty_area": "relief",
+  "native_penalty_area_source": "golfer's ground truth 2026-11-13: 'All of the native grass is penalty area generally if it is that height - no finding it, too thick and tall.' Every standing tall-native zone is priced by the engine's water rule (the ball is gone from the first yard in: one stroke + a shot from rough at the point where it crossed the edge) instead of the depth-ramp lost-ball model (25 % lost at the edge rising to 65 %, stroke and distance). 16's short-grass mound stays its penal-lie class; mown areas stay rough. Hole 10: the whole band between the ditch and the right-hand fairway is staked penalty area (his drawing), mapped as water in trace.py LATE['10']."
  },
  "draws": 256,
  "par3_targets": "course_data/courses/gateway_national/par3_targets.json",

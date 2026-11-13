@@ -137,7 +137,35 @@ LATE["10"] = [Z("water", poly((-16.6, 236), (-14.1, 240), (-12.4, 244), (-10.4, 
                               (-4.9, 272), (-4.6, 268), (-4.6, 264), (-5.1, 260), (-5.4, 256), (-5.9, 252), (-6.4, 248),
                               (-7.6, 244), (-8.4, 240), (-10.4, 236)),
                 "ditch beside the green, wall to bank top (lidar ground Dec 2020 + NAIP 2023), 236-308")]
+# 2026-11-13, the golfer's first drawing on the page picture of 10 (red outline: "this is all penalty area in that
+# native as well"): the band of rougher grass between the ditch and the right-hand fairway, from the footbridge /
+# pond corner (226) to the cart path past the green (303), capped at x +13 past the fairway's end as he drew it.
+# Fitted to NAIP 2023 (left = the ditch, right = the mown fairway's edge, 0.5 yd off the mapped fairway).
+# EVIDENCE AGAINST: Dec 2020 lidar grass height in the band 0.01 m (0 % over 0.10 m; the tall grass left of the green
+# reads 0.11-0.14 m, 50 % over 0.10) and Sentinel-2 NDVI Nov 2026 0.86-0.88 (= fairway; standing native 0.55-0.60):
+# it reads as mown rough. He later said he "could be wrong" on the right side. Kept as penalty area because it is
+# the low-regret map: its 2-wood / 4-wood aim (26 L) costs 0.025 strokes if the band is in fact mown, while the
+# ditch-only map's aim (19.5 L) costs 0.05 if he is right; the club and "go at the green" are the same either way
+# (second_pass/HOLE10.md section 7). His second drawing took the right side on to the cart path (276-305, x up to
+# +41): same lidar / NDVI reading, changes no aim or club, not mapped.
+LATE["10"].append(Z("water", poly((11.1, 272.2), (6.7, 266.2), (4.1, 260.5), (-2.9, 239.9), (-8.4, 226.2), (-12.7, 226), (-6.4, 248), (-5.4, 256), (-4.6, 264), (-4.6, 284.2), (-3.4, 303), (13, 302.8), (13, 283), (14.8, 275)),
+                    "band between the ditch and the right fairway (golfer's first drawing; lidar / NDVI read it as mown: low-regret choice), 226-303"))
 
+# 2026-11-13 strategy pass (reviewer B, second_pass/REVIEW_B.md P1): 11's left long grass from 300 on is 6-19 yds
+# closer to the fairway than the Nov 9 band and goes on to 385 (photo / CIR 2023 and F1's lidar edge agree within
+# 1-5 yds). Matters now that native is penalty area (golfer's rule).
+EXTRA["11"].append(Z("native", poly((-10, 300), (-3, 300), (-2, 310), (2, 320), (8, 330), (13, 340), (21, 350), (24, 360), (28, 372),
+                                    (28, 385), (8, 385), (4, 370), (-2, 350), (-8, 335), (-10, 320)),
+                     "long grass left of the fairway 300-385, inner edge from the lidar (310-360) and the photo (370-385)"))
+# reviewer C (REVIEW_C.md v2, 18-A): the left fescue's fairway-side edge is 10-12 yds closer at 300-340 than the Nov 9
+# band (which followed the cart path) and goes on to 395 (lidar + NAIP 2023)
+EXTRA["18"].append(Z("native", poly((-30, 260), (-34, 280), (-38, 300), (-45, 320), (-52, 340), (-53, 360), (-55, 380), (-52, 395),
+                                    (-100, 395), (-100, 380), (-98, 360), (-92, 340), (-85, 320), (-75, 300), (-62, 280), (-52, 262)),
+                     "left fescue, fairway-side edge 260-395 (lidar + NAIP 2023)"))
+# reviewer A (REVIEW_A.md v2, 1a): 1's right fescue starts at x +28.5..+30.5 from 268 to 345 (mapped +32..+35), and
+# runs to the road (x +58; the Nov 9 band stopped at +52)
+EXTRA["1"].append(Z("native", poly((30, 268), (29, 290), (28.5, 300), (29.5, 312), (30.5, 345), (58, 345), (58, 268)),
+                    "right fescue, fairway-side edge 268-345 to the road (NAIP 2023; F1 lidar)"))
 # 2026-11-13 second pass (specialist F2, second_pass/FEATURES_10_18.md): long grass re-traced from the USGS 3DEP lidar
 # point clouds of Dec 2020 / Dec 2023 (vegetation height on a 0.5 m grid: mown 0.02-0.04 m, standing fescue / prairie
 # 0.10-0.35 m). Applied ONLY where it moves a Back or Middle aim by >= 3 yds or changes a club, and only after the
@@ -174,3 +202,22 @@ for _r, (_n, _c) in NOTE.items():
     H[_r] = dict(zones=EXTRA.get(_r, []) + auto(_r) + LATE.get(_r, []), note=_n, confidence=_c)
 
 TRACE = dict(holes=H, missing=[])
+
+# 2026-11-13 strategy pass, after the lidar replacement above:
+# the golfer's second drawing of 10 (every dead area round the green in red on the page picture, Nov 13; here the
+# Dec 2020 lidar agrees: grass 0.11 m median, 51 % over 0.10 m, NDVI Nov 2026 0.56-0.64;
+# /root/.claude/uploads/.../01e42326-image.jpg, described in second_pass/HOLE10.md): the tall grass starts right
+# behind the left greenside bunkers and wraps round the back-left to the cart path; the lidar polygons left 6-8 yds
+# of "rough" between the bunkers and the tall grass at 255-296. Painted before the bunkers / surround (EXTRA).
+EXTRA["10"].append(Z("native", poly((-66, 252), (-60, 255), (-56, 259), (-55.5, 266), (-55, 275), (-54, 283), (-53, 290), (-50, 297),
+                                    (-44, 299), (-36, 297), (-30, 299), (-22, 299), (-12, 298), (-10, 300), (-10, 305), (-70, 305), (-70, 252)),
+                     "tall grass behind the left greenside bunkers and behind the green to the cart path (golfer's drawing)"))
+# reviewer A 2a (mown strip left of 2's fairway) was withdrawn in REVIEW_A.md v2: not applied.
+# reviewer A 3a: the tree row in front of the yard beyond the hand corridor (345-413)
+LATE["3"].append(Z("recovery", poly((38.3, 345.4), (39.6, 363.4), (41.9, 383.4), (45.4, 413.3), (52.4, 413.2), (48.9, 383.3), (45.6, 363.3), (43.3, 345.4)),
+                   "tree row before the yard 345-413 (NAIP 2023)"))
+# reviewer C 13-A: the ditch across 13 bank to bank (8 yds; the OSM strip is 4-5 and leaves rough between the fairway
+# edge and the water, which stops rolling balls in the engine); the staked margin is outside the trench (see 10)
+LATE["13"] = [Z("water", poly((-37, 297.6), (-28.1, 307), (-14.4, 327.2), (-8, 337.5), (-2, 349), (10.6, 369.1), (17.4, 364.9), (5, 345),
+                              (-1, 333.5), (-14.7, 312.2), (-21.9, 302), (-31, 292.4), (-37.8, 283.5), (-44.2, 288.5)),
+                "ditch across the hole, bank to bank 284-369 (DTM + NAIP 2023)")]

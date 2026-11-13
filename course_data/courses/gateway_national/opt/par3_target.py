@@ -58,6 +58,12 @@ _spec.loader.exec_module(E)
 E.BAG = dict(E.BAG)
 E.BAG.update({"4-wood": (255, 270, 50, 24), "SW": (113, 115, 22, 12), "LW": (100, 101, 20, 11)})
 E.HOLES3 = HOLES3
+# 2026-11-13, the golfer's ground truth: standing native at Gateway is penalty area ("no finding it, too thick and
+# tall"): one stroke + the next shot from rough at the same distance (relief at the edge), instead of Eagle Knoll's
+# found-ball native row (2.70-3.30). P3_NATIVE=found restores the old row for an A/B run.
+if os.environ.get("P3_NATIVE") != "found":
+    E.SHORT = dict(E.SHORT)
+    E.SHORT["native"] = [1.0 + v for v in E.SHORT["rough"]]
 E.OUT = OUT
 WIND_NAME = {"Long iron": "Long iron", "Mid iron": "Mid iron", "4-wood": "4-wood"}
 

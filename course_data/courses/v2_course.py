@@ -315,6 +315,16 @@ def activate(slug, which):
         attach_greens(cfg, which, course, M)
     if eng.get("checked_extra_ll"):
         attach_checked_extra(eng["checked_extra_ll"], course)
+    # "native_penalty_area": "relief" | "stroke_and_distance" (per course, default off). Gateway National, the golfer's
+    # ground truth 2026-11-13: every standing tall-native zone is penalty area ("no finding it, too thick and tall"):
+    # the ball is gone from the first yard in. "relief" = the engine's water rule (one stroke + a shot from rough at
+    # the point the ball crossed the edge); "stroke_and_distance" = the engine's OB rule (unstaked: lost ball).
+    # Env V2_NATIVE_PENALTY overrides for A/B runs ("off" = the default depth-ramp lost-ball model).
+    npa = os.environ.get("V2_NATIVE_PENALTY") or eng.get("native_penalty_area")
+    if npa in ("relief", "stroke_and_distance"):
+        to = "water" if npa == "relief" else "ob"
+        for hd in course.HOLES.values():
+            hd["zones"] = [((to if z[0] == "native" else z[0]),) + tuple(z[1:]) for z in hd["zones"]]
     if eng.get("flight_trees"):
         dem = os.path.join(ROOT, meta["dem"]) if meta.get("dem") else None
         cache = {}
