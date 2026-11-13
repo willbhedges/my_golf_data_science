@@ -2,6 +2,7 @@
 
   python3 -m pytest -q course_data/courses/fastsolve/test_fastsolve.py
   python3 course_data/courses/fastsolve/test_fastsolve.py check gateway_national truth     (one course, verbose)
+  python3 course_data/courses/fastsolve/test_fastsolve.py adaptive eagle_knoll truth "[1, 14, 15]"
 
 Each course is checked in its own process (the engine binds one course per process: v2_course.activate). In that
 process the engine's own functions (kept by fast.install as F.slow_ev_curve / F.slow_raster) and the kernels run on
@@ -140,6 +141,59 @@ def check(slug, which, wind_holes=None, bayes_holes=(), n1=600, n2=2000, draws=2
     return bad
 
 
+def check_adaptive(slug, which, holes, n=512, verbose=True):
+    """The adaptive grid (kernel.c fs_grid) against the engine, ball for ball: with n0 = cap = n every club is
+    evaluated on the same n swings, so the EV fs_grid reports at a club's aim must be the ENGINE's own ev_curve
+    (F.slow_ev_curve: on a flight-tree course v2_course.lidar_flight_ev_curve, in Python) on those swings at that
+    aim, up to the summation order (blocks of 64 against numpy's pairwise sum): 1e-9. On a flight-tree course the
+    crown trace must also be live (balls stopped in crowns) and the grid must not have fallen back."""
+    vc, M, D, WG2, fast = _setup(slug, which)
+    import adaptive
+    say = print if verbose else (lambda *a, **k: None)
+    F = fast.install(M, D)
+    lidar = bool(getattr(F.slow_ev_curve, "_lidar_stop", False))
+    bad = []
+    if F.mode != ("lidar" if lidar else "plain"):
+        bad.append(f"kernel mode {F.mode!r}")
+    if not hasattr(adaptive.install(M, D, WG2, cap=n), "_adaptive"):
+        bad.append("adaptive.install fell back to another solve")
+    opts = dict(adaptive.DEFAULTS, cap=n, n0=n, min_all=n)
+    z = fast.sobol_draws(n, 31)
+    cells = [(0, 0), (10, 90), (15, 180), (20, 300)]
+    worst = 0.0
+    stopped = total = 0
+    for h in [h for h in M.HOLES if h in holes or str(h) in [str(x) for x in holes]]:
+        hd = M.HOLES[h]
+        R, Rs = M.Raster(hd), F.slow_raster(hd)               # the kernel's map and the engine's own
+        P = M.central(temp_f=50.0)
+        S = R.strokes(P, hd["length"])
+        out = adaptive.grid(M, D, WG2, h, P, R, S, cells, z, opts)
+        for (sp, rel), r in zip(cells, out):
+            for c, v in r["clubs"].items():
+                hook = WG2.wind_hook(c, sp, rel) if sp else None
+                aims = np.array([v["aim"]])
+                ev, (a, l, lie, s) = F.slow_ev_curve(Rs, S, hd, c, P, z, aims, wind=hook)
+                d = abs(float(ev[0]) - v["ev"])
+                worst = max(worst, d)
+                if v["n"] != n or not d <= 1e-9:
+                    bad.append(f"hole {h} {sp} mph from {rel} {c} at {v['aim']:+g}: grid EV {v['ev']!r}, engine "
+                               f"{float(ev[0])!r} (n {v['n']})")
+                if lidar:                                   # how many of these balls the crowns stopped
+                    car, dev, roll = M.shots(hd, c, P, z, hook)
+                    a0, l0, _ = F.slow_finish(R, car[:, None], dev[:, None] + aims[None, :], roll[:, None],
+                                              P["rough_roll"], P.get("v1_roll", False))
+                    stopped += int(((a != a0) | (l != l0)).sum())
+                    total += a.size
+    if lidar and not stopped > 0.01 * total:
+        bad.append(f"crown trace not exercised: {stopped} of {total} balls stopped")
+    for b in bad:
+        say("  MISMATCH", b)
+    say(f"{slug} adaptive grid vs engine on {n} swings, holes {list(holes)}: max |ev diff| {worst:.1e}"
+        + (f"; {stopped} of {total} balls stopped in crowns" if lidar else "")
+        + (": EQUIVALENT" if not bad else f": {len(bad)} MISMATCHES"))
+    return bad
+
+
 # ------------------------------------------------------------------------------------------------ pytest
 def _run(slug):
     which, wh, bh = CASES[slug]
@@ -200,6 +254,22 @@ def test_eagle_knoll_back_equals_engine():
     assert rc == 0, out[-3000:]
 
 
+def _adaptive(slug, holes):
+    p = subprocess.run([sys.executable, os.path.abspath(__file__), "adaptive", slug, CASES[slug][0], json.dumps(holes)],
+                       capture_output=True, text=True)
+    print(p.stdout + p.stderr)
+    assert p.returncode == 0, (p.stdout + p.stderr)[-3000:]
+
+
+def test_gateway_national_adaptive_grid_equals_engine_on_its_swings():
+    _adaptive("gateway_national", [10, 16])
+
+
+def test_eagle_knoll_flight_trees_adaptive_grid_equals_engine_on_its_swings():
+    """Lidar flight trees in fs_grid: holes where 6-30 % of drives are stopped in crowns."""
+    _adaptive("eagle_knoll", [1, 14, 15])
+
+
 def test_runner_refuses_the_course_folder():
     p = subprocess.run([sys.executable, os.path.join(HERE, "run.py"), "solve", "--slug", "gateway_national",
                         "--out", os.path.join(COURSES, "gateway_national", "truth", "v2")],
@@ -208,6 +278,8 @@ def test_runner_refuses_the_course_folder():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) >= 5 and sys.argv[1] == "adaptive":
+        sys.exit(1 if check_adaptive(sys.argv[2], sys.argv[3], json.loads(sys.argv[4])) else 0)
     if len(sys.argv) >= 4 and sys.argv[1] == "check":
         kw = json.loads(sys.argv[4]) if len(sys.argv) > 4 else {}
         kw["wind_holes"] = kw.get("wind_holes")
