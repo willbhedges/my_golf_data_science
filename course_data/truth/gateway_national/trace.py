@@ -124,6 +124,19 @@ NOTE = {
 # property, OSM course boundary; the package's ob:outside along the same line was erased by the hand footprint)
 LATE = {"3": [Z("recovery", band([(145, 32), (345, 32)], [(145, 44), (345, 44)]), "tree / shrub line before the industrial yard right (CIR 2023, NAIP 2022)"),
               Z("ob", band([(145, 44), (345, 44)], [(145, 65), (345, 65)]), "industrial yard right (off the property)")]}
+# 2026-11-13 (golfer's question on 10, second_pass/HOLE10.md): the ditch from the pond's outlet to the cart-path culvert,
+# hard against the green's right edge (236-308 yds). Dec 2020 lidar ground: a trench 4.0-4.8 ft below the green, a
+# vertical wall on the green side, wall to the top of the steep right bank 3-5 yds (median 3.8), no lidar returns on
+# its floor (standing water). The OSM "water" way is a 2.3-2.8-yd strip along its right half. This polygon = lidar
+# wall (moved 1 yd left: the wall's shadow line on NAIP 2023 is 0-2 yds left of the lidar wall, clipped at the mapped
+# green's edge) to the lidar bank top: 3.5-5.5 yds wide. The OSM strip stays (union).
+LATE["10"] = [Z("water", poly((-16.6, 236), (-14.1, 240), (-12.4, 244), (-10.4, 248), (-9.9, 252), (-9.6, 256), (-9.9, 260),
+                              (-9.9, 264), (-8.6, 268), (-8.4, 272), (-8.4, 276), (-8.9, 280), (-8.6, 284), (-8.9, 288),
+                              (-9.6, 292), (-9.6, 296), (-9.9, 300), (-9.1, 304), (-8.1, 308), (-4.6, 308), (-3.4, 304),
+                              (-3.9, 300), (-4.1, 296), (-4.4, 292), (-4.6, 288), (-4.6, 284), (-4.9, 280), (-4.6, 276),
+                              (-4.9, 272), (-4.6, 268), (-4.6, 264), (-5.1, 260), (-5.4, 256), (-5.9, 252), (-6.4, 248),
+                              (-7.6, 244), (-8.4, 240), (-10.4, 236)),
+                "ditch beside the green, wall to bank top (lidar ground Dec 2020 + NAIP 2023), 236-308")]
 
 # 2026-11-13 second pass (specialist F2, second_pass/FEATURES_10_18.md): long grass re-traced from the USGS 3DEP lidar
 # point clouds of Dec 2020 / Dec 2023 (vegetation height on a 0.5 m grid: mown 0.02-0.04 m, standing fescue / prairie

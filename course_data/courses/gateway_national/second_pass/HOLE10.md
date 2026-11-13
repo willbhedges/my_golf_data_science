@@ -1,0 +1,147 @@
+# Gateway National, hole 10: the ditch beside the green (Nov 13 2026)
+
+Will's question on the page photo of 10 (Back, 271 yds, 2-wood at the green): "this decision can't be right as there's
+a creek there, and that would be a lot of penalties".
+
+**Short answer.** The dark line is a real ditch with water in it, and it was already in the map as a penalty area, but
+as a strip 2.3-2.8 yds wide; the trench is 3.5-5 yds wide. The map is now corrected (commit with this file). With the
+ditch at its true width the play does not change: **2-wood at the green, aim 20 yds left of the tee line (was 17.5),
+about 11.5 left in Saturday's 5 mph wind from the right (was 10)**. About 1 ball in 10 finishes in the ditch (was
+priced as 1 in 15). Laying up is 0.35-0.45 strokes worse; the 4-wood at the green is 0.045 worse.
+
+Frame: x = yds right of the Back tee line (negative = left), along = yds from the Back tee. Green centre (-18.5, 270).
+
+## 1. What the line is (pictures looked at)
+
+Renders, all in the hole frame with the map zones drawn on top (scratch, not committed):
+`look_plain.png` / `look_zones.png` (195-335 yds, x -60..+40: NAIP 2023 RGB 0.3 m, NAIP 2023 colour-infrared, NAIP
+2022, lidar), `zoom_plain.png` / `zoom_zones.png` / `zoom_after.png` (225-315 yds, x -30..+15 at 13 px / yd: RGB, CIR,
+Dec 2020 lidar ground), cross-sections every 5 yds (`prof.py`) and a wall / bank trace every 2 yds (`trace_ditch.py`).
+
+* **NAIP 2023 RGB / CIR, NAIP 2022:** a straight dark line leaves the pond's corner at the footbridge (x -14, 234 yds),
+  runs up the right edge of the green and goes under the cart path at 308 yds. It is the same line in 2022 and 2023,
+  black in colour-infrared (water or deep shadow), about 1 yd wide at x -9.5..-8.5 from 255 to 300 yds. Right of it a
+  2-3 yd olive band (the ditch floor and bank face), then a tufted lip at x -6..-5, then plain rough up to the fairway
+  that passes right of the green.
+* **Lidar ground (USGS 3DEP, flown 2 Dec 2020, 0.5 m grid):** a trench. The green side is a vertical wall: the ground
+  drops 4.0-4.8 ft within 1 yd. The floor is 1.5-3 yds wide. The right bank climbs 2.5-3 ft in the first 1.5-2 yds
+  (40-50 % slope), then eases to 10-20 % for about 10 more yds. **There are no lidar returns on the floor** (near-infrared
+  laser absorbed): standing water in December 2020. So: a wet drainage ditch from the pond to the culvert, not a shadow
+  and not a path edge.
+* **Size and place** (lidar wall to the top of the steep bank, every 2 yds, 238-308):
+
+| along | wall (green side) x | bank top x | width | depth below the green side |
+|---|---|---|---|---|
+| 240 | -13.1 | -8.4 | 4.8 | 4.1 ft |
+| 250 | -9.1 | -5.9 | 3.2 | 4.4 |
+| 260 | -8.9 | -5.1 | 3.8 | 4.4 |
+| 270 | -7.6 | -4.9 | 2.8 | 4.3 |
+| 280 | -8.4 | -4.9 | 3.5 | 4.2 |
+| 290 | -8.6 | -4.6 | 4.0 | 4.6 |
+| 300 | -8.9 | -3.9 | 5.0 | 5.8 |
+
+  Median 3.8 yds (2.5-5.0). On the photo the wall's dark line sits 0-2 yds (median 0.6) left of the lidar wall, i.e.
+  at x -9.5; the two sources agree to about 1 yd. The mapped green's right edge is x -9.2..-9.9 and the photo green ends
+  at about -10.5 (F2: "the ditch is 1-2 yds off the right edge"): the wall is 1-2 yds from the putting surface.
+* **Relative to the shots.** The green centre is 9-11 yds left of the wall. The ditch runs the whole length of the
+  2-wood and 4-wood finishing zones (2-wood finishes 247 / 266 / 279 yds at the 10th / 50th / 90th percentile, 4-wood
+  238 / 254 / 270). The fairway that the lay-up uses passes right of the ditch (its left edge is 8-12 yds right of
+  the bank top at 240-265) and ends at 277; a ball right of the ditch must pitch back over it.
+
+## 2. How it was mapped
+
+`truth/package.json`, hole 10: one OSM `water` polygon = the pond (50-222 yds, left) plus a thin tail up the ditch to
+330 yds. Zone order: fairway, then water, then sand, so nothing paints over it; the green's putting value only applies
+to fairway / rough cells, so water cells inside the green outline stay water. In the engine's 0.5-yd raster the cells
+along it were `water` at x -7.0..-5.0 (245-295 yds: 2-3 yds), with `rough` on both sides (the 1.5-2 yds between the
+mapped green and the strip, and the right bank).
+
+So: right kind (penalty: 1 stroke + a shot from rough at the point the ball crossed in), right place (inside the
+trench, on its right half), **too thin**: 2.3-2.8 yds against 3.5-5. The missing part is the 1-2 yds on the green
+side, which were priced as greenside rough.
+
+F2's note "narrow ditches (10 beside the green ...) not detectable; mapped lines kept" was about its vegetation-height
+method; the lidar ground shows this one plainly.
+
+## 3. What the engine does with it (Back, calm, 43.6 F)
+
+Harness: the engine's `decide.bayes` (64 prior draws x 1,024 swings, fast kernel) for the pick, aim and margin; shares
+at each club's best aim in the central world (20,000 swings). Ditch variants were painted in memory.
+
+| ditch in the map | pick, aim | margin over 4-wood | in the ditch / pond: 2-wood | 4-wood | Driver | 2-wood strokes |
+|---|---|---|---|---|---|---|
+| true width - 1 yd each side (~2 yds) | 2-wood 17.5 L | 0.056 | 5.1 % | 6.9 % | 4.5 % | 3.607 |
+| **before: OSM strip 2.3-2.8 yds** | 2-wood 17.5 L | 0.053 | 6.5 % | 8.2 % | 6.7 % | 3.624 |
+| lidar wall to bank top (median 3.8 yds) | 2-wood 19.5 L | 0.045 | 8.2 % | 8.9 % | 8.1 % | 3.682 |
+| the same, moved 1 yd left (photo line) | 2-wood 19 L | 0.050 | 8.7 % | 9.7 % | 8.4 % | 3.658 |
+| **after (committed): photo wall to lidar bank top, 3.5-5.5 yds** | 2-wood 20.5 L | 0.046 | 9.7 % | 10.8 % | 9.6 % | 3.701 |
+| true + 1 yd each side (~6 yds) | 2-wood 20.5 L | 0.037 | 11.3 % | 11.2 % | 11.1 % | 3.713 |
+| true + 2 yds each side (~8 yds: every ball on the steep bank rolls in) | 2-wood 21.5 L | 0.026 | 14.2 % | 12.3 % | 13.6 % | 3.749 |
+
+"With bank rough" is the default in every row: the ground beside the ditch is rough. One more run priced a 3-yd strip
+along the right lip as a penal lie (the engine's "sand", as on 16's mound) on top of the +1 row: 2-wood 20 L, margin
+0.044, strokes 3.690 (a penal lie stops the ball, so fewer run into the water; not a worse case than the +2 row).
+
+The other clubs, on the corrected map (they do not change with the ditch width):
+
+| option | aim | expected strokes | vs the 2-wood | where it finishes |
+|---|---|---|---|---|
+| 2-wood at the green | 20.5 L | 3.701 | - | 32 % on the green, 20 % inside 10 yds of the hole; 9.9 % wet (9.3 % in the ditch, 0.6 % in the pond); 16 % dry but right of the ditch; 5 % sand; 1.6 % long grass |
+| 4-wood at the green | 23 L | 3.748 | +0.046 | 26 % on the green; 10.5 % wet (8.2 % ditch, 2.3 % pond: it is shorter, so more balls stop level with the pond's end); 10 % sand |
+| Driver | 17 L | 3.884 | +0.18 | runs through: 69 % rough, 9.6 % wet, 2.7 % long grass |
+| Long iron lay-up | 8.5 R | 4.045 | +0.34 | fairway right of the ditch, 66 yds left; 8.9 % in the 198-yd bunker |
+| Mid iron lay-up | 2.5 L | 4.080 | +0.38 | fairway, 88 yds left (97 % fairway, 0.2 % wet) |
+| 8-iron lay-up | 4.5 L | 4.153 | +0.45 | fairway, 111 yds left |
+
+Why going for it still wins: a ball in the ditch costs 1.37 strokes more than a dry one (3.87 against 2.50 strokes
+after the tee shot). One ball in ten wet is 0.14 strokes per round. The lay-up gives up 0.38: from 88 yds on the
+fairway a 5-handicap takes about 3.08; from where the 2-wood finishes (median 19 yds from the hole, a third of them
+putting) he takes about 2.50 when dry. For the mid-iron lay-up to break even, close to 4 balls in 10 would have to
+find the ditch.
+
+Wind line (the page picture Will saw): with 5 mph from the right the ball drifts about 8 yds left, so the aim line is
+drawn 8 yds right of the calm aim, which puts the line itself on the green's right edge, 1-2 yds from the ditch. If
+the wind is not there and he still aims there, the calm cost is +0.04 strokes (2-wood 3.742 at 11.5 L against 3.703
+at 20 L); if it blows 10 instead of 5, about +0.03. The line looks worse than it is.
+
+## 4. The fix
+
+`course_data/truth/gateway_national/trace.py`: `LATE["10"]`, one `water` polygon, 236-308 yds, left edge = the lidar
+wall moved 1 yd left to the photo's wall line (clipped at the mapped green's edge, x -9.9), right edge = the lidar
+bank top. 3.5-5.5 yds wide. The OSM strip stays (union). Applied with `opt/map_edits.py <old trace.py> --holes 10`
+(`hand_zones_ll.json`: hole 10 13 -> 14 zones; `truth/package.json`: only hole 10's `zones_ll` differs), then
+`truth/course.py` and `truth_middle/course.py` rewritten with `product.load` + `write_module` (no screenshots).
+Checked on `zoom_after.png`: the polygon covers the photo's dark line and the lidar trench from the footbridge to the
+culvert; raster water at 250 / 260 / 270 / 280 / 290 / 300 yds: x -10.0..-6.5, -9.5..-5.5, -8.5..-4.5, -8.5..-5.0,
+-9.0..-4.5, -9.5..-4.0.
+
+Not changed: the green outline (F2: 1.5-2 yds narrower on the right; its right edge now touches the water zone), the
+right bank (rough).
+
+## 5. Before / after (fast solver, `--holes 10 --card-only`, 64 draws; wind cells 8,192 swings)
+
+| case | before | after |
+|---|---|---|
+| **Back, calm book (43.6 F)** | 2-wood 17.5 L, 0.057 over 4-wood (book 256 draws: 17.5 L, 0.053) | **2-wood 20 L, 0.045 over 4-wood** (se 0.015) |
+| Back, share in water at the pick | 6.7 % | 10.0 % |
+| Back, 5 mph from the right (Saturday: NNW, 84 deg off the line), 50 F cell | 2-wood 10 L, 0.018 | **2-wood 11.5 L, 0.013 over 4-wood (14 L)** |
+| the same, 35 F cell | 2-wood 10.5 L, 0.107 | 2-wood 11.5 L, 0.095 |
+| Back, calm cells 35 / 50 F | 2-wood 18.5 L / 18.5 L (0.109 / 0.019) | 2-wood 19.5 L / 20 L (0.102 / 0.013) |
+| Back, firm ground roll x1.25 (central world, 16,000 swings) | 2-wood (0.019) | 2-wood 19 L, 0.014 over 4-wood |
+| Back, frozen ground roll x1.5 | 4-wood 21.5 L (0.015) | **4-wood 22 L, 0.018 over 2-wood** (pill still right) |
+| **Middle, calm book** | 4-wood 16 L, 0.215 over 2-wood | **4-wood 18.5 L, 0.207 over 2-wood** |
+| Middle, share in water at the pick | 5.5 % | 8.3 % |
+| Middle, 5 mph from the right, 35 / 50 F cells | 4-wood 8 L / 8.5 L | 4-wood 10.5 L / 10 L (0.171 / 0.214) |
+| Middle, roll x1.25 / x1.5 | 4-wood | 4-wood 17.5 L / 18 L (0.189 / 0.161) |
+
+Saturday 11:06 (44 F, 5 mph NNW) sits between the 35 and 50 F cells: Back 2-wood about 11.5-12 L, margin over the
+4-wood about 0.05; at 50 F and warmer the two clubs are a toss-up, as before.
+
+## 6. Left for the manager
+
+* The committed `truth/v2` and `truth_middle/v2` decisions, wind grids and the page for hole 10 are from the old map:
+  re-solve hole 10 (Back and Middle; the fast solver's `--holes 10` merges into an output folder) and rebuild the page.
+  No whole-course solve was run here and the page was not rebuilt.
+* OPTIMIZE.md's check table says "10: 2-wood, 17-21 L, 0.060": now 20 L, 0.045.
+* The other tee sets' grids for 10 (offsets) were not re-solved here.
+* Not done: the ditch continues past the cart path (310-330, OSM strip kept); the green outline's right edge.
