@@ -3,7 +3,15 @@
 Read-only reviewer playing the golfer. Each entry: question in Will's voice -> what I checked -> verdict
 (fine / doubt / wrong) -> what to do. Most important first. Times are UTC.
 
-## Top 5 push-backs (pass 2, Nov 13 03:17Z)
+## Top 5 open push-backs at the stop (Nov 13 04:25Z)
+
+1. **Nothing I reviewed tonight is on a page yet.** The page is still the Nov 12 build (old physics, 40 F at 9:00, 2-wood on 8, 4-wood on 9). Every fix below is in the map / template / config only; none is proven until the rev 7 solve lands and the page is rebuilt and looked at hole by hole.
+2. **16: the mound fix is in the map (penal lie) but the solved aim is not confirmed.** Expect 4-wood, aim about +4 to +6.5 (right half of the neck), 2-wood 0.1 worse. If the rebuilt page shows 2-wood, or an aim past +8, it is wrong.
+3. **8 and 11: the green is not in the picture** (8: 20 yds outside the left edge; 11: half on the right edge), and "Whole hole" stops ~440 yds out on 3, 5, 6, 13, 18. Not fixed, not in anyone's list.
+4. **9 and 11 are coin flips and must read as coin flips** (Driver by 0.025-0.03; a tie on firm ground and on the Tour table). Do not switch scoring tables on Friday to "settle" them: tie -> Driver, say "4-wood is the same score", done.
+5. **The map moved seven times in 90 minutes (revs 4-7) after a "freeze", the last time on 2, 3, 5 where no club was in question** (aims moved 3.5-5.5 yds; on 3 the aim moved toward the trees / yard on the right). Each rev restarted the long solve. Real freeze now; and Will's iron carries (every par-3 club) are still assumed.
+
+<details><summary>Pass 2 top 5 (03:17Z)</summary>
 
 1. **16 mound: answered in 222f7ece4 (now a penal lie), not yet proven.** The rev 6 solve has to bring the 4-wood aim back to about the middle of the neck (0 to +3) and the 2-wood back to clearly worse. Until I see that, 16 is open.
 2. **The picture does not show the green on 8 (113 yds left, cut off) and barely on 11; on 3, 5, 6, 13, 18 "Whole hole" stops ~440 yds from the tee.** On a 46-left corner cut I want to see what I am cutting toward.
@@ -15,6 +23,8 @@ Closed since pass 1: map freeze + 3-yd rule (222f7ece4); frost / firm-ground rol
 back to 4-wood on very firm ground and the page will say so, 16 holds); page wording clean-up is in the template
 (one aim number, "N % sure", the not-in-bag club last): to be checked on the rebuilt page.
 
+</details>
+
 <details><summary>Pass 1 top 5 (03:05Z)</summary>
 1. **16: tonight's map swap deleted the rocky mound right of the fairway, and the aim walked 10 yds toward it.** Put it back (penalised), keep 4-wood, aim the middle of the neck.
 2. **Six holes' hand-checked long grass (10, 11, 13, 15, 16, 18) were replaced wholesale at 02:53Z by machine polygons, read from a file that is still being edited.** Freeze that file now; no map change after tonight unless it moves a club or an aim by 3+ yds.
@@ -23,6 +33,52 @@ back to 4-wood on very firm ground and the page will say so, 16 holds); page wor
 5. **Nobody is checking the frost.** 24 F overnight, 35 F at 9:00 Saturday: frost delay (tee times and temperatures shift) and firm ground (more roll) hit exactly the three "longer club" changes (8 Driver, 9 Driver, 10 2-wood). Meanwhile the model workstream is running player what-if cases that cannot change a club.
 
 </details>
+
+## Open at the stop: what to check on the rebuilt page (Back first, then Middle)
+
+Render: `node course_data/courses/qa_page.js .../wind_page/index.html <out> Back`; my sharper map-only script was
+scratch (2x device scale, screenshot of `#ov`, "Whole hole" and "Landing area").
+
+| hole | the rebuilt page should show | wrong if |
+|---|---|---|
+| all tee shots | ONE aim number (the header); no "what-if worlds / golfers", no "N% sure", no "± 0.00x", no pattern break-even; the not-in-bag hybrid last in the table or gone | header aim and note aim disagree; hybrid row above the pick |
+| all | Driver carry about 257-263 on the early holes with one plain line saying why (275 at 70 F, cold air and ball, wind) | carry still 268-275 at 35-40 F (old physics), or shorter with no explanation |
+| all | forecast of Nov 13 or later: about 35 F at 9:00 Sat | 40 F at 9:00 (Nov 12 file) |
+| 2 | Driver, aim about 9 R (was 17.5 R): oval still clear of the pond short-left; right edge not past the cart path | oval's left edge on the pond |
+| 3 | Driver, aim about 5 L (was 8.5 L): right edge of the oval at, not inside, the tree line by the yard | oval visibly over the trees / yard on the right |
+| 5 | Driver, about 3 R | - |
+| 8 | **Driver, about 45 L**, finishing ~285-293 on the fairway where it turns left; reason in plain words; no close-call badge needed (0.057). Green visible | 2-wood; oval over the unmown square (299-336 yds); green still out of frame |
+| 9 | **Driver about 13-15 R with a close-call badge** naming the 4-wood; oval in the upper fairway, right half, clear of the left long grass | shown as a confident pick; aim 19+ R (that was the run with the tree zone missing) |
+| 10 | **2-wood, aim about 18-20 L = the green**; pill "Frozen or very firm ground (drives running 35+ yds): 4-wood, same line"; no water word anywhere | 4-wood with no pill; any hazard word; "tie" text contradicting the pick |
+| 11 | Driver about 17 R, close-call badge (4-wood); green in the picture | no badge; green cut off |
+| 16 | **4-wood, aim +4 to +6.5**, oval in the neck, its right edge short of the stone-edged mound; 2-wood ~0.1 worse | 2-wood; aim +7.5 or more; margin over 2-wood under 0.05 (means the mound is plain rough again) |
+| 16 Middle | long iron ~216, about 108 in | Driver / 2-wood / 4-wood |
+| 8 Middle | 4-wood about 35 L (the unmown square stops the Driver from there) | Driver at the 60-yd aim limit |
+| 4, 7, 12, 14, 17 | "Plays" 2-4 yds more than the old page (4: ~179, 7: ~183, 12: ~135, 14: ~198, 17: ~196 at the default start); clubs Sat: 7-iron, 6-iron, PW, 5-iron, 5-iron (17 is a close 5 / 6); crosswind line reads the right way ("wind moves the ball N yds right: start it that far left") and N is about 1.4 x the crosswind mph; box still on the green and away from the side the note calls unsafe; 4's box not pushed toward the back-right mound F1 found | "plays" lower than before in colder air; drift line pointing up-wind; par-3 club missing; too many numbers (card, map, target, plays, carry, box) |
+| Middle 3, 18 | either no "Lands past the hand-checked map" badge or a plain instruction with it | bare warning |
+| ovals | wide, not round. MODEL.md: good swings are 71 wide x 35 deep; the page draws all swings (59 deep) | hole 1 / 5 / 15 ovals near-circular: acceptable, but if it is one constant, draw the good-swing oval |
+
+Also open, not page checks:
+- Rev 7 solve had not landed when I stopped; `truth/v2/v2_decisions.json` is still Nov 9. Compare its Back table
+  with OPTIMIZE.md 5c and the handoff's expected table; any club that differs is a stop-and-look.
+- MODEL.md section 1 asks the manager to choose between the engine's table and the plain Tour table. My answer as
+  the golfer: leave it. It only changes 9 and 11, by 0.004, the day before the event.
+- Saturday frost delay: the tee-time control on the page is the answer; nobody has checked that changing the hour
+  moves the temperature, the par-3 clubs and hole 10 the right way on the new build.
+- Will's real iron carries (5-iron 198, 6-iron 185, 7-iron 174, PW 138 are assumed).
+
+## Pass 3 notes (03:20-04:20Z): what landed
+
+- **OPTIMIZE.md section 5 (5ef2a228c).** Clear and honest; it names both process errors (dropped tree zone on 9 in
+  rev 4, deleted mound on 16 in rev 5). 16 as a penal lie: aim +6.5, 2-wood 0.108 behind. **fine**, pending the solve.
+- **F1 checkpoint 2 (30646b878)** then edges applied on 2, 3, 5. No club in question on those holes. **doubt**:
+  this is the change the freeze was meant to stop.
+- **Par 3s re-solved (ca4480af1)** on the new physics and surrounds. Clubs read sensibly. **fine**, unseen on a page.
+- **MODEL.md (85d2a9517 .. 8dc6843cd).** About 60 variants a hole: no club changes; second-shot rollout confirms
+  10 (go, 0.065-0.086) and 16 (4-wood). That is the useful result. Fat tails, t-distributions, risk-averse club
+  sets, table comparisons: **over-modelling** for a Friday; none changed a club. Useful by-product: the good-swing
+  oval is 71 x 35, so the "is it a circle" question is a drawing choice, not a physics error.
+- **c3b289149:** "N% sure" removed, close-call badge under 0.045 (9 and 11). **fine.**
 
 ---
 
