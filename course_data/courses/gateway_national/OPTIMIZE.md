@@ -218,6 +218,19 @@ no interpolation) against the page's bilinear read of the 0 / 5 mph, 30-degree, 
 within 1.5 yds, margins within 0.008. Sunday's closest: Middle 1 Driver 0.017 over the 4-wood, Middle 11 Driver
 0.001 (4-wood shown), Middle 6 0.028, Middle 8 0.029, Back 11 0.031, Back 9 0.036.
 
+### R2-9. Why the map reads 4 yds under the card on 4 and 7 (log only)
+
+The package's tee stage slid each par-3 tee along its pad until the length ALONG THE OSM HOLE LINE matched the card.
+On 4 that line ends 4.5 yds past the green's centroid (tee to line end 179.6 = card 180; tee to centre 176.1); on 7
+the line has a bend (180 along it, 175.6 straight); on 17 it ends 3.7 past (196.3 / 192.6). So "map 176" is not a
+second measurement against the card: the same card number was fitted to a reference a few yards deep. Each pad has
+room for the tee 4-5 yds further back (4 Back pad spans 171-182 to the centre; 7 is one 57-yd strip), so the card's
+180 is the better estimate, which is what the page plays (the ladder reads the page number as the carry needed, and
+its p0 is from the map tee, so the 4 yds are in). The "Map 176" row and the "check the plaque or a laser" line stay:
+the markers move within the pad from day to day, and the new pill gives the distance at which the club changes.
+Tee shots: the same stage matched every par 4 / 5 tee to the card within 1 yd along the line on its pad; 18 was the
+one hole where that put two sets on the wrong pad (R2-8).
+
 ## Night of Nov 12-13: strategy pass (strategy lead; running log, newest state first)
 
 **State.** Map, config and engine option below are committed. Back + Middle re-solved in full with the local fast
