@@ -1,5 +1,127 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 2, Nov 13 (strategy lead, second shift; running log, newest checkpoint last)
+
+Starting point: version 9 of the page (f50e64f7b). Tools of this shift: scratchpad `r2/` (walk.js: every hole of the
+built page for each set x day x starting hole straight from the page's own solver functions; rend.js: the rendered
+text of the same; zoom.py: photo / infrared / 2020 lidar relief / lidar contours with the map's outlines, tees, par-3
+surrounds and box; qa_all.sh: qa_page.js on the five sets in parallel, 23 s, plus the hazard-word scan).
+
+### R2-1. Sunday walk-through, both possible starts (page as built; 9:00, 14 min a hole)
+
+Forecast the page uses (fetched Nov 13 02:44Z): Sat 4-5 mph from N / NNW, 35 F at 9:00 rising to 47 F; Sun 3.5-4 mph
+from ESE (104-108 deg), 43 F at 9:00 rising to 53 F. Aim = yds left / right of the tee line; in brackets the margin
+over the next club (wind model at the hole). Par 3s: the plays-like number and the club.
+
+**Back**
+
+| hole | calm book | Sat, start 1 | Sat, start 10 | Sun wind at the hole (start 1) | Sun, start 1 | Sun, start 10 | flag |
+|---|---|---|---|---|---|---|---|
+| 1 | Driver 8.5 L | Driver 5 L (0.051) | Driver 7 L (0.053) | behind 3 / from R 2 | Driver 5.5 L (0.044) | Driver 5 L (0.041) |  |
+| 2 | Driver 9.5 R | Driver 13.5 R (0.057) | Driver 16 R (0.056) | behind 2 / from L 3 | Driver 5 R (0.056) | Driver 5 R (0.051) |  |
+| 3 | Driver 6 L | Driver 2 L (0.060) | Driver 0.5 R (0.060) | behind 2 / from L 3 | Driver 11 L (0.060) | Driver 11 L (0.061) |  |
+| 4 | par 3 | 180: 7-iron | 178: 7-iron | in 0 / from L 4 | 183: 6-iron | 182: 6-iron (0.02) | club differs; Sun margin < 0.03 |
+| 5 | Driver 4.5 R | Driver 1.5 L (0.089) | Driver 3 L (0.085) | in 3 / from R 2 | Driver 7.5 R (0.095) | Driver 7 R (0.094) |  |
+| 6 | Driver 5.5 R | Driver 11 R (0.116) | Driver 11.5 R (0.114) | behind 3 / from L 2 | Driver 2 R (0.114) | Driver 2.5 R (0.113) |  |
+| 7 | par 3 | 187: 6-iron | 184: 6-iron | in 3 / from R 3 | 189: 6-iron | 187: 6-iron |  |
+| 8 | Driver 44.5 L | Driver 49.5 L (0.061) | Driver 51 L (0.048) | in 2 / from R 3 | Driver 40 L (0.062) | Driver 41.5 L (0.055) |  |
+| 9 | Driver 12.5 R | Driver 5.5 R (0.033) | Driver 7.5 R (0.023) | in 3 / from R 3 | Driver 16.5 R (0.036) | Driver 16 R (0.031) |  |
+| 10 | 2-wood 26 L | 4-wood 20 L (0.020, level: shown by rule) | 4-wood 21.5 L (0.020, level: shown by rule) | behind 3 / from L 2 | 4-wood 30 L (0.090) | 4-wood 30 L (0.053) | club differs |
+| 11 | Driver 16 R | Driver 23 R (0.026) | Driver 21 R (0.024) | behind 2 / from L 3 | Driver 13.5 R (0.027) | Driver 13.5 R (0.026) | Sun margin < 0.03 |
+| 12 | par 3 | 137: PW | 137: PW | behind 4 / from L 1 | 131: GW | 132: GW | club differs |
+| 13 | Driver 3 R | Driver 4 L (0.118) | Driver 5 L (0.103) | in 3 / from R 2 | Driver 6 R (0.115) | Driver 4 R (0.104) |  |
+| 14 | par 3 | 201: 5-iron | 203: 5-iron | in 3 / from R 2 | 205: 5-iron | 207: 5-iron (0.03) | Sun margin < 0.03 |
+| 15 | Driver 13.5 R | Driver 20 R (0.109) | Driver 20.5 R (0.108) | behind 3 / from L 2 | Driver 8.5 R (0.091) | Driver 9.5 R (0.094) |  |
+| 16 | 4-wood 5.5 R | 4-wood 0 (0.091) | 4-wood 1.5 R (0.068) | in 2 / from R 3 | 4-wood 11.5 R (0.095) | 4-wood 12.5 R (0.085) |  |
+| 17 | par 3 | 197: 5-iron | 201: 5-iron | in 1 / from R 3 | 196: 5-iron | 198: 5-iron |  |
+| 18 | Driver 14.5 R | Driver 15.5 R (0.136) | Driver 14 R (0.136) | in 2 / from L 3 | Driver 10.5 R (0.130) | Driver 10.5 R (0.124) |  |
+
+**Middle**
+
+| hole | calm book | Sat, start 1 | Sat, start 10 | Sun wind at the hole (start 1) | Sun, start 1 | Sun, start 10 | flag |
+|---|---|---|---|---|---|---|---|
+| 1 | Driver 6.5 L | Driver 3 L (0.028) | Driver 4.5 L (0.028) | behind 3 / from R 2 | Driver 3.5 L (0.022) | Driver 3.5 L (0.022) | Sun margin < 0.03 |
+| 2 | Driver 11 R | Driver 16 R (0.030) | Driver 19 R (0.030) | behind 2 / from L 3 | Driver 8 R (0.030) | Driver 8 R (0.029) | Sun margin < 0.03 |
+| 3 | Driver 4.5 L | Driver 0 (0.086) | Driver 2 R (0.087) | behind 2 / from L 3 | Driver 9 L (0.086) | Driver 9 L (0.089) |  |
+| 4 | par 3 | 155: 9-iron | 153: 9-iron | in 1 / from L 4 | 158: 9-iron (0.02) | 157: 9-iron | Sun margin < 0.03 |
+| 5 | Driver 0 | Driver 6 L (0.055) | Driver 6.5 L (0.054) | in 3 / from R 2 | Driver 2.5 R (0.057) | Driver 2.5 R (0.055) |  |
+| 6 | Driver 7.5 R | Driver 13.5 R (0.052) | Driver 14 R (0.050) | behind 3 / from L 2 | Driver 4.5 R (0.030) | Driver 4.5 R (0.025) | Sun margin < 0.03 |
+| 7 | par 3 | 167: 8-iron | 165: 8-iron | in 3 / from R 3 | 169: 8-iron | 167: 8-iron |  |
+| 8 | 4-wood 33.5 L | 4-wood 40.5 L (0.028) | 4-wood 40 L (0.050) | in 2 / from R 3 | 4-wood 28.5 L (0.028) | 4-wood 30.5 L (0.042) | Sun margin < 0.03 |
+| 9 | 4-wood 11 R | 4-wood 3 R (0.036) | 4-wood 5 R (0.039) | in 3 / from R 3 | 4-wood 15.5 R (0.034) | 4-wood 15 R (0.036) |  |
+| 10 | 4-wood 23 L | 4-wood 15 L (0.221) | 4-wood 16.5 L (0.213) | behind 3 / from L 2 | 4-wood 27 L (0.144) | 4-wood 26.5 L (0.183) |  |
+| 11 | Driver 18.5 R | 4-wood 18 R (0.004, level: shown by rule) | 4-wood 16 R (0.003, level: shown by rule) | behind 2 / from L 3 | 4-wood 7 R (0.003, level: shown by rule) | 4-wood 6.5 R (0.003, level: shown by rule) | club differs; Sun margin < 0.03 |
+| 12 | par 3 | 120: SW (0.04) | 119: SW | behind 4 / from L 1 | 115: SW | 116: SW |  |
+| 13 | Driver 11 R | Driver 4 R (0.116) | Driver 3.5 R (0.129) | in 3 / from R 2 | Driver 13 R (0.126) | Driver 11.5 R (0.130) |  |
+| 14 | par 3 | 187: 6-iron | 189: 6-iron | in 3 / from R 2 | 190: 6-iron | 192: 6-iron |  |
+| 15 | Driver 7 R | Driver 13.5 R (0.047) | Driver 13.5 R (0.047) | behind 3 / from L 2 | Driver 3 R (0.039) | Driver 3.5 R (0.040) |  |
+| 16 | long iron 7 R | long iron 2.5 R (0.101) | long iron 3 R (0.097) | in 2 / from R 3 | long iron 12 R (0.101) | long iron 12.5 R (0.102) |  |
+| 17 | par 3 | 176: 7-iron | 179: 7-iron | in 1 / from R 3 | 175: 7-iron | 176: 7-iron |  |
+| 18 | Driver 9.5 R | Driver 9 R (0.137) | Driver 7.5 R (0.134) | in 2 / from L 3 | Driver 6 R (0.140) | Driver 6 R (0.138) |  |
+
+10 from The Tips / Champions (grid +40): 4-wood at the right fairway on both days and both starts: Sat 17.5 R / 16 R
+(0.029 / 0.031 over the 2-wood), Sun 9.5 R / 8.5 R (0.042 / 0.038). 11 from there: 4-wood by the level rule, as Sat.
+
+Checks made on every hole, both days, both starts:
+
+* **Wind sign.** Each hole's bearing in the grids was recomputed from the tee and aim-line coordinates of the truth
+  package (all 18 within 0.2 deg; Back 2's package field still says 236.6, the grid uses the moved tee's 222.6, which
+  is the geometry). Head / cross components recomputed from the forecast direction and the bearing: the sign and size
+  on the page agree on all 18 holes x 2 days x 2 starts (e.g. 1 heads 318: Sat's N wind is 3 into and 3 from the
+  right, Sun's ESE wind is 3 behind and 2 from the right; 5 heads 80: Sat 4 from the left, Sun 3 into).
+* **Aim follows the drift, not the other way.** For every tee shot the aim plus the wind's sideways drift (the
+  finishing line) is within 2.6 yds of the calm book's line on both days and both starts (median 0.3). Sunday's aims
+  differ from Saturday's by 6-11 yds on most holes only because the crosswind changes side.
+* **Club changes Sat -> Sun on Back: none on a tee shot.** 10 is the 4-wood on both days (Sat by the level rule,
+  0.020 behind the 2-wood; Sun outright by 0.05-0.09 with 3 mph behind: red team's table). Par 3s: **4** 7-iron Sat
+  (180 / 178), 6-iron Sun (183 / 182: 4 mph across instead of 4 behind); **12** PW Sat (137), GW Sun (131, 4 mph
+  behind). Middle: no club changes Sat -> Sun.
+* **Start on 10** moves each hole's clock by about two hours (1-9 warmer, 10-18 colder). No tee-shot club changes on
+  either day from Back or Middle. Margins under 0.03 on the forecast: Back 9 Sat from a 10 start (0.023; pill
+  shown), Back 11 (0.024-0.027, close-call pill), Middle 1 (0.022-0.028), Middle 2 (0.029-0.030), Middle 6 on Sunday
+  (0.025-0.030: the helping wind takes the Driver further into the narrowing; Saturday 0.05), Middle 8 from a 1 start
+  (0.028), Middle 11 (level: 4-wood shown). All carry the page's close-call mark (threshold 0.045).
+* Nothing found wrong; nothing changed on a tee shot from this task.
+
+### R2-2. Par 3s, adversarial
+
+Looked at each green and tee complex on the 2023 photo, the infrared and the 2020 lidar ground (zoom.py):
+
+| hole | green outline vs photo | tee pads (lidar: flat raised pads; photo: divot scars) | card / map centre | surround |
+|---|---|---|---|---|
+| 4 | on the putting surface (x -19..+17, 161-190); the darker lobe to its left is collar-height grass, mapped as fairway | Back point on its own round pad (pad spans 171-182 to the centre); The Tips / Champions on the pad behind | 180 / 176 (every set is 3-5 over the map on this hole) | the tufted mound back-right (lidar crest 1.5 m above the green, 3-12 yds off the edge) IS in the par-3 solve as long grass (`opt/par3_features.json`, reviewer A's 4a); 4b's extension to the left along the back is mown in the photo: not added |
+| 7 | on the surface (x -12..+10, 160-191) | one long strip, 57 yds; Back point on it with divots at that spot; Middle point on its left edge, divot field 146-159 from the centre | 180 / 176 and 160 / 155 (every set 4-5 over the map) | unmown ground short on the line is in the solve (reviewer B's P2) |
+| 12 | on the surface; the solve uses the re-traced outline with the left edge 2 yds further left (B's P4 is in already) | Back and Middle share the rectangular pad | 131 / 131, 115 / 114 | everything left, short and long is as mapped |
+| 14 | on the surface (x -12..+11, 183-218) | Back pad 183-205 from the centre, Middle its own pad | 200 / 200, 185 / 185 | left side: sand, long grass, crowns: in the solve |
+| 17 | on the surface; solve uses the re-traced outline | Back pad 181-204, Middle pad 165-178 | 195 / 193, 173 / 171 | four pots re-traced: in the solve |
+
+Elevation: tee and green heights from the 2020 lidar agree with the page's (4: green 2.9 ft above, 7: 0.9 below, 12:
+2.3 below, 14: 2.4 below, 17: 2.5 below; Middle within 0.2 ft of the page on all five).
+
+"Plays like" sums, Back (target + elevation + wind + temperature): Sat 4: 176 + 1 - 5 + 8 = 180; 7: 179 + 0 + 1 + 7 =
+187; 12: 131 - 1 + 2 + 5 = 137; 14: 195 - 1 - 1 + 7 = 200 (201 before rounding of the parts); 17: 190 - 1 + 2 + 6 =
+197. Sun 4: 183, 7: 189, 12: 131, 14: 205, 17: 196. The wind term is 0.9 % per mph into, 0.6 % per mph behind.
+
+**The ladder and the close mark.** `par3_ladder.json` has a step every 2 yds; the page took the nearest step, so a
+number 1 yd from a change of club could show that step's 0.10 margin. Now (template, `page_text.simple` pages only)
+the margin is interpolated between the two steps and the change-over sits where it crosses zero; "close" is shown
+under 0.03. 17 Back is NOT a coin flip on the page's number: the 0.018 in `par3_targets.json` is the solve at the
+map's 193; the page plays the card's 195, which is 3.4 yds above the 6-iron / 5-iron change-over (5-iron by 0.10).
+The fragile ones are the holes where card and map differ. New pill, shown when the other club takes over within 3
+yds of real distance: "182 or more to the middle of the green today: 6-iron" (Back 4, Sat), "178 or less ...:
+7-iron" (Back 4, Sun: the map's 176 is under it), so the laser on the tee settles it.
+
+Change-overs of the ladder (plays-like number): GW | PW 134, 9 | 8 158, 8 | 7 169-170, 7 | 6 181.6, 6 | 5 194-195,
+5 | 4 207.7: each 1-4 yds above the midpoint of the two stock carries, growing with the club (longer irons release
+more), so the ladder is consistent with the bag 100 / 113 / 126 / 138 / 150 / 162 / 174 / 185 / 198 / 210.
+
+**If a named iron were 4 yds off** (log only; a 4-yd error moves that club's two change-overs by about 2): the picks
+within 2 yds of a change-over on the forecast are Back 4 Sat (7-iron, 1.5 below the 6-iron: 6-iron if the 7- or
+6-iron is 4 shorter than assumed), Back 4 Sun (6-iron, 0.7-1.7 above: 7-iron if either is 4 longer), Back 12 Sun from
+a 10 start (GW, 1.6 below the PW), Back 14 Sun from a 10 start (5-iron, 0.9 below the 4-iron), Middle 12 Sat (SW,
+0.6-0.9 below the GW), Middle 4 Sun (9-iron, 0.4-1.3 below the 8-iron), Middle 7 Sun (8-iron, 1.5 below the 7-iron).
+Every other par-3 pick is 2.3 yds or more from a change-over.
+
 ## Night of Nov 12-13: strategy pass (strategy lead; running log, newest state first)
 
 **State.** Map, config and engine option below are committed. Back + Middle re-solved in full with the local fast

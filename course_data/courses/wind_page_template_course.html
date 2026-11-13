@@ -284,6 +284,24 @@ function p3Pick(h, r){
   const n = r.play, s = n - L.p0;
   let best = L.steps[0];
   for(const x of L.steps) if(Math.abs(x[0] - s) < Math.abs(best[0] - s)) best = x;
+  /* D.simple (Gateway, 2026-11-13 round 2): the ladder has a step every 2 yds; between two steps the margin is
+     interpolated, and where the two steps pick different clubs the change-over is where the interpolated margin
+     crosses zero (was: the nearest step, so a number 1 yd from a change-over could show the step's 0.10 margin) */
+  let sw = null;
+  if(D.simple){
+    let lo = null, hi = null;
+    for(const x of L.steps){ if(x[0] <= s) lo = x; else if(!hi) hi = x; }
+    if(lo && hi){ const w = (s - lo[0]) / (hi[0] - lo[0]);
+      if(lo[1] === hi[1]) best = [s, lo[1], w < 0.5 ? lo[2] : hi[2], (1 - w) * lo[3] + w * hi[3], lo[4], false];
+      else { const d = (1 - w) * lo[3] - w * hi[3];
+        best = d >= 0 ? [s, lo[1], hi[1], d, lo[4], false] : [s, hi[1], lo[1], -d, hi[4], false]; }
+      best[5] = best[3] < 0.01; }
+    /* the nearest change-over, as the page number at which the other club takes over */
+    for(let i = 0; i + 1 < L.steps.length; i++){ const a = L.steps[i], b = L.steps[i + 1];
+      if(a[1] === b[1]) continue;
+      const x = a[0] + (b[0] - a[0]) * a[3] / (a[3] + b[3]);
+      if(!sw || Math.abs(x - s) < Math.abs(sw.s - s)) sw = {s: x, n: x + L.p0, club: x > s ? b[1] : a[1], up: x > s}; }
+  }
   const near = Math.min(...Object.values(D.p3_bag).map(c => Math.abs(c - n)));
   if(near > 6.5){
     const cs = Object.entries(D.p3_bag).sort((a, b) => a[1] - b[1]);
@@ -291,7 +309,7 @@ function p3Pick(h, r){
     return {gap: true, lo, hi};
   }
   const cb = D.p3_bag[best[1]], oth = Object.entries(D.p3_bag).filter(c => cb < n ? c[1] > n : c[1] < n).sort((a, b) => Math.abs(a[1] - n) - Math.abs(b[1] - n))[0];
-  return {club: best[1], runner: best[2], tie: best[5], carry: cb, other: oth, close: !best[5] && best[3] < 0.03};
+  return {club: best[1], runner: best[2], tie: best[5], carry: cb, other: oth, close: !best[5] && best[3] < 0.03, margin: best[3], sw};
 }
 function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
 function solvePar3(h){
@@ -474,6 +492,10 @@ function render(){
       (D.temp_k ? `<span class="${tY > 0 ? "up" : tY < 0 ? "dn" : ""}">${sg(tY)} at ${Math.round(r.tF)}°F</span>` : "");
     if(Math.abs(r.play - r.S3.center - r.adj) >= 3) badges.push(`<span class="pill chg">${Math.round(r.S3.center + r.adj)}${r.adj ? " (moved tee)" : ""} on the card</span>`);
     if(pk && pk.gap) badges.push(`<span class="pill tie">No club in the bag carries ${Math.round(r.play)}: play the number</span>`);
+    /* the other club takes over within 3 yds of this tee's distance (a tee marker a few steps forward or back, or the
+       card / map difference): say at which distance to the middle of the green, in today's air */
+    if(pk && pk.sw && !pk.gap){ const k = r.play / (r.box.play + r.adj), mid = r.S3.center + r.adj + (pk.sw.n - r.play) / k;
+      if(Math.abs(mid - (r.S3.center + r.adj)) <= 3) badges.push(`<span class="pill tie">${pk.sw.up ? `${Math.ceil(mid)} or more` : `${Math.floor(mid)} or less`} to the middle of the green today: ${pk.sw.club}</span>`); }
     /* crosswind allowance on a par 3 (D.p3_drift yds per crosswind mph, config par3_drift_per_mph): the box is the
        place to finish, so the start line moves up wind by the drift */
     const p3x = Math.sin(r.rel*Math.PI/180) * st.mph * (D.p3_drift || 0);
