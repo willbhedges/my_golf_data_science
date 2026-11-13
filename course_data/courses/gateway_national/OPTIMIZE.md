@@ -1,5 +1,17 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 8, Nov 13 (par 5s: the Second shot mode, a menu of every option from any spot; PAR5.md)
+
+* `opt/par5_menu.py` -> `par5_menu.json` (config `par5_menu`, 0.66 MB): from 180-340 yds out on the line of play and
+  from the Driver / 2-wood spots, fairway and rough, Sat and Sun: every club at its best line with strokes, leaves,
+  shares and pattern.
+* Template: "Second shot" button on holes that carry `shot2` (the alt button), start / lie controls, tappable
+  table, the shot's line and oval, outcome lines, Assumptions fold. Off = the tee-shot page.
+* Model's answer: a go row is best wherever one exists (fairway out to 250-260, rough to 210-220); beyond that the
+  4-wood as far as it goes.
+* QA: five sets 18 holes 0 problems; qa.json and the 360 solver states identical to the previous page; mode driven
+  on 6 / 13 / 18 / 3 Back, 13 Middle and The Tips; no console errors; hazard words 0.
+
 ## Round 7, Nov 13 (hole 10: the Lay up mode is a lay-up table; second_pass/HOLE10_LAYUP.md)
 
 * `opt/layup10.py`: every club restricted to lay-up aims (finishing line 5 L..45 R of the tee line for irons,

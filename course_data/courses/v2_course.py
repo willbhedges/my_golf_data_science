@@ -1526,6 +1526,15 @@ def build_page(slug, which, out=None, data_out=None):
             g_ = (lg.get("sets") or {}).get(d_.get("base_set"))
             if g_ and d_.get("kind") == "tee" and str(d_.get("key")) == str(lg.get("hole")):
                 d_["lay_grid"] = g_
+    # config "par5_menu": path of {"dist": [...], "holes": {hole: {base set: {"d0" | "d1": {...}}}}}
+    # (gateway_national/opt/par5_menu.py): the second-shot menu behind the "Second shot" button on the par 5s
+    if cfg.get("par5_menu"):
+        pm = json.load(open(os.path.join(ROOT, cfg["par5_menu"])))
+        data["shot2_dist"] = pm.get("dist")
+        for d_ in holes:
+            m_ = ((pm.get("holes") or {}).get(str(d_.get("key"))) or {}).get(d_.get("base_set"))
+            if m_ and d_.get("kind") == "tee":
+                d_["shot2"] = m_
     if cfg.get("par3_drift_per_mph"):
         data["p3_drift"] = float(cfg["par3_drift_per_mph"])
     if cfg.get("temp_note"):

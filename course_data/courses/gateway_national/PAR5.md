@@ -250,8 +250,93 @@ QA (qa_page.js, five sets): 18 holes, 0 problems each; against the version-15 pa
 field is identical except the new `second` text and the added pill on 3, 6, 13, 18; all 360 states of the page's
 own solver (set x day x start x hole: headline, aim, table) identical apart from those pills.
 
+
+## The Second shot mode (the menu; added after version 16)
+
+Golfer: "a button to access a second-shot menu that gives me a variety of shots and the strokes gained on the
+different outcomes ... I'm 270 out, green's there, it's a little tight, should I go for it? Should I lay up short?"
+
+`opt/par5_menu.py` (`solve` per base and day, 2 min each; `page` -> `par5_menu.json`, config `par5_menu`, 0.66 MB:
+page 9.1 -> 9.8 MB). For each par 5, Back and Middle maps, Saturday and Sunday forecast:
+
+* starts: every 10 yds from 180 to 340 to the middle of the green on the hole's line of play (the middle of the
+  widest strip of this hole's fairway at that distance; where there is none, between the neighbours and marked),
+  and where the Driver and the 2-wood finish from Back, The Tips, Champions and Middle; fairway lie and rough;
+* rows: every club off the deck at its own best direction (the solver above, 2,500 common swings), kept when within
+  0.6 of the best, at most 8 shown. A row is a "Go" when 1 ball in 10 or more finishes on the green or 15 % carry
+  the front edge; otherwise a "Lay up" (so a 4-wood from 270 that runs up 30 short is a lay-up row);
+* per row: total, leaves, share carrying the front edge, share on the green, share in trouble (penalty or trees),
+  strokes against the best, the pattern's 95 % width and depth (drawn as the oval).
+
+Page: a "Second shot" button beside Whole hole / Landing area on 3, 6, 13, 18 (every set drawn from the Back or
+Middle map; the Driver / 2-wood spots for Back, The Tips, Champions, Middle). On: one sentence ("From 250: going is
+better by 0.18 (4-wood); 3 in 10 carry the front edge"), the start buttons (Driver's spot, 2-wood's spot, - N yds out
++, Fairway / Rough), the table (tap a row to draw it), the outcome lines and an Assumptions fold. Off: the tee-shot
+page as it was (panel HTML compared; the only difference Playwright sees is an empty `style=""` its own screenshot
+call leaves on the tee slider). The menu is for the forecast at the hole (start on 1), not for the wind controls.
+
+### Where going stops (the model's answer to "should I go?")
+
+There is no distance at which a lay-up beats a club that can reach: wherever a go row exists it is the best row.
+What changes with distance is whether anything reaches.
+
+| hole | fairway: a go is the best row out to | from there | rough (no 4-wood): out to |
+|---|---|---|---|
+| 6 | 260 Sat / 270 Sun (helping wind) | 4-wood as far as it goes (leaves 25-30), 0.25 better than the long iron | 220 / 230 |
+| 13 | 250 both days | 4-wood up the left (leaves 25-45), 0.10 better than the long iron | 210 |
+| 18 | 260 Sat / 250 Sun | 4-wood (leaves about 30), 0.05 better than the long iron: a toss-up | 220 / 210 |
+
+Going's edge over the best shorter club, fairway, Saturday: 13: 0.23 at 240 (75 % carry the front), 0.18 at 250
+(33 %), then nothing reaches; 6: 0.21 at 240, 0.31 at 250-260; 18: 0.19 at 240, 0.16 at 250, 0.07 at 260.
+The second-best row is usually the next club down played up short of the green (long iron leaving 35-50), not a
+wedge-distance lay-up: laying back to 90-100 costs 0.4-0.5 against going from 240.
+
+### Hole 13, Back, Saturday: the menu from the fairway
+
+| from | shot | total | leaves | carry front | on green | trouble | strokes | vs best |
+|---|---|---|---|---|---|---|---|---|
+| 240 | Go: 4-wood | 239 | 8 | 75 % | 27 % | 6 % | 3.60 | 0 |
+| 240 | Lay up: Long iron | 211 | 34 | - | 1 % | 2 % | 3.83 | +0.23 |
+| 240 | Lay up: Mid iron | 185 | 55 | - | 0 % | 0 % | 3.95 | +0.34 |
+| 240 | Lay up: 8-iron | 161 | 79 | - | 0 % | 0 % | 4.04 | +0.43 |
+| 240 | Lay up: 9-iron | 148 | 92 | - | 0 % | 0 % | 4.08 | +0.47 |
+| 240 | Lay up: PW | 136 | 105 | - | 0 % | 0 % | 4.12 | +0.52 |
+| 240 | Lay up: GW | 123 | 117 | - | 0 % | 0 % | 4.17 | +0.57 |
+| 250 | Go: 4-wood | 238 | 15 | 33 % | 24 % | 9 % | 3.69 | 0 |
+| 250 | Lay up: Long iron | 212 | 41 | - | 0 % | 1 % | 3.87 | +0.18 |
+| 250 | Lay up: Mid iron | 185 | 65 | - | 0 % | 0 % | 4.00 | +0.31 |
+| 250 | Lay up: 8-iron | 161 | 90 | - | 0 % | 0 % | 4.07 | +0.38 |
+| 250 | Lay up: 9-iron | 148 | 103 | - | 0 % | 0 % | 4.12 | +0.43 |
+| 250 | Lay up: PW | 136 | 116 | - | 0 % | 0 % | 4.17 | +0.48 |
+| 250 | Lay up: GW | 123 | 128 | - | 0 % | 0 % | 4.22 | +0.53 |
+| 250 | Lay up: SW | 111 | 140 | - | 0 % | 0 % | 4.27 | +0.58 |
+| 260 | Lay up: 4-wood | 242 | 25 | - | 9 % | 5 % | 3.83 | 0 |
+| 260 | Lay up: Long iron | 212 | 49 | - | 0 % | 0 % | 3.93 | +0.10 |
+| 260 | Lay up: Mid iron | 185 | 76 | - | 0 % | 0 % | 4.03 | +0.20 |
+| 260 | Lay up: 8-iron | 161 | 100 | - | 0 % | 0 % | 4.11 | +0.28 |
+| 260 | Lay up: 9-iron | 148 | 113 | - | 0 % | 0 % | 4.16 | +0.33 |
+| 260 | Lay up: PW | 136 | 125 | - | 0 % | 0 % | 4.21 | +0.38 |
+| 260 | Lay up: GW | 123 | 138 | - | 0 % | 0 % | 4.26 | +0.43 |
+| 260 | Lay up: SW | 111 | 151 | - | 0 % | 1 % | 4.32 | +0.50 |
+| 270 | Lay up: 4-wood | 243 | 33 | - | 3 % | 3 % | 3.86 | 0 |
+| 270 | Lay up: Long iron | 212 | 59 | - | 0 % | 0 % | 3.98 | +0.12 |
+| 270 | Lay up: Mid iron | 185 | 86 | - | 0 % | 0 % | 4.06 | +0.20 |
+| 270 | Lay up: 8-iron | 161 | 110 | - | 0 % | 0 % | 4.15 | +0.29 |
+| 270 | Lay up: 9-iron | 149 | 123 | - | 0 % | 0 % | 4.20 | +0.34 |
+| 270 | Lay up: PW | 136 | 135 | - | 0 % | 0 % | 4.25 | +0.39 |
+| 270 | Lay up: GW | 123 | 148 | - | 0 % | 0 % | 4.31 | +0.45 |
+| 270 | Lay up: SW | 111 | 161 | - | 0 % | 1 % | 4.37 | +0.51 |
+
+(240 = 294 yds from the Back tee, 9 right of the tee line; 250 = 284; 260 = 274; 270 = 264, 8 left.)
+
+Screens looked at (Back, Saturday): 13 from the Driver's spot, the 2-wood's spot, 270 fairway, 240 rough, a tapped
+second row; 6 and 18 the same four; 3 from 300 and from the Driver's spot; Middle 13; The Tips 13.
+
 ## Not done / crude
 
+* The menu has one swing set per start (2,500): a row's strokes are good to about 0.015, differences between rows
+  better (common swings). The static block's "go minus lay-up" compares with the best 20+-yds-short lay-up; the menu
+  compares with the next row, which is often the long iron up short, so its number is smaller (13: 0.23 against 0.35).
 * Forward tees: solved (results file), not shown on the page: the block is keyed to the base set a hole is drawn from and Forward's did not match; from there the second shot is an ordinary iron in any case.
 * The block uses a 9:00 start on hole 1; a start on 10 moves these holes' clock by two hours (2-5 F).
 * The re-check values penalty and tree balls off the tee with the engine's table (not the rollout), a 6-yd value
