@@ -42,10 +42,31 @@ def _activate(slug, which, engine, swings=None):
     return course, M, D
 
 
+def _slot():
+    """FASTSOLVE_SLOTS=<dir>:<n>: several run.py processes (Back and Middle) share n cores. A task holds one of n
+    lock files while it runs (released when the child exits), so at most n tasks run at once across all of them."""
+    spec = os.environ.get("FASTSOLVE_SLOTS")
+    if not spec:
+        return None
+    import fcntl
+    d, n = spec.rsplit(":", 1)
+    os.makedirs(d, exist_ok=True)
+    while True:
+        for k in range(int(n)):
+            f = open(os.path.join(d, f"slot{k}"), "w")
+            try:
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                return f
+            except OSError:
+                f.close()
+        time.sleep(0.05)
+
+
 def _task(t):
     """Runs in a forked child (one task per child: a tee shift and the engine's module globals stay in it)."""
     import numpy as np
     vc, M, D = _STATE["vc"], _STATE["M"], _STATE["D"]
+    slot = _slot()
     t0 = time.time()
     sys.stdout = open(t["log"], "w", buffering=1)
     sys.stderr = sys.stdout
