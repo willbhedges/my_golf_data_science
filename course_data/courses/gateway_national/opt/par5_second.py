@@ -123,7 +123,10 @@ class World:
     def wx(self, h, day):
         rows = [r for r in self.fc if r["date"] == day]
         hh = np.array([r["hour"] for r in rows], float)
-        hr = float(self.cfg.get("tee_hour", 9.0)) + (h - 1) * 14.0 / 60.0
+        # the day's own tee time (config tee_hours [Sat, Sun], else tee_hour), the same clock as the page
+        th, days = self.cfg.get("tee_hours"), list(self.cfg.get("days", []))
+        t0 = float(th[days.index(day)]) if th and day in days else float(self.cfg.get("tee_hour", 9.0))
+        hr = t0 + (h - 1) * 14.0 / 60.0
         ang = np.radians([r["wind_from_deg"] for r in rows])
         s, c = np.interp(hr, hh, np.sin(ang)), np.interp(hr, hh, np.cos(ang))
         return dict(temp=float(np.interp(hr, hh, [r["temp_f"] for r in rows])),

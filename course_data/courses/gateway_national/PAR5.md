@@ -33,7 +33,21 @@ Golfer: "Study and get real data", then "4-wood same as off tee". Research, cali
 Rebuild: the commands at the top (they now run on central; `P5_DECK_SET=assumed|central|pessimistic` overrides),
 each also with `P5_TALL_GRASS=lost`; then `opt/par5_menu.py solve` x 4 per mode and `page`, `opt/par5_page.py`.
 
-### Answer now (Back, from where the tee shot finishes)
+### Refresh, Nov 13 evening (the tables on the page; the table below is the run before it)
+
+`World.wx` now takes the day's own tee time (config `tee_hours`: Saturday 10:36, Sunday 9:00; it read `tee_hour`
+for both days, and the first tables were on 9:00 for Saturday). Everything re-run on the Friday-evening forecast
+(NWS: Saturday N 2-3 mph, 45-50 F on the par 5s; Sunday calm to E 1 mph, 41-54 F), central patterns, 4-wood 255 /
+270, both tall-grass rule sets, exactly as above. Run split so that no process passes 5 minutes: `par5_second.py
+--holes <h> --tag _r<h>` one hole per process for Back and Middle (2-4.5 min each with the tee re-check), one set
+per process for the others (1.5-2 min), then merged into `par5_second_<set>.json`; `par5_menu.py solve --holes <h>
+--tag _r<h>` (15-30 s each), merged; `describe`, `par5_menu.py page`, `par5_page.py`. Lost ball keeps the stored
+tee re-check, as before. Back, Driver, fairway: 3 lay up with the 4-wood (leaves 65 Sat / 75 Sun); 6 long iron to
+get close, 0.2 better than laying up (Sun 0.1); 13 go with the 4-wood, 0.2; 18 Sat go with the long iron, 0.1,
+Sun long iron to get close, 0.07 (was the 4-wood by 0.03: the helping wind is gone). Menu best row changes in
+4-11 of 136 spots per tee and day. The stray `_m / _u* / _h* / _n*` result files of the data pass are deleted.
+
+### Answer at the data pass (Back, from where the tee shot finishes; Thursday's forecast, 9:00 both days)
 
 | hole | day | from | to front / middle | GO: club, strokes | green / carry the front / penalty + trees | LAY-UP: club, leaves, strokes | go - lay-up | first build: go - lay-up |
 |---|---|---|---|---|---|---|---|---|

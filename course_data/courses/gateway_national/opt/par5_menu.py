@@ -104,7 +104,7 @@ def solve(a):
     Wd = P5.World(a.which)
     M = Wd.M
     z = M.draws_z(N, 5)
-    path = os.path.join(OUT, f"par5_menu_{BASE_NAME[a.which]}_{a.day}.json")
+    path = os.path.join(OUT, f"par5_menu_{BASE_NAME[a.which]}_{a.day}{a.tag}.json")   # --tag: one hole per process
     out = json.load(open(path)) if os.path.exists(path) else {}
     spots = {s: json.load(open(os.path.join(OUT, f"par5_second_{s.replace(' ', '_')}.json"))) for s in SETS_OF[a.which]}
     for h in [int(x) for x in a.holes.split(",")]:
@@ -162,6 +162,7 @@ def main():
     ap.add_argument("--which", default="truth")
     ap.add_argument("--day", default="sat")
     ap.add_argument("--holes", default="3,6,13,18")
+    ap.add_argument("--tag", default="", help="suffix of the solve's output file (a part, merged by hand)")
     a = ap.parse_args()
     {"solve": solve, "page": page}[a.cmd](a)
 
