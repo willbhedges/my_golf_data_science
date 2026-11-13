@@ -1,6 +1,6 @@
 # Review A: holes 1-6 as Will would read them on the tee (Back first, then Middle)
 
-Status: **version 2 (Fri Nov 13)**: checked against the Dec 2023 lidar grass heights, which retracted one
+Status: **version 3 (Fri Nov 13, 06:55Z)**: checked against the Dec 2023 lidar grass heights, which retracted one
 version-1 proposal (hole 2 left) and shrank another (hole 1 right). Page reviewed: `wind_page/index.html` at commit cee080946 (Actions run
 43358518302). Map reviewed: `truth/package.json` `zones_ll` (identical to `truth/course.py`, checked to 0.02 yd),
 painted in list order, later zone wins. Read-only review: nothing in the map, engine or page was changed.
@@ -16,9 +16,9 @@ are ranked by how likely they are to change what Will does. None is likely to.
 | # | hole | verdict | problem | effect |
 |---|---|---|---|---|
 | 1 | 4 (par 3) | doubt | fescue mound behind and back-right of the green is not in the map (hole 4 has no hand zones at all) | box and "safe miss" are right; long is priced as rough. Club is a 0.03 call between 7- and 6-iron, and the mound favours the 7 |
-| 2 | 1 | fine (Middle is a close call) | right fescue starts 3-4 yds nearer the fairway than mapped at 270-345 (lidar), where the Middle Driver finishes | Driver beats 4-wood by 0.030 from Middle; I estimate the edit costs the Driver about 0.005. Worth one re-solve |
+| 2 | 1 | fine (Middle is a close call) | right fescue starts 3-4 yds nearer the fairway than mapped at 270-345 (lidar), where the Middle Driver finishes | Driver holds: re-solved with a strip 3 yds wider than this, Middle Driver still wins by 0.021 (was 0.030), aim -7.5 (was -5) |
 | 3 | 2 | fine | none: the left fescue edge matches the lidar to 1-2 yds (my version-1 proposal 2a is withdrawn) | - |
-| 4 | 3 | fine | tree row right of the fairway is unmapped for 7 yds in front of the OB line beyond 345 yds (Back) / 282 (Middle) | about 0.5 % of Middle drives; no change expected |
+| 4 | 3 | fine | tree row right of the fairway is unmapped for 7 yds in front of the OB line beyond 345 yds (Back) / 282 (Middle) | re-solved with the strip added: no change from either tee |
 | 5 | 1 | fine | no OB right of the road (x > 57) | under 0.1 % of drives |
 | 6 | all | page wording | elevation line reads "1 ft below the tee, so it carries -1 yds" (hole 1); par-3 headline "Plays 181 yds - 7-iron carries 174" with no word about release | Will will ask about both |
 
@@ -42,7 +42,20 @@ fairway polygon (no); water erased by the hand "rough footprint" inside a landin
 Caveats. `raw/naip_2023.tif` is 0.6 m, not 0.3 m, so photo edges are good to about 1-2 yds. The August photo
 misled me once: on hole 2 a smooth dark-green band read as mown rough and the lidar shows it standing 25-35 cm.
 Where photo and lidar disagree below I follow the lidar. Lie shares I quote are my own Gaussian estimates from the
-page's 95 % widths, not engine output. I ran no re-solves.
+page's 95 % widths, not engine output.
+
+Re-solves (06:52Z, `fastsolve --card-only`, holes 1 and 3, both tees) were run on the lead's working-tree map,
+which by then held my version-1 strip on hole 1 (inner edge x +27, the harsher one) and 3a on hole 3:
+
+| hole, tee | page (rev 7) | working tree with the edits |
+|---|---|---|
+| 1 Back | Driver, aim -8, 0.051 over 2-wood | Driver, aim -9.5, 0.046 |
+| 1 Middle | Driver, aim -5, 0.030 over 4-wood | Driver, aim -7.5, 0.021 |
+| 3 Back | Driver, aim -5.5, 0.060 | Driver, aim -5.5, 0.060 |
+| 3 Middle | Driver, aim -4, 0.082 | Driver, aim -4.5, 0.082 |
+
+So Driver holds on hole 1 from both tees even with the strip drawn 3 yds too wide. With the version-2 strip
+(x +30, starting at 268) I expect about half of that movement: Middle aim about -6, margin about 0.025.
 
 ## Hole 4 (par 3, 180 Back / 153 Middle): doubt
 
@@ -113,8 +126,8 @@ Seen on `ov1`, `h1` (landing 180-380), `h1R` (right side at 7 px/yd), `m1` (Midd
     Paint it before the hand fairway and sand zones.
   - Back: Driver aim -8, 95 % edge +28: the strip takes under 1 % of drives. No change.
   - Middle: Driver aim -5 finishes in the neck; the strip takes about 1 % of drives (4-wood 0.3 %), about 0.005
-    off a 0.030 margin. **Question to test: re-solve hole 1 Middle with 1a.** I expect Driver to hold at about 0.025
-    with the aim a yard further left.
+    off a 0.030 margin. Tested with the wider version-1 strip (table under "How I looked"): Driver still wins by
+    0.021, aim -7.5. Please swap the version-1 polygon in the working tree for this one.
 - **Would a DECADE player hit Driver from Middle?** Fescue to fescue is about 78 yds at the neck (left of the path
   at -48, right at +30) against a 70-yd pattern, and it leaves 72 yds instead of 100. That is on the Driver side of
   the 65-yd rule, narrowly. Driver is defensible; the page is right to badge it "close call". Back is a clear Driver.
@@ -166,7 +179,7 @@ Seen on `ov3`, `h3`, `h3b` (330-600), `m3`, `m3R` (right side from Middle at 7 p
     `[[38.3,345.4],[39.6,363.4],[41.9,383.4],[45.4,413.3],[52.4,413.2],[48.9,383.3],[45.6,363.3],[43.3,345.4]]`
     (Middle frame: x 36..49, 282-350). lon/lat:
     `[[-90.1494713,38.6583781],[-90.1496037,38.658272],[-90.1497578,38.6581589],[-90.149989,38.6579893],[-90.1500443,38.6580272],[-90.1498131,38.6581969],[-90.1496511,38.6583045],[-90.1495108,38.6584052]]`
-  - Reached only by the Middle Driver's long right tail (about 0.5 %). No change expected.
+  - Reached only by the Middle Driver's long right tail (about 0.5 %). Re-solved with it: no change.
 - **Left native band at 280-345 (x -62..-45) looks mown** on the photo, between the cart path and the pond. The
   water behind it is real, so the cost of being wrong is small and on the cautious side. No proposal.
 - The cyan strip between the two left ponds (380-540 yds, x -60..-40) follows a low swale on the relief. It is a
