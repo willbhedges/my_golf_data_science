@@ -29,6 +29,14 @@ never changes from 32 draws up; the aim is within 0.5 yd from 64; the margin at 
 256-draw margin on every hole, at 64 within 0.003 (inside its own SE of 0.003-0.016). 128 is the point where
 nothing moves; 64 is inside the noise.
 
+## A course's second rule set (`--tall-grass lost`, Gateway National only)
+
+`run.py solve --tall-grass lost` activates the course with `v2_course.activate(tall_grass="lost")` (refused unless
+the course's config has `engine.tall_grass_alt`): value-raster cells of tall native grass carry a marker (< 0) and
+`fs_ev` / `fs_grid` price such a ball as one stroke and the same shot again, E = (n + sum of found S + n_lost) /
+(n - n_lost) per club and aim; every sum they return is over the effective strokes, so the callers are unchanged. A
+raster without the marker takes the code path it always did (the default Gateway solve is reproduced bit for bit).
+
 ## Defaults (runner, from the saturation results)
 
 `run.py solve` now defaults to: Sobol swings, 64 prior draws, 512 swings per draw, 2,048 for central worlds, adaptive

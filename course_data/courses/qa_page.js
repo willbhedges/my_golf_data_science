@@ -1,5 +1,6 @@
 // Hole-by-hole browser check of a course wind page (Playwright, chromium at /opt/pw-browsers/chromium).
 //   node course_data/courses/qa_page.js course_data/courses/<slug>/wind_page/index.html <out_dir> [tee set]
+//   QA_TALL=1 node ... : the same with the page's second rule set switched on (pages that have the control)
 // For each hole (top next arrow, 400 px phone and 1280 px desktop): a JPEG screenshot of the hole panel and a
 // record {hole, par line, play, aim text, table rows, elevation line, note, badges, problems}. Problems: console
 // errors, NaN / undefined / Infinity in the text, empty play, image missing, table without rows, page wider than
@@ -32,6 +33,10 @@ const path = require("path");
       if (await page.isVisible(sel)) { await page.click(sel); await page.waitForTimeout(150); }
       else report.set_note = `set picker hidden or no "${set0}" button: checked the page's own set`;
     }
+    // QA_TALL=1: a page with a second rule set (config tall_grass_alt: "Tall grass: Drop | Lost ball") is checked with
+    // its second option switched on; every hole must then carry the tag. Unset: the page as it opens (unchanged).
+    const tall = process.env.QA_TALL === "1";
+    if (tall) { await page.click('#tall button[data-v="1"]'); await page.waitForTimeout(150); report.tall = true; }
     const D = await page.evaluate(() => ({ n: D.holes.length, sets: D.sets, days: D.days, keys: D.holes.map(h => h.key) }));
     const holes = [];
     for (let i = 0; i < D.n; i++) {
@@ -52,6 +57,8 @@ const path = require("path");
       if (!rec.rows.length) probs.push("empty table");
       if (rec.wide) probs.push("horizontal scroll");
       if (i > 0 && rec.hole === holes[i - 1].hole) probs.push("hole did not advance");
+      if (tall) { rec.tag = await page.evaluate(() => { const e = document.getElementById("tallTag"); return e && !e.hidden ? e.textContent : ""; });
+        if (!rec.tag) probs.push("second rule set on but no tag on the card"); }
       rec.problems = probs;
       const panel = await page.$("section.hole");
       await panel.screenshot({ path: path.join(out, `${name}_${String(i + 1).padStart(2, "0")}.jpg`), type: "jpeg", quality: 55 });

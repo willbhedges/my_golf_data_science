@@ -271,6 +271,27 @@
    "source": "golfer 2026-11-13: the tall grass may be played as a lost ball (re-tee) instead of a one-stroke drop; he decides on the day. Second rule set, solved separately (truth/v2_lost, truth_middle/v2_lost; fastsolve run.py --tall-grass lost) and switched on the page; never the default. A ball finishing in a tall-grass zone costs one stroke and the same shot again (closed form, v2_course.lost_ball_ev). Mapped water and ditches stay one stroke + drop. also_ll: hole 10's band between the ditch and the right fairway (his first drawing, mapped as a water-typed zone) is tall grass for this switch."
   }
  },
+ "tall_grass_alt": {
+  "v2": "v2_lost",
+  "par3_targets": "course_data/courses/gateway_national/par3_targets_lost.json",
+  "par3_ladder": "course_data/courses/gateway_national/par3_ladder_lost.json",
+  "layup_grid": "course_data/courses/gateway_national/layup10_lost.json",
+  "par5_menu": "course_data/courses/gateway_national/par5_menu_lost.json",
+  "par5_second": "course_data/courses/gateway_national/par5_second_lost.json",
+  "label": "Tall grass",
+  "options": ["Drop", "Lost ball"],
+  "sub": "how a ball in the tall grass is played today: a one-stroke drop, or lost (one stroke and re-tee)",
+  "tag": "Tall grass: lost ball (re-tee)",
+  "page_text": {
+   "why": {
+    "10": {"Back": "Why 4-wood: at the left half of the green, and the shorter wood because it loses fewer balls. Miss left of the flag, not right. About 6 balls in 7 finish on or around the green; an iron to the right fairway instead costs about 0.2 strokes.", "Middle": "Why: 4-wood at the left half of the green. Miss left of the flag, not right. About 6 balls in 7 finish on or around the green; an iron to the right fairway instead costs about 0.15 strokes."},
+    "11": {"Back": "Why 4-wood, narrowly: it is the straighter club (71% fairway against the Driver's 58%) and loses fewer balls; the Driver leaves about 25 yds less and is level on strokes."},
+    "13": {"Back": "Why Driver: a par 5 with 69% fairway; nothing in reach that a shorter club avoids."},
+    "16": {"Back": "Why 4-wood: it stops at the mouth of the narrow part (75% fairway); the Driver runs through the fairway half the time and the 2-wood a quarter of the time."}
+   }
+  },
+  "source": "golfer 2026-11-13: 'I don't know if the native grass will be a one-stroke penalty or if it will basically be out of bounds ... a setting I could toggle on game day'. The page's second rule set (engine.tall_grass_alt): book + wind grids in truth/v2_lost and truth_middle/v2_lost (fastsolve run.py --tall-grass lost, same draws and settings as v2), par-3 targets and ladder re-solved (opt/par3_decade.py, opt/par3_ladder.py --tall-grass lost). The default is Drop; the page data for it are unchanged."
+ },
  "draws": 256,
  "layup_grid": "course_data/courses/gateway_national/layup10.json",
  "par5_menu": "course_data/courses/gateway_national/par5_menu.json",

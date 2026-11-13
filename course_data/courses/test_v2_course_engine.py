@@ -327,3 +327,22 @@ def test_eagle_knoll_nov6_calm_book():
             assert r["pick"] == "Driver" and -10 < r["aim"] < 2      # the phantom tree right is gone
         else:
             assert r["pick"] == "4-wood"
+
+
+def test_lost_ball_closed_form_and_gate():
+    """v2_course.lost_ball_ev: E = 1 + mean(found) (1 - p) + p (1 + E), per aim; and the second rule set is refused
+    for a course whose config does not declare it (engine.tall_grass_alt: Gateway National only)."""
+    import numpy as np
+    import pytest
+    import v2_course as vc
+    s = np.array([[3.0, 3.0], [vc.LOST, 3.5], [2.5, vc.LOST], [3.5, vc.LOST]])
+    ev, eff = vc.lost_ball_ev(s)
+    for j in range(2):
+        lost = s[:, j] < 0
+        p, m = lost.mean(), s[~lost, j].mean()
+        assert abs(ev[j] - (1 + m * (1 - p) + p * (1 + ev[j]))) < 1e-12
+        assert abs(1 + eff[:, j].mean() - ev[j]) < 1e-12
+    assert np.array_equal(vc.lost_ball_ev(np.array([[3.0], [4.0]]))[0], [4.5])
+    assert "tall_grass_alt" not in (vc.config("eagle_knoll").get("engine") or {})
+    with pytest.raises(SystemExit):
+        vc.activate("eagle_knoll", "truth", tall_grass="lost")

@@ -1327,6 +1327,15 @@ def golfer_text(t):
     return " ".join(x for x in parts if x and not HAZ_WORDS.search(x)).strip()
 
 
+_JSON = {}
+
+
+def _json_cached(path):
+    if path not in _JSON:
+        _JSON[path] = json.load(open(path))
+    return _JSON[path]
+
+
 def _photo_source(slug, which):
     """'USGS NAIP Plus ... 0.25 m' from the rendered photos' index (the page footer names the photo it shows)."""
     try:
@@ -1498,8 +1507,29 @@ def build_page(slug, which, out=None, data_out=None):
             return hn
         own = pt.get("map_notes") or {}
         return own[str(h)] if str(h) in own else golfer_text(hn)
+    def book_fields(h, d, grid_, dec_):
+        """A tee shot's fields that come from the solve: the landing pattern at the calm-cell aims, the book's note
+        and calm-day pick (+ the map note)."""
+        Tn = min(grid_["temps"], key=lambda T: abs(T - M.hole_temp(h)))
+        d["cloud"] = BP.cloud(h, grid_["holes"][str(h)][f"{Tn:g}"]["0_0"], Tn)
+        r = dec_.get(str(h))
+        d["note"] = ""
+        if r and "pick" in r:
+            d["note"] = BP.note_v2(h, r).replace(" of 64 what-if worlds", f" of {r.get('draws', 64)} what-if worlds")
+            if calm:
+                d["note"] = golfer_text(d["note"])
+            d["calm"] = dict(pick=r["pick"], aim=r["aim"], tie=bool(r["tie"]), margin=r["margin"],
+                             flips=r.get("width_flips", []), temp=r.get("temp_f", M.hole_temp(h)),
+                             window=r.get("window"), runner=r.get("runner"), se=r.get("margin_se"),
+                             p=r.get("p_pick_beats_runner"))
+        hn = map_note(h)
+        if hn:
+            d["note"] = (d["note"] + " " if d["note"] else "") + "Map: " + hn
+            d["map_note"] = hn
+    key_h = {}
     for h in course.ORDER:
         cur["key"] = str(h)
+        key_h[str(h)] = h
         d = par3_hole(h) if h in course.PAR3 else BW.tee_hole(h)
         d["haz"] = [] if calm else hazard_outlines(p3z.get(h, []) if h in course.PAR3 else course.HOLES[h].get("zones", []))
         d["key"] = str(h)
@@ -1526,22 +1556,7 @@ def build_page(slug, which, out=None, data_out=None):
                               if o["name"] not in (cfg.get("alt_bases") or {})}
             d["grids"] = {str(b): {T: BP.compact(gT) for T, gT in g["holes"][str(h)].items()}
                           for b, g in sorted(grids.items()) if str(h) in g.get("holes", {}) and b in keep}
-            Tn = min(grid["temps"], key=lambda T: abs(T - M.hole_temp(h)))
-            d["cloud"] = BP.cloud(h, grid["holes"][str(h)][f"{Tn:g}"]["0_0"], Tn)
-            r = dec.get(str(h))
-            d["note"] = ""
-            if r and "pick" in r:
-                d["note"] = BP.note_v2(h, r).replace(" of 64 what-if worlds", f" of {r.get('draws', 64)} what-if worlds")
-                if calm:
-                    d["note"] = golfer_text(d["note"])
-                d["calm"] = dict(pick=r["pick"], aim=r["aim"], tie=bool(r["tie"]), margin=r["margin"],
-                                 flips=r.get("width_flips", []), temp=r.get("temp_f", M.hole_temp(h)),
-                                 window=r.get("window"), runner=r.get("runner"), se=r.get("margin_se"),
-                                 p=r.get("p_pick_beats_runner"))
-            hn = map_note(h)
-            if hn:
-                d["note"] = (d["note"] + " " if d["note"] else "") + "Map: " + hn
-                d["map_note"] = hn
+            book_fields(h, d, grid, dec)
         if h in course.PAR3:
             hn = map_note(h)
             if calm:
@@ -1569,56 +1584,130 @@ def build_page(slug, which, out=None, data_out=None):
         data["simple"] = True
     if pt_.get("close_margin"):
         data["close_margin"] = float(pt_["close_margin"])
-    for d_ in holes:
-        cn = (pt_.get("condition_notes") or {}).get(str(d_.get("key")))
+    def text_fields(d_, ptx):
+        """The hole's config texts (page_text ptx) -> {cond_note, why, set_note, prefer, alt_play}, those that apply."""
+        out_ = {}
+        cn = (ptx.get("condition_notes") or {}).get(str(d_.get("key")))
         if isinstance(cn, dict):                       # {tee set: text}: a note for one base set only
             cn = cn.get(d_.get("base_set"))
         if cn and d_.get("kind") == "tee":
-            d_["cond_note"] = cn
+            out_["cond_note"] = cn
         # page_text "why" {hole: text | {tee set: text}}: the one-sentence reason for the pick, shown first in the
         # note; "prefer_on_tie" {hole: {"club": c, "within": strokes, "text": pill}}: show this club when it is within
         # that many strokes of the best one (Gateway 10: the two woods are level, the shorter one misses less often)
-        wy = (pt_.get("why") or {}).get(str(d_.get("key")))
+        wy = (ptx.get("why") or {}).get(str(d_.get("key")))
         if isinstance(wy, dict):
             wy = wy.get(d_.get("base_set"))
         if wy and d_.get("kind") == "tee":
-            d_["why"] = wy
-        sn = (pt_.get("set_notes") or {}).get(str(d_.get("key")))    # {tee set picked on the page: pill text}
+            out_["why"] = wy
+        sn = (ptx.get("set_notes") or {}).get(str(d_.get("key")))    # {tee set picked on the page: pill text}
         if sn and d_.get("kind") == "tee":
-            d_["set_note"] = sn
-        pf = (pt_.get("prefer_on_tie") or {}).get(str(d_.get("key")))
+            out_["set_note"] = sn
+        pf = (ptx.get("prefer_on_tie") or {}).get(str(d_.get("key")))
+        if isinstance(pf, dict) and "club" not in pf:  # {base set: {...}}: a rule for one base set only
+            pf = pf.get(d_.get("base_set"))
         if pf and d_.get("kind") == "tee":
-            d_["prefer"] = pf
+            out_["prefer"] = pf
         # page_text "alt_play" {hole: {tee set picked on the page: {"label", "club", "text", "versus"}}}: a second way
         # to play the hole, a toggle on the page (Gateway 10: "Lay up" = the mid iron at its own best aim)
-        ap_ = (pt_.get("alt_play") or {}).get(str(d_.get("key")))
+        ap_ = (ptx.get("alt_play") or {}).get(str(d_.get("key")))
         if ap_ and d_.get("kind") == "tee":
-            d_["alt_play"] = ap_
-    # config "par5_second": path of {hole: {tee set: {"d0" | "d1": {...}}}} (gateway_national/opt/par5_page.py): the
-    # second shot on the par 5s from where the pick finishes; the template shows it under the club table
-    if cfg.get("par5_second"):
-        p5 = json.load(open(os.path.join(ROOT, cfg["par5_second"])))
-        for d_ in holes:
+            out_["alt_play"] = ap_
+        return out_
+    TEXT_KEYS = ("cond_note", "why", "set_note", "prefer", "alt_play")
+    for d_ in holes:
+        d_.update(text_fields(d_, pt_))
+
+    def extra_tables(d_, src):
+        """The single-hole studies that ride on a tee shot: {second, lay_grid, shot2} from the files named in src
+        (config keys par5_second / layup_grid / par5_menu), + the menu's distance list."""
+        out_, dist = {}, None
+        # config "par5_second": path of {hole: {tee set: {"d0" | "d1": {...}}}} (gateway_national/opt/par5_page.py):
+        # the second shot on the par 5s from where the pick finishes; the template shows it under the club table
+        if src.get("par5_second"):
+            p5 = _json_cached(os.path.join(ROOT, src["par5_second"]))
             s5 = (p5.get("holes") or {}).get(str(d_.get("key")))
             if s5 and d_.get("kind") == "tee":
-                d_["second"] = {s: v for s, v in s5.items() if v.get("base") == d_.get("base_set")}
-    # config "layup_grid": path of {"hole": key, "sets": {base set: {temp: {cell: {"clubs": {...}}}}}} (Gateway 10,
-    # opt/layup10.py): every club at its best lay-up aim, for the page's "Lay up" mode (alt_play) on that base's tee
-    if cfg.get("layup_grid"):
-        lg = json.load(open(os.path.join(ROOT, cfg["layup_grid"])))
-        for d_ in holes:
+                out_["second"] = {s: v for s, v in s5.items() if v.get("base") == d_.get("base_set")}
+        # config "layup_grid": path of {"hole": key, "sets": {base set: {temp: {cell: {"clubs": {...}}}}}} (Gateway
+        # 10, opt/layup10.py): every club at its best lay-up aim, for the page's "Lay up" mode (alt_play)
+        if src.get("layup_grid"):
+            lg = _json_cached(os.path.join(ROOT, src["layup_grid"]))
             g_ = (lg.get("sets") or {}).get(d_.get("base_set"))
             if g_ and d_.get("kind") == "tee" and str(d_.get("key")) == str(lg.get("hole")):
-                d_["lay_grid"] = g_
-    # config "par5_menu": path of {"dist": [...], "holes": {hole: {base set: {"d0" | "d1": {...}}}}}
-    # (gateway_national/opt/par5_menu.py): the second-shot menu behind the "Second shot" button on the par 5s
-    if cfg.get("par5_menu"):
-        pm = json.load(open(os.path.join(ROOT, cfg["par5_menu"])))
-        data["shot2_dist"] = pm.get("dist")
-        for d_ in holes:
+                out_["lay_grid"] = g_
+        # config "par5_menu": path of {"dist": [...], "holes": {hole: {base set: {"d0" | "d1": {...}}}}}
+        # (gateway_national/opt/par5_menu.py): the second-shot menu behind the "Second shot" button on the par 5s
+        if src.get("par5_menu"):
+            pm = _json_cached(os.path.join(ROOT, src["par5_menu"]))
+            dist = pm.get("dist")
             m_ = ((pm.get("holes") or {}).get(str(d_.get("key"))) or {}).get(d_.get("base_set"))
             if m_ and d_.get("kind") == "tee":
-                d_["shot2"] = m_
+                out_["shot2"] = m_
+        return out_, dist
+    for d_ in holes:
+        x_, dist_ = extra_tables(d_, cfg)
+        d_.update(x_)
+        if dist_ is not None:
+            data["shot2_dist"] = dist_
+    # config "tall_grass_alt" (Gateway National, golfer 2026-11-13: the tall grass may be played as a lost ball
+    # instead of a one-stroke drop; he decides on the day): a second, fully solved rule set that the page switches to.
+    #   {"v2": "v2_lost"              folder beside v2/ with that rule set's book + wind grids (fastsolve --tall-grass lost)
+    #    "par3_targets" / "par3_ladder" / "layup_grid" / "par5_menu" / "par5_second": that rule set's files (optional)
+    #    "page_text": {...}           overrides of page_text why / prefer_on_tie / set_notes / condition_notes / alt_play
+    #                                 per hole (null = none in that rule set)
+    #    "label", "options", "tag"    the control's words}
+    # Each hole gets d["lost"] = the fields that differ under that rule set (wind grids as the cells that differ);
+    # the template builds a twin of every hole from it. Absent (every other course): nothing is added.
+    ta = cfg.get("tall_grass_alt")
+    if ta and os.path.exists(cdir(slug, which, ta.get("v2", "v2_lost"), "wind_grid.json")):
+        v2l = cdir(slug, which, ta.get("v2", "v2_lost"))
+        gridL = json.load(open(os.path.join(v2l, "wind_grid.json")))
+        gridsL = {0: gridL}
+        for path in glob.glob(os.path.join(v2l, "wind_grid_back*.json")):
+            gridsL[int(float(re.search(r"back([+-]?[0-9.]+)", path).group(1)))] = json.load(open(path))
+        dpl = os.path.join(v2l, "v2_decisions.json")
+        decL = json.load(open(dpl)) if os.path.exists(dpl) else {}
+        ptL = dict(pt_)
+        for k_, v_ in (ta.get("page_text") or {}).items():
+            ptL[k_] = {a_: b_ for a_, b_ in dict(pt_.get(k_) or {}, **v_).items() if b_ is not None}
+        p3alt = None
+        if ta.get("par3_targets") and getattr(BW, "_p3_alt_rule", None):
+            TL = json.load(open(os.path.join(ROOT, ta["par3_targets"])))
+            ladL = json.load(open(os.path.join(ROOT, ta["par3_ladder"]))) if ta.get("par3_ladder") else {}
+            p3alt = (TL, ladL)
+        for d_ in holes:
+            h = key_h[d_["key"]]
+            L = {}
+            if d_.get("kind") == "tee":
+                gl = {}
+                for b_ in d_["grids"]:
+                    gb = gridsL[int(b_)]["holes"][str(h)]
+                    for T_, gT in gb.items():
+                        cells = BP.compact(gT)
+                        base_cells = d_["grids"][b_][T_]
+                        for c_, clubs_ in cells.items():
+                            df = {k2: v2 for k2, v2 in clubs_.items() if base_cells[c_].get(k2) != v2}
+                            if df:
+                                gl.setdefault(b_, {}).setdefault(T_, {})[c_] = df
+                L["grids_diff"] = gl
+                bf = {}
+                book_fields(h, bf, gridL, decL)
+                L.update(bf)
+                tx = text_fields(d_, ptL)
+                for k_ in TEXT_KEYS:
+                    L[k_] = tx.get(k_)
+                xt, _d = extra_tables(d_, ta)
+                for k_ in ("second", "lay_grid", "shot2"):
+                    if ta.get({"second": "par5_second", "lay_grid": "layup_grid", "shot2": "par5_menu"}[k_]):
+                        L[k_] = xt.get(k_)
+            elif p3alt:
+                L.update(BW._p3_alt_rule(p3alt[0], p3alt[1], h, d_["tee_opts"], grid, d_))
+            d_["lost"] = {k_: v_ for k_, v_ in L.items() if k_ == "grids_diff" or v_ != d_.get(k_)}
+        data["tall"] = dict(label=ta.get("label", "Tall grass"), options=ta.get("options", ["Drop", "Lost ball"]),
+                            tag=ta.get("tag", "Tall grass: lost ball"), sub=ta.get("sub", ""),
+                            drop_only=[k_ for k_, c_ in (("second", "par5_second"), ("lay_grid", "layup_grid"),
+                                                         ("shot2", "par5_menu")) if not ta.get(c_)])
     if cfg.get("par3_drift_per_mph"):
         data["p3_drift"] = float(cfg["par3_drift_per_mph"])
     if cfg.get("temp_note"):

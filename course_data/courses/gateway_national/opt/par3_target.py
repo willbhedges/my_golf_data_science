@@ -65,6 +65,13 @@ if os.environ.get("P3_NATIVE") != "found":
     E.SHORT = dict(E.SHORT)
     E.SHORT["native"] = [1.0 + v for v in E.SHORT["rough"]]
 E.OUT = OUT
+# The second rule set of the page (config engine.tall_grass_alt; golfer 2026-11-13: the tall grass may be played as
+# a lost ball): P3_TALL_GRASS=lost, set by par3_decade.py / par3_ladder.py --tall-grass lost, never by default. A
+# ball finishing in tall native is one penalty stroke and the same tee shot again, in closed form per club and aim
+# (v2_course.lost_ball_ev); water keeps one stroke + a drop where it crossed. Outputs go to *_lost files.
+LOST_MODE = os.environ.get("P3_TALL_GRASS") == "lost"
+if LOST_MODE:
+    PAGE = os.path.join(GW, "par3_targets_lost.json")
 WIND_NAME = {"Long iron": "Long iron", "Mid iron": "Mid iron", "4-wood": "4-wood"}
 
 
@@ -248,14 +255,25 @@ class GHole(E.Hole):
         lie[self.gpath.contains_points(pts)] = E.C["green"]
         return lie
 
+    def finish(self, lat, dep, roll):
+        d, s, lie = super().finish(lat, dep, roll)
+        if LOST_MODE:                       # (swings x aims): every caller keeps the swings on axis 0
+            import v2_course as vc
+            assert s.ndim == 2, s.shape
+            _, s = vc.lost_ball_ev(s)
+        return d, s, lie
+
     def _strokes_field(self):
         S = super()._strokes_field()
         if os.environ.get("P3_PENALTY") == "ball":
             return S
         import model as M
         P = M.central()
-        pen_codes = [E.C["native"], E.C["water"]]
+        pen_codes = [E.C["water"]] if LOST_MODE else [E.C["native"], E.C["water"]]
         pen = np.isin(self.lie, pen_codes)
+        if LOST_MODE:
+            S = S.copy()
+            S[self.lie == E.C["native"]] = -1.0        # v2_course.LOST: resolved per club and aim in finish()
         if not pen.any():
             return S
         # 1-yd lie raster from behind the tee to behind the green

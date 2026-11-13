@@ -33,6 +33,8 @@ import sys
 import numpy as np
 
 os.environ.setdefault("P3_FEATURES", "1")
+if "--tall-grass" in sys.argv and sys.argv[sys.argv.index("--tall-grass") + 1] == "lost":
+    os.environ["P3_TALL_GRASS"] = "lost"      # the page's second rule set (opt/par3_target.py LOST_MODE): *_lost files
 HERE = os.path.dirname(os.path.abspath(__file__))
 GW = os.path.dirname(HERE)
 _spec = importlib.util.spec_from_file_location("gw_par3", os.path.join(HERE, "par3_target.py"))
@@ -40,7 +42,7 @@ G = importlib.util.module_from_spec(_spec)
 sys.modules["gw_par3"] = G
 _spec.loader.exec_module(G)
 E = G.E
-RES = os.path.join(HERE, "results", "par3_decade.json")
+RES = os.path.join(HERE, "results", "par3_decade_lost.json" if G.LOST_MODE else "par3_decade.json")
 PLAYS = os.path.join(HERE, "results", "par3_plays_forecast.json")
 CHECK = os.path.join(HERE, "par3_green_check.json")
 OLD = os.path.join(HERE, "results", "par3_targets_before_decade.json")
@@ -327,6 +329,8 @@ def main():
     ap.add_argument("--holes", default="4,7,12,14,17")
     ap.add_argument("--n", type=int, default=10000)
     ap.add_argument("--cache", default="", help="directory for the expected-strokes surfaces (re-runs of the rule)")
+    ap.add_argument("--tall-grass", choices=["drop", "lost"], default="drop",
+                    help="lost: tall grass played as a lost ball (re-tee); writes par3_decade_lost.json / par3_targets_lost.json")
     a = ap.parse_args()
     {"solve": solve, "page": lambda _a: write_page(), "table": table}[a.cmd](a)
 

@@ -1,5 +1,40 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 9, Nov 13 (a second rule set: tall grass played as a lost ball; page control "Tall grass: Drop | Lost ball")
+
+Golfer: the tall grass may be played as a lost ball (re-tee) instead of a one-stroke drop; he wants to switch on the
+day. Default = Drop: every number of the page as published (9636579cd) is unchanged (page data, qa.json of the five
+sets and the 360 rendered states identical).
+
+* **Engine** (`v2_course.activate(..., tall_grass="lost")`, only where config `engine.tall_grass_alt` exists =
+  Gateway; `fastsolve/run.py --tall-grass lost`). The tall-grass zones keep their own lie (not relabelled as a red
+  area), their value-raster cells carry a marker, and the replay is solved per club and aim in closed form:
+  E = (n + sum of found strokes + n_lost) / (n - n_lost), i.e. one stroke and the same shot again
+  (`v2_course.lost_ball_ev`; `kernel.c` `fs_ev` / `fs_grid` do the same arithmetic, the racing in `fs_grid` on the
+  linearised block means). Mapped ponds / ditches stay one stroke + drop. Hole 10's band between the ditch and the
+  right fairway (a water-typed zone in the map) counts as tall grass for the switch (`also_ll`). The
+  `V2_NATIVE_PENALTY` environment override is removed. Python engine against the kernel on 10 and 11, both bases:
+  lie / entry / value rasters equal, EV curves within 2e-15, per-ball values equal, `fs_grid` 2e-15 (SIMD and scalar).
+* **Solve**: Back book + 10 offset grids and Middle book + card grid, 128 draws, same settings as `v2`: 91 s ->
+  `truth/v2_lost`, `truth_middle/v2_lost`. Book: Back 10 4-wood 29 L (0.034 over the 2-wood; Drop: 2-wood 26 L by
+  0.012), Back 11 4-wood 10 R (0.004 over the Driver: a tie; Drop: Driver 16 R by 0.024), Back 9 Driver 15 R (0.016;
+  Drop 12.5 R, 0.024); Middle 1 4-wood by 0.001 (Drop: Driver by 0.027), Middle 2 Driver by 0.001 over the 4-wood
+  (0.029), Middle 11 4-wood by 0.031 (Drop: Driver by 0.004). Every pick's strokes rise by 0.002-0.09; in 900 page
+  states x 7 clubs no club is cheaper under Lost ball; the lost share at the new aim is never above the old aim's.
+* **Par 3s** (`opt/par3_decade.py`, `opt/par3_ladder.py --tall-grass lost` -> `par3_targets_lost.json`,
+  `par3_ladder_lost.json`): margins unchanged (geometric); the best point inside them moves on Back 4 (2.5, -3.5) ->
+  (3, -4), Champions 14 (3, -5.5) -> (3.5, -6.5), Middle 7 (-0.5, -0.5) -> (0, 0.5); no club changes for Saturday
+  or Sunday on any set; on 7 the longer club takes over 1-2 yds earlier.
+* **Par-5 Second shot block and menu, hole 10 lay-up table** re-solved under the rule (`P5_TALL_GRASS=lost` for
+  `opt/par5_second.py`, `par5_page.py`, `par5_menu.py`, `layup10.py grid --kernel` -> `*_lost.json`,
+  `opt/results_lost/`): menu best row changes in 11 of 544 spots (all hole 6, lay-up club one shorter), lay-up on 10
+  still the long iron (the 4-wood lay-up costs 0.13-0.37 more).
+* **Page**: config `tall_grass_alt`; each hole carries `lost` = the fields that differ; the template builds a twin of
+  every hole and the control swaps the lists (headline, aim, table, pills, notes, par 3s, Second shot, Lay up).
+  Choice kept for the browser session only; an amber tag on every card while Lost ball is on. 13.5 MB.
+* QA: five sets 18 holes 0 problems in both states (`QA_TALL=1`), table fit at 375 / 430 in both, no hazard words in
+  360 + 360 states, 0 console errors.
+
 ## Round 8b, Nov 13 (Second shot mode: the table fits a 375-px phone)
 
 The seven-column table was wider than the card (the last columns, "vs best" among them, were clipped inside the

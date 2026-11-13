@@ -12,8 +12,9 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GW = os.path.dirname(HERE)
-OUT = os.path.join(HERE, "results")
-PAGE = os.path.join(GW, "par5_second.json")
+SUF = "_lost" if os.environ.get("P5_TALL_GRASS") == "lost" else ""     # the page's second rule set (par5_second.py)
+OUT = os.path.join(HERE, "results" + SUF)
+PAGE = os.path.join(GW, f"par5_second{SUF}.json")
 SETS = ["The Tips", "Champions", "Back", "Middle", "Forward"]
 BASE = {"Back": "Back", "The Tips": "Back", "Champions": "Back", "Middle": "Middle", "Forward": "Middle"}
 PAR5 = (3, 6, 13, 18)

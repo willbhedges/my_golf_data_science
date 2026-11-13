@@ -25,8 +25,8 @@ sys.path.insert(0, HERE)
 import par5_second as P5                                   # noqa: E402
 
 GW = os.path.dirname(HERE)
-OUT = os.path.join(HERE, "results")
-PAGE = os.path.join(GW, "par5_menu.json")
+OUT = P5.OUT                                   # results/ (results_lost/ with P5_TALL_GRASS=lost: par5_second.py)
+PAGE = os.path.join(GW, f"par5_menu{P5.SUF}.json")
 DIST = list(range(180, 341, 10))
 SETS_OF = {"truth": ["Back", "The Tips", "Champions"], "truth_middle": ["Middle"]}
 BASE_NAME = {"truth": "Back", "truth_middle": "Middle"}

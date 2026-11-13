@@ -80,9 +80,10 @@ def install(cfg, BW, base_set):
     def clubs_of(t, set_name, h):
         return "" if str(h) in hide.get(set_name, ()) else club_line(t)
 
-    def par3_hole(h):
-        d = hole0(h)
-        t = target(T, base_set, base_set, h)
+    def hole_fields(T_, h):
+        """The par-3 hole's fields that come from a targets file T_ ({} when it has none for this hole)."""
+        d = {}
+        t = target(T_, base_set, base_set, h)
         if t:
             p = BW.course.PAR3[h]
             tee, f, r, ppy = BW.frame(p["tee"], p["flag"], p["center"])
@@ -94,14 +95,14 @@ def install(cfg, BW, base_set):
             d["p3_source"] = "expected strokes"
         return d
 
-    def par3_sets(h, opts, grid):
+    def set_fields(T_, lad_, h, opts, grid, out):
+        """Each offered set's entry of `out` (build_wind_page.par3_sets) from a targets file T_ and a ladder lad_."""
         import wind_grid as WG
-        out = sets0(h, opts, grid)
         p0 = BW.course.PAR3[h]
         tee, f, r, ppy = BW.frame(p0["tee"], p0["flag"], p0["center"])
         dz = p0.get("plays_like_delta", 0.0)
         for o in opts:
-            t = target(T, o["name"], base_set, h)
+            t = target(T_, o["name"], base_set, h)
             if not t or o["name"] not in out:
                 continue
             S = out[o["name"]]
@@ -112,12 +113,31 @@ def install(cfg, BW, base_set):
                           for k in grid["par3"][str(h)]}
             S["aim_dist"] = float(A)
             S["p3club"] = clubs_of(t, o["name"], h)
-            L = (lad.get(o["name"]) or {}).get(str(h))
+            L = (lad_.get(o["name"]) or {}).get(str(h))
             if L:
                 S["ladder"] = dict(p0=L["p0"], map_center=L.get("map_center"), steps=L["steps"])
         return out
+
+    def par3_hole(h):
+        d = hole0(h)
+        d.update(hole_fields(T, h))
+        return d
+
+    def par3_sets(h, opts, grid):
+        return set_fields(T, lad, h, opts, grid, sets0(h, opts, grid))
+
+    def alt_rule(T2, lad2, h, opts, grid, d):
+        """A second rule set's par-3 fields (v2_course.build_page, config "tall_grass_alt": Gateway's lost-ball
+        targets and ladder) on top of the built hole d: {boxes, p3club, green, by_set}."""
+        import copy
+        out = hole_fields(T2, h)
+        out.pop("p3_source", None)
+        if d.get("by_set") is not None:
+            out["by_set"] = set_fields(T2, lad2, h, opts, grid, copy.deepcopy(d["by_set"]))
+        return out
     BW.par3_hole, BW.par3_sets = par3_hole, par3_sets
     BW._p3_targets = True
+    BW._p3_alt_rule = alt_rule
 
 
 def page_play(box_play, plays_cell, center, tmul):

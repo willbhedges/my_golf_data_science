@@ -19,3 +19,21 @@ Local path (from the repo root; api.open-meteo.com and api.weather.gov are allow
 
 The refresh rebuilds the page and its wind picks; it does not re-solve the calm-day book (temperatures in the book
 are the Nov 9 forecast's).
+
+## The "Tall grass: Drop | Lost ball" control (Nov 13)
+
+The page carries two solved rule sets; the same plain rebuild (step 2 above, nothing else) embeds both:
+
+    python3 course_data/courses/v2_course.py page --slug gateway_national --which truth
+
+It reads `truth/v2` + `truth_middle/v2` (Drop, the default) and `truth/v2_lost` + `truth_middle/v2_lost` (Lost ball),
+and the `*_lost.json` files named in config `tall_grass_alt`. Neither set is re-solved by a refresh. The four
+forecast-dependent tables (par-3 clubs for the day, par-5 Second shot block and menu) keep the forecast they were
+solved on in both rule sets, as before. To re-solve the Lost ball set (only after a map or engine change), 91 s:
+
+    FASTSOLVE_SLOTS=<dir>:4 python3 course_data/courses/fastsolve/run.py solve --slug gateway_national --which truth \
+        --request course_data/requests/nccga_v2_gateway_national.json --out <dir>/b --draws 128 --tall-grass lost
+    ... --which truth_middle ... --out <dir>/m --draws 128 --card-only --tall-grass lost      (copy *.json into v2_lost/)
+
+QA with the control on: `QA_TALL=1 node course_data/courses/qa_page.js <page> <out> "<set>"` and
+`QA_TALL=1 node course_data/courses/gateway_national/opt/qa_mode_fit.js <page> <out>`.

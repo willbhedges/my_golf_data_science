@@ -31,6 +31,9 @@ GW = os.path.dirname(HERE)
 ROOT = os.path.abspath(os.path.join(GW, "..", "..", ".."))
 OUT = os.path.join(GW, "par3_ladder.json")
 
+if "--tall-grass" in sys.argv and sys.argv[sys.argv.index("--tall-grass") + 1] == "lost":
+    os.environ["P3_TALL_GRASS"] = "lost"      # the page's second rule set (opt/par3_target.py LOST_MODE)
+    OUT = os.path.join(GW, "par3_ladder_lost.json")
 _spec = importlib.util.spec_from_file_location("gw_par3", os.path.join(HERE, "par3_target.py"))
 G = importlib.util.module_from_spec(_spec)
 sys.modules["gw_par3"] = G
@@ -44,9 +47,10 @@ def main():
     ap.add_argument("--sets", default=",".join(G.SETS))
     ap.add_argument("--holes", default="4,7,12,14,17")
     ap.add_argument("--n", type=int, default=6000)
+    ap.add_argument("--tall-grass", choices=["drop", "lost"], default="drop")
     a = ap.parse_args()
     G.setup_engine()
-    T = json.load(open(os.path.join(GW, "par3_targets.json")))["sets"]
+    T = json.load(open(G.PAGE))["sets"]         # par3_targets.json (par3_targets_lost.json with --tall-grass lost)
     meta = json.load(open(os.path.join(GW, "truth", "meta.json")))
     out = json.load(open(OUT)) if os.path.exists(OUT) else {}
     cond = dict(temp=70.0, mph=0.0, rel=0.0)

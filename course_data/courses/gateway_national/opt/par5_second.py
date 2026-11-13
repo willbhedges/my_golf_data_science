@@ -34,8 +34,15 @@ GW = os.path.dirname(HERE)
 CD = os.path.dirname(os.path.dirname(GW))
 ROOT = os.path.dirname(CD)
 sys.path[:0] = [os.path.join(CD, "courses")]
-OUT = os.path.join(HERE, "results")
-PAGE = os.path.join(GW, "par5_second.json")
+# P5_TALL_GRASS=lost: the page's second rule set (config engine.tall_grass_alt; v2_course.activate(tall_grass="lost")):
+# a ball finishing in tall native grass is a lost ball = one stroke and the same shot again from the same spot, in
+# closed form per club and direction (v2_course.lost_ball_ev); water keeps one stroke + a drop where it crossed.
+# Everything is then written beside the drop-rule files: opt/results_lost/ and *_lost.json (also par5_menu.py,
+# par5_page.py, layup10.py, which import this module).
+LOST = os.environ.get("P5_TALL_GRASS") == "lost"
+SUF = "_lost" if LOST else ""
+OUT = os.path.join(HERE, "results" + SUF)
+PAGE = os.path.join(GW, f"par5_second{SUF}.json")
 SLUG = "gateway_national"
 PAR5 = (3, 6, 13, 18)
 BASE_OF = {"Back": "truth", "The Tips": "truth", "Champions": "truth", "Middle": "truth_middle", "Forward": "truth_middle"}
@@ -78,7 +85,7 @@ class World:
         self.vc = vc
         self.which = which
         self.cfg = vc.config(SLUG)
-        self.course, self.meta, self.M, self.D = vc.activate(SLUG, which)
+        self.course, self.meta, self.M, self.D = vc.activate(SLUG, which, tall_grass="lost" if LOST else None)
         import wind as W
         import wind_grid_v2 as WG2
         self.W, self.WG2 = W, WG2
@@ -157,7 +164,7 @@ class Field:
         self.gpoly = np.asarray(gp, float)
         self.gpath = Path(self.gpoly)
         self.ongreen = self.gpath.contains_points(np.column_stack([Rb.AA.ravel(), Rb.LL.ravel()])).reshape(Rb.AA.shape)
-        self.pen = np.isin(Rb.lie, [M.CODE["water"], M.CODE["native"]])
+        self.pen = np.isin(Rb.lie, [M.CODE["water"]] + ([] if LOST else [M.CODE["native"]]))   # one stroke + drop
         self.green = np.asarray(Rb.green, float)
 
     def front(self, a0, l0):
@@ -249,7 +256,13 @@ def play(Wd, F, P, z, a0, l0, lie, wx, bearing_tee, detail=False, clubs=None):
             s[pen] = 1.0 + F.Srough[R.idx(da, dl)]
         ob = code == M.CODE["ob"]
         s[ob] = 1.0 + v_start                                # stroke and distance: play again from the same spot
-        ev = 1.0 + s.mean(0)
+        lostb = np.zeros(code.shape, bool)
+        if LOST:                                             # tall grass: F.S carries the lost marker there
+            lostb = s < 0
+            ev, s = Wd.vc.lost_ball_ev(s)
+        else:
+            ev = 1.0 + s.mean(0)
+        pen = pen | lostb
         stock = c_w + r_w
         out.append(dict(club=club, ev=ev, stock=float(stock), carry=float(c_w), drift=float(drift),
                         a=a, l=l, la=la, ll=ll, code=code, s=s, pen=pen | ob, car=car))
@@ -419,6 +432,8 @@ def two_stage_check(Wd, F, hd, R0, S0, P, wx, bearing, tees, zt, n_grid, step=6.
                 tot = 1.0 + s
             else:
                 tot = 1.0 + s.copy()
+                if LOST:                                     # the replay is worth this kind's own value: re-solved below
+                    tot[lie == M.CODE["native"]] = 0.0       # = 1 + the lost marker
                 for lname, codes in (("fairway", ("fairway", "first_cut")), ("rough", ("rough",)), ("sand", ("sand",))):
                     grid = V[lname][kind]
                     filled = np.where(np.isnan(grid), np.nanmean(grid), grid)
@@ -435,6 +450,8 @@ def two_stage_check(Wd, F, hd, R0, S0, P, wx, bearing, tees, zt, n_grid, step=6.
                                 v2 = fr(np.column_stack([a[m][fc], l[m][fc]]))
                                 v[fc] = v[fc] + P["first_cut"] * (v2 - v[fc])
                         tot[m] = 1.0 + v
+                if LOST:
+                    tot = 1.0 + Wd.vc.lost_ball_ev(tot - 1.0)[1]
             e = tot.mean(0)
             sm = np.convolve(e, [0.25, 0.5, 0.25], mode="same")
             sm[0], sm[-1] = e[0], e[-1]

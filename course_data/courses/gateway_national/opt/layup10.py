@@ -25,8 +25,8 @@ sys.path.insert(0, HERE)
 import par5_second as P5                                   # noqa: E402
 
 GW = os.path.dirname(HERE)
-OUT = os.path.join(HERE, "results")
-PAGE = os.path.join(GW, "layup10.json")
+OUT = P5.OUT                                   # results/ (results_lost/ with P5_TALL_GRASS=lost: par5_second.py)
+PAGE = os.path.join(GW, f"layup10{P5.SUF}.json")
 H = 10
 WINDOW = {"wood": (5.0, 45.0), "iron": (-5.0, 45.0)}
 WOODS = ("Driver", "2-wood", "4-wood")
@@ -44,7 +44,7 @@ def hook_of(Wd, club, mph, rel):
     return Wd.WG2.wind_hook(club, mph, rel) if mph > 0 else None
 
 
-def lay_solve(Wd, hd, R, S, P, z, club, mph, rel, restrict=True):
+def lay_solve(Wd, hd, R, S, P, z, club, mph, rel, restrict=True, balls=True):
     """Best aim of `club` with the finishing line inside the lay-up window (restrict) or anywhere (the engine's)."""
     M, D = Wd.M, Wd.D
     hook = hook_of(Wd, club, mph, rel)
@@ -59,9 +59,11 @@ def lay_solve(Wd, hd, R, S, P, z, club, mph, rel, restrict=True):
     ra = D.robust_aim(aims, ev, lo=lo, hi=hi)
     j = int(np.argmin(np.abs(aims - ra["aim"])))
     zl, zh = ra["window"]
-    return dict(club=club, aim=float(ra["aim"]), ev=float(ra["ev"]), zone=[float(max(zl, lo)), float(min(zh, hi))],
-                drift=float(dr), carry=float(c), total=float(c + r), hook=hook, at_bound=bool(ra["at_bound"]),
-                a=a[:, j], l=l[:, j], lie=lie[:, j], s=s[:, j])
+    out = dict(club=club, aim=float(ra["aim"]), ev=float(ra["ev"]), zone=[float(max(zl, lo)), float(min(zh, hi))],
+               drift=float(dr), carry=float(c), total=float(c + r), hook=hook, at_bound=bool(ra["at_bound"]))
+    if balls:                                   # per-ball finishes at the chosen aim (the study's shares)
+        out.update(a=a[:, j], l=l[:, j], lie=lie[:, j], s=s[:, j])
+    return out
 
 
 def shares(Wd, R, F, o, sand_box):
@@ -214,9 +216,16 @@ def grid_one(a):
     """The page's lay-up grid for one base: the wind grid's cells and temperatures, each club at its best lay-up aim."""
     Wd = P5.World(a.which)
     M, WG2, W = Wd.M, Wd.WG2, Wd.W
+    z = M.draws_z(8192, 32)                    # the engine's own swings, drawn before any kernel is installed
+    if a.kernel:
+        # the C kernel (fastsolve): the engine's numbers (kernel.c: same operations in the same order), 20x faster.
+        # Used for the lost-ball rule set's grid; the drop-rule grid on the page was made without it.
+        sys.path.insert(0, os.path.join(os.path.dirname(GW), "fastsolve"))
+        import fast
+        fast.THREADS = 1
+        fast.install(M, Wd.D)
     hd = Wd.course.HOLES[H]
     R = M.Raster(hd)
-    z = M.draws_z(8192, 32)
     main = json.load(open(os.path.join(GW, a.which, "v2", "wind_grid.json")))
     out = {}
     for T in main["temps"]:
@@ -227,7 +236,7 @@ def grid_one(a):
             for rel in ([0] if sp == 0 else main["dirs"]):
                 cl = {}
                 for c in M.ALL_CLUBS:
-                    o = lay_solve(Wd, hd, R, S, P, z, c, sp, rel, True)
+                    o = lay_solve(Wd, hd, R, S, P, z, c, sp, rel, True, balls=False)
                     carry0, total0, width0, depth0 = M.CLUBS[c]            # page numbers as wind_grid_v2.solve: no elevation
                     carry = carry0 * (1.0 - P["temp_k"] * (70.0 - P["temp_f"]))
                     tup = (carry, carry + (total0 - carry0) * P["roll_mult"], P["width"][c], depth0 * P["depth_mult"])
@@ -245,7 +254,8 @@ PAGE_CLUBS = ("4-wood", "Long iron", "Mid iron", "8-iron")     # Driver / 2-wood
 
 def grid(a):
     if not a.fast:                                             # --fast: only re-assemble the page file
-        ps = [subprocess.Popen([sys.executable, os.path.abspath(__file__), "grid_one", "--which", w]) for w in SET_OF]
+        ps = [subprocess.Popen([sys.executable, os.path.abspath(__file__), "grid_one", "--which", w]
+                               + (["--kernel"] if a.kernel else [])) for w in SET_OF]
         assert all(p.wait() == 0 for p in ps)
     page = dict(source="opt/layup10.py grid (second_pass/HOLE10_LAYUP.md)", window=WINDOW, hole=str(H), sets={})
     for w, s in SET_OF.items():
@@ -260,6 +270,7 @@ def main():
     ap.add_argument("cmd")
     ap.add_argument("--which", default="truth")
     ap.add_argument("--fast", action="store_true")
+    ap.add_argument("--kernel", action="store_true", help="grid: evaluate on the fastsolve C kernel (same numbers)")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     {"study": study, "grid": grid, "grid_one": grid_one}[a.cmd](a)
