@@ -118,6 +118,8 @@ def plan(a, course, M):
     temps = [float(x) for x in a.temps.split(",")] if a.temps else [float(x) for x in q.get("temps", cfg["temps"])]
     draws = int(opt(a.draws, "draws", 64))
     refine = int(opt(a.refine, "refine_swings", 0))
+    if a.card_only:
+        offsets = [0.0]
     r_off = ([float(x) for x in a.refine_offsets.split(",")] if a.refine_offsets
              else [float(x) for x in q.get("refine_offsets", [0])])
     order = [str(k) for k in course.ORDER if k in course.HOLES]
@@ -302,6 +304,7 @@ def main():
     ap.add_argument("--adaptive-cap-other", type=int, default=2048, help="swing cap, the other offsets")
     ap.add_argument("--ref")
     ap.add_argument("--show", type=int, default=8)
+    ap.add_argument("--card-only", action="store_true", help="no offset grids: the book and the card-tee grid only")
     ap.add_argument("--exact", action="store_true", help="the engine's own numbers: random swings, the request's "
                     "draws, 3,000 / 12,000 swings, full refined grids (identical to Actions)")
     a = ap.parse_args()
