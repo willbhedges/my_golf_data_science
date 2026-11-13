@@ -76,6 +76,9 @@ def _task(t):
                           V2_CENTRAL_SWINGS=str(t["central"]), V2_OUT=t["out"], V2_GEOM="")
         if t.get("parts"):
             os.environ["V2_PARTS"] = t["parts"]
+        if t.get("book"):                    # book.py: the prior-draw loop on a coarser raster / shared maps / racing
+            import book
+            book.install(M, D, **t["book"])
         D.main()
     else:
         # v2_course.run_wind after activate()
@@ -132,6 +135,8 @@ def plan(a, course, M):
         for h in d_holes:
             tasks.append(dict(kind="decide", hole=h, draws=draws, swings=a.swings_decide, central=a.central,
                               parts=a.decide_parts, out=os.path.join(parts, f"v2dec_{h}.json"),
+                              book=(dict(res=a.book_res, maps=a.book_maps, race=a.book_race)
+                                    if a.engine == "fast" and (a.book_res or a.book_maps or a.book_race) else None),
                               log=os.path.join(parts, f"log_dec_{h}.txt")))
     if a.only in (None, "wind"):
         for b in offsets:
@@ -302,6 +307,12 @@ def main():
     ap.add_argument("--adaptive-cap", type=int, default=8192, help="swing cap, refined (card-tee) offsets")
     ap.add_argument("--adaptive-n0-other", type=int, default=None, help="first-stage swings, the other offsets (512)")
     ap.add_argument("--adaptive-cap-other", type=int, default=2048, help="swing cap, the other offsets")
+    ap.add_argument("--book-res", type=float, default=1.0, help="raster cell (yds) of the book's prior-draw maps and "
+                    "value rasters (book.py; 0 = the engine's 0.5)")
+    ap.add_argument("--book-maps", type=int, default=0, help="book: K jittered maps per hole shared by the prior "
+                    "draws (book.py; 0 = a map per draw)")
+    ap.add_argument("--book-race", type=int, default=0, help="book: 1 = stop simulating clearly worse clubs after "
+                    "16 draws (book.py)")
     ap.add_argument("--ref")
     ap.add_argument("--show", type=int, default=8)
     ap.add_argument("--card-only", action="store_true", help="no offset grids: the book and the card-tee grid only")
@@ -310,6 +321,7 @@ def main():
     a = ap.parse_args()
     if a.exact:
         a.swings, a.adaptive, a.swings_decide, a.central = "mc", 0, 3000, 12000
+        a.book_res, a.book_maps, a.book_race = 0, 0, 0
     elif a.draws is None:
         a.draws = 64
     a.speeds = [s for s in a.speeds.split(",") if s]

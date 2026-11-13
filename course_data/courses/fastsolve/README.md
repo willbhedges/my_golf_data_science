@@ -37,6 +37,15 @@ wind grids capped at 8,192 swings at the card tee (the 99 % aim saturation N) an
 `FASTSOLVE_SLOTS=<dir>:4`): 124 s; outputs in `solved_default/`. Against the 256-draw 183 s run: same club on all 26
 holes, calm aims within 1.0 yd, wind-cell club differences 116 + 4, all in tie cells.
 
+## Speed steps after the 124 s solve (`book.py`; each tested on Back 8, 10, 16 only)
+
+Before these, one hole of the book cost 6.7 CPU-s: the prior-draw loop 4.1 s (per draw 27 ms map repaint, 17 ms
+value raster, 13 ms ball work), ladder + sensitivities + width sweep 1.9 s, start-up and shares 0.7 s.
+
+- **(2) 1-yd raster for the prior-draw maps and value rasters** (`--book-res 1.0`, now the default; 0 = 0.5 yd): kept.
+  Prior-draw loop 4.1 -> 1.8 s a hole, book 6.7 -> 3.9 s a hole. Picks identical, pick aims identical (other clubs'
+  aims within 0.5 yd), margins within 0.0007 on 8 / 10 / 16.
+
 ## 1. Profile of the existing engine (one process, this box)
 
 Engine = `spirit_hollow/v2/model.py` + `decide.py` + `wind_grid_v2.py` through `v2_course.py`. Gateway Back hole 8.
