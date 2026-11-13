@@ -53,6 +53,13 @@ value raster, 13 ms ball work), ladder + sensitivities + width sweep 1.9 s, star
   unchanged), pick aim within 0.5 yd in 16 of 18 and 1.5 yd apart twice on hole 8, whose aim moves by the same
   1.5 yds from prior seed to prior seed with a map per draw.
 
+- **(4) racing in the book** (`--book-race 1`, now the default): from 16 draws on, every 8 draws, a club behind the
+  leader by more than the tie threshold (0.01) + 3 paired SE is not simulated further; the leader, the runner-up and
+  any club within 3 SE of the runner-up always run every draw: kept. Prior-draw loop 1.3 -> 0.9 s a hole (4 or 5 of
+  the 7 clubs stop at 16 draws), book 3.6 -> 3.3 s a hole. Over 6 prior seeds on 8 / 10 / 16: pick, runner, pick aim,
+  margin, margin SE and cross-fit margin identical to no racing in 18 of 18. A stopped club carries `draws: 16`; its
+  EV is the pick's EV + its paired margin over those draws, its own aim is from 16 draws (up to 2.5 yds off).
+
 ## 1. Profile of the existing engine (one process, this box)
 
 Engine = `spirit_hollow/v2/model.py` + `decide.py` + `wind_grid_v2.py` through `v2_course.py`. Gateway Back hole 8.
