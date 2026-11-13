@@ -123,6 +123,7 @@ tr.best td{font-weight:600}
       <div class="holehead"><span class="holeno" id="hNo"></span><span class="label" id="hPar"></span><span id="hBadges"></span></div>
       <div><div class="label" id="playLbl">Play</div><div class="play" id="hPlay"></div><div class="adj" id="hAdj" hidden></div><div class="sub" id="hAim"></div></div>
       <div id="hTable"></div>
+      <div class="sub" id="hSecond" hidden></div>
       <div class="row" id="adjRow"><span class="label">Move this tee</span><input type="range" id="adj" min="-60" max="60" step="5"><span id="adjLbl" class="sub"></span></div>
       <div class="sub" id="hElev"></div>
       <div class="note" id="hNote"></div>
@@ -440,6 +441,23 @@ function render(){
       ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? (D.simple ? " ↓ below the picture" : ` ↓ ${below} yds`) : ""))}
       ${windArrow(h, r.rel, vb)}`;
     const own = pickC !== r.pick;
+    /* config "par5_second" (Gateway par 5s): h.second {tee set: {d0 | d1: {club, lines, from, lay, go, alt}}}: the
+       second shot from where the pick finishes (points = yds from the base tee along the line, yds right). Shown for
+       the solved club only; the lay-up target is a hollow square on the Whole hole picture. */
+    const sec2 = h.second && h.second[st.set] ? (h.second[st.set][st.src === "d1" ? "d1" : "d0"] || null) : null;
+    const secOn = !!sec2 && !own && !altOn && sec2.club === r.pick && r.T.setOk && !st.adj[h.key];
+    const hs = document.getElementById("hSecond"); hs.hidden = !secOn;
+    hs.innerHTML = secOn ? `<b>Second shot</b> ${sec2.head || ""}<br>` + sec2.lines.join("<br>") : "";
+    if(secOn && st.view === "hole"){
+      const lab = (q, t, dy) => `<text x="${q[0] + 10*U}" y="${q[1] + (dy || 4)*U}" fill="#fff" font-family="Barlow Condensed,Arial Narrow,sans-serif" font-weight="700" font-size="${13*U}" stroke="rgba(0,0,0,.8)" stroke-width="${3*U}" paint-order="stroke">${t}</text>`;
+      const sq = (q, col) => `<rect x="${q[0]-6*U}" y="${q[1]-6*U}" width="${12*U}" height="${12*U}" fill="none" stroke="#1a1a1a" stroke-width="${3.6*U}"/><rect x="${q[0]-6*U}" y="${q[1]-6*U}" width="${12*U}" height="${12*U}" fill="none" stroke="${col}" stroke-width="${1.8*U}"/>`;
+      const ln = (p0, p1) => `<line x1="${p0[0]}" y1="${p0[1]}" x2="${p1[0]}" y2="${p1[1]}" stroke="#1a1a1a" stroke-width="${2.6*U}" opacity=".5"/><line x1="${p0[0]}" y1="${p0[1]}" x2="${p1[0]}" y2="${p1[1]}" stroke="#fff" stroke-width="${1.2*U}" stroke-dasharray="${3*U} ${3*U}"/>`;
+      const f0 = P(h, at(h, sec2.from[0], sec2.from[1])); let g2 = "";
+      if(sec2.lay){ const q = P(h, at(h, sec2.lay[0], sec2.lay[1])); g2 += ln(f0, q) + sq(q, "#fff") + lab(q, sec2.lay_label || "2ND"); }
+      if(sec2.go){ const q = P(h, at(h, sec2.go[0], sec2.go[1])); g2 += ln(f0, q) + `<circle cx="${q[0]}" cy="${q[1]}" r="${5*U}" fill="none" stroke="#1a1a1a" stroke-width="${3.6*U}"/><circle cx="${q[0]}" cy="${q[1]}" r="${5*U}" fill="none" stroke="#fff" stroke-width="${1.8*U}"/>` + lab(q, "GO"); }
+      if(sec2.alt){ const q = P(h, at(h, sec2.alt[0], sec2.alt[1])); g2 += `<circle cx="${q[0]}" cy="${q[1]}" r="${4*U}" fill="none" stroke="#1a1a1a" stroke-width="${3.2*U}"/><circle cx="${q[0]}" cy="${q[1]}" r="${4*U}" fill="none" stroke="#8fd3ff" stroke-width="${1.6*U}"/>` + lab(q, sec2.alt_label || "", 14).replace('fill="#fff"', 'fill="#bfe6ff"'); }
+      ov.insertAdjacentHTML("beforeend", g2);
+    }
     document.getElementById("playLbl").textContent = altOn ? (altC.label || "Other play") : own ? "Your club" : "Play";
     const pe = document.getElementById("hPlay"); pe.textContent = pickC; pe.className = "play " + cls(pickC);
     const tc = document.getElementById("topClub"); tc.textContent = pickC; tc.className = cls(pickC);
@@ -490,12 +508,14 @@ function render(){
         ? `${h.calm.pick} and ${r.pick} are level (${h.calm.margin.toFixed(3)} strokes apart).` : `${r.pick} is level with the best club.`);
     if(h.why && r.T.back === 0 && !own) note = (r.pick === (h.calm && h.calm.pick) || r.pref || (h.prefer && r.pick === h.prefer.club) ? h.why + " " : "") + note;   /* also when the level-rule club wins outright (10 on Sunday) */
     if(h.set_note && h.set_note[st.set] && !altOn) badges.push(`<span class="pill chg">${h.set_note[st.set]}</span>`);
+    if(secOn && sec2.pill) badges.push(`<span class="pill chg">${sec2.pill}</span>`);
     if(h.cond_note && (r.T.back === 0 || !D.simple)) badges.push(`<span class="pill chg">${h.cond_note}</span>`);
     if(r.T.back !== 0) note = `The calm-day book (club, aim, fairway / trouble shares, yards in) is for the ${h.base_set} tee, so it is not shown here: from this tee use the play and the club table above (solved ${Math.abs(r.T.back)} yds ${r.T.back > 0 ? "back" : "up"} the line).` +
       (Math.abs(r.T.back) >= 100 ? " This tee is placed by moving the " + h.base_set + " tee along the line, not from its own box: a rough guide." : "") +
       (h.map_note ? ` Map (yds from the ${h.base_set} tee): ${h.map_note}` : "");
     document.getElementById("hNote").textContent = note;
   } else {
+    document.getElementById("hSecond").hidden = true; document.getElementById("hSecond").innerHTML = "";
     const r = P3;
     const g = h.green.map(p => P(h, p).join(",")).join(" ");
     const bp = r.box.poly.map(p => P(h, p).join(",")).join(" ");

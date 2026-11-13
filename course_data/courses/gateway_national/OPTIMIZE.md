@@ -1,5 +1,18 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 6, Nov 13 (par 5s: the second shot, go or lay up; PAR5.md; no tee-shot number changed)
+
+* `opt/par5_second.py` (new): from where the Driver and the 2-wood finish on 3, 6, 13, 18, every club off the deck x
+  every direction on the hole's map out past the green, the engine's per-cell strokes for the third shot, penalty
+  balls dropped where they crossed the edge on the shot's line. Every tee set, Sat and Sun. Tee pick re-checked
+  with the second shot played out (Back, Middle): Driver on all four either way; level with the 2-wood / 4-wood on
+  6, 13, 18 if he always lays up.
+* `opt/par5_page.py` -> `par5_second.json` (config `par5_second`; pass-through in `v2_course.py`; template block
+  `#hSecond` under the club table + three markers on the Whole hole picture; fires only where a hole carries
+  `second`). `qa_page.js` records the block's text (`second`).
+* QA: five sets, 18 holes, 0 problems; against cadbcaf2c only the new text and one pill on 3 / 6 / 13 / 18; 360
+  solver states identical apart from the pill; no hazard words.
+
 ## Round 5, Nov 13 (page: Lay up toggle on 10, pattern width on the picture; no solve)
 
 * **Lay up toggle** (config `page_text.alt_play`, hole 10, Back and Middle; template + a pass-through in

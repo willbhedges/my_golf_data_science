@@ -1510,6 +1510,14 @@ def build_page(slug, which, out=None, data_out=None):
         ap_ = (pt_.get("alt_play") or {}).get(str(d_.get("key")))
         if ap_ and d_.get("kind") == "tee":
             d_["alt_play"] = ap_
+    # config "par5_second": path of {hole: {tee set: {"d0" | "d1": {...}}}} (gateway_national/opt/par5_page.py): the
+    # second shot on the par 5s from where the pick finishes; the template shows it under the club table
+    if cfg.get("par5_second"):
+        p5 = json.load(open(os.path.join(ROOT, cfg["par5_second"])))
+        for d_ in holes:
+            s5 = (p5.get("holes") or {}).get(str(d_.get("key")))
+            if s5 and d_.get("kind") == "tee":
+                d_["second"] = {s: v for s, v in s5.items() if v.get("base") == d_.get("base_set")}
     if cfg.get("par3_drift_per_mph"):
         data["p3_drift"] = float(cfg["par3_drift_per_mph"])
     if cfg.get("temp_note"):

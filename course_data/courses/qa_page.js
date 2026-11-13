@@ -40,7 +40,7 @@ const path = require("path");
         const rows = [...document.querySelectorAll("#hTable tbody tr")].map(r => [...r.children].map(c => c.textContent.trim()));
         const img = document.querySelector("#ov image");
         return { hole: t("hNo"), top: t("topNo"), par: t("hPar"), play: t("hPlay"), aim: t("hAim"), elev: t("hElev"),
-                 note: t("hNote"), badges: t("hBadges"), rows, wind: t("windLbl"), adj: t("hAdj"),
+                 note: t("hNote"), badges: t("hBadges"), second: t("hSecond"), rows, wind: t("windLbl"), adj: t("hAdj"),
                  img: !!(img && img.getAttribute("href") && img.getAttribute("href").length > 1000),
                  wide: document.documentElement.scrollWidth > window.innerWidth + 1 };
       });
