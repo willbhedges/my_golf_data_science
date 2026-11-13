@@ -220,3 +220,12 @@ Version 13 published (commit 632c4927c; page check 0 problems on five tee sets; 
 Version 14 published (commit 2fede0ff8; wording only; page check 0 problems on five tee sets; no club, aim or table number changed in any of 360 page states). It follows an independent audit (second_pass/AUDIT_R3.md): verdict, nothing puts a wrong club on the page or moves an aim by 3+ yds; the tall-grass rule is priced correctly, the same in both solvers, and on for Gateway only; the page's picks on 10 and 11 reproduce with the exact solver. Wording fixed: Back 10 no longer says "2-wood better by 0.020" under a 4-wood headline (now "level"); Middle 10 carries "Runs out past the middle of the green: a smooth swing is enough"; a pill that repeated the header yardage is gone; Back 1 says 76% in both places.
 
 State at the end of the night: versions 7 to 14 published; nothing running. Last tee-shot change was hole 18 (version 13). Final forecast refresh is scheduled for Fri 6:30 pm Central.
+
+## Friday Nov 13, daytime
+
+Version 15 published (commit cadbcaf2c; page check 0 problems on five tee sets; par-3 cards, Back 1 and Back 10 lay-up screenshots looked at; par 4/5 picks identical to version 14).
+- Par-3 targets re-set to the Fawcett margins Will stated (5 % of the plays-like number from every edge, +3 toward water / tall grass, +1-2 toward sand, trouble side first). Hole 12 already met the rule (14 yds from the left edge, 9.8 needed; the drawn outline was 2-3 yds inside the real edge and is fixed). Hole 7 was short of the rule against the tall growth in front (1.2 yds Back, 5.7 The Tips) and moved back. Greens on 4, 14, 17 are too narrow to meet the rule on every side from the longer tees: trouble sides met, others 0.3-3.7 yds short. Only club change: Champions 7, 5-iron -> 4-iron. Details: gateway_national/PAR3.md.
+- Each par-3 card now states the yards from the box to each edge.
+- Hole 10 has a Lay up button (Back and Middle): mid iron to the right fairway, leaves about 88, costs about 0.3.
+- The headline and the oval now show the pattern width (Driver 73 yds).
+Also today: lidar tree handling added to the fast C path (Eagle Knoll wind solve 188 s -> 96 s; Gateway output byte-identical); higher-precision Back re-solve reproduces every pick (aims within 0.5 yd, margins within 0.002); cart-path bounce study: no club change, no aim move of 2 yds (second_pass/CARTPATH.md). Running: hole 13 deep dive, variance study + hole 6 check.
