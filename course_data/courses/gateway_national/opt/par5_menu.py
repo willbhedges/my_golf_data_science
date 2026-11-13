@@ -100,6 +100,7 @@ def menu(Wd, F, P, z, a0, l0, lie, wx, bearing):
 
 
 def solve(a):
+    P5.use_set()                                   # the data-backed pattern off the deck (FAIRWAY_WOOD_DATA.md)
     Wd = P5.World(a.which)
     M = Wd.M
     z = M.draws_z(N, 5)

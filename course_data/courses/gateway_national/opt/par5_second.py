@@ -50,10 +50,11 @@ DAYS = {"sat": "2026-11-14", "sun": "2026-11-15"}
 
 # ---------------------------------------------------------------- clubs off the deck (ASSUMPTIONS, see PAR5.md)
 # (carry at 70 F, total, 95 % width, 95 % carry window, wind-sensitivity name). Driver and 2-wood are not hit off the
-# deck. 4-wood: 255 off a tee less 15 = 240, its tee width kept in yards (so about 6 % wider as an angle).
+# deck. 4-wood: the golfer's own number, Nov 13: "4-wood same as off tee" = 255 carry / 270 total (the first build
+# took 15 off: DECK_SETS "assumed" keeps that). Its width and every other pattern: DECK_SETS below.
 # Irons: the engine's Long / Mid iron and 8-iron, then the par-3 bag (12-yd gaps).
 DECK = {
-    "4-wood": (240, 255, 50, 24, "4-wood"),
+    "4-wood": (255, 270, 50, 24, "4-wood"),
     "Long iron": (210, 220, 40, 20, "Long iron"),
     "Mid iron": (185, 192, 34, 18, "Mid iron"),
     "8-iron": (162, 167, 30, 16, "8-iron"),
@@ -69,6 +70,31 @@ LIE = {"fairway": (1.0, 1.0, "4-wood"), "rough": (1.25, 0.96, "Long iron"), "san
 # P5_ALL_SPREAD = every second shot wider
 VAR = dict(wood_spread=float(os.environ.get("P5_WOOD_SPREAD", 1.0)), wood_carry=float(os.environ.get("P5_WOOD_CARRY", 0.0)),
            all_spread=float(os.environ.get("P5_ALL_SPREAD", 1.0)))
+# Pattern sets for every shot off the deck (second_pass/FAIRWAY_WOOD_DATA.md). `spread` multiplies the 95 % width and
+# the carry window of every deck club, `mis` = (slight, heavy) mishit rates (None = the engine's 12 % / 2.5 %),
+# `wood_carry` = yds added to the 4-wood's 255 carry at 70 F, `rough` = (spread x, carry x) from rough.
+#   assumed     = the first build (Nov 13): the tee pattern kept off the deck. On a flat, calm, 15-yd-radius green it
+#                 hits 70 % of greens from 220 and leaves 39 ft: better than the PGA Tour's 42 ft from 200-225.
+#   central     = published data: Tour proximity by distance x 1.5 club for club (a scratch player's pattern is about
+#                 1.5 x a Tour player's), which also gives the scratch "good shot" rate from 200 (39 %).
+#   pessimistic = the scratch amateur's proximity by distance (80 ft from 200-225), more mishits, rough 8 % shorter
+#                 and 50 % wider.
+# Distance off the deck is the golfer's own (central, pessimistic); "assumed" keeps the first build's 240 carry.
+DECK_SETS = {
+    "assumed": dict(spread=1.0, mis=None, wood_carry=-15.0, rough=(1.25, 0.96)),
+    "central": dict(spread=1.75, mis=None, wood_carry=0.0, rough=(1.25, 0.96)),
+    "pessimistic": dict(spread=2.0, mis=(0.20, 0.06), wood_carry=0.0, rough=(1.5, 0.92)),
+}
+# The par-5 page data (this file's solve, par5_menu.py) is built on "central" (P5_DECK_SET overrides); a plain import
+# keeps "assumed", so the hole 10 lay-up table (layup10.py, not re-solved) reproduces as published.
+SET = dict(DECK_SETS[os.environ.get("P5_DECK_SET", "assumed")])
+
+
+def use_set(name=None):
+    name = name or os.environ.get("P5_DECK_SET", "central")
+    SET.clear()
+    SET.update(DECK_SETS[name])
+    return name
 ANG = np.arange(-28.0, 28.01, 1.0)
 LAY_GAP = 20.0
 
@@ -180,14 +206,18 @@ def shot_numbers(Wd, P, club, lie, wx, bearing_shot):
     """model.shots() inputs for a deck club: a P copy and a wind hook on the shot's own line."""
     M, W = Wd.M, Wd.W
     spread, cmult, _ = LIE[lie]
-    spread = spread * VAR["all_spread"]
+    if lie == "rough":
+        spread, cmult = SET["rough"]
+    spread = spread * VAR["all_spread"] * SET["spread"]
     key = "deck:" + club
     P2 = dict(P)
     P2["width"] = dict(P["width"])
     P2["width"][key] = DECK[club][2] * (70.0 / 65.0) * spread * (VAR["wood_spread"] if club == "4-wood" else 1.0)
     P2["c_club"] = dict(P.get("c_club") or {})
     if club == "4-wood":
-        P2["c_club"][key] = VAR["wood_carry"]
+        P2["c_club"][key] = VAR["wood_carry"] + SET["wood_carry"]
+    if SET["mis"]:
+        P2["mis_slight"], P2["mis_heavy"] = SET["mis"]
     P2["depth_mult"] = P["depth_mult"] * spread
     P2["_cmult"] = cmult
     rel = (wx["frm"] - bearing_shot) % 360
@@ -482,6 +512,7 @@ def main():
     a = ap.parse_args()
     if a.cmd == "describe":
         return describe(a)
+    use_set()
     os.makedirs(OUT, exist_ok=True)
     Wd = World(a.which)
     for s in a.sets.split(","):

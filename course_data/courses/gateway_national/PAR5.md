@@ -16,7 +16,65 @@ tee-pick re-check.
     python3 course_data/courses/gateway_national/opt/par5_page.py
     python3 course_data/courses/v2_course.py page --slug gateway_national --which truth
 
-## Answer in short (Back tees, Saturday's forecast; Sunday within 0.1 of it)
+## Data pass, Nov 13 (later): the page is now on the golfer's 4-wood distance and data-backed patterns
+
+Golfer: "Study and get real data", then "4-wood same as off tee". Research, calibration and the three-set re-run:
+`second_pass/FAIRWAY_WOOD_DATA.md`. What changed in the build (`DECK`, `DECK_SETS` in `opt/par5_second.py`):
+
+* **4-wood off the fairway = 255 carry / 270 total at 70 F** (his number; was 240 / 255).
+* **Every club off the deck 1.75 x wider and deeper** ("central": PGA Tour proximity by yardage x 1.5 club for
+  club, a scratch amateur's pattern). The first build kept the tee patterns, which are Tour-level: 70 % of greens
+  from 220, 39 ft away, then scored on the amateur table.
+* Mishit rates, rough rule (4 % shorter, 25 % wider, no 4-wood) and everything else as before. A plain import of
+  `par5_second` still gives the first build (`DECK_SETS["assumed"]`), so the hole 10 lay-up table reproduces.
+* Page data rebuilt in both tall-grass modes. The tee re-check (pill) was re-run in Drop mode for Back and Middle;
+  the Lost ball mode keeps the first build's.
+
+Rebuild: the commands at the top (they now run on central; `P5_DECK_SET=assumed|central|pessimistic` overrides),
+each also with `P5_TALL_GRASS=lost`; then `opt/par5_menu.py solve` x 4 per mode and `page`, `opt/par5_page.py`.
+
+### Answer now (Back, from where the tee shot finishes)
+
+| hole | day | from | to front / middle | GO: club, strokes | green / carry the front / penalty + trees | LAY-UP: club, leaves, strokes | go - lay-up | first build: go - lay-up |
+|---|---|---|---|---|---|---|---|---|
+| 3 | sat | Driver, fairway | 316 / 330 | none reaches |  | 4-wood, 69, 4.15 |  |  |
+| 3 | sat | Driver, rough | 316 / 330 | none reaches |  | Long iron, 125, 4.37 |  |  |
+| 3 | sat | 2-wood, fairway | 341 / 355 | none reaches |  | 4-wood, 94, 4.23 |  |  |
+| 3 | sun | Driver, fairway | 316 / 330 | none reaches |  | 4-wood, 68, 4.15 |  |  |
+| 6 | sat | Driver, fairway | 226 / 240 | Long iron, 3.92 | 4 % / 1 % / 9 % | Mid iron, 55, 4.08 | -0.15 | -0.41 |
+| 6 | sat | Driver, rough | 226 / 240 | none reaches |  | Long iron, 37, 4.08 |  |  |
+| 6 | sat | 2-wood, fairway | 248 / 261 | 4-wood, 3.87 | 14 % / 39 % / 17 % | Long iron, 49, 4.09 | -0.22 | -0.30 |
+| 6 | sun | Driver, fairway | 221 / 234 | Long iron, 3.81 | 11 % / 9 % / 7 % | Mid iron, 45, 4.01 | -0.20 | -0.28 |
+| 13 | sat | Driver, fairway | 223 / 239 | 4-wood, 3.81 | 10 % / 94 % / 5 % | Mid iron, 55, 4.00 | -0.19 | -0.35 |
+| 13 | sat | Driver, rough | 223 / 239 | Long iron, 4.00 | 1 % / 2 % / 6 % | Mid iron, 64, 4.06 | -0.06 | -0.11 |
+| 13 | sat | 2-wood, fairway | 244 / 261 | 4-wood, 3.81 | 14 % / 50 % / 7 % | Long iron, 50, 4.00 | -0.19 | -0.10 |
+| 13 | sun | Driver, fairway | 226 / 242 | 4-wood, 3.78 | 12 % / 88 % / 5 % | Mid iron, 61, 4.02 | -0.24 | -0.37 |
+| 18 | sat | Driver, fairway | 204 / 218 | Long iron, 3.78 | 22 % / 54 % / 10 % | 8-iron, 53, 3.94 | -0.16 | -0.44 |
+| 18 | sat | Driver, rough | 204 / 218 | Long iron, 3.93 | 11 % / 33 % / 9 % | 8-iron, 60, 3.98 | -0.05 | -0.20 |
+| 18 | sat | 2-wood, fairway | 223 / 237 | 4-wood, 3.89 | 5 % / 96 % / 4 % | Mid iron, 51, 3.94 | -0.05 | -0.25 |
+| 18 | sun | Driver, fairway | 212 / 226 | 4-wood, 3.91 | 3 % / 97 % / 3 % | Mid iron, 48, 3.94 | -0.03 | -0.23 |
+
+Tee pick with the second shot played out (Saturday, Back; strokes, 2-wood and 4-wood against the Driver):
+
+| hole | valuation | Driver | 2-wood | 4-wood | pattern |
+|---|---|---|---|---|---|
+| 3 | best second shot | 5.347 | +0.026 | +0.022 | central |
+| 3 | always lay up | 5.347 | +0.026 | +0.022 | central |
+| 6 | best second shot | 5.001 | -0.006 | -0.005 | central |
+| 6 | always lay up | 5.121 | +0.032 | +0.064 | central |
+| 13 | best second shot | 4.940 | +0.037 | +0.050 | central |
+| 13 | always lay up | 5.060 | +0.026 | +0.033 | central |
+| 18 | best second shot | 4.876 | +0.056 | +0.053 | central |
+| 18 | always lay up | 4.961 | +0.013 | +0.020 | central |
+
+* Going still beats laying up on 6, 13 and 18 from the fairway, by 0.15-0.25 (was 0.35-0.45). On 6 from the
+  Driver's spot (240 to the middle) the play is the long iron run up short of the green, not the 4-wood: 240 sits
+  between his long iron and his 4-wood, and the full 4-wood is too much club there.
+* On 6 the tee clubs come out level once the second shot is played out (2-wood and 4-wood within 0.006 of the
+  Driver): the 2-wood leaves 261, a full 4-wood. The page's tee pick is not changed by this.
+* Everything below this section is the FIRST build (240-carry 4-wood, tee patterns) and is kept as the record.
+
+## First build: answer in short (Back tees, Saturday's forecast; Sunday within 0.1 of it)
 
 | hole | Driver finishes | to front / middle | go for it | lay up | go minus lay-up | 2-wood finishes | from there |
 |---|---|---|---|---|---|---|---|
