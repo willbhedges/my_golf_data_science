@@ -1,0 +1,530 @@
+{
+ "schema": "gateway_features_second_pass/1",
+ "scope": "holes 1-9",
+ "generated": "2026-11-13",
+ "status": "checkpoint 1 (holes 8, 9 native / tree edges)",
+ "doc": "Per hole: edits[] = {action add|replace|remove, kind, target, priority must|minor, polygon_ll [[lon,lat]], polygon_frame_x_along [[x yds right of the line, yds along from the Back tee]], evidence, confidence, expected_effect}. Frame = holes[n].frame (Back tee -> aim; = render/frames.json for 1,3,5,6,8,9; hole 2 = the hand Back tee [-90.1434917, 38.663402] -> aim [-90.1454657, 38.6618048] (frames.json['2'] still holds the old tee: use polygon_ll there); par 3 (4, 7): Back tee -> green centre). polygon_ll is authoritative. Paint order as trace.py: native first, then fairway / water / sand / green, trees last.",
+ "sources": [
+  "NAIP 2023-08-19 0.3 m RGBN (native res) + NAIP 2016/2018/2019/2020/2021/2022 0.6 m (Planetary Computer)",
+  "USGS lidar Dec 2023 (holes 1-2, part of 3) and Dec 2020 (rest), 0.5 m height above ground (F2's grids)",
+  "Sentinel-2 L2A NDVI 8+10 Nov 2026, Nov 2025, Nov 2024, summer 2026 (10 m)",
+  "2014 lidar hag.tif (for change only)"
+ ],
+ "holes": {
+  "1": {
+   "par": 4,
+   "frame": {
+    "tee_ll": [
+     -90.1395793,
+     38.6603894
+    ],
+    "aim_ll": [
+     -90.1410639,
+     38.6616705
+    ]
+   },
+   "edits": [],
+   "hazards": []
+  },
+  "2": {
+   "par": 4,
+   "frame": {
+    "tee_ll": [
+     -90.1434917,
+     38.663402
+    ],
+    "aim_ll": [
+     -90.1454657,
+     38.6618048
+    ]
+   },
+   "edits": [],
+   "hazards": []
+  },
+  "3": {
+   "par": 5,
+   "frame": {
+    "tee_ll": [
+     -90.1468192,
+     38.6603444
+    ],
+    "aim_ll": [
+     -90.1484728,
+     38.6588142
+    ]
+   },
+   "edits": [],
+   "hazards": []
+  },
+  "4": {
+   "par": 3,
+   "frame": {
+    "tee_ll": [
+     -90.1520754,
+     38.656439
+    ],
+    "aim_ll": [
+     -90.1523642,
+     38.6550053
+    ]
+   },
+   "edits": [],
+   "hazards": []
+  },
+  "5": {
+   "par": 4,
+   "frame": {
+    "tee_ll": [
+     -90.1515078,
+     38.6552492
+    ],
+    "aim_ll": [
+     -90.1489778,
+     38.6556015
+    ]
+   },
+   "edits": [],
+   "hazards": []
+  },
+  "6": {
+   "par": 5,
+   "frame": {
+    "tee_ll": [
+     -90.1470018,
+     38.6553192
+    ],
+    "aim_ll": [
+     -90.149293,
+     38.6544527
+    ]
+   },
+   "edits": [],
+   "hazards": []
+  },
+  "7": {
+   "par": 3,
+   "frame": {
+    "tee_ll": [
+     -90.1504464,
+     38.6531978
+    ],
+    "aim_ll": [
+     -90.1488281,
+     38.653895
+    ]
+   },
+   "edits": [],
+   "hazards": []
+  },
+  "8": {
+   "par": 4,
+   "frame": {
+    "tee_ll": [
+     -90.1481882,
+     38.6535889
+    ],
+    "aim_ll": [
+     -90.1463283,
+     38.6546492
+    ]
+   },
+   "edits": [
+    {
+     "action": "remove",
+     "kind": "native",
+     "target": "trace.py EXTRA['8'] band 2 'fescue before the trees right' N([(220,25),(345,25)],[(220,45),(345,45)]) and band 3 'unmown ground inside the dogleg' (both replaced by the next entry)",
+     "priority": "must",
+     "polygon_ll": [],
+     "polygon_frame_x_along": [],
+     "evidence": "x +25..+45 at 220-260 and the ground from the collar to the brush line at 260-300 is short, green turf: lidar Dec 2020 share of cells > 0.05 m 2-3 % (fairway 1 %, known native 24 %); Sentinel-2 NDVI 0.84 / 0.76 / 0.82 in Nov 2026 / 2025 / 2024 (fairway 0.84-0.86, native 0.63-0.69). Tan on NAIP Aug 2023 = unirrigated mown rough browned out in summer, which is what misled the photo read.",
+     "confidence": 0.8,
+     "expected_effect": "see next entry"
+    },
+    {
+     "action": "add",
+     "kind": "native",
+     "target": "brush / unmown margin right, inside the dogleg, 220-345 (replaces the two removed bands; trees painted on top)",
+     "priority": "must",
+     "polygon_ll": [
+      [
+       -90.1460294,
+       38.6543411
+      ],
+      [
+       -90.1459445,
+       38.6543895
+      ],
+      [
+       -90.1458534,
+       38.6544313
+      ],
+      [
+       -90.1457931,
+       38.6545064
+      ],
+      [
+       -90.1457692,
+       38.6545505
+      ],
+      [
+       -90.1457699,
+       38.6546214
+      ],
+      [
+       -90.1457336,
+       38.6546522
+      ],
+      [
+       -90.145722,
+       38.6547098
+      ],
+      [
+       -90.1456857,
+       38.6547406
+      ],
+      [
+       -90.1456803,
+       38.6548048
+      ],
+      [
+       -90.1456564,
+       38.654849
+      ],
+      [
+       -90.1456757,
+       38.6549398
+      ],
+      [
+       -90.1457073,
+       38.6550439
+      ],
+      [
+       -90.1456895,
+       38.6550948
+      ],
+      [
+       -90.1457234,
+       38.6552994
+      ],
+      [
+       -90.145474,
+       38.6554925
+      ],
+      [
+       -90.1448874,
+       38.6548598
+      ],
+      [
+       -90.1452696,
+       38.6546419
+      ],
+      [
+       -90.1459491,
+       38.6542545
+      ]
+     ],
+     "polygon_frame_x_along": [
+      [
+       47.0,
+       220.0
+      ],
+      [
+       47.0,
+       230.0
+      ],
+      [
+       48.0,
+       240.0
+      ],
+      [
+       44.0,
+       250.0
+      ],
+      [
+       41.0,
+       255.0
+      ],
+      [
+       34.0,
+       260.0
+      ],
+      [
+       33.0,
+       265.0
+      ],
+      [
+       28.0,
+       270.0
+      ],
+      [
+       27.0,
+       275.0
+      ],
+      [
+       21.0,
+       280.0
+      ],
+      [
+       18.0,
+       285.0
+      ],
+      [
+       8.0,
+       290.0
+      ],
+      [
+       -4.0,
+       295.0
+      ],
+      [
+       -8.0,
+       300.0
+      ],
+      [
+       -30.0,
+       312.0
+      ],
+      [
+       -35.0,
+       345.0
+      ],
+      [
+       60.0,
+       345.0
+      ],
+      [
+       60.0,
+       300.0
+      ],
+      [
+       60.0,
+       220.0
+      ]
+     ],
+     "evidence": "inner edge = first sustained lidar height >= 0.025 m (Dec 2020, 3-yd mean) moving right from the fairway, every 5 yds; Sentinel-2 Nov 2026 NDVI < 0.72 edge agrees within 0-6 yds at 250-300 (44 / 39 / 36 / 33 / 29 / 24 / 14 / 7 / 2 / -3 / -7 at 250 ... 300); from 312 on unchanged from the map (lidar 0.36 m mean, NDVI 0.61 beyond the fairway end)",
+     "confidence": 0.75,
+     "expected_effect": "right of the fairway at 220-290 becomes mown rough out to the brush line (mapped native from +25 / +21 / +10 / -5 / -8 at 250 / 260 / 270 / 280 / 290; measured +44 / +34 / +28 / +21 / +8): 19 / 13 / 18 / 26 / 16 yds more rough. A right miss with Driver or 3-wood is no longer in fescue; the aim can move right, away from the 46 L line."
+    },
+    {
+     "action": "replace",
+     "kind": "native",
+     "target": "trace.py EXTRA['8'] Z('native', poly((-70,302),(-58,312),(-57,323),(-70,337),(-83,330),(-88,318),(-82,306))) unmown square inside the bend",
+     "priority": "minor",
+     "polygon_ll": [
+      [
+       -90.1460708,
+       38.655478
+      ],
+      [
+       -90.1459643,
+       38.6554472
+      ],
+      [
+       -90.1458006,
+       38.6554387
+      ],
+      [
+       -90.1457774,
+       38.6555537
+      ],
+      [
+       -90.1457874,
+       38.6556905
+      ],
+      [
+       -90.1458832,
+       38.6557377
+      ],
+      [
+       -90.1460306,
+       38.6557148
+      ],
+      [
+       -90.146097,
+       38.6556464
+      ],
+      [
+       -90.1461133,
+       38.6555658
+      ]
+     ],
+     "polygon_frame_x_along": [
+      [
+       -67.0,
+       298.0
+      ],
+      [
+       -58.0,
+       304.0
+      ],
+      [
+       -48.0,
+       316.0
+      ],
+      [
+       -58.0,
+       326.0
+      ],
+      [
+       -72.0,
+       335.0
+      ],
+      [
+       -82.0,
+       331.0
+      ],
+      [
+       -88.0,
+       318.0
+      ],
+      [
+       -85.0,
+       308.0
+      ],
+      [
+       -78.0,
+       301.0
+      ]
+     ],
+     "evidence": "NAIP 2023 0.3 m RGB + CIR: the tufted block runs to a straight worn edge from (-48,316) to (-72,335) on its north-east side and to (-67,298) at the south tip; the mapped polygon stops 6-9 yds short on the east side (x -57). CAUTION on its state: lidar Dec 2020 is mostly short inside it (9 % of cells > 0.05 m; native 24 %, fairway 1 %), S2 Nov 2026 0.78 median / 0.57 min (mixed 10 m pixels). It was clearly unmown in Aug 2023 and 2021; treat as native with confidence 0.55-0.6 that it is standing now.",
+     "confidence": 0.55,
+     "expected_effect": "6-9 yds more of the block on the side nearest the Driver line (x -57 -> -48 at 310-320)"
+    }
+   ],
+   "hazards": []
+  },
+  "9": {
+   "par": 4,
+   "frame": {
+    "tee_ll": [
+     -90.1460782,
+     38.656534
+    ],
+    "aim_ll": [
+     -90.143977,
+     38.6575693
+    ]
+   },
+   "edits": [
+    {
+     "action": "replace",
+     "kind": "native",
+     "target": "trace.py EXTRA['9'] band 2 'unmown strip left' inner (right) edge",
+     "priority": "minor",
+     "polygon_ll": [
+      [
+       -90.1441347,
+       38.6579779
+      ],
+      [
+       -90.1433344,
+       38.6583722
+      ],
+      [
+       -90.1432227,
+       38.6582327
+      ],
+      [
+       -90.1434005,
+       38.6581451
+      ],
+      [
+       -90.1434726,
+       38.6580804
+      ],
+      [
+       -90.1435336,
+       38.6580017
+      ],
+      [
+       -90.1436058,
+       38.657937
+      ],
+      [
+       -90.1436891,
+       38.6578862
+      ],
+      [
+       -90.1437836,
+       38.6578494
+      ],
+      [
+       -90.143856,
+       38.6578623
+      ],
+      [
+       -90.143934,
+       38.6578822
+      ],
+      [
+       -90.1439785,
+       38.6578603
+      ],
+      [
+       -90.1440062,
+       38.6578175
+      ]
+     ],
+     "polygon_frame_x_along": [
+      [
+       -50.0,
+       250.0
+      ],
+      [
+       -50.0,
+       340.0
+      ],
+      [
+       -30.0,
+       340.0
+      ],
+      [
+       -30.0,
+       320.0
+      ],
+      [
+       -27.0,
+       310.0
+      ],
+      [
+       -22.0,
+       300.0
+      ],
+      [
+       -19.0,
+       290.0
+      ],
+      [
+       -18.0,
+       280.0
+      ],
+      [
+       -19.0,
+       270.0
+      ],
+      [
+       -24.0,
+       265.0
+      ],
+      [
+       -30.0,
+       260.0
+      ],
+      [
+       -30.0,
+       255.0
+      ],
+      [
+       -27.0,
+       250.0
+      ]
+     ],
+     "evidence": "three sources per station (lidar Dec 2020 unmown edge / NAIP 7-year classifier / S2 Nov 2026): 250: -35/-27/-29; 260: -34/-33/-25; 265: -29/-29/-19; 270: -20/-15/-13; 280: -19/-12/-10; 290: -19/-18/-10; 300: -23/-20/-13; 320-340: -31/(n.a.)/-21. The integrator's Nov 13 line (-24,-18,-18,-22,-27,-28 at 250,265,280,300,320,340) is confirmed within 1-4 yds at 270-340 and is 3-10 yds too close to play at 250-265.",
+     "confidence": 0.75,
+     "expected_effect": "inner edge 3 yds further left at 250, 10 at 260, 6 at 265, 1 at 270-300, 2-3 at 320-340: slightly more mown rough left of the fairway at 250-265 (fairway edge there is -19 ... -12)"
+    }
+   ],
+   "hazards": []
+  }
+ }
+}
