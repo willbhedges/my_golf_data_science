@@ -81,14 +81,13 @@
   "simple": true,
   "condition_notes": {
    "18": {
-    "Back": "The Back markers are probably on the next pad forward, about 17 yds ahead of the spot used here: same club and line, every yardage 17 shorter. Check the plaque; Move this tee sets it",
-    "Middle": "The Middle markers are probably about 8 yds ahead of the spot used here: same club and line"
+    "Back": "Tee taken as the second pad from the back (it fits the card's spacings). If the Back markers are on the rear pad instead: same club and line, every yardage 17 longer; Move this tee sets it"
    },
    "9": {
     "Back": "Frozen or very firm ground (drives running 35+ yds): the 2-wood is just as good, aimed 3 yds further left"
    }
   },
-  "condition_source": "2026-11-13: Sat 24 F overnight, 35 F at 9:00. Central world with roll x1.25 / x1.5: 8 Driver holds (0.042 / 0.028), 9 Driver holds to a tie (0.020 / 0.007), 10 2-wood by 0.019 at x1.25 and 4-wood by 0.015 at x1.5, 16 4-wood holds. 2026-11-13 strategy pass: 10's frozen-ground pill removed (the page now shows the 4-wood whenever it is within 0.03, which covers frozen ground); 9 Back: roll x1.5 Driver 12.5 R by 0.004 over 2-wood (10 R), with a 15 % wider pattern as well the 2-wood by 0.001; 2026-11-13 round 2, 18's tees: the three pads on the 2023 photo and the 2020 lidar are at -10..+2, 14..33 and 44..68 yds from the mapped Back point, the forward pad at 152..164; the card's spacings (Tips-Champions 5, Champions-Back 18, Back-Middle 33, Middle-Forward 103) put all five sets on a pad only with Back at +16..+20 and Middle at +49..+53 (OPTIMIZE.md R2-3). Driver either way: 14.5 R at the mapped spot, 12 R from 20 yds forward",
+  "condition_source": "2026-11-13: Sat 24 F overnight, 35 F at 9:00. Central world with roll x1.25 / x1.5: 8 Driver holds (0.042 / 0.028), 9 Driver holds to a tie (0.020 / 0.007), 10 2-wood by 0.019 at x1.25 and 4-wood by 0.015 at x1.5, 16 4-wood holds. 2026-11-13 strategy pass: 10's frozen-ground pill removed (the page now shows the 4-wood whenever it is within 0.03, which covers frozen ground); 9 Back: roll x1.5 Driver 12.5 R by 0.004 over 2-wood (10 R), with a 15 % wider pattern as well the 2-wood by 0.001; 2026-11-13 round 2, 18's tees: the three pads on the 2023 photo and the 2020 lidar are at -10..+2, 14..33 and 44..68 yds from the mapped Back point, the forward pad at 152..164; the card's spacings (Tips-Champions 5, Champions-Back 18, Back-Middle 33, Middle-Forward 103) put all five sets on a pad only with Back at +16..+20 and Middle at +49..+53 (OPTIMIZE.md R2-3). Driver either way: 14.5 R at the mapped spot, 12 R from 20 yds forward. Then applied (same day): Back 18 moved to pad B (+17), Middle to pad C (+8), holes_truth.py TEE_FIX; 18 re-solved for both bases (Back Driver 14.5 R -> 13 R, 0.124; Middle 9.5 R -> 5.5 R, 0.136); the pill now covers the other case (markers on the rear pad)",
   "close_margin": 0.045,
   "why": {
    "1": {
@@ -154,7 +153,11 @@
     "The Tips": "Green is out of reach from here: 4-wood at the right fairway, leaves about 65",
     "Champions": "Green is out of reach from here: 4-wood at the right fairway, leaves about 65"
    }
-  }
+  },
+  "checked_beyond": {
+   "18": 45
+  },
+  "checked_beyond_source": "2026-11-13 round 2: 18's hand corridor ends 345 yds from the old Back point; the ground to 395 (fairway, left long grass to 395, the two pots right at 392-402, path) was checked on NAIP 2023 + the 2020 lidar by reviewer C (18-A) and again in round 2 after the tee moved, so the Middle Driver (300 from a tee now 50 yds up) does not get the 'past the hand-checked map' pill"
  },
  "engine": {
   "extra_clubs": {

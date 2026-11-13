@@ -44,6 +44,14 @@ TEE_FIX = {
     "13": {"The Tips": ("frame", (5.0, -29.0),
                         "estimated: back of the Champions pad (eye check C; was lidar pad 132, 50 yds right across "
                         "the ditch); card 562 = Champions + 5")},
+    # 2026-11-13 round 2 (courses/gateway_national/OPTIMIZE.md R2-3, F2's item 9): pads on NAIP 2023 + the 2020 lidar
+    # ground at -10..+2 (A), 14..33 (B), 44..68 (C) yds along from the old Back point, forward pad 152..164; the card
+    # spacings (Tips-Champions 5, Champions-Back 18, Back-Middle 33, Middle-Forward 103) put all five sets on a pad
+    # only with Back at +16..+20 and Middle at +49..+53 (the card's line is 10-14 yds longer than tee-corner-green)
+    "18": {"Back": ("frame", (0.0, 17.0), "pad B (the second pad), from the card spacings; was the front of pad A"),
+           "Middle": ("frame", (5.5, 50.0), "pad C, 33 yds ahead of Back as on the card; was 1.5 yds behind the pad"),
+           "Champions": ("frame", (0.0, -1.0), "pad A, 18 yds behind Back as on the card"),
+           "The Tips": ("frame", (0.0, -6.0), "pad A, 23 yds behind Back as on the card")},
 }
 # par-3 zones added to the package zones (score_auto.truth_package "extra_zones"; the par-3 package zones are drawn in
 # product precedence, native lowest, so the package bunkers / trees / water / fairway still win over these)

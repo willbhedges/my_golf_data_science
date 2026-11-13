@@ -1421,7 +1421,9 @@ def build_page(slug, which, out=None, data_out=None):
         d["key"] = str(h)
         d["label"] = str(h)
         if h in foot_a1:
-            d["foot_a1"] = foot_a1[h]
+            # page_text "checked_beyond" {hole: yds}: ground past the hand corridor's end that was checked on the photo
+            # and lidar afterwards (Gateway 18: to 395), so the "lands past the hand-checked map" badge starts later
+            d["foot_a1"] = foot_a1[h] + float(((config(slug).get("page_text") or {}).get("checked_beyond") or {}).get(str(h), 0))
         d["bearing"] = course.BEARINGS.get(h)
         b0, opts = tee_options(h)
         d["base_set"], d["tee_opts"] = b0, opts

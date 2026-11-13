@@ -186,6 +186,38 @@ Nothing in tonight's engine touches either. Eagle Knoll's data and page are unto
   sentence about the two models. Now the Why line stays and the pill / models sentence are not shown when the club on
   the page is the level-rule club (`prefer_on_tie`).
 
+### R2-8. 18's tees moved onto their pads and 18 re-solved (fourth checkpoint; supersedes "no coordinate moved" in R2-3)
+
+With time in hand and the pad arithmetic of R2-3 one-sided, the move was made the proper way:
+`truth/gateway_national/holes_truth.py` `TEE_FIX["18"]` (corridor frame, yds along from the old Back point): Back
++17 (pad B), Middle +50 (pad C, was 42.3), Champions -1 and The Tips -6 (pad A); `holes_truth.json` ->
+`score_auto.truth_package` -> `truth/package.json` (diff: only 18's tee points) -> both course modules (diff: only
+hole 18; every zone shifts by exactly 17.0 / 7.7 yds in the tee frame, the per-club elevation is re-read along the
+new line) -> `meta.json` landing drops for 18 (`v2_course.dem_elevation`) -> fastsolve `--holes 18 --draws 128`
+(Back: book + card grid + 10 offset grids, 14 s; Middle: book + card grid, 6 s), merged into the stored outputs
+(every other hole's records and cells byte-identical).
+
+| 18 | before | after |
+|---|---|---|
+| Back, calm book | Driver 14.5 R, 0.128 over 2-wood, 72 % fairway | Driver 13 R, 0.124, 79 % fairway |
+| Back, Sat / Sun on the page | 15 R / 11 R, 235 to the green | 14 R / 9 R, 218 to the green |
+| Middle, calm book | Driver 9.5 R, 0.134 | Driver 5.5 R, 0.136 |
+| Middle, Sat / Sun | 9 R / 6 R, 193 to the green | 5 R / 2 R, 184 to the green |
+
+The page's other sets on 18 follow (they are the Back tee moved by the card difference). Pill on Back 18 now covers
+the other case: "Tee taken as the second pad from the back ... If the Back markers are on the rear pad instead: same
+club and line, every yardage 17 longer". `page_text.checked_beyond` {"18": 45} (new, v2_course): the ground to 395
+yds from the old Back point was checked after the hand corridor (345), so the Middle Driver does not get the "lands
+past the hand-checked map" pill. qa.json and the rendered headline of every other hole: identical to the third
+checkpoint on all five sets (qa.json does not hold the headline aim number; rend.js compares it).
+
+**Exact-wind check of the page's interpolation (both days, start on 1).** Every Back and Middle tee shot re-solved at
+the forecast's own wind speed, direction and temperature at that hole (8,000 common swings, the wind grid's solver,
+no interpolation) against the page's bilinear read of the 0 / 5 mph, 30-degree, 35 / 50 F cells: same club on 52 of
+52 (hole 10 Back Saturday: 2-wood by 0.015 in the exact solve, the page shows the 4-wood by the level rule), aims
+within 1.5 yds, margins within 0.008. Sunday's closest: Middle 1 Driver 0.017 over the 4-wood, Middle 11 Driver
+0.001 (4-wood shown), Middle 6 0.028, Middle 8 0.029, Back 11 0.031, Back 9 0.036.
+
 ## Night of Nov 12-13: strategy pass (strategy lead; running log, newest state first)
 
 **State.** Map, config and engine option below are committed. Back + Middle re-solved in full with the local fast
