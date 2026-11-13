@@ -1,6 +1,6 @@
 # Gateway National, holes 10-18: second-pass feature detection (specialist F2)
 
-Status: **CHECKPOINT 2** (native lines, tree lines, par-3 surrounds, tees, tee chutes, fairway outlines 10 / 15 / 18, bunker / water table). Machine-applicable edits:
+Status: **CHECKPOINT 3** (native lines, tree lines, par-3 surrounds, tees, tee chutes, greens, bunkers, fairway outlines, water edges, validation). Machine-applicable edits:
 `features_10_18.json` (same folder). All coordinates: corridor frame of `render/frames.json` (x = yds right of the Back
 tee -> aim line, along = yds from the Back tee; par 3s: Back tee -> green centre) and WGS84.
 
@@ -92,6 +92,152 @@ Offsets are detected - mapped, in yds; "closer" = closer to the fairway / line o
 10. **11: grass hollow inside the fairway at 212-238 yds, x -4..+12** (213 yd2, ~9 x 26 yds on the diagonal):
    longer textured grass in NAIP 2023, a shadowed hollow in NAIP 2021 / 2022; both NAIP classifiers break the
    fairway here. Plays as rough in the middle-right of the lay-up zone. Confidence 0.7.
+
+11. **OSM greens and bunkers carry a per-hole registration shift of 1.5-3 yds** (NAIP 2023 is tied to the 2023
+   lidar within 0.5 m on 17 bunker centroids: dx -0.16, dy +0.43 m, so the shift is OSM's). Replacement outlines
+   for all 9 greens and 41 bunkers are in the json (`replace green`, `replace sand`; every edit also carries
+   `priority` must | minor; one 17 bunker under the canopy keeps its OSM outline). What changes a number:
+   - 15 fairway bunkers (230-250): reach from the Back tee 226 -> 222, 236 -> 231, 241 -> 238 (2.5-3 yds left, 2-2.5
+     shorter than OSM, and 30-45% larger); 16 left bunker reach 207 -> 204 (2.4 yds right, 60% larger); 16 right
+     bunker at 229 is twice the OSM area (19 -> 44 yd2).
+   - 14 left green-side bunker: OSM shape is wrong (its upper lobe is rubble under the trees); real sand is 63 yd2
+     centred 6 yds right and 6 short of the OSM centroid (Back reach / carry 178 / 190, was 180 / 199).
+   - 10: two OSM bunkers left of the green complex do not exist ((-79, 242) and (-71, 276): native); the other
+     five are 1.5-2 yds left / short of OSM.
+   - Greens: 12 is 2.5-3.7 yds bigger on the left and front (toward the water: 3 yds of collar and rock edge, not
+     6) and 1.5 at the back, area 513 -> 657 yd2; 17 is 2.5-2.8 yds further right and short (toward the right
+     bunkers), 501 -> 606; 14 is 2-3.4 yds wider on the right, 604 -> 705; 10 is 2-3 yds bigger left and front and
+     1.5-2 narrower on the right (the ditch is 1-2 yds off the right edge), 650 -> 720; 13 +3-4 right and long;
+     11 +3 left and front; 16 +4 long-right; 18 +3-4 long (back lobe; uncertain: could be collar).
+
+## Validation of the method
+
+- **Two lidar flights agree.** Where both cover (16, 17, 18, part of 15) the native inner edge from the Dec 2020
+  flight alone and the Dec 2023 flight alone differ by: 16 left +1.3 yds median (MAD 1.8; at 240-300: -26.0 /
+  -27.0 / -23.3 / -21.7 / -20.7 / -18.7 / -24.0 in 2020 vs -24.7 / -22.0 / -21.7 / -20.3 / -20.0 / -18.7 / -21.7 in
+  2023), 16 right +0.5 (MAD 1.2), 18 left 0.0 (MAD 1.0), 18 right +1.0, 15 right -0.7 (MAD 2.2). The mowing lines
+  did not move in three years, and the 16 left edge is confirmed by a second independent flight. The 16 mound is
+  low in both flights (only its stone edge at x +7..+10 stands up in 2020 and 2023).
+- **NAIP 2023 vs lidar registration** 0.5 m (above); NAIP crowns of 25-30 m trees lean up to 5-8 yds from their
+  true position (17 right, 15 tee): tree polygons come from lidar only.
+- **Classifiers** (leave-holes-out, fairway vs rough accuracy on held-out holes): NAIP 2023 only 0.79-0.96, NAIP
+  2019-22 only 0.71-0.92, all sources 0.85-0.98; lidar intensity alone does not separate fairway from rough
+  (0.55-0.68) and was not used for fairway edges.
+
+## Greens (NAIP 2023 0.3 m outline vs OSM)
+
+| hole | area OSM / det yd2 | centroid shift x / along | det - OSM edge by direction: long, long-right, right, short-right, short, short-left, left, long-left (capped +4) | years agreeing (2022 / 2021 within 1.5 yds, of 8 dirs) |
+|---|---|---|---|---|
+| 10 | 650 / 720 | -1.7 / -1.1 | -0.2, -2.1, -1.5, -1.3, +2.0, +3.0, +2.7, +2.3 | 7 / 8 |
+| 11 | 653 / 777 | -1.7 / -0.5 | -0.2, -0.3, -0.7, -0.6, +3.9, +2.7, +2.7, +3.1 | 5 / 7 |
+| 12 | 513 / 657 | -1.4 / -0.4 | +1.6, +0.7, -0.3, +1.5, +3.3, +2.6, +3.7, +2.6 | 6 / 8 |
+| 13 | 543 / 743 | +1.7 / -0.3 | +3.6, +3.0, +4.0, +2.8, +4.4, -0.8, -0.1, -1.0 | 5 / 7 |
+| 14 | 604 / 705 | +1.9 / -0.6 | +1.7, +2.8, +2.0, +3.4, -0.7, -1.0, -0.0, -0.7 | 4 / 5 |
+| 15 | 624 / 688 | -1.8 / -2.1 | -0.9, -2.2, -1.1, -1.4, +1.8, +1.8, +2.3, +3.0 | 2 / 5 |
+| 16 | 781 / 921 | +1.2 / -0.6 | +1.3, +3.9, +2.1, +1.0, +1.4, +1.3, +0.5, -0.9 | 6 / 7 |
+| 17 | 501 / 606 | +1.2 / -0.8 | +0.1, +1.7, +2.5, +2.7, +2.8, -0.9, +0.7, -0.7 | 5 / 8 |
+| 18 | 775 / 985 | +0.5 / +0.5 | +4.0, +1.0, +1.8, +4.0, +0.9, -0.1, +0.2, +3.2 | 7 / 8 |
+
+## Bunkers (NAIP 2023 0.3 m outline vs OSM), with reach / carry
+
+| hole | bunker x / along (OSM centroid) | area OSM / NAIP yd2 | IoU | shift x / along | Back reach / carry: OSM -> NAIP | Middle reach / carry: OSM -> NAIP | edit |
+|---|---|---|---|---|---|---|---|
+| 10 | 72 / 134 | 40 / 42 | 0.42 | -2.1 / -0.7 | 149 / 155 -> 147 / 153 | 130 / 136 -> 128 / 134 | replace |
+| 10 | 8 / 198 | 41 / 41 | 0.54 | -1.7 / -0.9 | 194 / 201 -> 193 / 201 | 174 / 181 -> 173 / 181 | replace |
+| 10 | -79 / 242 | - | - | - | - | - | not found as sand in 2023 |
+| 10 | -32 / 250 | 39 / 23 | 0.32 | -1.5 / -0.2 | 247 / 256 -> 249 / 255 | 228 / 237 -> 230 / 236 | replace |
+| 10 | -60 / 262 | 43 / 40 | 0.44 | -1.8 / -1.9 | 265 / 272 -> 264 / 271 | 247 / 253 -> 245 / 252 | replace |
+| 10 | -71 / 276 | - | - | - | - | - | not found as sand in 2023 |
+| 10 | -49 / 279 | 40 / 58 | 0.54 | -0.2 / -1.5 | 277 / 288 -> 275 / 287 | 257 / 269 -> 256 / 268 | replace |
+| 10 | -43 / 293 | 27 / 24 | 0.34 | -1.5 / -1.4 | 293 / 299 -> 291 / 297 | 274 / 279 -> 272 / 278 | replace |
+| 11 | 52 / 381 | 57 / 89 | 0.29 | -2.9 / -1.1 | 380 / 391 -> 376 / 390 | 358 / 369 -> 354 / 368 | replace |
+| 12 | 18 / 118 | 40 / 37 | 0.42 | -1.8 / -1.7 | 114 / 123 -> 113 / 121 | 98 / 107 -> 97 / 105 | replace |
+| 13 | -69 / 108 | 28 / 90 | 0.31 | +0.8 / +1.3 | 125 / 131 -> 124 / 133 | 115 / 120 -> 113 / 122 | replace |
+| 13 | -64 / 120 | 18 / 26 | 0.44 | +1.5 / +0.8 | 133 / 139 -> 133 / 139 | 122 / 127 -> 121 / 127 | replace |
+| 13 | 34 / 235 | 36 / 53 | 0.48 | +1.4 / -0.2 | 233 / 242 -> 232 / 242 | 220 / 229 -> 219 / 229 | replace |
+| 13 | 26 / 247 | 94 / 140 | 0.66 | +0.2 / +0.3 | 242 / 256 -> 240 / 257 | 229 / 243 -> 227 / 245 | ok |
+| 13 | 14 / 262 | 46 / 74 | 0.48 | +1.1 / +0.9 | 258 / 267 -> 257 / 270 | 245 / 254 -> 244 / 257 | replace |
+| 13 | -27 / 394 | 79 / 99 | 0.48 | +2.4 / +0.7 | 387 / 402 -> 388 / 402 | 374 / 389 -> 375 / 389 | replace |
+| 13 | -18 / 468 | 41 / 61 | 0.37 | +1.9 / -0.5 | 462 / 473 -> 461 / 473 | 449 / 460 -> 447 / 460 | replace |
+| 13 | -9 / 539 | 77 / 71 | 0.65 | +1.6 / +0.1 | 533 / 545 -> 533 / 545 | 520 / 532 -> 520 / 532 | replace |
+| 13 | 82 / 565 | 27 / 24 | 0.28 | +1.5 / +1.4 | 568 / 574 -> 570 / 576 | 555 / 562 -> 557 / 563 | replace |
+| 14 | 21 / 144 | 40 / 42 | 0.43 | +2.0 / +0.8 | 142 / 149 -> 143 / 150 | 126 / 133 -> 127 / 134 | replace |
+| 14 | -18 / 190 | 119 / 63 | 0.20 | +6.0 / -6.1 | 180 / 199 -> 178 / 190 | 166 / 185 -> 164 / 175 | replace |
+| 15 | -47 / 47 | 118 / 64 | 0.19 | -5.8 / +6.7 | 59 / 78 -> 68 / 81 | 50 / 67 -> 57 / 70 | replace |
+| 15 | 18 / 232 | 99 / 140 | 0.42 | -2.6 / -1.8 | 226 / 240 -> 222 / 240 | 206 / 220 -> 202 / 220 | replace |
+| 15 | 8 / 240 | 60 / 88 | 0.43 | -3.0 / -2.6 | 236 / 243 -> 231 / 242 | 216 / 223 -> 211 / 222 | replace |
+| 15 | -5 / 247 | 79 / 102 | 0.50 | -1.0 / -2.0 | 241 / 252 -> 238 / 251 | 221 / 232 -> 218 / 231 | replace |
+| 15 | -9 / 394 | 43 / 43 | 0.42 | -1.6 / -0.9 | 389 / 399 -> 388 / 398 | 369 / 379 -> 368 / 378 | replace |
+| 15 | -7 / 413 | 108 / 96 | 0.64 | -1.7 / -0.2 | 406 / 421 -> 406 / 420 | 386 / 401 -> 386 / 400 | replace |
+| 15 | -94 / 441 | 49 / 28 | 0.54 | +0.8 / +2.9 | 444 / 458 -> 448 / 458 | 425 / 439 -> 429 / 439 | replace |
+| 16 | -28 / 208 | 48 / 78 | 0.42 | +2.4 / -0.7 | 207 / 214 -> 204 / 213 | 179 / 185 -> 176 / 185 | replace |
+| 16 | 39 / 229 | 19 / 44 | 0.41 | +0.4 / -1.3 | 228 / 235 -> 226 / 235 | 199 / 206 -> 197 / 206 | replace |
+| 16 | 34 / 250 | 55 / 102 | 0.54 | +0.1 / +0.3 | 247 / 259 -> 245 / 259 | 218 / 229 -> 216 / 230 | replace |
+| 16 | 26 / 333 | 15 / 40 | 0.23 | +2.0 / -1.3 | 331 / 337 -> 328 / 337 | 302 / 307 -> 299 / 308 | replace |
+| 17 | -52 / 68 | 15 / 40 | 0.24 | +1.9 / -1.5 | 83 / 88 -> 80 / 87 | 68 / 72 -> 64 / 71 | replace |
+| 17 | 6 / 161 | 47 / 53 | 0.42 | +1.7 / -0.1 | 156 / 167 -> 155 / 167 | 134 / 145 -> 133 / 145 | replace |
+| 17 | 15 / 170 | 47 / 43 | 0.49 | +1.1 / -0.4 | 166 / 176 -> 166 / 176 | 144 / 154 -> 144 / 153 | replace |
+| 17 | -24 / 179 | 70 / 76 | 0.49 | +0.9 / -0.1 | 173 / 188 -> 173 / 187 | 152 / 166 -> 151 / 165 | replace |
+| 17 | 18 / 185 | 63 / 20 | 0.33 | -0.2 / -0.1 | 180 / 191 -> 181 / 190 | 158 / 169 -> 159 / 168 | replace |
+| 18 | -44 / 87 | 59 / 66 | 0.48 | -0.6 / +3.2 | 93 / 103 -> 95 / 106 | 63 / 71 -> 64 / 74 | replace |
+| 18 | -56 / 96 | 44 / 52 | 0.43 | -0.3 / +2.1 | 106 / 116 -> 108 / 118 | 77 / 87 -> 78 / 88 | replace |
+| 18 | -5 / 264 | 93 / 119 | 0.63 | -1.2 / +1.4 | 256 / 270 -> 257 / 271 | 214 / 228 -> 215 / 229 | ok |
+| 18 | -19 / 298 | 181 / 229 | 0.65 | -1.0 / +2.6 | 288 / 308 -> 289 / 310 | 246 / 267 -> 248 / 268 | replace |
+| 18 | 29 / 388 | 40 / 50 | 0.55 | -0.7 / +2.7 | 383 / 394 -> 385 / 397 | 340 / 352 -> 342 / 355 | replace |
+| 18 | 36 / 394 | 29 / 51 | 0.56 | -0.3 / +0.4 | 392 / 399 -> 390 / 400 | 349 / 356 -> 347 / 358 | replace |
+| 18 | -13 / 415 | 58 / 86 | 0.50 | -0.3 / +1.5 | 407 / 422 -> 409 / 424 | 365 / 380 -> 367 / 382 | replace |
+| 18 | 25 / 493 | 91 / 132 | 0.55 | -2.3 / +2.1 | 486 / 500 -> 488 / 502 | 444 / 457 -> 445 / 459 | replace |
+| 18 | -25 / 528 | 93 / 83 | 0.69 | +0.2 / +1.6 | 522 / 535 -> 523 / 536 | 480 / 493 -> 481 / 494 | replace |
+
+## Water edges (NIR 2023 + 2022 vs truth, x of the first water going outward from the fairway centre)
+
+Open-water edge is 1-4 yds beyond the OSM line everywhere (OSM follows the top of the bank; exposed bank in August):
+no edit. 13 at 290-300: the mapped ditch running in toward the fairway is a real narrow ditch that NIR cannot see.
+
+| hole | along | water L truth / NIR / off | water R truth / NIR / off |
+|---|---|---|---|
+| 10 | 140 | -30 / . / . | . / . / . |
+| 10 | 150 | -32 / . / . | . / . / . |
+| 10 | 160 | -33 / -36 / -3 | . / . / . |
+| 10 | 170 | -31 / -34 / -3 | . / . / . |
+| 10 | 180 | -30 / . / . | . / . / . |
+| 10 | 190 | -28 / . / . | . / . / . |
+| 10 | 200 | -24 / -26 / -1 | . / . / . |
+| 10 | 210 | -20 / -22 / -2 | . / . / . |
+| 10 | 220 | -16 / -19 / -2 | . / . / . |
+| 13 | 220 | -49 / -50 / -1 | . / . / . |
+| 13 | 230 | -48 / -47 / +1 | . / . / . |
+| 13 | 240 | -46 / -45 / +1 | . / . / . |
+| 13 | 250 | -45 / -45 / -0 | . / . / . |
+| 13 | 260 | -43 / -43 / +0 | . / . / . |
+| 13 | 270 | -46 / -45 / +1 | . / . / . |
+| 13 | 280 | -46 / -46 / +0 | . / . / . |
+| 13 | 290 | -34 / -46 / -12 | . / . / . |
+| 13 | 300 | -25 / -66 / -41 | . / . / . |
+| 16 | 315 | 4 / 2 / -2 | . / . / . |
+| 16 | 325 | 6 / 3 / -3 | . / . / . |
+| 16 | 335 | 1 / -1 / -2 | . / . / . |
+| 16 | 345 | -3 / -4 / -1 | . / . / . |
+| 18 | 400 | -106 / . / . | . / . / . |
+| 18 | 410 | -69 / . / . | . / . / . |
+| 18 | 420 | -68 / . / . | . / . / . |
+| 18 | 430 | -70 / -70 / -1 | . / . / . |
+| 18 | 440 | -70 / -72 / -1 | . / . / . |
+| 18 | 450 | -69 / -71 / -2 | . / . / . |
+| 18 | 460 | -64 / -66 / -2 | . / . / . |
+| 18 | 470 | -61 / -63 / -2 | . / . / . |
+| 18 | 480 | -56 / -60 / -4 | . / . / . |
+| 18 | 490 | -49 / -53 / -4 | . / . / . |
+| 18 | 500 | -40 / -44 / -4 | . / . / . |
+| 11 | 60 | -6 / -6 / +0 | -6 / -6 / +0 |
+| 11 | 70 | -6 / -6 / +0 | -6 / -6 / +0 |
+| 11 | 80 | . / -7 / . | -7 / -7 / +0 |
+| 11 | 90 | . / . / . | 5 / 2 / -3 |
+| 11 | 100 | . / . / . | 38 / 35 / -3 |
+| 11 | 110 | . / . / . | 50 / 46 / -4 |
+| 11 | 120 | . / . / . | 74 / . / . |
+| 11 | 130 | . / . / . | 81 / . / . |
+| 11 | 140 | . / . / . | 88 / . / . |
 
 ## Tees (all sets) and tee chutes
 
