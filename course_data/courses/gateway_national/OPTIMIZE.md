@@ -94,6 +94,25 @@ Middle: 1 Driver 6.5 L (0.027 over 4-wood), 2 Driver 11 R (0.029), 3 Driver 4.5 
 * Par-3 headline: "5-iron (198 carry)" when the club is within 3.5 yds of the number; otherwise "SW (113) is the
   better miss than GW (126)"; "close" when the ladder margin is under 0.03 (17).
 
+### Second checkpoint (after v7 was published from 5ed8b2279)
+
+* **Adversarial pass on the close calls** (central world, 16,000 swings; pattern x1.15 / x0.85, roll x1.5 frozen, x0.6
+  soft): Back 1, 8, 13, 16 hold in every case (16 4-wood 0.039-0.095). **Back 9**: Driver 0.031, 0.017 with the wider
+  pattern, 0.004 on frozen ground, 2-wood by 0.001 with both: pill on Back 9 ("Frozen or very firm ground: the
+  2-wood is just as good, aimed 3 yds further left"). **Back 11**: Driver 0.026, 4-wood by 0.002 with the wider
+  pattern, Driver 0.017 frozen. **Middle 11**: Driver 0.005 = a tie; 4-wood on frozen ground, with the wider
+  pattern and with the long-grass edges 3 yds closer: `prefer_on_tie` 11 = 4-wood within 0.015 (fires from Middle
+  and from The Tips / Champions, where the +20 grid has the Driver by 0.011-0.013 on Sat and Sun; it does NOT fire
+  from Back on Sat or Sun: Driver by 0.026 / 0.027; over the whole Back grid it fires in 9-15 of 61 wind cells per
+  temperature). Middle 1 Driver 0.023 (4-wood by 0.008 with the wider pattern), Middle 2 0.031, 8 4-wood 0.036,
+  9 4-wood 0.041, 15 Driver 0.046: unchanged, badged as close calls where under 0.045.
+* **Reviewer D's ground near the greens mapped** (trace.py, end): 6-A pond behind / back-left of 6 green (water),
+  6-B the unmown field right of 6 from 350 (native), 15-C behind 15 green, 3-D right of / behind 3 green, 1-E right
+  of / behind 1 green (lidar 0.08-0.10 m, 45-52 % over 0.10 m; NDVI 0.48-0.71). Holes 1, 3, 6, 15 re-solved for
+  every offset, Back and Middle: every pick and aim identical, margins within 0.001.
+* Page: a tee below the picture is labelled "below the picture" (the yards shown were to the picture's edge, not
+  the tee's distance back).
+
 ### Open
 
 * 8's green sits at the left edge of the picture and the par 5s' greens are past the top of the frame: the frame is

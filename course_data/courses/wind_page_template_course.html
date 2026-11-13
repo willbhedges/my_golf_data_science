@@ -402,7 +402,7 @@ function render(){
       ${Math.abs(best.drift + best.kick) > 2 ? `<line x1="${star[0]}" y1="${star[1]}" x2="${land[0]}" y2="${land[1]}" stroke="#fff" stroke-width="${1.6*U}" stroke-dasharray="${2.5*U} ${3*U}"/>` : ""}
       ${aimMark(star[0], star[1])}
       ${h.tee_offimage && !below ? `<text x="${h.w/2}" y="${(2000 - h.y0) * h.s + 22}" fill="#d9e3dc" font-family="Source Sans 3,Arial,sans-serif" font-size="14" text-anchor="middle">Below here: past the bottom of your app screenshot</text>` : ""}
-      ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? ` ↓ ${below} yds` : ""))}
+      ${teeMark(tp[0], tp[1], r.T.name + " tee" + (below ? (D.simple ? " ↓ below the picture" : ` ↓ ${below} yds`) : ""))}
       ${windArrow(h, r.rel, vb)}`;
     const own = pickC !== r.pick;
     document.getElementById("playLbl").textContent = own ? "Your club" : "Play";

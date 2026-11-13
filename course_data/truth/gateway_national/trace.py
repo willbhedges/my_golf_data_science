@@ -221,3 +221,20 @@ LATE["3"].append(Z("recovery", poly((38.3, 345.4), (39.6, 363.4), (41.9, 383.4),
 LATE["13"] = [Z("water", poly((-37, 297.6), (-28.1, 307), (-14.4, 327.2), (-8, 337.5), (-2, 349), (10.6, 369.1), (17.4, 364.9), (5, 345),
                               (-1, 333.5), (-14.7, 312.2), (-21.9, 302), (-31, 292.4), (-37.8, 283.5), (-44.2, 288.5)),
                 "ditch across the hole, bank to bank 284-369 (DTM + NAIP 2023)")]
+
+# 2026-11-13 strategy pass, reviewer D (second_pass/REVIEW_D.md, second shots): ground near the greens. None is inside a
+# tee-shot oval (the tee solve is unchanged); mapped so the lie under a ball there is right. Lidar Dec 2020 grass
+# height / Sentinel-2 NDVI Nov 2026 inside each: 6-B 0.10 m, 52 % over 0.10 m, NDVI 0.71; 15-C 0.09 m, 48 %, 0.67;
+# 3-D 0.08 m, 45 %, 0.70; 1-E 0.09 m, 48 %, 0.48 (mown rough reads 0.01 m, 0 %; standing native 0.55-0.60 NDVI).
+LATE.setdefault("6", []).append(Z("water", poly((-45.8, 573), (-28, 575), (-20, 569), (-5, 567.5), (2, 575), (10, 582), (13, 578), (12, 567), (3, 561), (-3, 564),
+                                                (-20, 564), (-27.5, 561), (-37, 550), (-45, 539), (-47.5, 550), (-48, 567)),
+                                   "pond behind and back-left of the green (NAIP 2023 RGB + CIR), 6-A"))
+EXTRA.setdefault("6", []).append(Z("native", poly((50, 350), (52, 380), (50, 400), (44, 420), (38, 440), (36, 460), (24, 480), (21, 500), (23, 520), (20, 540),
+                                                  (12, 556), (14, 566), (90, 566), (90, 350)),
+                                    "unmown field right of the hole from 350 to the green, 6-B"))
+EXTRA.setdefault("15", []).append(Z("native", poly((-44, 452), (-30, 450), (-20, 449), (-12, 447), (-4, 446), (7, 448), (11, 456), (9, 466), (0, 473), (-25, 473), (-44, 465)),
+                                     "tall vegetation 5-8 yds behind the green, 15-C"))
+EXTRA.setdefault("3", []).append(Z("native", poly((72, 560), (73, 600), (74, 630), (70, 645), (55, 653), (35, 652), (35, 658), (60, 660), (78, 650), (84, 630), (84, 560)),
+                                    "tall-grass strip before the right tree line by the green, wrapping behind, 3-D"))
+EXTRA.setdefault("1", []).append(Z("native", poly((30, 345), (31, 370), (33, 390), (28, 400), (15, 404), (-5, 402), (-5, 412), (30, 412), (52, 400), (52, 345)),
+                                    "tall grass right of and behind the green, 1-E"))
