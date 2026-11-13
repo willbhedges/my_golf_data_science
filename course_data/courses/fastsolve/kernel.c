@@ -18,6 +18,22 @@ enum { ROUGH = 0, FAIRWAY = 1, FIRST_CUT = 2, SAND = 3, RECOVERY = 4, NATIVE = 5
 static const int HAZ[9] = {0, 0, 0, 1, 1, 1, 1, 1, 1};     /* model.HAZ: the ball stops where it lands */
 static const int OPEN_[9] = {1, 1, 1, 1, 0, 0, 0, 0, 0};   /* model.OPEN */
 
+/* The lost-ball rule set (v2_course.install_tall_grass_lost): a value-raster cell < 0 marks a lost ball. Such a ball
+ * costs one penalty stroke and the same shot again, so per aim, with n swings of which n_lost are lost,
+ *     E = (n + sum of found S + n_lost) / (n - n_lost)        (v2_course.lost_ball_ev)
+ * and every sum this file returns is over the "effective" strokes: S for a found ball, 1 + E for a lost one, so the
+ * callers' means are E without further change. A raster without a marked cell takes the code path it always did. */
+static int has_lost(const double *S, size_t n)
+{
+    for (size_t i = 0; i < n; i++) if (S[i] < 0.0) return 1;
+    return 0;
+}
+static inline double lost_ev(double n, double sum1, double n_lost)
+{
+    double den = n - n_lost;
+    return (n + sum1) / (den > 1e-9 ? den : 1e-9);
+}
+
 static inline int cell(double v, double v0, double inv, int n)
 {
     /* np.clip(np.rint((v - v0) / res).astype(np.int32), 0, n - 1); inv = 1 / res with res a power of two */
@@ -374,9 +390,10 @@ static inline __attribute__((always_inline)) void group_f(const int8_t *lie_pad,
 static void ev_simd(const int8_t *lie_pad, const double *S, int na, int nl, double a0, double l0, double inv,
                     const double *car, const double *dev, const double *roll, int n,
                     const double *aims, int m, double rough_roll, int v1_roll, int ksplit, const lidar_t *L,
-                    double *sum_all, double *vA, double *vB, double *v_all, int nthreads, int bs, double *blk)
+                    double *sum_all, double *vA, double *vB, double *v_all, int nthreads, int bs, double *blk, int lost)
 {
     int nblk = (bs > 0 && blk) ? (n + bs - 1) / bs : 0;
+    double *lblk = (lost && nblk) ? (double *)calloc((size_t)m * nblk, sizeof(double)) : NULL;
     grid_v g;
     g.a0 = _mm512_set1_pd(a0); g.l0 = _mm512_set1_pd(l0); g.inv = _mm512_set1_pd(inv);
     g.amax = _mm512_set1_pd((double)(na - 1)); g.lmax = _mm512_set1_pd((double)(nl - 1)); g.nl = _mm512_set1_pd((double)nl);
@@ -392,17 +409,31 @@ static void ev_simd(const int8_t *lie_pad, const double *S, int na, int nl, doub
             aimv[b] = _mm512_loadu_pd(ab + 8 * b);
             sS[b] = sV[b] = sA[b] = sB[b] = _mm512_setzero_pd();
         }
-        __m512d sK[NB];
-        for (int b = 0; b < NB; b++) sK[b] = _mm512_setzero_pd();
+        __m512d sK[NB], nL[NB], nLA[NB], nLK[NB];
+        for (int b = 0; b < NB; b++) sK[b] = nL[b] = nLA[b] = nLK[b] = _mm512_setzero_pd();
         group_out o;
         for (int i = 0; i < n; i++) {
             group(lie_pad, S, &g, L, car[i], dev[i], roll[i], L ? L->need[i] : 0.0f, aimv, rough_roll, v1_roll, &o, NB);
+            if (lost) {                           /* lost balls: counted, and one penalty stroke in the sums */
+                for (int b = 0; b < NB; b++) {
+                    __mmask8 lm = _mm512_cmp_pd_mask(o.s[b], _mm512_setzero_pd(), _CMP_LT_OQ);
+                    if (!lm) continue;
+                    o.s[b] = _mm512_mask_mov_pd(o.s[b], lm, one);
+                    nL[b] = _mm512_mask_add_pd(nL[b], lm, nL[b], one);
+                    if (i < ksplit) nLA[b] = _mm512_mask_add_pd(nLA[b], lm, nLA[b], one);
+                    nLK[b] = _mm512_mask_add_pd(nLK[b], lm, nLK[b], one);
+                }
+            }
             if (nblk) {                           /* per-block sums (blocks of bs swings) for the adaptive solver */
                 for (int b = 0; b < NB; b++) sK[b] = _mm512_add_pd(sK[b], o.s[b]);
                 if ((i + 1) % bs == 0 || i == n - 1) {
                     double kb[8 * NB];
                     for (int b = 0; b < NB; b++) { _mm512_storeu_pd(kb + 8 * b, sK[b]); sK[b] = _mm512_setzero_pd(); }
                     for (int k = 0; k < W && ch * W + k < m; k++) blk[(size_t)(ch * W + k) * nblk + i / bs] = kb[k];
+                    if (lblk) {
+                        for (int b = 0; b < NB; b++) { _mm512_storeu_pd(kb + 8 * b, nLK[b]); nLK[b] = _mm512_setzero_pd(); }
+                        for (int k = 0; k < W && ch * W + k < m; k++) lblk[(size_t)(ch * W + k) * nblk + i / bs] = kb[k];
+                    }
                 }
             }
             for (int b = 0; b < NB; b++) {
@@ -421,7 +452,19 @@ static void ev_simd(const int8_t *lie_pad, const double *S, int na, int nl, doub
             sum_all[ch * W + k] = buf[0][k]; vA[ch * W + k] = buf[1][k];
             vB[ch * W + k] = buf[2][k]; v_all[ch * W + k] = buf[3][k];
         }
+        if (lost) {
+            double ln[8 * NB], la[8 * NB];
+            for (int b = 0; b < NB; b++) { _mm512_storeu_pd(ln + 8 * b, nL[b]); _mm512_storeu_pd(la + 8 * b, nLA[b]); }
+            for (int k = 0; k < W && ch * W + k < m; k++) {
+                int j = ch * W + k;
+                double E = lost_ev((double)n, sum_all[j], ln[k]);
+                sum_all[j] += ln[k] * E; v_all[j] += ln[k] * E;
+                vA[j] += la[k] * E; vB[j] += (ln[k] - la[k]) * E;
+                if (lblk) for (int q = 0; q < nblk; q++) blk[(size_t)j * nblk + q] += lblk[(size_t)j * nblk + q] * E;
+            }
+        }
     }
+    free(lblk);
 }
 
 /* 1 when the written-out hypot equals libm's on a sample of the engine's range (then it is used) */
@@ -464,10 +507,11 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
 {
     if (nthreads < 1) nthreads = 1;
     int nblk = (bs > 0 && blk) ? (n + bs - 1) / bs : 0;
+    const int lost = has_lost(S, (size_t)na * nl);
 #ifdef FS_SIMD
     if (lie_pad != NULL && !oa && m >= 8) {
         ev_simd(lie_pad, S, na, nl, a0, l0, inv, car, dev, roll, n, aims, m, rough_roll, v1_roll, ksplit, L,
-                sum_all, vA, vB, v_all, nthreads, bs, blk);
+                sum_all, vA, vB, v_all, nthreads, bs, blk, lost);
         return;
     }
 #else
@@ -477,6 +521,8 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
     for (int j = 0; j < m; j++) {
         double aim = aims[j];
         double sa = 0.0, sb = 0.0, st_all = 0.0, v_tot = 0.0, sk = 0.0;
+        double ln = 0.0, la = 0.0, lk = 0.0;
+        double *lb = (lost && nblk) ? (double *)calloc(nblk, sizeof(double)) : NULL;
         int i = 0;
         for (; i < n; i++) {
             double c = car[i];
@@ -491,18 +537,30 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
                 roll_out(lie_g, na, nl, a0, l0, inv, c, lat0, roll[i], rough_roll, v1_roll, &a, &l, &lie);
             }
             s = S[(size_t)cell(a, a0, inv, na) * nl + cell(l, l0, inv, nl)];
+            int is_lost = lost && s < 0.0;
+            if (is_lost) { s = 1.0; ln += 1.0; lk += 1.0; if (i < ksplit) la += 1.0; }
             st_all += s;
             double v = 1.0 + s;
             v_tot += v;
             if (i < ksplit) sa += v; else sb += v;
             if (nblk) {
                 sk += s;
-                if ((i + 1) % bs == 0 || i == n - 1) { blk[(size_t)j * nblk + i / bs] = sk; sk = 0.0; }
+                if ((i + 1) % bs == 0 || i == n - 1) {
+                    blk[(size_t)j * nblk + i / bs] = sk; sk = 0.0;
+                    if (lb) { lb[i / bs] = lk; lk = 0.0; }
+                }
             }
             if (oa) {
                 size_t o = (size_t)i * m + j;
-                oa[o] = a; ol[o] = l; olie[o] = (int8_t)lie; os[o] = s;
+                oa[o] = a; ol[o] = l; olie[o] = (int8_t)lie; os[o] = is_lost ? -1.0 : s;
             }
+        }
+        if (lost) {
+            double E = lost_ev((double)n, st_all, ln);
+            st_all += ln * E; v_tot += ln * E; sa += la * E; sb += (ln - la) * E;
+            if (lb) for (int q = 0; q < nblk; q++) blk[(size_t)j * nblk + q] += lb[q] * E;
+            if (oa) for (int q = 0; q < n; q++) { size_t o = (size_t)q * m + j; if (os[o] < 0.0) os[o] = 1.0 + E; }
+            free(lb);
         }
         sum_all[j] = st_all; vA[j] = sa; vB[j] = sb; v_all[j] = v_tot;
     }
@@ -996,6 +1054,7 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
     x.Sf = Sf;
 #endif
     const int bs = op->bs, cap = op->cap < zcap ? op->cap : zcap, nbmax = cap / bs;
+    const int lost = has_lost(S, (size_t)na * nl);      /* the lost-ball rule set: see has_lost() */
     double gw[17], gs = 0.0, sd = 1.0 / step;
     for (int j = -8; j <= 8; j++) { gw[j + 8] = exp(-0.5 * (j / sd) * (j / sd)); gs += gw[j + 8]; }
     for (int j = 0; j < 17; j++) gw[j] /= gs;
@@ -1007,6 +1066,8 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
     {
         double *car = (double *)malloc(sizeof(double) * 3 * (size_t)cap * nclub);
         double *bsum = (double *)malloc(sizeof(double) * (size_t)nclub * nbmax * naims);
+        double *blost = lost ? (double *)malloc(sizeof(double) * (size_t)nclub * nbmax * naims) : NULL;  /* lost balls per block */
+        double *lcur = lost ? (double *)malloc(sizeof(double) * naims) : NULL;
         double *aims = (double *)malloc(sizeof(double) * naims);
         double *cur = (double *)malloc(sizeof(double) * 4 * naims);
         int *w0 = (int *)malloc(sizeof(int) * 6 * nclub);
@@ -1056,13 +1117,16 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
                 const lidar_t *L_ = LB ? &Lc[c_] : NULL;                                                     \
                 for (int q_ = (i0_); q_ <= (i1_); q_ += 32) {                                                \
                     int cnt_ = (i1_) - q_ + 1 < 32 ? (i1_) - q_ + 1 : 32;                                    \
-                    double acc_[32], v_[32];                                                                 \
-                    for (int k_ = 0; k_ < cnt_; k_++) acc_[k_] = 0.0;                                        \
+                    double acc_[32], v_[32], lac_[32];                                                       \
+                    for (int k_ = 0; k_ < cnt_; k_++) acc_[k_] = lac_[k_] = 0.0;                             \
                     for (int i_ = (n0_); i_ < (n1_); i_++) {                                                 \
                         vals(&x, L_, L_ ? L_->need[i_] : 0.0f, cc_[i_], dd_[i_], rr_[i_], aims + q_, cnt_, v_); \
+                        if (lost) for (int k_ = 0; k_ < cnt_; k_++) if (v_[k_] < 0.0) { v_[k_] = 1.0; lac_[k_] += 1.0; } \
                         for (int k_ = 0; k_ < cnt_; k_++) acc_[k_] += v_[k_];                                \
                         if ((i_ + 1) % bs == 0) {                                                            \
                             for (int k_ = 0; k_ < cnt_; k_++) { bb_[(size_t)(i_ / bs) * naims + q_ + k_] = acc_[k_]; acc_[k_] = 0.0; } \
+                            if (lost) for (int k_ = 0; k_ < cnt_; k_++) {                                    \
+                                blost[(size_t)(c_) * nbmax * naims + (size_t)(i_ / bs) * naims + q_ + k_] = lac_[k_]; lac_[k_] = 0.0; } \
                         }                                                                                    \
                     }                                                                                        \
                     balls += (long long)cnt_ * ((n1_) - (n0_));                                              \
@@ -1073,11 +1137,16 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
                 const double *bb_ = bsum + (size_t)(c_) * nbmax * naims;                                     \
                 int w_ = w1[c_] - w0[c_] + 1, used_ = 0;                                                     \
                 for (int k_ = 0; k_ < w_; k_++) (dst_)[k_] = 0.0;                                            \
+                if (lost) for (int k_ = 0; k_ < w_; k_++) lcur[k_] = 0.0;                                    \
                 for (int b_ = 0; b_ < (nb_); b_++) {                                                         \
                     if (b_ == (skip_)) continue;                                                             \
                     used_++;                                                                                 \
                     for (int k_ = 0; k_ < w_; k_++) (dst_)[k_] += bb_[(size_t)b_ * naims + w0[c_] + k_];     \
+                    if (lost) for (int k_ = 0; k_ < w_; k_++)                                                \
+                        lcur[k_] += blost[(size_t)(c_) * nbmax * naims + (size_t)b_ * naims + w0[c_] + k_];  \
                 }                                                                                            \
+                if (lost) for (int k_ = 0; k_ < w_; k_++) (dst_)[k_] = lost_ev((double)used_ * bs, (dst_)[k_], lcur[k_]); \
+                else                                                                                         \
                 for (int k_ = 0; k_ < w_; k_++) (dst_)[k_] = 1.0 + (dst_)[k_] / ((double)used_ * bs);        \
             } while (0)
             int n_now = op->n0;
@@ -1095,16 +1164,20 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
                 for (int k = kl; k <= kh; k += op->cstep) { ci[nc] = k; ca[nc] = aims[k]; nc++; }
                 if (ci[nc - 1] != kh) { ci[nc] = kh; ca[nc] = aims[kh]; nc++; }
                 double *cs = cur;
-                for (int k = 0; k < nc; k++) cs[k] = 0.0;
+                double cl[512];
+                for (int k = 0; k < nc; k++) cs[k] = cl[k] = 0.0;
                 for (int q = 0; q < nc; q += 32) {
                     int cnt = nc - q < 32 ? nc - q : 32;
                     double v[32];
                     for (int i = 0; i < op->n_coarse; i++) {
                         vals(&x, LB ? &Lc[c] : NULL, LB ? LB->need[i] : 0.0f, cc[i], dd[i], rr[i], ca + q, cnt, v);
+                        if (lost) for (int k = 0; k < cnt; k++) if (v[k] < 0.0) { v[k] = 1.0; cl[q + k] += 1.0; }
                         for (int k = 0; k < cnt; k++) cs[q + k] += v[k];
                     }
                     balls += (long long)cnt * op->n_coarse;
                 }
+                if (lost)                           /* the same scale as without: n_coarse x (E - 1) */
+                    for (int k = 0; k < nc; k++) cs[k] = op->n_coarse * (lost_ev((double)op->n_coarse, cs[k], cl[k]) - 1.0);
                 int bi = 0;
                 for (int k = 1; k < nc; k++) if (cs[k] < cs[bi]) bi = k;
                 int lo_i = ci[bi], hi_i = ci[bi];
@@ -1163,6 +1236,23 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
                     int nb_ = nsw[c] / bs < nbL ? nsw[c] / bs : nbL;       /* blocks both clubs have */
                     const double *bC = bsum + (size_t)c * nbmax * naims;
                     double m1 = 0.0, m2 = 0.0;
+                    if (lost) {
+                        /* each block's effective mean (a lost ball = 1 + the club's own E), spread by the replay
+                         * factor 1 / (1 - p_lost): the paired differences then average to the gap of the two E's */
+                        const double *lC = blost + (size_t)c * nbmax * naims, *lL = blost + (size_t)leader * nbmax * naims;
+                        double tc = 0.0, tl = 0.0;
+                        for (int b = 0; b < nsw[c] / bs; b++) tc += lC[(size_t)b * naims + kaim[c]];
+                        for (int b = 0; b < nbL; b++) tl += lL[(size_t)b * naims + kaim[leader]];
+                        double fc_ = 1.0 - tc / nsw[c], fl_ = 1.0 - tl / nsw[leader];
+                        if (fc_ < 1e-9) fc_ = 1e-9;
+                        if (fl_ < 1e-9) fl_ = 1e-9;
+                        for (int b = 0; b < nb_; b++) {
+                            double xc = 1.0 + (bC[(size_t)b * naims + kaim[c]] + lC[(size_t)b * naims + kaim[c]] * cev[c]) / bs;
+                            double xl = 1.0 + (bL[(size_t)b * naims + kaim[leader]] + lL[(size_t)b * naims + kaim[leader]] * cev[leader]) / bs;
+                            double d = (cev[c] + (xc - cev[c]) / fc_) - (cev[leader] + (xl - cev[leader]) / fl_);
+                            m1 += d; m2 += d * d;
+                        }
+                    } else
                     for (int b = 0; b < nb_; b++) {
                         double d = (bC[(size_t)b * naims + kaim[c]] - bL[(size_t)b * naims + kaim[leader]]) / bs;
                         m1 += d; m2 += d * d;
@@ -1218,6 +1308,7 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
             oc[0] = leader; oc[1] = runner; oc[2] = mar; oc[3] = se_run; oc[4] = nsw[leader];
             oc[5] = sep; oc[6] = aim_ok; oc[7] = gse[leader];
         }
+        free(blost); free(lcur);
         free(car); free(bsum); free(aims); free(cur); free(w0); free(caim);
     }
     *balls_out = balls;

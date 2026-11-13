@@ -264,7 +264,12 @@
    "source": "2026-11-13 second pass, second_pass/PHYSICS.md (independent trajectory model fitted to the TrackMan tour tables): the engine's 0.00075 / F is the air alone; a ball at air temperature adds ~0.0004 / F (about 1 % of ball speed at 45 F) and the weekend's 1027-1031 hPa high another ~0.0002 / F equivalent between 38 and 52 F -> 0.00135; crosswind drift 1.5 yds per mph for every full shot (was 1.14 for the driver, 0.8 for a mid iron); head / tail multipliers for the shorter clubs (mid iron 1.65: -9 % of carry into 10 mph)"
   },
   "native_penalty_area": "relief",
-  "native_penalty_area_source": "golfer's ground truth 2026-11-13: 'All of the native grass is penalty area generally if it is that height - no finding it, too thick and tall.' Every standing tall-native zone is priced by the engine's water rule (the ball is gone from the first yard in: one stroke + a shot from rough at the point where it crossed the edge) instead of the depth-ramp lost-ball model (25 % lost at the edge rising to 65 %, stroke and distance). 16's short-grass mound stays its penal-lie class; mown areas stay rough. Hole 10: the whole band between the ditch and the right-hand fairway is staked penalty area (his drawing), mapped as water in trace.py LATE['10']."
+  "native_penalty_area_source": "golfer's ground truth 2026-11-13: 'All of the native grass is penalty area generally if it is that height - no finding it, too thick and tall.' Every standing tall-native zone is priced by the engine's water rule (the ball is gone from the first yard in: one stroke + a shot from rough at the point where it crossed the edge) instead of the depth-ramp lost-ball model (25 % lost at the edge rising to 65 %, stroke and distance). 16's short-grass mound stays its penal-lie class; mown areas stay rough. Hole 10: the whole band between the ditch and the right-hand fairway is staked penalty area (his drawing), mapped as water in trace.py LATE['10'].",
+  "tall_grass_alt": {
+   "rule": "lost_ball",
+   "also_ll": {"10": [[-90.14518366, 38.65819363]]},
+   "source": "golfer 2026-11-13: the tall grass may be played as a lost ball (re-tee) instead of a one-stroke drop; he decides on the day. Second rule set, solved separately (truth/v2_lost, truth_middle/v2_lost; fastsolve run.py --tall-grass lost) and switched on the page; never the default. A ball finishing in a tall-grass zone costs one stroke and the same shot again (closed form, v2_course.lost_ball_ev). Mapped water and ditches stay one stroke + drop. also_ll: hole 10's band between the ditch and the right fairway (his first drawing, mapped as a water-typed zone) is tall grass for this switch."
+  }
  },
  "draws": 256,
  "layup_grid": "course_data/courses/gateway_national/layup10.json",

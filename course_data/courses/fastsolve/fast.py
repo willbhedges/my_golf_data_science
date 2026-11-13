@@ -274,7 +274,8 @@ def make_raster(M, slow_cls):
                          float(self.green[1]), _p(blk, c_u8p), nthreads())
             self.blocked = blk.astype(bool)
 
-    sq = slow_cls.strokes.__qualname__
+    lost_wrapped = bool(getattr(slow_cls.strokes, "_tall_grass_lost", False))   # v2_course.install_tall_grass_lost
+    sq = (slow_cls.strokes._base if lost_wrapped else slow_cls.strokes).__qualname__
     green_wrapped = sq == "install_green_putting.<locals>.strokes"
     if (sq == "Raster.strokes" or green_wrapped) and os.environ.get("FASTSOLVE_STROKES", "1") != "0":
         tabs = [_f64(M.DIST)] + [_f64(M.TOUR[k]) for k in ("fairway", "rough", "sand", "recovery")]
@@ -337,6 +338,8 @@ def make_raster(M, slow_cls):
             L.fs_strokes(ctypes.byref(p), _p(lie, c_i8p), _p(_f64(self.dist), c_dp), _p(nd_, c_dp), _p(en, c_dp),
                          _p(blk, c_u8p), _p(green, c_u8p) if green is not None else None, lie.size, _p(S, c_dp),
                          nthreads())
+            if lost_wrapped:
+                S[self.lie == CODE["native"]] = -1.0     # v2_course.LOST
             return S
         FastRaster.strokes = strokes
         FastRaster._fast_strokes = True
@@ -465,6 +468,8 @@ class Fast:
         ok = M.shots.__module__ == "model" and M.finish.__module__ == "model"
         init = self.slow_raster.__init__.__qualname__
         ok_r = init in ("Raster.__init__", "install_checked_extra.<locals>.init")
+        if getattr(ev, "_tall_grass_lost", False):       # v2_course.install_tall_grass_lost: the kernel resolves
+            ev = ev._base                                # the marked cells itself (kernel.c has_lost)
         if ev.__module__ == "model" and ev.__name__ == "ev_curve":
             mode = "plain"
         elif getattr(ev, "_lidar_stop", False):

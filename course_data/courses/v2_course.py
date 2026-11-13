@@ -284,8 +284,9 @@ def dem_elevation(C, pkg_path, meta):
 
 
 # ------------------------------------------------------------------------------------------------ activate
-def activate(slug, which):
-    """Register the course module as `course`, import the v2 engine on it. Returns (course, meta, M, D)."""
+def activate(slug, which, tall_grass=None):
+    """Register the course module as `course`, import the v2 engine on it. Returns (course, meta, M, D).
+    tall_grass="lost": the course's second rule set (config engine.tall_grass_alt; see below)."""
     cfg = config(slug)
     meta = json.load(open(cdir(slug, which, "meta.json")))
     course = _load(cdir(slug, which, "course.py"), "course")
@@ -322,10 +323,25 @@ def activate(slug, which):
     # "native_penalty_area": "relief" | "stroke_and_distance" (per course, default off). Gateway National, the golfer's
     # ground truth 2026-11-13: every standing tall-native zone is penalty area ("no finding it, too thick and tall"):
     # the ball is gone from the first yard in. "relief" = the engine's water rule (one stroke + a shot from rough at
-    # the point the ball crossed the edge); "stroke_and_distance" = the engine's OB rule (unstaked: lost ball).
-    # Env V2_NATIVE_PENALTY overrides for A/B runs ("off" = the default depth-ramp lost-ball model).
-    npa = os.environ.get("V2_NATIVE_PENALTY") or eng.get("native_penalty_area")
-    if npa in ("relief", "stroke_and_distance"):
+    # the point the ball crossed the edge); "stroke_and_distance" = the engine's OB rule (1 + the table's tee value).
+    # No environment override (it was read for every course solved in that shell: AUDIT_R3).
+    #
+    # "tall_grass_alt": {"also_ll": {hole: [[lon, lat], ...]}} (Gateway only) declares a SECOND, separately solved
+    # rule set, asked for by the caller with activate(..., tall_grass="lost") and never the default: a ball finishing
+    # in tall native grass is a lost ball = stroke and distance, replayed from the same spot with the same club and
+    # aim (install_tall_grass_lost). Native zones stay `native` (not relabelled as water); real water / ditch zones
+    # stay red penalty areas (one stroke + drop) in both rule sets. "also_ll": water-typed zones that are tall grass
+    # for this switch (the zone containing the point: hole 10's band between the ditch and the right fairway).
+    npa = eng.get("native_penalty_area")
+    if tall_grass not in (None, "drop", "lost"):
+        raise ValueError(f"tall_grass={tall_grass!r}: 'drop' or 'lost'")
+    if tall_grass == "lost":
+        alt = eng.get("tall_grass_alt")
+        if not alt:
+            raise SystemExit(f"{slug}: config engine.tall_grass_alt is not set; the lost-ball rule set is off here")
+        mark_tall_grass(alt.get("also_ll") or {}, course)
+        eng["_tall_grass_lost"] = True
+    elif npa in ("relief", "stroke_and_distance"):
         to = "water" if npa == "relief" else "ob"
         for hd in course.HOLES.values():
             hd["zones"] = [((to if z[0] == "native" else z[0]),) + tuple(z[1:]) for z in hd["zones"]]
@@ -425,6 +441,10 @@ def install_engine(eng, M, D):
         install_aim_limit(D, float(eng["aim_limit"]))
     if eng.get("checked_extra_ll"):
         install_checked_extra(M)
+    if eng.get("_tall_grass_lost"):
+        if eng.get("flight_trees"):
+            raise SystemExit("tall_grass='lost' is not built for flight-tree courses")
+        install_tall_grass_lost(M)
     ft = eng.get("flight_trees")
     if ft and ft.get("mode") == "lidar" and lidar_opts(ft) is not None:
         o = lidar_opts(ft)
@@ -615,6 +635,70 @@ def attach_greens(cfg, which, course, M):
         d = (px - tee) / ppy
         hd["green_poly"] = np.column_stack([d @ fwd, d @ right])
         hd["green_poly_px"] = np.asarray(px, float)      # the Raster re-projects it from the tee in use (moved tees)
+
+
+# ------------------------------------------------------------------------------------------------ tall grass = lost ball
+LOST = -1.0          # value-raster marker of a cell where the ball is lost (never a real value: strokes are > 0)
+
+
+def mark_tall_grass(also_ll, course):
+    """config engine.tall_grass_alt.also_ll {hole: [[lon, lat], ...]}: the water-typed zone(s) containing each point
+    become `native` (zone order kept, so every prior draw's map jitter is the one of the drop rule set)."""
+    from matplotlib.path import Path as _Path
+    if os.path.join(CD, "imagery") not in sys.path:
+        sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as RD
+    for k, pts in also_ll.items():
+        k = int(k) if str(k).isdigit() else k
+        if k not in course.HOLES or k not in course.FRAMES:
+            continue
+        fr = RD.Frame.from_json(course.FRAMES[k])
+        hd = course.HOLES[k]
+        zones = list(hd["zones"])
+        for p in np.asarray(fr.ll_to_px(np.asarray(pts, float)), float):
+            hit = [i for i, z in enumerate(zones) if z[0] == "water" and _Path(np.asarray(z[1], float)).contains_point(p)]
+            if not hit:
+                raise SystemExit(f"tall_grass_alt.also_ll: no water zone at {p} on hole {k}")
+            for i in hit:
+                zones[i] = ("native",) + tuple(zones[i][1:])
+        hd["zones"] = zones
+
+
+def lost_ball_ev(s):
+    """s (swings x aims): strokes after the shot per ball, LOST where the ball is lost. A lost ball costs one penalty
+    stroke and the same shot again, whose expected strokes E are what is being computed:
+        E = 1 + mean(found s) * (1 - p) + p * (1 + E)   =>   E = (n + sum(found s) + n_lost) / (n - n_lost)   per aim.
+    Returns (E per aim, s with every lost ball's entry = 1 + E of its aim), so that 1 + s.mean(0) == E."""
+    lost = s < 0
+    n = s.shape[0]
+    nl = lost.sum(0)
+    s1 = np.where(lost, 1.0, s)
+    ev = (n + s1.sum(0)) / np.maximum(n - nl, 1e-9)
+    return ev, s1 + lost * ev
+
+
+def install_tall_grass_lost(M):
+    """The lost-ball rule set (activate(tall_grass="lost")): Raster.strokes marks every `native` cell LOST, and
+    model.ev_curve resolves the replay in closed form (lost_ball_ev). fastsolve/kernel.c does the same arithmetic
+    (fs_ev, fs_grid) when the value raster carries the marker."""
+    if getattr(M, "_tall_grass_lost", False):
+        return
+    base_s, base_ev = M.Raster.strokes, M.ev_curve
+
+    def strokes(self, P, length):
+        S = base_s(self, P, length)
+        S[self.lie == M.CODE["native"]] = LOST
+        return S
+    strokes._tall_grass_lost, strokes._base = True, base_s
+
+    def ev_curve(R, S, hd, club, P, z, aims, wind=None):
+        _, (a, l, lie, s) = base_ev(R, S, hd, club, P, z, aims, wind)
+        ev, s = lost_ball_ev(np.asarray(s))
+        return ev, (a, l, lie, s)
+    ev_curve._tall_grass_lost, ev_curve._base = True, base_ev
+    M.Raster.strokes = strokes
+    M.ev_curve = ev_curve
+    M._tall_grass_lost = True
 
 
 def attach_checked_extra(spec, course):

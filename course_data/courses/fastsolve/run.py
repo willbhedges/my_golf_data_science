@@ -30,9 +30,9 @@ for p in (COURSES, HERE):
 _STATE = {}
 
 
-def _activate(slug, which, engine, swings=None):
+def _activate(slug, which, engine, swings=None, tall_grass=None):
     import v2_course as vc
-    course, meta, M, D = vc.activate(slug, which)
+    course, meta, M, D = vc.activate(slug, which, tall_grass=tall_grass)
     if engine == "fast":
         import fast
         fast.THREADS = 1                     # one kernel thread per worker process: the workers are the parallelism
@@ -197,7 +197,7 @@ def solve(a):
     a.out = out
     os.makedirs(out, exist_ok=True)
     t0 = time.time()
-    course, M, D = _activate(a.slug, a.which, a.engine, a.swings)
+    course, M, D = _activate(a.slug, a.which, a.engine, a.swings, a.tall_grass)
     tasks, order = plan(a, course, M)
     jobs = a.jobs or os.cpu_count()
     print(f"{len(tasks)} tasks ({sum(t['kind'] == 'decide' for t in tasks)} decide, "
@@ -212,7 +212,7 @@ def solve(a):
             print(f"  [{len(done)}/{len(tasks)}] {what}: {r['secs']:.1f}s  (elapsed {time.time() - t0:.0f}s)", flush=True)
     merge(out, order)
     wall = time.time() - t0
-    json.dump(dict(slug=a.slug, which=a.which, engine=a.engine, swings=a.swings or "mc", jobs=jobs, wall_s=round(wall, 1),
+    json.dump(dict(slug=a.slug, which=a.which, engine=a.engine, tall_grass=a.tall_grass or "drop", swings=a.swings or "mc", jobs=jobs, wall_s=round(wall, 1),
                    task_cpu_s=round(sum(r["secs"] for r in done), 1),
                    tasks=[dict(kind=r["kind"], hole=r["hole"], back=r.get("back"), refine=r.get("refine"), stats=r.get("stats"),
                                secs=round(r["secs"], 2)) for r in done]),
@@ -317,6 +317,9 @@ def main():
                     "16 draws (book.py)")
     ap.add_argument("--f32", type=int, default=None, help="1: float32 lanes (16 aims per register) in the adaptive "
                     "wind grids: ~30 %% less time, picks unchanged, an aim moves 0.5 yd in ~2 cells per 1,000 (README)")
+    ap.add_argument("--tall-grass", choices=["drop", "lost"], default=None,
+                    help="lost: the course's second rule set (config engine.tall_grass_alt, Gateway only): a ball in "
+                         "tall native grass is a lost ball, replayed from the tee (v2_course.install_tall_grass_lost)")
     ap.add_argument("--ref")
     ap.add_argument("--show", type=int, default=8)
     ap.add_argument("--card-only", action="store_true", help="no offset grids: the book and the card-tee grid only")
