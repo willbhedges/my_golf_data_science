@@ -80,24 +80,200 @@ static inline void roll_out(const int8_t *lie_g, int na, int nl, double a0, doub
     *fa = a; *fl = l; *flie = lie;
 }
 
+/* ------------------------------------------------------------------------------------------------ AVX-512 path
+ * The same per-ball arithmetic on 8 balls per register and NB registers per group (so the roll steps of 32 balls
+ * overlap in the pipeline). Every operation is the IEEE operation of the scalar code (add, mul, sub, div, sqrt,
+ * round-half-even, min / max), per lane, so the lanes hold exactly the scalar results. hypot is glibc's
+ * (sysdeps/ieee754/dbl-64/e_hypot.c, the non-FMA kernel) written out; fs_selfcheck() compares it with the libm in
+ * use and the path falls back to calling libm per ball when they ever differ. */
+#if defined(__AVX512F__) && defined(__AVX512VL__) && defined(__AVX512DQ__) && !defined(FS_NO_SIMD)
+#include <immintrin.h>
+#define FS_SIMD 1
+#define NB 4
+static int g_hypot_inline = 0;          /* set by fs_selfcheck() */
+
+static inline double hypot_kernel(double ax, double ay)
+{
+    double t1, t2, h = sqrt(ax * ax + ay * ay);
+    if (h <= 2.0 * ay) {
+        double delta = h - ay;
+        t1 = ax * (2.0 * delta - ax);
+        t2 = (delta - 2.0 * (ax - ay)) * delta;
+    } else {
+        double delta = h - ax;
+        t1 = 2.0 * delta * (ax - 2.0 * ay);
+        t2 = (4.0 * delta - ay) * ay + delta * delta;
+    }
+    h -= (t1 + t2) / (2.0 * h);
+    return h;
+}
+
+static inline __m512d hypot_v(__m512d x, __m512d y)
+{
+    const __m512d two = _mm512_set1_pd(2.0), four = _mm512_set1_pd(4.0);
+    __m512d fx = _mm512_abs_pd(x), fy = _mm512_abs_pd(y);
+    __m512d ax = _mm512_max_pd(fx, fy), ay = _mm512_min_pd(fx, fy);
+    __m512d h = _mm512_sqrt_pd(_mm512_add_pd(_mm512_mul_pd(ax, ax), _mm512_mul_pd(ay, ay)));
+    __mmask8 m = _mm512_cmp_pd_mask(h, _mm512_mul_pd(two, ay), _CMP_LE_OQ);
+    __m512d d1 = _mm512_sub_pd(h, ay);
+    __m512d t1a = _mm512_mul_pd(ax, _mm512_sub_pd(_mm512_mul_pd(two, d1), ax));
+    __m512d t2a = _mm512_mul_pd(_mm512_sub_pd(d1, _mm512_mul_pd(two, _mm512_sub_pd(ax, ay))), d1);
+    __m512d d2 = _mm512_sub_pd(h, ax);
+    __m512d t1b = _mm512_mul_pd(_mm512_mul_pd(two, d2), _mm512_sub_pd(ax, _mm512_mul_pd(two, ay)));
+    __m512d t2b = _mm512_add_pd(_mm512_mul_pd(_mm512_sub_pd(_mm512_mul_pd(four, d2), ay), ay), _mm512_mul_pd(d2, d2));
+    __m512d t1 = _mm512_mask_blend_pd(m, t1b, t1a), t2 = _mm512_mask_blend_pd(m, t2b, t2a);
+    __m512d r = _mm512_sub_pd(h, _mm512_div_pd(_mm512_add_pd(t1, t2), _mm512_mul_pd(two, h)));
+    /* lanes glibc does not send through the kernel (ay tiny against ax, zero, huge): libm */
+    __mmask8 odd = _mm512_cmp_pd_mask(ay, _mm512_mul_pd(ax, _mm512_set1_pd(0x1p-40)), _CMP_NGT_UQ)
+                 | _mm512_cmp_pd_mask(ay, _mm512_set1_pd(1e-100), _CMP_NGT_UQ)
+                 | _mm512_cmp_pd_mask(ax, _mm512_set1_pd(1e100), _CMP_NLT_UQ);
+    if (odd || !g_hypot_inline) {
+        double bx[8], by[8], br[8];
+        _mm512_storeu_pd(bx, x); _mm512_storeu_pd(by, y); _mm512_storeu_pd(br, r);
+        for (int k = 0; k < 8; k++)
+            if (!g_hypot_inline || ((odd >> k) & 1)) br[k] = hypot(bx[k], by[k]);
+        r = _mm512_loadu_pd(br);
+    }
+    return r;
+}
+
+typedef struct { __m512d a0, l0, inv, amax, lmax, nl; } grid_v;
+
+static inline __m256i cell_v(const grid_v *g, __m512d a, __m512d l)
+{
+    const __m512d zero = _mm512_setzero_pd();
+    __m512d ra = _mm512_roundscale_pd(_mm512_mul_pd(_mm512_sub_pd(a, g->a0), g->inv), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+    __m512d rl = _mm512_roundscale_pd(_mm512_mul_pd(_mm512_sub_pd(l, g->l0), g->inv), _MM_FROUND_TO_NEAREST_INT | _MM_FROUND_NO_EXC);
+    ra = _mm512_min_pd(_mm512_max_pd(ra, zero), g->amax);       /* max(NaN, 0) = 0, as cell() */
+    rl = _mm512_min_pd(_mm512_max_pd(rl, zero), g->lmax);
+    return _mm512_cvttpd_epi32(_mm512_add_pd(_mm512_mul_pd(ra, g->nl), rl));    /* exact integers */
+}
+
+static inline __m256i lie_v(const int8_t *lie_pad, __m256i idx)
+{
+    return _mm256_and_si256(_mm256_i32gather_epi32((const int *)lie_pad, idx, 1), _mm256_set1_epi32(0xFF));
+}
+
+/* swings [i0, i0 + 8 * NB) of one aim: strokes after the tee shot into sbuf (swing order) */
+static inline void group_plain(const int8_t *lie_pad, const double *S, const grid_v *g,
+                               const double *car, const double *dev, const double *roll, double aim,
+                               double rough_roll, int v1_roll, double *sbuf)
+{
+    const __m512d zero = _mm512_setzero_pd(), two = _mm512_set1_pd(2.0), eps = _mm512_set1_pd(1e-9);
+    const __m512d rr = _mm512_set1_pd(rough_roll), aimv = _mm512_set1_pd(aim);
+    const __m256i c_rough = _mm256_set1_epi32(ROUGH), c_fw = _mm256_set1_epi32(FAIRWAY);
+    const __m256i c_fc = _mm256_set1_epi32(FIRST_CUT), c_sand = _mm256_set1_epi32(SAND);
+    __m512d a[NB], l[NB], left[NB], ua[NB], ul[NB];
+    __m256i lie[NB];
+    __mmask8 any = 0;
+    for (int b = 0; b < NB; b++) {
+        a[b] = _mm512_loadu_pd(car + 8 * b);
+        l[b] = _mm512_add_pd(_mm512_loadu_pd(dev + 8 * b), aimv);
+        lie[b] = lie_v(lie_pad, cell_v(g, a[b], l[b]));
+        left[b] = _mm512_loadu_pd(roll + 8 * b);
+        left[b] = _mm512_mask_mul_pd(left[b], _mm256_cmpeq_epi32_mask(lie[b], c_rough), left[b], rr);
+        left[b] = _mm512_mask_mov_pd(left[b], _mm256_cmpge_epi32_mask(lie[b], c_sand), zero);     /* HAZ: codes >= 3 */
+        any |= _mm512_cmp_pd_mask(left[b], eps, _CMP_GT_OQ);
+    }
+    if (any) {
+        for (int b = 0; b < NB; b++) {
+            __m512d den = _mm512_max_pd(hypot_v(a[b], l[b]), eps);
+            ua[b] = _mm512_div_pd(a[b], den);
+            ul[b] = _mm512_div_pd(l[b], den);
+        }
+        for (;;) {
+            __mmask8 mv[NB];
+            any = 0;
+            for (int b = 0; b < NB; b++) { mv[b] = _mm512_cmp_pd_mask(left[b], eps, _CMP_GT_OQ); any |= mv[b]; }
+            if (!any) break;
+            for (int b = 0; b < NB; b++) {
+                if (!mv[b]) continue;
+                __m512d st = _mm512_min_pd(left[b], two);
+                a[b] = _mm512_mask_add_pd(a[b], mv[b], a[b], _mm512_mul_pd(ua[b], st));
+                l[b] = _mm512_mask_add_pd(l[b], mv[b], l[b], _mm512_mul_pd(ul[b], st));
+                left[b] = _mm512_mask_sub_pd(left[b], mv[b], left[b], st);
+                __m256i nw = lie_v(lie_pad, cell_v(g, a[b], l[b]));
+                __mmask8 was_fw = _mm256_cmpeq_epi32_mask(lie[b], c_fw);
+                if (!v1_roll) was_fw |= _mm256_cmpeq_epi32_mask(lie[b], c_fc);
+                __mmask8 into = mv[b] & was_fw & _mm256_cmpeq_epi32_mask(nw, c_rough);
+                left[b] = _mm512_mask_mul_pd(left[b], into, left[b], rr);
+                left[b] = _mm512_mask_mov_pd(left[b], mv[b] & _mm256_cmpge_epi32_mask(nw, c_sand), zero);
+                lie[b] = _mm256_mask_mov_epi32(lie[b], mv[b], nw);
+            }
+        }
+    }
+    for (int b = 0; b < NB; b++)
+        _mm512_storeu_pd(sbuf + 8 * b, _mm512_i32gather_pd(cell_v(g, a[b], l[b]), S, 8));
+}
+
+/* 1 when the written-out hypot equals libm's on a sample of the engine's range (then it is used) */
+int fs_selfcheck(void)
+{
+    uint64_t s = 88172645463325252ULL;
+    int ok = 1;
+    for (long i = 0; i < 400000 && ok; i++) {
+        s ^= s << 13; s ^= s >> 7; s ^= s << 17;
+        double x = (double)(s >> 11) / 9007199254740992.0 * 520.0 - 20.0;
+        s ^= s << 13; s ^= s >> 7; s ^= s << 17;
+        double y = ((double)(s >> 11) / 9007199254740992.0 - 0.5) * 500.0;
+        double ax = fabs(x), ay = fabs(y);
+        if (ax < ay) { double t = ax; ax = ay; ay = t; }
+        if (ay <= ax * 0x1p-40 || ay <= 1e-100) continue;
+        if (hypot(x, y) != hypot_kernel(ax, ay)) ok = 0;
+    }
+    g_hypot_inline = ok;
+    return ok;
+}
+int fs_simd(void) { return 1; }
+#else
+int fs_selfcheck(void) { return 0; }
+int fs_simd(void) { return 0; }
+#endif
+
 /* EV curve of one club: n swings x m aims. Per aim j, in swing order (numpy's mean(axis=0) order):
  *   sum_all[j] = sum of S over the swings                     (model.ev_curve: 1 + mean)
  *   v_all[j]   = sum of (1.0 + S); vA[j] over swings [0, ksplit), vB[j] over [ksplit, n)
  *                (decide.bayes: v = 1.0 + sv; v.mean(0), v[:k].mean(0), v[k:].mean(0))
- * oa/ol/olie/os (n x m, C order) are filled when not NULL. */
+ * oa/ol/olie/os (n x m, C order) are filled when not NULL. lie_pad: the lie raster again with 3 readable bytes
+ * after it (32-bit gathers), or NULL (scalar path). */
 void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, double l0, double inv,
            const double *car, const double *dev, const double *roll, int n,
            const double *aims, int m, double rough_roll, int v1_roll, int ksplit,
            const lidar_t *L,
            double *sum_all, double *vA, double *vB, double *v_all,
-           double *oa, double *ol, int8_t *olie, double *os, int nthreads)
+           double *oa, double *ol, int8_t *olie, double *os, int nthreads, const int8_t *lie_pad)
 {
     if (nthreads < 1) nthreads = 1;
+#ifdef FS_SIMD
+    int simd = (lie_pad != NULL) && !L && !oa;
+    grid_v g;
+    g.a0 = _mm512_set1_pd(a0); g.l0 = _mm512_set1_pd(l0); g.inv = _mm512_set1_pd(inv);
+    g.amax = _mm512_set1_pd((double)(na - 1)); g.lmax = _mm512_set1_pd((double)(nl - 1)); g.nl = _mm512_set1_pd((double)nl);
+#else
+    int simd = 0;
+    (void)lie_pad;
+#endif
     #pragma omp parallel for schedule(dynamic, 2) num_threads(nthreads) if (nthreads > 1 && m > 1)
     for (int j = 0; j < m; j++) {
         double aim = aims[j];
         double sa = 0.0, sb = 0.0, st_all = 0.0, v_tot = 0.0;
-        for (int i = 0; i < n; i++) {
+        int i = 0;
+#ifdef FS_SIMD
+        if (simd) {
+            double sbuf[8 * NB];
+            for (; i + 8 * NB <= n; i += 8 * NB) {
+                group_plain(lie_pad, S, &g, car + i, dev + i, roll + i, aim, rough_roll, v1_roll, sbuf);
+                for (int k = 0; k < 8 * NB; k++) {
+                    double s = sbuf[k];
+                    st_all += s;
+                    double v = 1.0 + s;
+                    v_tot += v;
+                    if (i + k < ksplit) sa += v; else sb += v;
+                }
+            }
+        }
+#endif
+        for (; i < n; i++) {
             double c = car[i];
             double lat0 = dev[i] + aim;
             double a, l, s;

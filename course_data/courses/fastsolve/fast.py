@@ -69,7 +69,7 @@ def lib():
     L = ctypes.CDLL(so)
     d, i = ctypes.c_double, ctypes.c_int
     L.fs_ev.argtypes = [c_i8p, c_dp, i, i, d, d, d, c_dp, c_dp, c_dp, i, c_dp, i, d, i, i, ctypes.POINTER(Lidar),
-                        c_dp, c_dp, c_dp, c_dp, c_dp, c_dp, c_i8p, c_dp, i]
+                        c_dp, c_dp, c_dp, c_dp, c_dp, c_dp, c_i8p, c_dp, i, c_i8p]
     L.fs_ev.restype = None
     L.fs_fill.argtypes = [c_dp, ctypes.c_long, c_dp, i, d, d, ctypes.c_int8, c_i8p, i]
     L.fs_fill.restype = None
@@ -78,6 +78,10 @@ def lib():
     L.fs_blocked.argtypes = [c_i8p, c_dp, i, i, d, d, d, d, d, d, d, c_u8p, i]
     L.fs_blocked.restype = None
     L.fs_max_threads.restype = i
+    L.fs_selfcheck.restype = i
+    L.fs_simd.restype = i
+    L.hypot_inline = bool(L.fs_selfcheck())      # the written-out hypot is used only when it equals this libm's
+    L.simd = bool(L.fs_simd()) and os.environ.get("FASTSOLVE_SIMD", "1") != "0"
     _LIB = L
     return L
 
@@ -334,6 +338,18 @@ class Fast:
         if lie.dtype != np.int8 or not lie.flags.c_contiguous:
             lie = np.ascontiguousarray(lie, np.int8)
         S = _f64(S)
+        pad = None
+        if L.simd and lid is None and not full:
+            pad = getattr(R, "_lie_pad", None)        # the lie raster + 3 readable bytes (32-bit gathers)
+            if pad is None or pad[1] is not R.lie or not np.array_equal(pad[0][:lie.size], lie.ravel()):
+                buf = np.zeros(lie.size + 8, np.int8)
+                buf[:lie.size] = lie.ravel()
+                pad = (buf, R.lie)
+                try:
+                    R._lie_pad = pad
+                except Exception:                    # noqa: BLE001
+                    pass
+            pad = pad[0]
         st, sa, sb, vt = np.empty(m), np.empty(m), np.empty(m), np.empty(m)
         if full:
             oa, ol, os_ = np.empty((n, m)), np.empty((n, m)), np.empty((n, m))
@@ -345,7 +361,8 @@ class Fast:
                 _p(car, c_dp), _p(dev, c_dp), _p(roll, c_dp), n, _p(aims, c_dp), m, float(P["rough_roll"]),
                 int(bool(P.get("v1_roll", False))), n if ksplit is None else int(ksplit),
                 ctypes.byref(lid) if lid is not None else None,
-                _p(st, c_dp), _p(sa, c_dp), _p(sb, c_dp), _p(vt, c_dp), *po, threads or nthreads())
+                _p(st, c_dp), _p(sa, c_dp), _p(sb, c_dp), _p(vt, c_dp), *po, threads or nthreads(),
+                _p(pad, c_i8p) if pad is not None else None)
         self.calls += 1
         if full:
             return st, sa, sb, vt, (oa, ol, olie, os_)

@@ -70,6 +70,8 @@ def _task(t):
         WG2.N = t["swings"]
         if t.get("speeds"):                  # test / benchmark slices only
             WG2.SPEEDS = [int(s) for s in t["speeds"]]
+        if t.get("dirs"):
+            WG2.DIRS = [int(s) for s in t["dirs"]]
         if t["refine"]:
             WG2.solve = vc.refined_solver(M, D, WG2, t["refine"])
         WG2.main()
@@ -103,7 +105,7 @@ def plan(a, course, M):
         for b in offsets:
             for h in w_holes:
                 tasks.append(dict(kind="wind", hole=h, back=b, temps=temps, swings=a.swings_wind,
-                                  refine=refine if b in r_off else 0, speeds=a.speeds,
+                                  refine=refine if b in r_off else 0, speeds=a.speeds, dirs=a.dirs,
                                   out=os.path.join(parts, f"v2wind_{b:g}_{h}.json"),
                                   log=os.path.join(parts, f"log_wind_{b:g}_{h}.txt")))
     return tasks, order
@@ -249,6 +251,7 @@ def main():
     ap.add_argument("--only", choices=["decide", "wind"])
     ap.add_argument("--decide-parts", default="", help="V2_PARTS, e.g. bayes (default: bayes,ladder,sens,sweep)")
     ap.add_argument("--speeds", default="", help="wind speeds (test slices; default the engine's 0..25)")
+    ap.add_argument("--dirs", default="", help="wind directions (test slices; default every 30 deg)")
     ap.add_argument("--swings-decide", type=int, default=3000)
     ap.add_argument("--central", type=int, default=12000)
     ap.add_argument("--swings-wind", type=int, default=2500)
@@ -258,6 +261,7 @@ def main():
     ap.add_argument("--show", type=int, default=8)
     a = ap.parse_args()
     a.speeds = [s for s in a.speeds.split(",") if s]
+    a.dirs = [s for s in a.dirs.split(",") if s]
     if a.cmd == "solve":
         solve(a)
     else:
