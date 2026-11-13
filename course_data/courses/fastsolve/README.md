@@ -87,6 +87,52 @@ Against `solved_default/` (hole 10's map changed between the two runs: ab3797b50
 - Wind grids, 24,156 cells outside hole 10: identical, every number. Hole 10 (2,013 cells, new map): club differs
   in 43, of which 39 in ties and 4 outside (2 Back card tee, 2 Middle); not attributable to these steps.
 
+## Flight-tree courses (lidar crowns: Eagle Knoll)
+
+A course whose config has `engine.flight_trees.mode = "lidar"` traces every ball's descent through the measured
+crowns (`v2_course.lidar_flight_ev_curve`): steps of 3 yds from 30 % of the carry, clearance against each 1-yd cell's
+crown top and base (with the ground's drop below the tee), path length inside crowns summed in float32, and the ball
+drops where that length passes its swing's exponential draw (`default_rng(n * 7919 + 17).random(n)`, one uniform per
+swing shared by every aim and club, n = the swings of the call). It finishes at that spot on whatever lie is there.
+
+What ran where before, and now:
+
+| path | before | now |
+|---|---|---|
+| `--exact` (book and wind grids) | C (`fs_ev` has had the crown trace since the first version) | unchanged |
+| default book (Sobol, `book.py`) | C | unchanged (outputs byte-identical) |
+| default wind grids (`--adaptive 1`) | NOT adaptive: `adaptive.install` saw mode `lidar` and returned the exact kernel's plain solve on 2,500 Sobol swings (no refine, no stopping rule, no tie flags) | adaptive: `fs_grid` has the crown trace |
+| legacy constant-height check (`V2_FLIGHT_MODE=legacy`; no course's config uses it) | the engine's Python | still the engine's Python (not ported) |
+
+So no Eagle Knoll path ran on the Python engine; the gap was the adaptive grid. `fs_grid` now gets the hole's crown
+and ground-drop grids and each swing's exponential draw (the engine's generator and seed for the swing count of the
+Sobol set), and per (cell, club) the flight steps from that club's median carry over the set's swings in that wind,
+all built by the code the exact path uses (`fast.Fast._lidar_base` / `_lidar_flight`). The per-ball code is the same
+`group()` / `crown_stop()` as `fs_ev`. `--f32 1` is ignored on these courses (the float32 lanes have no crown trace).
+
+Verified (Nov 13, this box, 4 CPUs; holes chosen by the share of 4,000 calm drives stopped in crowns at aim 0:
+hole 1 30 %, 14 29 %, 15 22 %, 10 12 %):
+
+| compared | result |
+|---|---|
+| engine (`--engine slow --exact`) vs exact kernel (`--exact`), holes 1, 10, 14, 15: book `bayes` on 3 prior draws x 3,000 swings (1,032 numbers a hole, curves included) and 5 refined wind cells (50 F; calm, 10 mph x 4 directions; 2,500 + 16,000 swings; 355 numbers a hole) | files byte-identical, max difference 0 on every hole |
+| `fs_grid` vs the engine's Python `ev_curve` on the same Sobol swings (n0 = cap = 512, every club's EV at its reported aim, 4 cells x 7 clubs, holes 1, 14, 15; 8 % of those balls stopped in crowns) | max difference 1.8e-15 (summation order); this is `test_eagle_knoll_flight_trees_adaptive_grid_equals_engine_on_its_swings` |
+| the same with the scalar branch (`FASTSOLVE_SIMD=0`), holes 9, 14 against the exact kernel | max 1e-14 |
+| default solve (adaptive, cap 8,192, 64 draws) vs exact kernel (64 draws; 2,500 + 16,000 swings), holes 1, 10, 14, 15, 3 temperatures, 732 cells | book: same club on 4 of 4, aims equal on 3 and 0.5 yd apart on 14, margins within 0.005. Wind: club differs in 12 cells (0 / 2 / 8 / 2), every one flagged tie or with an exact gap <= 0.02; 88 cells flagged tie; aim of the pick within 1 yd in all same-pick cells of 10, 14, 15 and in 96 % of hole 1 (max 3 yds); EV of the pick: median difference 0.001-0.002, max 0.033 (hole 1, a cell stopped at 512 swings) |
+| Gateway `--holes 10 / 11 / 16 --card-only` with the request file, before vs after | `v2_decisions.json` and `wind_grid.json` byte-identical |
+
+Timings (Eagle Knoll, per hole unless said; task seconds on one core):
+
+| | engine (Python) | exact kernel | default before | default now |
+|---|---|---|---|---|
+| 5 refined wind cells | 118-127 s | 3.5-3.8 s | | |
+| book `bayes`, 3 draws | 42-47 s | 1.7-1.8 s | | |
+| card-tee grid, 3 temperatures, 183 cells | ~75 min (24 s a cell, not run) | 127-129 s | 37.7 s (hole 14, 2,500 swings, no refine) | 8-12 s (10.6 s hole 14) |
+| book, 64 draws, all parts | not run | 62-65 s | 10-12 s | 10-12 s |
+| whole course `--card-only` (14 tee shots), wall on 4 CPUs | | not run | 188 s (682 task-s: grids 537) | **96 s** (349 task-s: books 149, grids 201) |
+
+A crown-traced ball costs about 75 ns (41 M balls in 3.1 s for one temperature of hole 14) against 5-20 ns without.
+
 ## 1. Profile of the existing engine (one process, this box)
 
 Engine = `spirit_hollow/v2/model.py` + `decide.py` + `wind_grid_v2.py` through `v2_course.py`. Gateway Back hole 8.
@@ -254,7 +300,7 @@ python3 course_data/courses/fastsolve/run.py solve --slug gateway_national --whi
     --swings-decide 512 --central 2048 --adaptive 1 --adaptive-cap 4096 --adaptive-cap-other 1024
 python3 course_data/courses/fastsolve/run.py compare --slug gateway_national --out DIR [--ref OTHER_DIR]
 python3 course_data/courses/fastsolve/ondemand.py --temp 41 --wind 12 --from 200
-python3 -m pytest -q course_data/courses/fastsolve/test_fastsolve.py        # 85 s, exact kernel vs engine
+python3 -m pytest -q course_data/courses/fastsolve/test_fastsolve.py        # 105 s: kernels vs engine
 ```
 
 Iteration (seconds instead of minutes): `--holes 8,10` solves only those holes and merges them into whatever is
@@ -275,16 +321,17 @@ Other scripts: `bench.py`, `equiv.py seeds`, `noise.py`, `converge.py`, `experim
   to the evaluated window. Clubs dropped early are reported from 512 swings.
 - With Sobol swings `decide.bayes`'s `swing_noise_share` compares two halves of one Sobol set, not two independent
   halves.
-- The adaptive grid has no lidar crown trace: on Eagle Knoll `--adaptive` falls back to the exact kernel.
-- Times assume AVX-512. The scalar path is what the first measurements used (about 3x slower per ball); the scalar
-  branch of `fs_grid` has not been run.
+- Lidar flight trees are covered by both paths (section "Flight-tree courses"); with them `--f32` is ignored.
+- Times assume AVX-512. The scalar path is what the first measurements used (about 3x slower per ball; `fs_grid`'s
+  scalar branch about 2x on Eagle Knoll).
 - The legacy constant-height flight-tree check is not ported (falls back to the engine's function).
-- Tests cover the exact kernel only; the adaptive solver has no test yet.
+- Tests: the exact kernel against the engine, and the adaptive grid's per-ball code against the engine on the grid's
+  own swings (Gateway 10 / 16, Eagle Knoll 1 / 14 / 15). The adaptive stopping rule itself has no test.
 
 ## 8. Before it replaces the Actions solve
 
-- A test for the adaptive path, and one run of its scalar branch (GitHub runners are mostly AVX2).
-- Crown trace in `fs_grid` for Eagle Knoll-type courses.
+- A test of the adaptive stopping rule (the per-ball code is tested; its scalar branch was run once by hand on
+  Eagle Knoll 9 / 14 and Gateway 10 with `FASTSOLVE_SIMD=0`: same numbers as the AVX-512 branch).
 - A draw-local repaint and value-raster update (not built) if the whole solve is to go under a minute at the
   183 s run's precision.
 - A decision on the stopping rule: most cells hit the cap on the +/-1 yd aim rule.
