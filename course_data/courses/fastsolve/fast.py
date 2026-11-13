@@ -69,7 +69,7 @@ def lib():
     L = ctypes.CDLL(so)
     d, i = ctypes.c_double, ctypes.c_int
     L.fs_ev.argtypes = [c_i8p, c_dp, i, i, d, d, d, c_dp, c_dp, c_dp, i, c_dp, i, d, i, i, ctypes.POINTER(Lidar),
-                        c_dp, c_dp, c_dp, c_dp, c_dp, c_i8p, c_dp, i]
+                        c_dp, c_dp, c_dp, c_dp, c_dp, c_dp, c_i8p, c_dp, i]
     L.fs_ev.restype = None
     L.fs_fill.argtypes = [c_dp, ctypes.c_long, c_dp, i, d, d, ctypes.c_int8, c_i8p, i]
     L.fs_fill.restype = None
@@ -192,25 +192,104 @@ def make_raster(M, slow_cls):
 
 
 # ------------------------------------------------------------------------------------------------ EV kernel
-class _Shots:
-    """The (a, l, lie, s) tuple of model.ev_curve, computed only when somebody unpacks it."""
+class _LazyArr:
+    """One of model.ev_curve's (a, l, lie, s) arrays (swings x aims), filled by a second kernel pass only if it is
+    used. decide.bayes only ever takes three means of `1.0 + s` (all swings, first half, second half): those come
+    from the sums the first pass already made, in the engine's summation order, so no matrix is built."""
 
-    def __init__(self, fn):
-        self._fn, self._v = fn, None
+    def __init__(self, owner, i):
+        self._o, self._i = owner, i
 
-    def _get(self):
-        if self._v is None:
-            self._v = self._fn()
-        return self._v
+    def _arr(self):
+        return self._o.full()[self._i]
 
-    def __iter__(self):
-        return iter(self._get())
+    def __array__(self, dtype=None, copy=None):
+        a = self._arr()
+        return a if dtype is None else a.astype(dtype)
 
-    def __getitem__(self, i):
-        return self._get()[i]
+    def __getitem__(self, k):
+        return self._arr()[k]
 
-    def __len__(self):
-        return 4
+    def __getattr__(self, name):
+        if name.startswith("_"):
+            raise AttributeError(name)
+        return getattr(self._arr(), name)
+
+    def __add__(self, other):
+        if self._i == 3 and isinstance(other, float) and other == 1.0:
+            return _LazyV(self._o)
+        return self._arr() + other
+
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        return self._arr() - other
+
+    def __mul__(self, other):
+        return self._arr() * other
+
+    __rmul__ = __mul__
+
+    def __eq__(self, other):
+        return self._arr() == other
+
+    __hash__ = None
+
+
+class _LazyV:
+    """`1.0 + sv` of decide.bayes."""
+
+    def __init__(self, owner):
+        self._o = owner
+
+    def _arr(self):
+        return 1.0 + self._o.full()[3]
+
+    def mean(self, axis=None, *a, **kw):
+        if axis == 0 and not a and not kw:
+            return self._o.v_all / self._o.n
+        return self._arr().mean(axis, *a, **kw)
+
+    def __getitem__(self, k):
+        o = self._o
+        if isinstance(k, slice) and k.step is None and 0 < o.ksplit < o.n:
+            if k.start is None and k.stop == o.ksplit:
+                return _Half(o.vA, o.ksplit)
+            if k.start == o.ksplit and k.stop is None:
+                return _Half(o.vB, o.n - o.ksplit)
+        return self._arr()[k]
+
+    def __array__(self, dtype=None, copy=None):
+        return self._arr()
+
+    def __getattr__(self, name):
+        if name.startswith("_"):
+            raise AttributeError(name)
+        return getattr(self._arr(), name)
+
+
+class _Half:
+    def __init__(self, s, n):
+        self._s, self._n = s, n
+
+    def mean(self, axis=None):
+        if axis != 0:
+            raise NotImplementedError("fastsolve: only mean(0) of a half of the swings is kept")
+        return self._s / self._n
+
+
+class _Call:
+    """One ev_curve call: the sums, and the full arrays on demand."""
+
+    def __init__(self, F, args, n, ksplit, sums):
+        self.F, self.args, self.n, self.ksplit = F, args, n, ksplit
+        self.sum_all, self.vA, self.vB, self.v_all = sums
+        self._full = None
+
+    def full(self):
+        if self._full is None:
+            self._full = self.F.sums(*self.args, ksplit=self.ksplit, full=True)[4]
+        return self._full
 
 
 class Fast:
@@ -239,7 +318,8 @@ class Fast:
         return (mode if ok else None), ok_r
 
     def sums(self, R, S, hd, club, P, z, aims, wind=None, ksplit=None, full=False, threads=None):
-        """-> (sumA, sumB, sum_all[, (a, l, lie, s)]) of the strokes-after-the-tee-shot over the swings, per aim."""
+        """-> (sum_all, vA, vB, v_all[, (a, l, lie, s)]) per aim: sums over the swings of S (strokes after the tee
+        shot) and of 1.0 + S (all swings, swings [0, ksplit), swings [ksplit, n)); see kernel.c fs_ev."""
         M = self.M
         L = lib()
         car, dev, roll = M.shots(hd, club, P, z, wind)
@@ -254,7 +334,7 @@ class Fast:
         if lie.dtype != np.int8 or not lie.flags.c_contiguous:
             lie = np.ascontiguousarray(lie, np.int8)
         S = _f64(S)
-        sa, sb, st = np.empty(m), np.empty(m), np.empty(m)
+        st, sa, sb, vt = np.empty(m), np.empty(m), np.empty(m), np.empty(m)
         if full:
             oa, ol, os_ = np.empty((n, m)), np.empty((n, m)), np.empty((n, m))
             olie = np.empty((n, m), np.int8)
@@ -265,11 +345,11 @@ class Fast:
                 _p(car, c_dp), _p(dev, c_dp), _p(roll, c_dp), n, _p(aims, c_dp), m, float(P["rough_roll"]),
                 int(bool(P.get("v1_roll", False))), n if ksplit is None else int(ksplit),
                 ctypes.byref(lid) if lid is not None else None,
-                _p(sa, c_dp), _p(sb, c_dp), _p(st, c_dp), *po, threads or nthreads())
+                _p(st, c_dp), _p(sa, c_dp), _p(sb, c_dp), _p(vt, c_dp), *po, threads or nthreads())
         self.calls += 1
         if full:
-            return sa, sb, st, (oa, ol, olie, os_)
-        return sa, sb, st
+            return st, sa, sb, vt, (oa, ol, olie, os_)
+        return st, sa, sb, vt
 
     def _lidar(self, hd, club, car, n, keep):
         """The per-call constants of v2_course.lidar_flight_ev_curve, computed exactly as it does."""
@@ -325,9 +405,11 @@ class Fast:
         if self.mode is None:
             return self.slow_ev_curve(R, S, hd, club, P, z, aims, wind)
         n = z.shape[1]
-        _, _, st = self.sums(R, S, hd, club, P, z, aims, wind)
-        ev = 1.0 + st / n
-        return ev, _Shots(lambda: self.sums(R, S, hd, club, P, z, aims, wind, full=True)[3])
+        k = n // 2
+        sums = self.sums(R, S, hd, club, P, z, aims, wind, ksplit=k)
+        ev = 1.0 + sums[0] / n
+        call = _Call(self, (R, S, hd, club, P, z, aims, wind), n, k, sums)
+        return ev, tuple(_LazyArr(call, i) for i in range(4))
 
 
 def install(M, D=None, raster=True):

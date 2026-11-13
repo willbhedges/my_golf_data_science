@@ -80,22 +80,23 @@ static inline void roll_out(const int8_t *lie_g, int na, int nl, double a0, doub
     *fa = a; *fl = l; *flie = lie;
 }
 
-/* EV curve of one club: n swings x m aims.
- * sumA[j] = sum of S over swings [0, ksplit), sumB[j] over [ksplit, n) (decide.bayes's two halves; the engine's
- * mean over all swings is the running sum A then B, which is what sum_all holds).
+/* EV curve of one club: n swings x m aims. Per aim j, in swing order (numpy's mean(axis=0) order):
+ *   sum_all[j] = sum of S over the swings                     (model.ev_curve: 1 + mean)
+ *   v_all[j]   = sum of (1.0 + S); vA[j] over swings [0, ksplit), vB[j] over [ksplit, n)
+ *                (decide.bayes: v = 1.0 + sv; v.mean(0), v[:k].mean(0), v[k:].mean(0))
  * oa/ol/olie/os (n x m, C order) are filled when not NULL. */
 void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, double l0, double inv,
            const double *car, const double *dev, const double *roll, int n,
            const double *aims, int m, double rough_roll, int v1_roll, int ksplit,
            const lidar_t *L,
-           double *sumA, double *sumB, double *sum_all,
+           double *sum_all, double *vA, double *vB, double *v_all,
            double *oa, double *ol, int8_t *olie, double *os, int nthreads)
 {
     if (nthreads < 1) nthreads = 1;
     #pragma omp parallel for schedule(dynamic, 2) num_threads(nthreads) if (nthreads > 1 && m > 1)
     for (int j = 0; j < m; j++) {
         double aim = aims[j];
-        double sa = 0.0, sb = 0.0, st_all = 0.0;
+        double sa = 0.0, sb = 0.0, st_all = 0.0, v_tot = 0.0;
         for (int i = 0; i < n; i++) {
             double c = car[i];
             double lat0 = dev[i] + aim;
@@ -125,13 +126,15 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
             }
             s = S[(size_t)cell(a, a0, inv, na) * nl + cell(l, l0, inv, nl)];
             st_all += s;
-            if (i < ksplit) sa += s; else sb += s;
+            double v = 1.0 + s;
+            v_tot += v;
+            if (i < ksplit) sa += v; else sb += v;
             if (oa) {
                 size_t o = (size_t)i * m + j;
                 oa[o] = a; ol[o] = l; olie[o] = (int8_t)lie; os[o] = s;
             }
         }
-        sumA[j] = sa; sumB[j] = sb; sum_all[j] = st_all;
+        sum_all[j] = st_all; vA[j] = sa; vB[j] = sb; v_all[j] = v_tot;
     }
 }
 
