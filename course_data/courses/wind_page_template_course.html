@@ -235,7 +235,11 @@ function solveTee(h){
     out[c] = r;
   }
   const order = Object.keys(out).filter(c => !HYPO(c)).sort((a,b) => out[a].ev - out[b].ev);
-  let pick = order[0], aim = out[pick].aim, tie = (out[order[1]].ev - out[pick].ev) < 0.01, bayes = false;
+  /* config page_text.prefer_on_tie (per hole): show this club when it is within `within` strokes of the best */
+  let pref = false;
+  if(h.prefer && out[h.prefer.club] && order[0] !== h.prefer.club && out[h.prefer.club].ev - out[order[0]].ev < h.prefer.within){
+    order.splice(order.indexOf(h.prefer.club), 1); order.unshift(h.prefer.club); pref = true; }
+  let pick = order[0], aim = out[pick].aim, tie = Math.abs(out[order[1]].ev - out[pick].ev) < 0.01, bayes = false;
   /* light wind (< 5 mph) changes nothing that matters: use the book's full calm-day pick and aim */
   /* Keep the book's full calm-day pick unless the wind itself changes the decision: compare the quick
      model's pick now with its own pick in no wind. The book's aim is shifted by the wind's aim change. */
@@ -244,7 +248,7 @@ function solveTee(h){
   const g0 = {}; for(const [g, tw] of tempWeights(GB, h.calm ? h.calm.temp : tF)) for(const [c, v] of Object.entries(g["0_0"].clubs)){
     g0[c] = g0[c] || {ev:0, aim:0}; g0[c].ev += tw*v.ev; g0[c].aim += tw*v.aim; }
   const calmQuick = Object.keys(g0).filter(c => !HYPO(c)).sort((a,b) => g0[a].ev - g0[b].ev)[0];
-  const book = h.calm && T.back === 0 && out[h.calm.pick] ? h.calm.pick : null;
+  const book = !pref && h.calm && T.back === 0 && out[h.calm.pick] ? h.calm.pick : null;
   const quickMargin = out[order[1]].ev - out[order[0]].ev;
   let split = false;
   /* the book's club is shown only when the wind model, here and now, picks the same club; when the two models
@@ -254,7 +258,7 @@ function solveTee(h){
     pick = book; aim = h.calm.aim + (out[book].aim - g0[book].aim); tie = h.calm.tie; bayes = true;
     order.splice(order.indexOf(pick), 1); order.unshift(pick); }
   else if(book && pick === calmQuick) split = true;       /* the models disagree even without the wind */
-  return {rel, out, order, pick, aim, tie, bayes, split, book, calmQuick, quickMargin, T, tF, margin: out[order[1]].ev - out[order[0]].ev};
+  return {rel, out, order, pick, aim, tie, bayes, split, book, calmQuick, quickMargin, T, tF, pref, margin: out[order[1]].ev - out[order[0]].ev};
 }
 /* par-3 club from d.p3club: "Sat: PW; Sun: GW" (per forecast day) or "PW (138); 9-iron ties" -> the club */
 function p3clubFor(h){
@@ -286,7 +290,8 @@ function p3Pick(h, r){
     const lo = cs.filter(c => c[1] <= n).pop(), hi = cs.find(c => c[1] >= n);
     return {gap: true, lo, hi};
   }
-  return {club: best[1], runner: best[2], tie: best[5], carry: D.p3_bag[best[1]]};
+  const cb = D.p3_bag[best[1]], oth = Object.entries(D.p3_bag).filter(c => cb < n ? c[1] > n : c[1] < n).sort((a, b) => Math.abs(a[1] - n) - Math.abs(b[1] - n))[0];
+  return {club: best[1], runner: best[2], tie: best[5], carry: cb, other: oth, close: !best[5] && best[3] < 0.03};
 }
 function windMod(mph){ return mph < 5 ? -1 : mph < 10 ? 0 : mph < 20 ? 1 : mph < 30 ? 2 : 3; }
 function solvePar3(h){
@@ -404,22 +409,23 @@ function render(){
     const pe = document.getElementById("hPlay"); pe.textContent = pickC; pe.className = "play " + cls(pickC);
     const tc = document.getElementById("topClub"); tc.textContent = pickC; tc.className = cls(pickC);
     document.getElementById("topKey").textContent = `${Math.abs(aimC) < 0.5 ? "Aim on the line" : `Aim ${Math.abs(aimC).toFixed(0)} yds ${aimC < 0 ? "left" : "right"}`} · ${Math.round(best.total)} total`;
-    document.getElementById("hAdj").hidden = true;
+    document.getElementById("hAdj").hidden = true; document.getElementById("hAdj").innerHTML = "";
     if(own){ const d = best.ev - r.out[r.pick].ev; badges.push(`<span class="pill chg">Best: ${r.pick} · ${d < 0.01 ? "yours is about as good" : "yours costs +" + d.toFixed(3) + " strokes"}</span>`); }
     const calm = solveTeeCalm(h);
-    if(r.split) badges.push(`<span class="pill tie">Models split · calm-day book: ${r.book}${h.calm ? " by " + h.calm.margin.toFixed(3) : ""}; wind model: ${r.pick} by ${r.margin.toFixed(3)} · a coin flip</span>`);
+    if(r.pref) badges.push(`<span class="pill tie">${h.prefer.text || (r.order[1] + " is level with it")}</span>`);
+    else if(r.split) badges.push(`<span class="pill tie">Models split · calm-day book: ${r.book}${h.calm ? " by " + h.calm.margin.toFixed(3) : ""}; wind model: ${r.pick} by ${r.margin.toFixed(3)} · a coin flip</span>`);
     else if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     else if(r.bayes && h.calm && h.calm.runner && (h.calm.margin < (D.close_margin || 0.03) || (h.calm.p != null && h.calm.p < 0.8)))
       badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? (D.simple ? "" : `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers`) : ""}</span>`);
     else if(!r.bayes && r.margin < (D.close_margin || 0.03))
       badges.push(`<span class="pill tie">Close call · ${r.order[1]} +${r.margin.toFixed(3)} (wind model)</span>`);
-    if(calm !== r.pick && r.T.back === 0 && !r.split) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
+    if(calm !== r.pick && r.T.back === 0 && !r.split && !r.pref) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
     const Lim = D.aim_limit || 40;
     if(Math.abs(aimC + best.drift) >= Lim - 1) badges.push(`<span class="pill chg">Aim at the edge of the solved range (${Lim} yds): the best line may be further out</span>`);
     const mv = best.drift + best.kick + cL;
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
-    document.getElementById("hAim").innerHTML = `Aim at the dot (anywhere on the blue bar is within 0.005 strokes)${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}, ${Math.round(r.tF)}°F.${r.bayes ? " Same club as the book (this wind and temperature don't change it)." : ""}`;
+    document.getElementById("hAim").innerHTML = `Aim at the dot (anywhere on the blue bar is within 0.005 strokes)${Math.abs(mv) > 2 ? (D.simple ? `; the ball finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} of the dot, at the dashed spot${why ? ` (${why})` : ""}` : `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}`) : ""}. ${relWords(r.rel, st.mph)}, ${Math.round(r.tF)}°F.${r.bayes ? " Same club as the book (this wind and temperature don't change it)." : ""}`;
     const allC = Object.keys(r.out).sort((a,b) => (D.simple ? (HYPO(a) - HYPO(b)) : 0) || r.out[a].ev - r.out[b].ev);   /* D.simple: the club not in the bag goes last */
     const rows = allC.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
       const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (d <= -0.01 ? `better by ${(-d).toFixed(3)} here` : Math.abs(d) < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
@@ -429,15 +435,19 @@ function render(){
     const past = best.total - B > (h.foot_a1 || 345);
     if(past) badges.push(`<span class="pill chg">Lands past the hand-checked map</span>`);
     if(Math.abs(B - r.T.want) > 5) badges.push(`<span class="pill">Nearest computed tee: ${Math.abs(B)} yds ${B >= 0 ? "back" : "up"}</span>`);
-    document.getElementById("hElev").innerHTML = be ? (B ? `Elevation measured from the ${h.base_set} tee. ` : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
+    if(be && D.simple && Math.abs(be.dc) < 1.5)
+      document.getElementById("hElev").innerHTML = (B ? `Elevation measured from the ${h.base_set} tee. ` : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee: no change in carry${Math.abs(be.rf - 1) >= 0.05 ? `; it rolls ×${be.rf.toFixed(2)} on the slope where it lands` : ""}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.`;
+    else document.getElementById("hElev").innerHTML = be ? (B ? `Elevation measured from the ${h.base_set} tee. ` : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
     let note = h.note || "";
     if(note && h.calm && r.T.back === 0 && !/^Calm-day/.test(note)) note = `Calm-day book (no wind, ${Math.round(h.calm.temp)}°F): ` + note;
-    if(note && h.calm && r.T.back === 0 && r.pick !== h.calm.pick)
+    if(note && h.calm && r.T.back === 0 && r.pick !== h.calm.pick && !r.pref)
       note = `In this wind and temperature the wind model picks ${r.pick} by ${r.margin.toFixed(3)} over ${r.order[1]}; the calm-day book is below for comparison. ` + note;
     /* D.simple (config page_text.simple): one aim number per hole, the one at the top (it includes the wind); the
        calm-day note keeps the club, the margin and the shares */
-    if(D.simple) note = note.replace(/ Aim .*? is within 0\.005\./, "").replace(/; it beats [^.;]*? in (\d+)% of \d+ what-if worlds/, "").replace(/ Driver-pattern break-even[^.]*?yds\./, "").replace(/ Same club for any driver pattern[^.]*?yds\./, "");
-    if(h.cond_note) badges.push(`<span class="pill chg">${h.cond_note}</span>`);
+    if(D.simple) note = note.replace(/, about \d+ yds in\./, ".").replace(/ Aim .*? is within 0\.005\./, "").replace(/; it beats [^.;]*? in (\d+)% of \d+ what-if worlds/, "").replace(/ Driver-pattern break-even[^.]*?yds\./, "").replace(/ Same club for any driver pattern[^.]*?yds\./, "");
+    if(h.why && r.T.back === 0 && !own) note = (r.pick === (h.calm && h.calm.pick) || r.pref ? h.why + " " : "") + note;
+    if(h.set_note && h.set_note[st.set]) badges.push(`<span class="pill chg">${h.set_note[st.set]}</span>`);
+    if(h.cond_note && (r.T.back === 0 || !D.simple)) badges.push(`<span class="pill chg">${h.cond_note}</span>`);
     if(r.T.back !== 0) note = `The calm-day book (club, aim, fairway / trouble shares, yards in) is for the ${h.base_set} tee, so it is not shown here: from this tee use the play and the club table above (solved ${Math.abs(r.T.back)} yds ${r.T.back > 0 ? "back" : "up"} the line).` +
       (Math.abs(r.T.back) >= 100 ? " This tee is placed by moving the " + h.base_set + " tee along the line, not from its own box: a rough guide." : "") +
       (h.map_note ? ` Map (yds from the ${h.base_set} tee): ${h.map_note}` : "");
@@ -452,7 +462,7 @@ function render(){
     const pe = document.getElementById("hPlay"); pe.textContent = Math.round(r.play) + " yds"; pe.className = "play";
     const tc = document.getElementById("topClub"), pk = p3Pick(h, r), p3c = pk ? (pk.gap ? "" : pk.club) : p3clubFor(h);
     tc.className = ""; tc.textContent = p3c || ("Plays " + Math.round(r.play));
-    document.getElementById("topKey").textContent = p3c ? `Plays ${Math.round(r.play)} yds` + (pk && pk.carry ? ` · ${pk.club} carries ${pk.carry}` : "") + (pk && pk.tie ? ` · ${pk.runner} a tie` : "")
+    document.getElementById("topKey").textContent = p3c ? `Plays ${Math.round(r.play)} yds` + (pk && pk.carry ? (D.simple ? (Math.abs(pk.carry - r.play) <= 3.5 ? ` · ${pk.club} (${pk.carry} carry)` : ` · ${pk.club} (${pk.carry}) is the better miss${pk.other ? ` than ${pk.other[0]} (${pk.other[1]})` : ""}`) : ` · ${pk.club} carries ${pk.carry}`) : "") + (pk && pk.tie ? ` · ${pk.runner} a tie` : (D.simple && pk && pk.close ? ` · ${pk.runner} close` : ""))
       : (pk && pk.gap ? (pk.lo && pk.hi ? `Between clubs: ${pk.lo[0]} ${pk.lo[1]} / ${pk.hi[0]} ${pk.hi[1]}` : pk.hi ? `Shorter than a full ${pk.hi[0]} (${pk.hi[1]})` : `Longer than the ${pk.lo[0]} (${pk.lo[1]})`) : `Box ${Math.round(r.box.lo + r.adj)}–${Math.round(r.box.hi + r.adj)} yds`);
     /* breakdown: box target (calm, flat) + elevation + wind = plays like; rounded parts add up exactly */
     const bpa = r.box.play + r.adj, T = Math.round(bpa), calmP = r.S3.plays["0_0"] / r.S3.center;
@@ -475,7 +485,7 @@ function render(){
       (mc && Math.abs(mc - r.S3.center) >= 2 ? `<div class="sub">The card says ${Math.round(r.S3.center)} to the centre; the map measures ${Math.round(mc)} from this tee. Check the plaque or a laser and use Move this tee to match it.</div>` : "");
     document.getElementById("hNote").textContent = h.note || "";
     const ge = h.elev;
-    document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds; "Play it like" includes this, the wind${D.temp_k ? " and the temperature (your numbers are 70°F numbers)" : ""}.` : "";
+    document.getElementById("hElev").innerHTML = ge && ge.green_drop != null ? `<b>Elevation</b> (USGS lidar ground): the green is ${Math.abs(ge.green_drop).toFixed(0)} ft ${ge.green_drop > 0 ? "below" : "above"} the tee, ${D.simple && Math.abs(ge.dz || 0) < 0.5 ? "no change in the number" : `worth ${ge.dz > 0 ? "+" : ""}${(ge.dz || 0).toFixed(0)} yds`}; "Play it like" includes this, the wind${D.temp_k ? " and the temperature (your numbers are 70°F numbers)" : ""}.` : "";
   }
   document.getElementById("hBadges").innerHTML = badges.join(" ");
   const fw = windFor(h);

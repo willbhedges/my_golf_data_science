@@ -1,5 +1,106 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Night of Nov 12-13: strategy pass (strategy lead; running log, newest state first)
+
+**State.** Map, config and engine option below are committed. Back + Middle re-solved in full with the local fast
+solver (`course_data/courses/fastsolve/run.py solve`, 128 prior draws, 145 s for both), outputs copied into
+`truth/v2/` and `truth_middle/v2/`; par-3 boxes and ladder re-solved for Back and Middle; page built locally
+(`v2_course.py page --slug gateway_national --which truth`, 48 s; photos = package NAIP 2023, sharper than the
+published v6 build, checked side by side). The manager publishes.
+
+### What changed tonight
+
+1. **The golfer's rule: standing tall native is penalty area** ("no finding it, too thick and tall").
+   `config.engine.native_penalty_area: "relief"`; `v2_course.activate` relabels every `native` zone as `water` for
+   the engine (Gateway only: default off): the ball is gone from the first yard in, one stroke + a shot from rough
+   at the point where it crossed the edge. Before: lost with probability 25 % at the edge rising to 65 % (stroke and
+   distance), punch-out otherwise. `V2_NATIVE_PENALTY=off|relief|stroke_and_distance` overrides for A/B runs.
+   Effect on Back (card-only solve, before any map edit): no club change and no aim move over 1.5 yds; the old model
+   was already about as expensive. Stroke-and-distance variant (if a strip is unstaked): 11 Back becomes a
+   Driver / 4-wood tie (0.004), 9 Driver 15 R by 0.018, nothing else moves. Par 3s: native row = 1 + rough at the
+   same distance (`opt/par3_target.py`; `P3_NATIVE=found` restores the old found-ball row).
+2. **Hole 10** (second_pass/HOLE10.md sections 1-7): ditch at its true width (hole-10 agent), the band between the
+   ditch and the right fairway as penalty area (the golfer's first drawing; lidar / NDVI read it as mown: kept as the
+   low-regret map), tall grass closed up behind the left greenside bunkers (lidar agrees). Go at the green still
+   wins by 0.29 calm (0.20 with a 15 % wider pattern on frozen ground); **break-even is about 40 % of tee balls in
+   the penalty area, he is at 16-20 %**. Aim moves to the left half of the green (26 L calm); the two woods are
+   level, the page shows the 4-wood when it is within 0.03 (`page_text.prefer_on_tie`).
+3. **Ditch / creek sweep, all 18 holes** (NAIP 2023 RGB + CIR, Dec 2020 lidar ground, the engine's lie raster):
+   the mapped ditches on 9 (left, 300-395), 13 (crossing 290-410) and 3 (left, 380-540) sit on the lidar trench and
+   are within 0-2 yds of its width; none is overpainted by another zone; no unmapped narrow feature under any tee
+   shot. Only 10's strip was at half width. Every water zone widened by 1 / 2 yds a side: 9 and 3 unchanged, 13
+   Driver 2 R -> 2.5 / 4 R.
+4. **Reviewers' map edits** (second_pass/REVIEW_A-D.md), each looked at on a render (RGB / CIR / lidar relief / lie
+   raster) and re-solved:
+
+| hole | change | evidence | Back before -> after | Middle before -> after |
+|---|---|---|---|---|
+| 1 | right fescue edge at x +28.5..+30.5 from 268 to 345, out to the road (was +32..+35 to +52) | REVIEW_A v2 1a, NAIP 2023 | Driver 8 L 0.051 -> 8.5 L 0.050 | Driver 5 L 0.030 -> 6.5 L 0.027 |
+| 3 | tree row before the yard 345-413 | REVIEW_A 3a | Driver 5.5 L -> 6 L, 0.060 | Driver 4 L -> 4.5 L |
+| 10 | ditch width, band right of it, tall grass behind the left bunkers | HOLE10.md | 2-wood 17.5 L 0.053 -> 2-wood 26 L 0.012 over 4-wood (page: 4-wood) | 4-wood 16 L 0.215 -> 23 L 0.229 |
+| 11 | left long grass 300-385 (6-19 yds closer, was cut off at 345) | REVIEW_B P1 (photo, CIR, F1 lidar) | Driver 17.5 R 0.027 -> 16 R 0.024 over 4-wood | Driver 18 R 0.010 -> 18.5 R 0.004: a tie with the 4-wood |
+| 13 | ditch bank to bank (8 yds; OSM strip 4-5) | REVIEW_C 13-A | Driver 2 R 0.110 -> 3 R 0.102 | Driver 8.5 R 0.107 -> 11 R 0.090 |
+| 18 | left fescue fairway-side edge 260-395 | REVIEW_C 18-A | Driver 14 R -> 14.5 R, 0.128 | Driver 8 R -> 9.5 R |
+
+   Not applied: A 2a (withdrawn by the reviewer), A 1b (OB right of the road on 1: under 0.1 % of drives), B P3
+   (8, optional), B P4 (12 green edge, optional), C 18-B (the "water" way on 18's cart-path crest is an auto-package
+   zone outside the corridor, 70 yds left of every oval, not visible on the page), C 15-A (edge 3 yds closer moves
+   the aim 1 yd), D's second-shot polygons (6-A pond behind 6 green, 6-B right field, 15-C, 3-D, 1-E: none is inside
+   a tee-shot oval, the engine values the second shot from lie and distance only, hazards are not drawn: no effect
+   on any number on the page; they belong in the next map revision). Par-3 items A 4a and B P2 were already in
+   `opt/par3_features.json` (the par-3 solve's surrounds).
+5. **Robustness to the native edges (now that they cost a stroke): every native edge 3 yds closer.** Back: no club
+   change, no aim move of 3 yds or more (largest 1.5); 11 Driver falls to 0.005 over the 4-wood; 10 2-wood 0.007
+   over the 4-wood. Middle: 8 4-wood aim 34.5 L -> 31 L; **11 flips to the 4-wood (10.5 R) by 0.011**; rest hold.
+
+### Back book after the pass (128 draws; calm, forecast temperature per hole; aim + = right)
+
+| hole | club | calm aim | margin over | in penalty | the reason, in one sentence |
+|---|---|---|---|---|---|
+| 1 | Driver | 8.5 L | 0.050, 2-wood | 3.0 % | 75 % fairway and 92 in; the 2-wood finds 3 points more fairway but leaves 20 yds more |
+| 2 | Driver | 9.5 R | 0.062, 2-wood | 4.2 % | same 76 % fairway as the 2-wood, 19 yds closer |
+| 3 | Driver | 6 L | 0.060, 2-wood | 2.6 % | par 5, nothing gained by laying back; left-centre keeps the yard side out of play |
+| 5 | Driver | 4.5 R | 0.091, 2-wood | 2.1 % | 452 yds: 170 in against 189 |
+| 6 | Driver | 5.5 R | 0.114, 2-wood | 3.0 % | 79 % fairway into the widest part |
+| 8 | Driver | 44.5 L | 0.046, 2-wood | 0 % | down the left it leaves 111 with 66 % fairway; 2-wood leaves 130 |
+| 9 | Driver | 12.5 R | 0.024, 2-wood (close) | 2.7 % | 108 in but 51 % fairway; 2-wood / 4-wood trade 17-26 yds for 10-14 points of fairway |
+| 10 | 2-wood (page: 4-wood, level) | 26 L | 0.012, 4-wood | 19 % (4-wood 16 %) | 5 in 6 finish on or around the green; the lay-up costs 0.25 more |
+| 11 | Driver | 16 R | 0.024, 4-wood (close) | 6.0 % | 128 in; the 4-wood is straighter (71 % fairway against 58 %) but leaves 153 |
+| 13 | Driver | 3 R | 0.102, 2-wood | 2.2 % | par 5, 70 % fairway, the ditch needs 310+ down the left |
+| 15 | Driver | 13.5 R | 0.103, 2-wood | 1.2 % | carries the bunkers at 222-250 that take 7 % of the shorter woods |
+| 16 | 4-wood | 5.5 R | 0.086, 2-wood | 2.2 % | stops at the mouth of the 25-yd neck (77 % fairway, 93 in); Driver reaches the mound / pond half the time |
+| 18 | Driver | 14.5 R | 0.128, 2-wood | 0.7 % | par 5, 72 % fairway |
+
+Middle: 1 Driver 6.5 L (0.027 over 4-wood), 2 Driver 11 R (0.029), 3 Driver 4.5 L, 5 Driver 0, 6 Driver 7.5 R,
+8 4-wood 33.5 L (0.055), 9 4-wood 11 R (0.036), 10 4-wood 23 L (0.229 over the long-iron lay-up), 11 Driver 18.5 R
+(0.004 over 4-wood: a tie), 13 Driver 11 R, 15 Driver 7 R (0.047), 16 long iron 7 R, 18 Driver 9.5 R.
+10 from The Tips / Champions (315-317, grid +40): 4-wood to the right fairway, aim 9-11 R, 0.03-0.04 over the 2-wood.
+
+### Page changes (template, Gateway via `page_text.simple` / new config keys)
+
+* `page_text.why`: one sentence per Back tee shot (the table above, without hazard words), first line of the note.
+* `page_text.prefer_on_tie` (10): show the 4-wood when it is within 0.03 of the best club, with a pill.
+* `page_text.set_notes` (10, The Tips / Champions: "Green is out of reach from here: 4-wood at the right fairway,
+  leaves about 65"); `page_text.par3_notes` (4: "pin-high left"); the base-tee condition pills no longer show on
+  moved tees; 10's frozen-ground pill removed (the 4-wood is shown anyway).
+* Hole 10 was also attacked by an independent red team (second_pass/HOLE10_REDTEAM.md: flip table): the go survives
+  at Back and Middle (+0.30 engine, +0.19 at the most hostile mix; the woods' sideways spread must reach x2.3 to
+  flip Back, x1.6-1.9 Middle); from The Tips / Champions the pick is the position 4-wood; Sunday's helping wind
+  makes it the 4-wood by 0.08-0.16 (30-32 L).
+* "the ball finishes about N yds left **of the dot**" (was read as left of the tee line).
+* The note no longer prints "about N yds in" (the average over all swings, 5-9 yds longer than the table's
+  "To green" from the finish spot: flagged by three reviewers). One number: the table's.
+* Elevation line: under 1.5 yds of carry change it says "no change in carry" (was "carries -1 yds" / "-0 yds").
+* Par-3 headline: "5-iron (198 carry)" when the club is within 3.5 yds of the number; otherwise "SW (113) is the
+  better miss than GW (126)"; "close" when the ladder margin is under 0.03 (17).
+
+### Open
+
+* 8's green sits at the left edge of the picture and the par 5s' greens are past the top of the frame: the frame is
+  the fixed 920 x 2000 corridor the zones live in; not changed (needs new frames + a display rebuild).
+* OB replay value on 3 / 10 (MODEL.md item 5), 18 Back tee note, Middle 7 tee: unchanged from the HANDOFF below.
+* Forecast refresh Sat 00:30 UTC: now simply re-run `v2_course.py page` after the weather fetch (REFRESH_LOCAL.md).
+
 ## HANDOFF: state at the stop, Nov 13 ~04:30 UTC (integrator)
 
 Work stopped on the golfer's instruction. Nothing of mine is uncommitted; no local job is running. Details of the

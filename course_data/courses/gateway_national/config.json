@@ -76,13 +76,72 @@
   },
   "simple": true,
   "condition_notes": {
-   "10": "Frozen or very firm ground (drives running 35+ yds): 4-wood, same line",
    "18": {
     "Back": "The Back markers may sit about 17 yds ahead of the card spot: check the plaque and use Move this tee"
    }
   },
-  "condition_source": "2026-11-13: Sat 24 F overnight, 35 F at 9:00. Central world with roll x1.25 / x1.5: 8 Driver holds (0.042 / 0.028), 9 Driver holds to a tie (0.020 / 0.007), 10 2-wood by 0.019 at x1.25 and 4-wood by 0.015 at x1.5, 16 4-wood holds",
-  "close_margin": 0.045
+  "condition_source": "2026-11-13: Sat 24 F overnight, 35 F at 9:00. Central world with roll x1.25 / x1.5: 8 Driver holds (0.042 / 0.028), 9 Driver holds to a tie (0.020 / 0.007), 10 2-wood by 0.019 at x1.25 and 4-wood by 0.015 at x1.5, 16 4-wood holds. 2026-11-13 strategy pass: 10's frozen-ground pill removed (the page now shows the 4-wood whenever it is within 0.03, which covers frozen ground)",
+  "close_margin": 0.045,
+  "why": {
+   "1": {
+    "Back": "Why Driver: 75% fairway and about 92 yds in; the 2-wood finds 3 points more fairway but leaves 20 yds more."
+   },
+   "2": {
+    "Back": "Why Driver: the same 76% fairway as the 2-wood and 19 yds closer (about 133 in)."
+   },
+   "3": {
+    "Back": "Why Driver: a par 5 with nothing gained by laying back; the left-centre line keeps the right side out of play."
+   },
+   "5": {
+    "Back": "Why Driver: a 452-yd hole where every yard counts: about 170 in instead of 189 with the 2-wood."
+   },
+   "6": {
+    "Back": "Why Driver: 79% fairway into the widest part of the hole."
+   },
+   "8": {
+    "Back": "Why Driver down the left: it shortens the hole to about 111 in with 66% fairway; the 2-wood leaves 130."
+   },
+   "9": {
+    "Back": "Why Driver, narrowly: about 108 in, but only half the balls find fairway; the 2-wood and 4-wood trade 17-26 yds for more fairway and are almost as good."
+   },
+   "10": {
+    "Back": "Why: a wood at the left half of the green. Miss left of the flag, not right. About 5 balls in 6 finish on or around the green; an iron to the right fairway instead costs about 0.3 strokes.",
+    "Middle": "Why: 4-wood at the left half of the green. Miss left of the flag, not right. About 6 balls in 7 finish on or around the green; an iron to the right fairway instead costs about 0.25 strokes."
+   },
+   "11": {
+    "Back": "Why Driver, narrowly: about 128 in; the 4-wood is straighter (71% fairway against 58%) but leaves 153."
+   },
+   "13": {
+    "Back": "Why Driver: a par 5 with 70% fairway; nothing in reach that a shorter club avoids."
+   },
+   "15": {
+    "Back": "Why Driver: it carries the trouble at 250 yds that the shorter woods land in, and leaves about 144."
+   },
+   "16": {
+    "Back": "Why 4-wood: it stops at the mouth of the narrow part (77% fairway, about 93 in); the Driver runs through the fairway half the time and the 2-wood a quarter of the time."
+   },
+   "18": {
+    "Back": "Why Driver: a par 5 with 72% fairway; nothing in reach that a shorter club avoids."
+   }
+  },
+  "why_source": "2026-11-13 strategy pass (OPTIMIZE.md 'Night of Nov 12-13'): one sentence per Back tee shot from the solved shares (fairway share, yards in, strokes against the next club); no hazard words",
+  "prefer_on_tie": {
+   "10": {
+    "club": "4-wood",
+    "within": 0.03,
+    "text": "4-wood and 2-wood are level here: the 4-wood misses the green complex less often"
+   }
+  },
+  "prefer_source": "2026-11-13: Back 10, the two woods are within 0.01-0.03 at 35-50 F; the 4-wood has 4 points fewer penalty balls (16% against 20%) and wins on frozen ground and with a wider pattern (HOLE10.md section 7)",
+  "par3_notes": {
+   "4": "The safe miss is pin-high left."
+  },
+  "set_notes": {
+   "10": {
+    "The Tips": "Green is out of reach from here: 4-wood at the right fairway, leaves about 65",
+    "Champions": "Green is out of reach from here: 4-wood at the right fairway, leaves about 65"
+   }
+  }
  },
  "engine": {
   "extra_clubs": {

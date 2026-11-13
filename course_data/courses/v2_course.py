@@ -1445,6 +1445,9 @@ def build_page(slug, which, out=None, data_out=None):
                 d["note"], d["short"] = golfer_text(d.get("note")), golfer_text(d.get("short"))
             if hn:
                 d["note"] = (d["note"] + " " if d["note"] else "") + "Map: " + hn
+            p3n = (pt.get("par3_notes") or {}).get(str(h))          # page_text "par3_notes": replaces the par-3 note
+            if p3n is not None:
+                d["note"] = p3n
         holes.append(d)
     tot = {s: meta["tee_sets"][s].get("total") for s in sets}
     data = dict(slug=slug, title=cfg.get("title") or (course.NAME + " Caddie"), base_set=base, sets=sets,
@@ -1469,6 +1472,20 @@ def build_page(slug, which, out=None, data_out=None):
             cn = cn.get(d_.get("base_set"))
         if cn and d_.get("kind") == "tee":
             d_["cond_note"] = cn
+        # page_text "why" {hole: text | {tee set: text}}: the one-sentence reason for the pick, shown first in the
+        # note; "prefer_on_tie" {hole: {"club": c, "within": strokes, "text": pill}}: show this club when it is within
+        # that many strokes of the best one (Gateway 10: the two woods are level, the shorter one misses less often)
+        wy = (pt_.get("why") or {}).get(str(d_.get("key")))
+        if isinstance(wy, dict):
+            wy = wy.get(d_.get("base_set"))
+        if wy and d_.get("kind") == "tee":
+            d_["why"] = wy
+        sn = (pt_.get("set_notes") or {}).get(str(d_.get("key")))    # {tee set picked on the page: pill text}
+        if sn and d_.get("kind") == "tee":
+            d_["set_note"] = sn
+        pf = (pt_.get("prefer_on_tie") or {}).get(str(d_.get("key")))
+        if pf and d_.get("kind") == "tee":
+            d_["prefer"] = pf
     if cfg.get("par3_drift_per_mph"):
         data["p3_drift"] = float(cfg["par3_drift_per_mph"])
     if cfg.get("temp_note"):
