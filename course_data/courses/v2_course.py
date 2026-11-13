@@ -17,7 +17,7 @@ frames are already ground yards. Bearings come from the package (tee -> aim, deg
 
 config.json (course_data/courses/<slug>/config.json):
   {"name", "package", "truth_package", "tees" (base set), "sets" [men's sets to offer], "colors" {set: css},
-   "days" [YYYY-MM-DD, YYYY-MM-DD], "tee_hour" 9.0, "temps" [..], "forecast" (file, optional),
+   "days" [YYYY-MM-DD, YYYY-MM-DD], "tee_hour" 9.0 (decimal hours; optional "tee_hours" per day), "temps" [..], "forecast" (file, optional),
    "climate" {"temp_lo", "temp_hi", "wind_mph", "wind_from"} (placeholder forecast),
    "alt_bases" {set: which} (extra fully solved base sets), "display_imagery" {"year": 2023} (a sharper NAIP year for
    the page photos only: `fetch-display` fetches it on Actions, prepare / page render from it when present)}
@@ -1571,6 +1571,9 @@ def build_page(slug, which, out=None, data_out=None):
     data = dict(slug=slug, title=cfg.get("title") or (course.NAME + " Caddie"), base_set=base, sets=sets,
                 colors=cfg.get("colors", {}), set_totals=tot, days=cfg["days"],
                 day_labels=cfg.get("day_labels") or cfg["days"], tee_hour=float(cfg.get("tee_hour", 9.0)),
+                # optional "tee_hours" [day 1, day 2]: the Tee time slider's default per day (Gateway: Saturday 10:36,
+                # Sunday not known yet = 9:00); absent = tee_hour for both days
+                **({"tee_hours": [float(x) for x in cfg["tee_hours"]]} if cfg.get("tee_hours") else {}),
                 sub=cfg.get("sub", ""), foot_extra=cfg.get("foot", ""), placeholder=bool(fc.get("placeholder")),
                 fc_note=fc.get("note", ""), imagery=meta.get("imagery_date"), imagery_src=_photo_source(slug, which),
                 speeds=grid["speeds"], dirs=grid["dirs"], temps=grid["temps"], holes=holes, offsets=sorted(grids),

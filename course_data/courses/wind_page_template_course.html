@@ -161,6 +161,12 @@ if(!st.adj) st.adj = {};
 if(!st.club) st.club = {};
 if(st.temp == null) st.temp = 60;
 if(st.hour == null) st.hour = D.tee_hour;
+/* D.tee_hours [day 1, day 2] (optional): the Tee time default per day. The slider's value is then kept per day
+   (st.hourBy), and stored values are dropped once whenever the page's defaults change (a new tee time published). */
+const dayKey = () => st.src === "d1" ? "d1" : "d0";
+const dayHour = k => D.tee_hours && D.tee_hours[k === "d1" ? 1 : 0] != null ? D.tee_hours[k === "d1" ? 1 : 0] : D.tee_hour;
+function syncHour(){ if(!D.tee_hours) return; const k = dayKey(); st.hour = st.hourBy && st.hourBy[k] != null ? st.hourBy[k] : dayHour(k); }
+if(D.tee_hours){ const sig = JSON.stringify(D.tee_hours); if(st.hourDef !== sig || !st.hourBy){ st.hourBy = {}; st.hourDef = sig; } syncHour(); }
 if(!st.start) st.start = 1;
 /* expand the compact grids: {back: {tempF: {cell: {club: [aim, ev, zlo, zhi, carry, total, width, drift]}}}} */
 /* D.alt {set: holes}: extra fully solved base sets (own tees, aims, calm-day picks); picking that set swaps to them */
@@ -235,7 +241,7 @@ function windFor(h){
 }
 function setWind(f){ if(f){ st.mph = Math.round(f.mph*10)/10; st.from = Math.round(f.dir); } }
 function applySource(){ setWind(windFor(D.holes[st.idx])); }
-function clock(t){ const hh = Math.floor(t), mm = Math.round((t - hh)*60); const H = hh > 12 ? hh - 12 : hh;
+function clock(t){ const tm = Math.round(t*60), hh = Math.floor(tm/60), mm = tm - hh*60;   /* whole minutes first: never ":60" */ const H = hh > 12 ? hh - 12 : hh;
   return `${H}:${String(mm).padStart(2,"0")} ${hh >= 12 ? "pm" : "am"}`; }
 const card = d => ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"][Math.round(((d%360)+360)%360/22.5)%16];
 
@@ -754,12 +760,12 @@ dial.addEventListener("pointerup", () => drag = false);
 dial.addEventListener("keydown", e => { if(e.key==="ArrowRight"||e.key==="ArrowUp"){ st.from = (st.from+15)%360; st.src="custom"; render(); e.preventDefault(); }
   if(e.key==="ArrowLeft"||e.key==="ArrowDown"){ st.from = (st.from+345)%360; st.src="custom"; render(); e.preventDefault(); } });
 document.getElementById("speed").addEventListener("input", e => { st.mph = +e.target.value; st.src = "custom"; render(); });
-document.getElementById("hour").addEventListener("input", e => { st.hour = +e.target.value; render(); });
+document.getElementById("hour").addEventListener("input", e => { st.hour = +e.target.value; if(D.tee_hours) st.hourBy[dayKey()] = st.hour; render(); });
 document.getElementById("start").innerHTML = Array.from({length:18}, (_,i) => `<option value="${i+1}">Hole ${i+1}</option>`).join("");
 document.getElementById("start").addEventListener("change", e => { st.start = +e.target.value;
   const j = D.holes.findIndex(h => holeNo(h) === st.start && shown(h)); if(j >= 0) st.idx = j; render(); });
 document.getElementById("temp").addEventListener("input", e => { st.temp = +e.target.value; render(); });
-document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; render(); }));
+document.querySelectorAll("#src button").forEach(b => b.addEventListener("click", () => { st.src = b.dataset.v; syncHour(); render(); }));
 document.querySelectorAll("#set button").forEach(b => b.addEventListener("click", () => { st.set = b.dataset.v; useSet(); render(); }));
 if(D.tall){
   document.getElementById("tallRow").hidden = false;
