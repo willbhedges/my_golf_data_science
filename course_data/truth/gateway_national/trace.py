@@ -148,8 +148,11 @@ LATE["10"] = [Z("water", poly((-16.6, 236), (-14.1, 240), (-12.4, 244), (-10.4, 
 # ditch-only map's aim (19.5 L) costs 0.05 if he is right; the club and "go at the green" are the same either way
 # (second_pass/HOLE10.md section 7). His second drawing took the right side on to the cart path (276-305, x up to
 # +41): same lidar / NDVI reading, changes no aim or club, not mapped.
-LATE["10"].append(Z("water", poly((11.1, 272.2), (6.7, 266.2), (4.1, 260.5), (-2.9, 239.9), (-8.4, 226.2), (-12.7, 226), (-6.4, 248), (-5.4, 256), (-4.6, 264), (-4.6, 284.2), (-3.4, 303), (13, 302.8), (13, 283), (14.8, 275)),
-                    "band between the ditch and the right fairway (golfer's first drawing; lidar / NDVI read it as mown: low-regret choice), 226-303"))
+# 2026-11-13 afternoon, after the golfer played the hole: "Hole 10 it is clear on the right, just some brush around the
+# creek, but sort of accounted for." The band between the ditch and the right-hand fairway (his first drawing, mapped
+# here as a water-typed zone from 226 to 303) is REMOVED: it is ordinary mown rough, as the lidar and NDVI read it.
+# Only the ditch polygon above (photo wall to lidar bank top, which covers the olive bank and its tufted lip on
+# NAIP 2023) is dead on the right. second_pass/HOLE10.md section 8, HOLE10_DROPS.md.
 
 # 2026-11-13 strategy pass (reviewer B, second_pass/REVIEW_B.md P1): 11's left long grass from 300 on is 6-19 yds
 # closer to the fairway than the Nov 9 band and goes on to 385 (photo / CIR 2023 and F1's lidar edge agree within
@@ -209,7 +212,11 @@ TRACE = dict(holes=H, missing=[])
 # /root/.claude/uploads/.../01e42326-image.jpg, described in second_pass/HOLE10.md): the tall grass starts right
 # behind the left greenside bunkers and wraps round the back-left to the cart path; the lidar polygons left 6-8 yds
 # of "rough" between the bunkers and the tall grass at 255-296. Painted before the bunkers / surround (EXTRA).
-EXTRA["10"].append(Z("native", poly((-66, 252), (-60, 255), (-56, 259), (-55.5, 266), (-55, 275), (-54, 283), (-53, 290), (-50, 297),
+# 2026-11-13 afternoon: on NAIP 2023 the tall grass comes up to the outer lip of the two upper left greenside bunkers;
+# the edge is moved 2-6 yds toward the green at 266-297 so no rough collar is left between sand and tall grass
+# (the bunkers paint over it; the mown ground between the bunkers and the green is untouched).
+EXTRA["10"].append(Z("native", poly((-66, 252), (-60, 255), (-56.5, 259), (-55, 265.5), (-51, 267), (-49.5, 271), (-48, 276), (-47, 281),
+                                    (-46.5, 285), (-47.5, 288), (-47.5, 297),
                                     (-44, 299), (-36, 297), (-30, 299), (-22, 299), (-12, 298), (-10, 300), (-10, 305), (-70, 305), (-70, 252)),
                      "tall grass behind the left greenside bunkers and behind the green to the cart path (golfer's drawing)"))
 # reviewer A 2a (mown strip left of 2's fairway) was withdrawn in REVIEW_A.md v2: not applied.
