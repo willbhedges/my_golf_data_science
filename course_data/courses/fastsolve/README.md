@@ -70,6 +70,23 @@ value raster, 13 ms ball work), ladder + sensitivities + width sweep 1.9 s, star
   1,098 cells keep their club, swing count and tie flag; the pick's aim moves by 0.5 yd in 2 cells (4 of 7,686 club
   aims), EVs by at most 0.0002. Off because the bar for it was "aims unchanged", not "within 1 yd".
 
+### Full Gateway solve with (2) + (3) + (4) (float32 off), outputs in `solved_book16/`
+
+One run, Back + Middle side by side: **140 s wall, on a box another job was using** (load 3.7 at the start, 5.8 at
+the end), so the wall time is not comparable with the 124 s. The wind code is the same as in the 124 s run and its
+task time went from 307 to 401 s, which is the other job. Books: 162 -> 129 task-s under that load; 6.2 -> 3.3 s a
+hole (86 s for 26 holes) when measured alone on 8 / 10 / 16. Estimate on a quiet box: 86 + 307 = 393 CPU-s against
+469, about 104 s. Not run again. The minute is not reached: the wind grids are 307 of the 393 CPU-s and none of
+(2)-(4) touch them; `--f32 1` would take about 30 % off that part (about 80 s in all, not run in full).
+
+Against `solved_default/` (hole 10's map changed between the two runs: ab3797b50, the ditch beside the green):
+- Book, 26 holes: same club on all 26. Aims within 1.0 yd on the 24 holes whose map did not change (Middle 8 is
+  1.0 off, 13 holes are 0.5 off, 10 identical); margins within 0.004. Hole 10 moved 2.5 yds (Back -17.5 -> -20.0,
+  Middle -16.0 -> -18.5): that is the map. On the new map with the old settings Back is the same 2-wood at -20.0
+  (margin 0.0453 against 0.0450), Middle the same 4-wood at -19.0 against -18.5.
+- Wind grids, 24,156 cells outside hole 10: identical, every number. Hole 10 (2,013 cells, new map): club differs
+  in 43, of which 39 in ties and 4 outside (2 Back card tee, 2 Middle); not attributable to these steps.
+
 ## 1. Profile of the existing engine (one process, this box)
 
 Engine = `spirit_hollow/v2/model.py` + `decide.py` + `wind_grid_v2.py` through `v2_course.py`. Gateway Back hole 8.
@@ -239,6 +256,12 @@ python3 course_data/courses/fastsolve/run.py compare --slug gateway_national --o
 python3 course_data/courses/fastsolve/ondemand.py --temp 41 --wind 12 --from 200
 python3 -m pytest -q course_data/courses/fastsolve/test_fastsolve.py        # 85 s, exact kernel vs engine
 ```
+
+Iteration (seconds instead of minutes): `--holes 8,10` solves only those holes and merges them into whatever is
+already in `--out` (the other holes' book entries and wind cells are kept); `--card-only` skips the offset grids
+(book + card-tee grid). One hole `--holes 10 --card-only`: about 7 s; Back `--card-only`: about 30 s. `--only
+decide` / `--only wind` take one half. The book shortcuts are `--book-res 1.0 --book-maps 16 --book-race 1`
+(defaults; 0 switches each off), `--f32 1` the float32 wind lanes, `--exact` the engine's own numbers.
 
 `run.py` refuses to write inside a course folder. `--engine slow` runs the same tasks on the unpatched engine.
 Other scripts: `bench.py`, `equiv.py seeds`, `noise.py`, `converge.py`, `experiments.py`.
