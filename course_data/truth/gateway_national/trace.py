@@ -118,6 +118,30 @@ NOTE = {
 # property, OSM course boundary; the package's ob:outside along the same line was erased by the hand footprint)
 LATE = {"3": [Z("recovery", band([(145, 32), (345, 32)], [(145, 44), (345, 44)]), "tree / shrub line before the industrial yard right (CIR 2023, NAIP 2022)"),
               Z("ob", band([(145, 44), (345, 44)], [(145, 65), (345, 65)]), "industrial yard right (off the property)")]}
+
+# 2026-11-13 second pass (specialists F1 / F2, second_pass/FEATURES_*.md): long grass re-traced from the USGS 3DEP lidar
+# point clouds of Dec 2020 / Dec 2023 (vegetation height on a 0.5 m grid: mown 0.02-0.04 m, standing fescue / prairie
+# 0.10-0.35 m) with NAIP 2016-2023 and the Sentinel-2 NDVI of Nov 2026. For the holes listed, the hand native bands
+# above are REPLACED by the proposals' native polygons (confidence >= 0.7) and mown islands; fairway / water / sand /
+# trees stay as traced. The integrator checked each hole on a lidar-height + NAIP render before listing it here.
+import json as _json  # noqa: E402
+_SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "courses", S, "second_pass")
+FEATURE_HOLES = {"features_10_18.json": ["10", "11", "13", "15", "16", "18"]}
+FEATURE_MIN_CONF = 0.7
+for _f, _refs in FEATURE_HOLES.items():
+    _fp = os.path.join(_SP, _f)
+    if not os.path.exists(_fp):
+        continue
+    _F = _json.load(open(_fp))["holes"]
+    for _r in _refs:
+        _ed = [e for e in _F[_r]["edits"] if e["action"] == "add" and e.get("polygon_frame_x_along")
+               and float(e.get("confidence", 0)) >= FEATURE_MIN_CONF]
+        _z = [Z("native", poly(*[(x, a) for x, a in e["polygon_frame_x_along"]]), "second pass: " + e["target"][:80])
+              for e in _ed if e["kind"] == "native"]
+        _z += [Z("rough", poly(*[(x, a) for x, a in e["polygon_frame_x_along"]]), "second pass: mown island")
+               for e in _ed if e["kind"] == "rough"]
+        EXTRA[_r] = _z
+
 for _r, (_n, _c) in NOTE.items():
     H[_r] = dict(zones=EXTRA.get(_r, []) + auto(_r) + LATE.get(_r, []), note=_n, confidence=_c)
 

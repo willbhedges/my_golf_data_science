@@ -303,3 +303,28 @@ left and long edges and the creek is short (PAR3.md section 2). This is the par 
 * **Temperature model.** 0.075 %/F of carry, about 2 yds per 10 F for the driver, as the footer says. It is applied to
   tee shots and par 3s.
 * **No hazard words or outlines** on the page, as the golfer asked.
+
+## Status of each finding on the published page (re-verified Nov 13 2026, second pass)
+
+Checked on the built page itself (v5, `wind_page/index.html` of 2fe7b33ed): headless Chromium, every hole, Back and
+Middle, Sat and Sun at the default start, Custom winds (calm, 10-20 mph from each side, 38-70 F), other tee times and
+start holes, moved tees, The Tips / Champions / Forward. Map findings looked at on my own renders (NAIP 2023 RGB + CIR
+at 5-9 px per yard, and the Sentinel-2 NDVI of Nov 8 + 10 2026).
+
+| # | finding | status on v5 | what I saw |
+|---|---|---|---|
+| 1 | par-3 club frozen to the forecast day | **fixed** | The club follows the live number: Back 4 at 15 mph into, 45 F shows 5-iron (plays 201); 14 at 15 mph into shows "Between clubs: 4-iron 210 / 4-wood 255" and no club; a helping wind drops a club; tee time, start hole and Move this tee all move it. Each shown club is the nearest-carry club or its neighbour within 6 yds of the number (the ladder's expected-strokes choice). |
+| 2 | 16: unmapped fescue mound right at 275-300 | **fixed, map correct** | The mound (264-298, 8-42 R, white stones on its left edge) is real and the polygon sits on it. New on the same hole: the LEFT native edge was 6-8 yds too far left (fixed Nov 13, below). |
+| 3 | 9: native left at 260-310 mapped as rough | **over-corrected, re-fixed Nov 13** | The Nov 9 edge was drawn to 14-22 yds left of the line at 300-340; the tufted grass stops at a worn line 22-28 left (photo and the Nov 2026 NDVI agree). Also the right "fescue" band (30-45 R) is mown turf. Both changed Nov 13. |
+| 4 | Middle 16 showed the book while the wind model disagreed | **fixed** | "Models split" badge and the wind model's pick are in the page code; with the mound mapped Middle 16 no longer splits (long iron in both). |
+| 5 | wind-flipped picks without a close-call badge; note contradicts the play | **fixed** | The note is labelled "Calm-day book (no wind, N F)"; a wind-changed pick gets a first sentence and a tie / close-call badge (Sat 10: "2-wood by 0.006 ... Tie"). |
+| 6 | 8: aim search stopped at 40 yds | **fixed** | Bound 60 (grid to 80). The deeper problem found Nov 13: left of 65 yds the engine priced open rough as "unverified" (half trees), which held the Driver back; fixed below. |
+| 7 | par-3 distance from the card (4 yds long on 4 and 7); no tee slider on par 3s | **fixed as designed, residual** | Par 3s have Move this tee (5-yd steps), a Map row and a card-vs-map line. The default number is still the card's. On 4 the Back pad is 10 yds deep and centred 176 from the green centre (card 180 = its back edge); on 7 the tee is a 50-yd strip, so the card is as good as the map. |
+| 8 | tee slider steps the solve cannot follow | **partly** | The slider moves in 20s and says "solved every 20 yds". Because the page keeps only the grids a tee set uses (`grid_prune`), 20 / 40 up on most Back holes still shows the card-tee solve, with a "Nearest computed tee" pill. The footer's "5-yd steps" wording is corrected Nov 13. |
+| 9 | no past-the-map badge on Middle | **fixed** | Middle 3 and 18 show it on Saturday. |
+| 10 | forecast staleness | **fixed** | Forecast of Nov 12 on v5; refreshed again Nov 13 02:44Z (Saturday is colder: 35 F at 9:00 after a 24 F night). The calm book is re-solved on it (below). |
+| 11 | wind-arrow colours | **fixed** | One arrow, labelled, pointing where the wind blows to. |
+| 12 | 12: no safe-miss note | **fixed** | "The safe miss is right." |
+| 13 | nits | **mostly** | No "first cut" in the notes; PAR3.md updated. Still open: hole 3's package OB edge runs inside the tree band at 150-250 (heavy mishits only). |
+
+New findings of the second pass are in OPTIMIZE.md, section "Nov 12-13 second pass".
