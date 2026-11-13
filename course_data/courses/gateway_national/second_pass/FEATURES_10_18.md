@@ -36,12 +36,15 @@ Offsets are detected - mapped, in yds; "closer" = closer to the fairway / line o
    station) and S2 Nov 2026 (NDVI 0.64 vs 0.85) agree. Confidence 0.9, +/-2 yds. 140-210: mapped edge is right
    (+/-1-3). At 215-225 there is a mown throat round the 208-yd bunker (native starts at -40 behind it).
    Also new: a 3-4 yd ring of bank vegetation round the pond (305-330 yds, x +3 ... +9, left of the fairway).
-2. **16 right mound (264-298 yds, x +6 ... +43): NOT standing fescue.** Lidar Dec 2023 height over the mound is
-   0.036 m (mown rough 0.029-0.038, fescue blocks 0.15-0.22); only its stone edge (x +7 ... +10, 280-292) stands up.
-   S2 Nov 2026 over the polygon 0.78 (fairway 0.85, real native 0.54-0.64; the polygon is ~30 yds wide so mixing does
-   not explain it). NAIP Aug 2023 shows a weedy, tufted mound: it reads as thin / low native that plays like rough
-   with a bad-lie risk, not lost-ball fescue. Suggest penalty weight of rough-plus, or native with p <= 0.4.
-   Confidence 0.7 (this conflicts with the integrator's S2 reading: decide on the solver's sensitivity).
+2. **16 right mound (264-298 yds, x +6 ... +43): real and unmown in summer, but short in late autumn - not
+   lost-ball fescue.** NAIP shows it every year (tan tufts Sept 2019, dense dark growth June 2021 / 2022, tufted Aug
+   2023) with a stone retaining wall on its fairway face (x +7 ... +10, 280-292 yds). But both leaf-off lidar
+   flights (Dec 2020 and Dec 2023) read its vegetation at 0.036 m median (mown rough 0.029-0.038, the fescue blocks
+   0.15-0.22): only the wall stands up. Sentinel-2 at the mound's own 10 m pixel: Nov 2025 0.51 / Nov 2026 0.53 on
+   the F1 scale, where fairway is 0.60-0.63, mown rough 0.61-0.64 and the standing fescue block left 0.25-0.28; on
+   the integrator's scale the polygon reads 0.78 vs fairway 0.85 and native 0.54-0.64. So in November it is a short,
+   still-green stand 0.10 NDVI below turf and 0.25 above senesced fescue: a poor lie (and a wall), not a search.
+   Suggest rough-plus, or native with p <= 0.4; keep the outline. Confidence 0.7.
 3. **10 (drivable par 4): right native is a strip between the two cart paths, not a wedge out to +70.** Inner edge
    at 130 / 150 / 170 / 190 / 210 / 230 / 250 / 270 yds: +32 / +36 / +38 / +42 / +46 / +45 / +48 / +50 (mapped
    52 -> 30 as a straight diagonal): **10-15 yds closer at 140-190, 5-13 yds further at 210-290**; outer edge +56 ...
