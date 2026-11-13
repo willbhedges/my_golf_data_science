@@ -77,7 +77,7 @@ def _task(t):
             WG2.solve = fast.wind_solve(M._fastsolve, WG2)
         if t.get("adaptive"):                # adaptive Sobol grid in one C call per (hole, temperature): adaptive.py
             import adaptive
-            WG2.solve = adaptive.install(M, D, WG2, cap=t["adaptive"])
+            WG2.solve = adaptive.install(M, D, WG2, cap=t["adaptive"], n0=t.get("adaptive_n0"), min_all=t.get("adaptive_n0"))
             t = dict(t, refine=0)
         if t["refine"]:
             WG2.solve = vc.refined_solver(M, D, WG2, t["refine"])
@@ -117,6 +117,7 @@ def plan(a, course, M):
                                   refine=refine if b in r_off else 0, speeds=a.speeds, dirs=a.dirs,
                                   c2f=bool(a.c2f and a.engine == "fast"),
                                   adaptive=(a.adaptive_cap if b in r_off else a.adaptive_cap_other) if a.adaptive else 0,
+                                  adaptive_n0=None if b in r_off else a.adaptive_n0_other,
                                   out=os.path.join(parts, f"v2wind_{b:g}_{h}.json"),
                                   log=os.path.join(parts, f"log_wind_{b:g}_{h}.txt")))
     return tasks, order
@@ -276,6 +277,7 @@ def main():
     ap.add_argument("--adaptive", type=int, default=0, help="1: adaptive Sobol wind grids (adaptive.py): NOT the "
                                                             "engine's numbers; see README")
     ap.add_argument("--adaptive-cap", type=int, default=4096, help="swing cap, refined (card-tee) offsets")
+    ap.add_argument("--adaptive-n0-other", type=int, default=None, help="first-stage swings, the other offsets (512)")
     ap.add_argument("--adaptive-cap-other", type=int, default=4096, help="swing cap, the other offsets")
     ap.add_argument("--ref")
     ap.add_argument("--show", type=int, default=8)

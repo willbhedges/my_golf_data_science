@@ -13,8 +13,21 @@ Built ALONGSIDE the engine: nothing outside this folder is edited, nothing is wi
 | exact kernel, `run.py` | 873 s (Back 600 s, Middle 273 s) |
 | adaptive Sobol, `run.py --adaptive 1 --swings sobol ...` | **183 s** (Back 113 s, Middle 70 s) |
 
-The 1-minute target was not reached. Outputs of the 183 s run, in the engine's file format:
-`solved/gateway_national/truth/v2/` and `solved/gateway_national/truth_middle/v2/`.
+| same, lower precision (64 prior draws, caps 2,048 / 512), Back and Middle run side by side | **83 s** |
+
+The 1-minute target was not reached. Outputs in the engine's file format: the 183 s run in
+`solved/gateway_national/{truth,truth_middle}/v2/`, the 83 s run in `solved_83s/gateway_national/...`.
+
+What the 83 s run gave up (against Actions rev 7): book still the same club on all 26 holes, aims within 1.0 yd,
+margins within 0.005 (0.002 in the 183 s run); Back wind cells flagged tie 4,674 (2,460); Middle card-grid aims
+more than 1 yd off in 11 % of cells (4 %). No clear club disagreement in either. Its settings:
+`--draws 64 --central 1024 --adaptive-cap 2048 --adaptive-cap-other 512 --adaptive-n0-other 256`.
+CPU split of the 83 s run: books 142 s, card grids 47 s, offset grids 100 s (290 CPU-s; 73 s is the 4-core floor).
+
+Prior-draw saturation (Sobol 512 swings per draw; holes 8, 9, 10, 11, 16; 32 / 64 / 128 / 256 draws): the pick
+never changes from 32 draws up; the aim is within 0.5 yd from 64; the margin at 128 is within 0.0005 of the
+256-draw margin on every hole, at 64 within 0.003 (inside its own SE of 0.003-0.016). 128 is the point where
+nothing moves; 64 is inside the noise.
 
 ## 1. Profile of the existing engine (one process, this box)
 
@@ -128,7 +141,7 @@ With 30 replications ">= 99 %" means all 30. Today's 16,000 random swings give a
 gives 0.3-0.7. So Sobol 4,096 is at least today's refine precision, and the pick is settled by a few hundred
 swings; it is the +/-1 yd aim rule that sends most cells to the cap.
 
-Not done: the saturation point for the number of prior draws (256 today). Antithetic pairs were tried on hole 10
+Antithetic pairs were tried on hole 10
 only and did not help the EV (sd 0.0071 against 0.0049 for plain random at 16k).
 
 ### Agreement of the 183 s solve with Actions rev 7
@@ -208,6 +221,7 @@ Other scripts: `bench.py`, `equiv.py seeds`, `noise.py`, `converge.py`, `experim
 
 - A test for the adaptive path, and one run of its scalar branch (GitHub runners are mostly AVX2).
 - Crown trace in `fs_grid` for Eagle Knoll-type courses.
-- The prior-draw saturation study, and a cheaper per-draw raster if the book is to go under ~1 minute.
+- A draw-local repaint and value-raster update (not built) if the whole solve is to go under a minute at the
+  183 s run's precision.
 - A decision on the stopping rule: most cells hit the cap on the +/-1 yd aim rule.
 - Page build and the par-3 target solve were not profiled.
