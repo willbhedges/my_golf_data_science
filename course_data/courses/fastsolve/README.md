@@ -81,7 +81,7 @@ hole (86 s for 26 holes) when measured alone on 8 / 10 / 16. Estimate on a quiet
 
 Against `solved_default/` (hole 10's map changed between the two runs: ab3797b50, the ditch beside the green):
 - Book, 26 holes: same club on all 26. Aims within 1.0 yd on the 24 holes whose map did not change (Middle 8 is
-  1.0 off, 13 holes are 0.5 off, 10 identical); margins within 0.004. Hole 10 moved 2.5 yds (Back -17.5 -> -20.0,
+  1.0 off, 12 holes are 0.5 off, 11 identical); margins within 0.004. Hole 10 moved 2.5 yds (Back -17.5 -> -20.0,
   Middle -16.0 -> -18.5): that is the map. On the new map with the old settings Back is the same 2-wood at -20.0
   (margin 0.0453 against 0.0450), Middle the same 4-wood at -19.0 against -18.5.
 - Wind grids, 24,156 cells outside hole 10: identical, every number. Hole 10 (2,013 cells, new map): club differs
@@ -259,7 +259,7 @@ python3 -m pytest -q course_data/courses/fastsolve/test_fastsolve.py        # 85
 
 Iteration (seconds instead of minutes): `--holes 8,10` solves only those holes and merges them into whatever is
 already in `--out` (the other holes' book entries and wind cells are kept); `--card-only` skips the offset grids
-(book + card-tee grid). One hole `--holes 10 --card-only`: about 7 s; Back `--card-only`: about 30 s. `--only
+(book + card-tee grid). One hole `--holes 10 --card-only`: 8.6 s, Back `--card-only`: 37 s, both measured before the book steps (which take about 3 s a hole off). `--only
 decide` / `--only wind` take one half. The book shortcuts are `--book-res 1.0 --book-maps 16 --book-race 1`
 (defaults; 0 switches each off), `--f32 1` the float32 wind lanes, `--exact` the engine's own numbers.
 
