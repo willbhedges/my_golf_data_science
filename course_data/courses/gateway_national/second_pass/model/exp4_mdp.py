@@ -1,5 +1,7 @@
 """Hole-specific second-shot rollout vs the one-shot table: does it change a Back tee decision?
-python3 exp4_mdp.py out.json [holes] [kappa]"""
+python3 exp4_mdp.py out.json [holes] [kappa] [raw]
+raw: the rollout value itself replaces the table on playable cells (no featureless-hole subtraction): the level and
+the value of distance are then the rollout's own, which is optimistic beyond ~200 yds (exp4_calib.py)."""
 import json, sys, time
 from harness import *
 import mdp
@@ -7,6 +9,7 @@ import mdp
 out = sys.argv[1]
 holes = [int(x) for x in sys.argv[2].split(",")] if len(sys.argv) > 2 and sys.argv[2] else HOLES
 kappas = [float(x) for x in sys.argv[3].split(",")] if len(sys.argv) > 3 else [1.6]
+RAW = len(sys.argv) > 4 and sys.argv[4] == "raw"
 res = {}
 for h in holes:
     P = D.central(h)
@@ -16,7 +19,7 @@ for h in holes:
     print(h, "table   ", short(base), {c: (v["aim"], v["ev"]) for c, v in list(base["clubs"].items())[:4]}, flush=True)
     for k in kappas:
         t0 = time.time()
-        S, S2, g = mdp.improved_S(M, h, P, R, k)
+        S, S2, g = mdp.improved_S(M, h, P, R, k, raw=RAW)
         # level: mean delta over fairway nodes (the rollout is calibrated on a featureless hole at 150 yds)
         inf = g["info"]
         dl = np.array([g["delta"][i, j] for (i, j) in inf])

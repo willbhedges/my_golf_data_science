@@ -1,167 +1,174 @@
 # Gateway National: review of the decision model (statistics), Nov 13 2026
 
-For Will, NCCGA Regional 3, Back tees. Scope set by Will on Nov 13: his stated carries are taken as given, one
-standard pattern per club (a DECADE-style oval) is the model of a normal swing, and the output is one club and one
-aim per hole. So this review asks whether that one answer is right. It does not give answers by form or by mood.
+For Will, NCCGA Regional 3, Back tees. Scope set by Will on Nov 13: his carries as stated, one standard
+DECADE-style pattern per club, the standard expected-strokes numbers kept as they are, and one club and one aim per
+hole. This review asks whether that one answer is computed correctly.
 
-**Checkpoint 1** (03:45 UTC Nov 13). Everything below was run on a frozen copy of the engine and map at commit
-`222f7ece4` ("final map under the 3-yd rule"), because the shared checkout changed four times while the first runs
-were going. Code: `second_pass/model/` (it imports the engine and edits nothing). `run_all.sh <snapshot> <out>`
-repeats every table.
+**Checkpoint 2** (04:00 UTC Nov 13). The sensitivity runs are on a frozen copy of the engine and map at commit
+`222f7ece4`, because the shared checkout changed under the first runs. Since then the map edges on 2, 3 and 5 moved
+(`ca4480af1`): the clubs there are the same, with aims 2 +9 (was +14.5), 3 -5.5 (was -9) and 5 +3.5 (was 0).
+The findings below are about the model and carry over; the aims quoted are the frozen state's. Code:
+`second_pass/model/` (imports the engine, edits nothing); `run_all.sh <snapshot> <out>` repeats the tables.
 
-## 0. Verdict in one table
+## Findings, ranked by effect on a club or an aim
 
-Central-world picks on the frozen state (two-stage solve, 16,000 common swings; forecast 35-47 F). "Honest margin"
-is the range over the three golfers whose pattern and scoring table belong together (section 1a).
+| # | finding | changes a pick? | which hole, how much |
+|---|---|---|---|
+| 1 | Which table "the standard numbers" means has to be settled (see below) | **yes, if it means the plain Tour table** | 11: Driver +17.5 -> 4-wood +8 (by 0.005, a tie); 9: Driver, 2-wood and 4-wood within 0.0014; 3: Driver by 0.007 instead of 0.051. With the engine's present table: no change |
+| 2 | Hole 10 aim is Monte Carlo noise in the single-seed solve | **aim only** | 10: 2-wood aim -18, not -20.5; worth 0.007 |
+| 3 | Second-shot rollout on the close holes | no | 9: margin 0.025 -> 0.025-0.030; 10: 0.060 -> 0.065-0.086; 16: 0.108 -> 0.088-0.107, aim 0.5-1 yd left |
+| 4 | Lost ball in the fescue (25 % at the edge to 65 % ten yards in) | no | at 5-25 % or 40-90 %: aims within 1 yd, margins within 0.010 |
+| 5 | Stroke-and-distance value on 3 (OB) and 10 | no | 3: Driver margin 0.051 -> 0.044, aim unchanged; 10: 0.060 -> 0.061 |
+| 6 | Water drop geometry | no | applied correctly |
+| 7 | Monte Carlo soundness, winner's curse | no | same club on 6 of 6 independent swing sets on all 13 holes; bias under 0.002 |
+| 8 | Aim search (grid, bound, window, sideways shift) | no | within 1.25 yds of a 40,000-swing fine search on 12 of 13 holes (the 13th is finding 2) |
+| 9 | Dispersion: size, shape, tilt, tails | no | fat tails: no club, aims within 2.5 yds; firm ground makes 10 a tie between 2-wood and 4-wood |
+| 10 | Par-3 putting and short-game values | no | reviewed, not re-run |
 
-| hole | club and aim (yds, + = right) | margin as the engine reports it | honest margin | what could change it |
-|---|---|---|---|---|
-| 1 | Driver -8.5 | 0.054 over 2-wood | 0.03 to 0.04 | nothing tested |
-| 2 | Driver +14.5 | 0.082 | 0.06 to 0.07 | nothing tested |
-| 3 | Driver -9 | 0.051 | **0.007 to 0.016** over 4-wood | driver pattern over ~85 yds wide |
-| 5 | Driver 0 | 0.098 | 0.07 to 0.08 | nothing tested |
-| 6 | Driver +6 | 0.118 | 0.09 to 0.10 | nothing tested |
-| 8 | Driver -44.5 | 0.057 | 0.03 to 0.05 | nothing tested |
-| 9 | Driver +13 | 0.025 | **0.00 to 0.01: a tie with 4-wood +2** | see 1a |
-| 10 | 2-wood, aim **-18** (the stored -20.5 is Monte Carlo noise, section 3) | 0.060 over 4-wood | 0.04 to 0.05 | firm ground (roll x1.3): tie with 4-wood |
-| 11 | Driver +17.5 | 0.031 | **0.00: a tie with 4-wood +9** | see 1a |
-| 13 | Driver +1 | 0.122 | 0.10 to 0.12 | nothing tested |
-| 15 | Driver +14.5 | 0.109 | 0.08 to 0.09 | nothing tested |
-| 16 | 4-wood +6.5 | 0.108 | 0.05 to 0.08 | nothing tested |
-| 18 | Driver +14.5 | 0.132 | 0.11 to 0.13 | nothing tested |
+Frozen-state picks the table refers to: 1 Driver -8.5; 2 Driver +14.5; 3 Driver -9; 5 Driver 0; 6 Driver +6;
+8 Driver -44.5; 9 Driver +13; 10 2-wood; 11 Driver +17.5; 13 Driver +1; 15 Driver +14.5; 16 4-wood +6.5; 18 Driver
++14.5.
 
-**No club changes.** Of about 60 model variants per hole, the club changes only on 3, 9 and 11, and only to a
-4-wood that is level with the Driver. The aims are stable to about 2 yds, except 10.
+## 1. Which table is "the standard numbers"? Decision needed from the manager
 
-What to do before the tournament, in order of effect on Will's decisions:
+Will's decision is to keep the standard near-PGA (Broadie) expected-strokes numbers. The engine's central world
+does not use the plain Broadie table today. It uses `table="am"`: Broadie's Tour values + 0.36 + 0.0012 per yard
+beyond 150, with the fairway-to-rough gap multiplied by 0.75 (`spirit_hollow/v2/model.py`, `central()`). The plain
+Tour table is in the engine as `table="tour"`.
 
-1. **Label 9 and 11 as ties between Driver and 4-wood**, and 3 as close. The engine's 0.025 / 0.031 / 0.051
-   overstate the Driver by 0.02 to 0.04 (section 1a). Page text only. If Will wants a rule for a tie: take the
-   Driver, because on 3, 9 and 11 it loses at most 0.012 in any golfer tested and the 4-wood loses 0.033 to 0.052 in the engine's central one.
-2. **Hole 10: aim 18 left, not 20.5.** A 40,000-swing curve puts the 2-wood's best aim at -17.25, six other seeds
-   give -17 to -19, and the prior average gives -17.5. Aiming at -20.5 costs 0.007. If the re-solve's book already
-   shows -17 to -19, nothing to do.
-3. **Drop "better in X % of what-if golfers" from the page.** It is not a confidence level (section 4). Show the
-   margin and a close-call label.
-4. Nothing else needs to change before Saturday. Three engine corrections are right in principle and are measured
-   below, but none changes a club or moves an aim by more than 1.5 yds: the stroke-and-distance value (1b), the aim
-   as a rotation (3), and the hole-specific next-shot value (1d).
+The two give the same club on ten holes and differ on three (`exp1_value.py`, 16,000 common swings, SE
+0.001-0.002; `exp8_coherent.py` repeats 3, 9 and 11 on 32,000):
 
-## 1. Objective
+| hole | engine as it is (`am`) | plain Tour table (`tour`) |
+|---|---|---|
+| 3 | Driver -9 by 0.051 over 2-wood | Driver -9 by 0.007 over 4-wood |
+| 9 | Driver +13 by 0.025 over 2-wood | 4-wood +2, 2-wood +8 and Driver +12.5 within 0.0014: a three-way tie |
+| 11 | Driver +17.5 by 0.031 over 4-wood | **4-wood +8 by 0.005 over Driver +17.5: a tie** |
+| 8 | Driver -44.5 by 0.057 | Driver -42 by 0.029 |
+| 16 | 4-wood +6.5 by 0.108 | 4-wood +6.5 by 0.054 |
+| other eight | | same club, aims within 1 yd, margins 0.01-0.03 smaller |
 
-### 1a. The value function: right in kind, and one inconsistency that matters on three holes
+What separates them is one term: the 0.0012 per yard, which makes each extra yard off the tee worth about 30 %
+more than on Tour. The 0.36 level does nothing (set to 0.20: every club and aim identical). The rough multiplier
+does little (x0.4 to x1.3: no club changes; 9's margin 0.036 to 0.011).
 
-The engine minimises expected strokes to hole out. After the tee shot it reads a table V(lie, distance): the PGA
-Tour baseline (Broadie) plus an amateur offset, 0.36 + 0.0012 per yard beyond 150, with the rough gap x0.75.
+* If "as they are" means the engine as it is: nothing changes, and 9 and 11 should be shown as close calls
+  (0.025 and 0.031).
+* If it means the plain Tour table: set `table="tour"` in the central world and re-solve. 11 becomes a tie that
+  leans 4-wood, 9 a three-way tie, and every other club stays.
+* Either way 9 and 11 are within 0.03, so either club is defensible on both. I am not proposing a rescaling;
+  this is only which of the two existing tables the page should be solved on.
 
-* **A level shift changes nothing.** With the offset at 0.20 instead of 0.36 every club and aim is the same and the
-  margins move by 0.000 to 0.008. Only stroke-and-distance and the putts on the 10th green see the level. So "is
-  the baseline 0.2 too high for a scratch player" is not a decision question.
-* **The slope with distance is the decision.** It sets what 20 more yards are worth. Broadie's published figures
-  (Every Shot Counts; quoted from memory, not re-read here) are about 0.75 strokes a round for a Tour player and
-  1.3 for an 80-shooter for 20 yards, so a scratch-to-5 player is near 1.0 to 1.1: about 1.4 times the Tour value.
-  The engine's 0.0012 per yard on top of the Tour slope (0.0039 per yard at 100-200 yds) is 1.3 times. That is the
-  right size.
-* **The inconsistency.** The engine pairs that scratch-to-5 table with a Tour-width pattern (driver 95 % width 70
-  yds). Played forward on a featureless hole, the engine's own iron pattern with Tour putting scores the Tour table
-  within 0.02 to 0.09 (`exp4_calib.py`: 2.76 against 2.80 from 100, 2.93 against 2.95 from 150, 3.10 against 3.19
-  from 200). To score the amateur table at 150 yds the irons would have to be 1.6 times as wide. Both halves favour
-  the longer club: the narrow pattern makes the Driver safe, and the amateur slope makes its yards worth more. A
-  real golfer is one or the other.
+## 2. Hole 10: aim 18 left
 
-Re-solved for golfers whose two halves belong together (`exp8_coherent.py`, 32,000 swings, SE 0.001-0.002):
+The 2-wood's best aim from a 0.25-yd grid on 40,000 swings is -17.25. Six other swing sets give -17, -18, -18.5,
+-19, -19, -19. The average over 64 prior draws gives -17.5. The default-seed two-stage solve gives -20.5, which
+costs 0.007. The 10th has the bumpiest aim curve (green, sand and pond in the landing area). If the re-solved book
+shows -17 to -19, nothing to do. Either way the club is the 2-wood (by 0.060 +/- 0.003; six of six swing sets).
 
-| golfer | 3 | 9 | 11 | other ten holes |
-|---|---|---|---|---|
-| engine central (width 70, 5-handicap table) | Driver by 0.050 | Driver by 0.027 | Driver by 0.033 | as the table in section 0 |
-| elite (width 70, Tour table) | Driver by 0.007 | 4-wood, 2-wood and Driver within 0.0014 | 4-wood by 0.004 | same clubs; 8 aims 4 yds less left |
-| scratch (width 76, Tour + 0.22 + 0.0006 / yd) | Driver by 0.012 | Driver by 0.008 | Driver by 0.001 | same clubs, aims within 1.5 |
-| 5 handicap (width 82, engine table) | Driver by 0.016 | Driver by 0.011 | Driver by 0.002 | same clubs, aims within 2.5 |
-| width 70, scratch table (Will's scope: DECADE oval) | Driver by 0.032 | Driver by 0.017 | Driver by 0.017 | same |
-| width 82, scratch table | 4-wood by 0.005 | 4-wood by 0.002 | 4-wood by 0.012 | same |
+## 3. Second shot: does the finish position change the next shot's value correctly?
 
-* Under Will's scope (the 70-yd oval), the Driver holds on all three for any amateur table from scratch to 5.
-* The published on-course figure for 0-5 handicaps is nearer 82 yds (`spirit_hollow/research.md`: Arccos / Stagner,
-  7 % of drives more than 40 yds off centre). At 82 with a scratch table the three holes go to the 4-wood by 0.002
-  to 0.012.
-* So 9 and 11 are ties and 3 is close. Either club costs under 0.02 a hole. The other ten holes do not move.
+The engine scores a tee ball from a table of distance and lie. It does not know the angle, the water by 16's
+green, or whether a par 5 can be reached. To check it I played the next shot explicitly (`mdp.py`): from every
+playable cell between 120 yds and the green, the engine's own swing model hits the best next shot toward the green
+(an ideal club for the distance up to a 250-yd carry, or a lay-up; 7 lateral aims; wider and shorter from rough
+and sand), and the finish is scored on the engine's own per-cell strokes (putts on the green, short game by lie,
+water, sand). Cells more than 235 yds out are solved after the nearer ones on the improved values, so a par-5
+second shot chooses between going for the green and laying up. The same rollout on a featureless hole is
+subtracted, so the table keeps its level and its value of distance and only this hole's geometry is added.
 
-**Recommendation.** Keep the table. Print the honest margins for 3, 9 and 11. Optional, not needed for Saturday: a
-config `player` block that sets the central table to the scratch one (am_off 0.22, am_slope 0.0006, am_tee_off
-0.25) gives the "width 70, scratch table" row and changes no club.
+Frozen state, next-shot spread 1.0 / 1.6 / 2.2 times the stated iron pattern (`exp4_mdp.py`):
 
-Other table parameters (`exp1_value.py`; no club changes, aims within 1 yd unless noted):
+| hole | table | with the rollout |
+|---|---|---|
+| 9 | Driver +13, 0.025 | Driver +13, 0.025 / 0.025 / 0.030 |
+| 10 | 2-wood, 0.060 | 2-wood, same aim, 0.065 / 0.077 / 0.086 |
+| 16 | 4-wood +6.5, 0.108 | 4-wood +6 / +5.5 / +5.5, 0.107 / 0.098 / 0.088 |
+| 11 | Driver +17.5, 0.031 | Driver +17.5, 0.037 / 0.031 / 0.037 |
+| 3 | Driver -9, 0.051 | Driver -9, 0.056 / 0.063 / 0.061 |
+| 8 | Driver -44.5, 0.057 | Driver -46.5 / -45.5 / -46, 0.075 / 0.072 / 0.066 |
+| 13 | Driver +1, 0.122 | Driver -3.5 / -1.5 / +0.5, 0.066 / 0.112 / 0.137 |
+| 18 | Driver +14.5, 0.132 | Driver +10 / +14.5 / +15.5, 0.023 / 0.060 / 0.094 over 4-wood |
+| 1, 2, 5, 6, 15 | Driver | same club, aims within 1 yd, margins within 0.035 |
 
-| variant | largest effect |
-|---|---|
-| rough gap x0.4 / x1.3 | 9: margin 0.036 / 0.011; 8: aim 3.5 yds further left when rough is cheap |
-| sand gap x1.5 | margins within 0.007 |
-| trees always a chip-out | margins within 0.003 |
-| no line-of-sight cost | no change |
+* **No club changes on any hole.** On the three close holes the aim moves by at most 1 yd.
+* On 16 the approach over the water costs 0.2-0.3 more than the table says from anywhere in the fairway, so the
+  hole is harder than the table thinks, but the order of the clubs is the same.
+* 13 and 18 (par 5s) lose part of the Driver's margin. Part of that is the method: the featureless hole rewards
+  a 240-yd second shot onto an open green more than the table does, and 18's green has water beside it. The Driver
+  still wins in every variant.
+* Limit: the ground beyond 345 yds from the tee was not hand-checked (greens, greenside sand and water are OSM
+  and lidar). This is a check, not a replacement for the table.
 
-### 1b. Penalties
+## 4. Lost ball in the fescue
 
-* **Stroke and distance is mispriced on two holes, without effect.** The engine charges 1 + (Tour tee baseline for
-  the hole's length + 0.40). That table is clipped at 300 and 600 yds. The exact cost is 1 + the hole's own
-  expected score, a fixed point (`exp5_sd.py`):
+* What the engine assumes: a ball in the long grass is lost 25 % of the time at the edge, rising linearly to 65 %
+  ten yards in. Lost is stroke and distance. Found is a punch-out (one stroke, about 35 yds of progress, a 10 %
+  chance of another).
+* Reasonable? For dormant November fescue with a three-minute search I would put the deep figure lower than 65 %.
+  Nobody has measured it here.
+* Does it matter? No. At 5-25 % and at 40-90 %: no club changes, aims move 1 yd at most (9), margins move by up
+  to 0.010 (11: 0.040 / 0.022; 16: 0.098 / 0.108). The picks finish in the long grass on 0-6.7 % of swings
+  (3: 6.7 %, 11: 5.9 %, 5: 5.3 %).
+* If the fescue is staked as a penalty area, the cost is lower than stroke and distance; that is inside the range
+  tested.
 
-  | hole | engine's replay value | hole's own value | effect of the exact value |
-  |---|---|---|---|
-  | 3 (630) | 5.22 | 5.68 | OB and lost balls cost 0.46 more; Driver margin 0.051 -> 0.044 (runner becomes the 4-wood); aim unchanged |
-  | 10 (271) | 4.11 | 3.58 | lost balls cost 0.53 less; margin 0.060 -> 0.061; aim unchanged |
-  | other eleven | within 0.19 | | aims within 0.5, margins within 0.002 |
+## 5. Stroke and distance (OB on 3)
 
-  Patch if wanted (4 lines, `model.tee_value`: return the hole's own solved value when the config carries one).
-  Not needed for Saturday.
-* **Lost ball in the fescue.** The engine assumes 25 % lost at the edge of the long grass, rising to 65 % ten yards
-  in, stroke and distance when lost, a punch-out when found. For dormant November fescue 65 % is probably high, and
-  nobody has measured it here. It does not matter: at 5-25 % or at 40-90 % no club changes, aims move 1 yd at most
-  (9: 1 yd), and margins move by up to 0.010 (11: 0.040 / 0.022). The tee balls finish in the long grass 0-6.7 %
-  of the time (3: 6.7 %, 11: 5.9 %, 5: 5.3 %).
-* **Water.** One stroke plus a rough lie at the point where the ball crossed the margin (walked back along the
-  flight line). That is the lateral-relief rule and it is applied correctly. A pond that must be carried again
-  after the drop is not priced by the table; the rollout in 1d prices it and changes nothing.
+The engine charges 1 + (Tour tee value for the hole's length + 0.40). The tee table is clipped at 300 and 600 yds.
+The exact cost is 1 + the hole's own expected score under the same model, a fixed point (`exp5_sd.py`):
 
-### 1c. Risk
+| hole | engine's replay value | hole's own value | effect of using the exact value |
+|---|---|---|---|
+| 3 (630 yds) | 5.22 | 5.68 | OB and lost balls cost 0.46 more; Driver margin 0.051 -> 0.044 (runner-up becomes the 4-wood); aim unchanged |
+| 10 (271 yds) | 4.11 | 3.58 | lost balls cost 0.53 less; margin 0.060 -> 0.061; aim unchanged |
+| other eleven | within 0.19 of their own value | | aims within 0.5 yd, margins within 0.002 |
 
-Expected score is the right target for 36 holes of stroke play: the total is a sum of about 36 nearly independent
-holes, so the lower mean wins more often unless one is several strokes behind with a few holes left. The numbers
-(`exp7_risk.py`): the 13 tee shots carry an SD of 1.16 strokes a round at the best clubs. Taking the lowest-variance
-club on every hole cuts that to 0.46 and costs 4.4 strokes a round.
+On 3 the Driver finishes OB on 0.3 % of swings at the chosen aim (the yard starts 53 yds right of it), which is why
+0.46 strokes on the penalty moves so little. Patch if wanted: `model.tee_value` returns the hole's solved value when
+the config carries one. Not needed for Saturday.
 
-### 1d. Is a one-shot table enough? A hole-specific rollout says yes here
+## 6. Water
 
-The table knows distance and lie. It does not know that 16's green has water short and left, or that a par 5 is
-reachable. So I built the next shot explicitly (`mdp.py`): from every playable cell between 120 yds and the green,
-the engine's own swing model plays the best next shot (an ideal club for the distance, up to a 250-yd carry, or a
-lay-up; 7 lateral aims), scored on the engine's per-cell strokes (putts on the green, short game by lie, water,
-sand). Cells more than 235 yds out are solved after the nearer ones, on the improved values, so a par-5 second
-shot chooses between going for the green and laying up. The same rollout on a featureless hole is subtracted, so
-the table keeps its level and its value of distance and only the hole's own geometry is added.
+One stroke, then a rough lie at the point where the ball crossed the margin, found by walking back along the flight
+line from the tee. That is lateral relief and it is applied correctly. A pond that has to be carried again after
+the drop is not in the table; the rollout in section 3 prices it and changes nothing (2, 10, 16).
 
-Results on the map states of 03:00-03:10 UTC (the frozen-state run is listed in section 6 when finished):
+## 7. Monte Carlo and winner's curse
 
-* No club changes on any hole, for an approach spread of 1.0, 1.6 or 2.2 times the stated iron pattern.
-* Aims move 0 to 2.5 yds (13: 2.5 left; the others 1 or less).
-* Margins: 16 grows (the approach over the water from further back costs 0.15 to 0.30 more than the table says, so
-  laying back with an iron is worse than it looked); 8 and 10 grow by 0.01 to 0.02; 13 and 18 shrink by 0.01 to
-  0.04 at 1.6.
+* Every club and aim sees the same swings (common random numbers), and margins carry paired SEs of 0.001-0.003.
+  That is sound.
+* Six independent swing sets per hole (`exp3_aim_mc.py`): the same club 6 of 6 times on all 13 holes; aim SD
+  0.2-0.8 yds; the chosen club's value on fresh swings differs from its in-sample value by -0.002 to +0.002; the
+  in-sample and fresh margins agree within 0.002. With the smallest margin at 0.025 and SEs of 0.002, choosing the
+  best of 7 clubs does not bias anything.
+* One pattern against the average over 64 prior draws (`exp6_prior_vs_central.py`; 3, 8, 9, 10, 11, 16): the same
+  club on all six, aims within 0.5 yd (10: 3 yds, finding 2), margins within 0.015.
+* "Better in X % of what-if golfers" is the share of prior draws in which the pick wins. On 10 it reads 0.59 for a
+  pick that wins by 0.056 on average. It is not a confidence level, and with one golfer in scope it should come
+  off the page.
+* The SE is not the uncertainty of the decision. 0.031 +/- 0.002 on 11 is 15 standard errors, and the choice of
+  table (section 1) moves it by 0.036.
 
-Limits: the ground beyond 345 yds from the tee was not hand-checked (greens, greenside sand and water are OSM and
-lidar), so I would not adopt these values for picks. As a check they say the one-shot table is adequate at Gateway.
+## 8. Aim search
 
-### 1e. Is there something better than strokes gained?
+Against a 0.25-yd grid on 40,000 swings with no smoothing:
 
-Expected strokes to go, minimised shot by shot, is the Bellman-optimal objective for stroke play. "Strokes gained"
-is that same quantity with a constant subtracted, so it picks the same shot. The weak point is not the objective
-but the table: one average over all holes. The improvement that is real is the course-specific value in 1d, and
-at Gateway it does not change a decision. Optimising for the worst case over unknown dispersion was dropped under
-Will's scope; for the record, on 3, 9 and 11 the Driver is also the choice with the smallest worst-case loss
-(0.012 against 0.033 to 0.052 for the 4-wood) over the six golfers of 1a.
+* The engine's aim (0.5-yd grid, 1-yd smoothing, spline) is within 1.25 yds of the fine optimum on 12 of 13 holes,
+  and the loss is 0.000-0.001. The exception is 10 (finding 2).
+* The optimum is a shallow bowl: curvature 0.0003-0.0007 strokes per yd squared (8: 0.00014). Aiming 3 yds off
+  costs 0.001-0.010, 5 yds 0.003-0.022, 10 yds 0.014-0.075. The 0.005 window is 5-8 yds wide (8: 11.5), which is
+  what the page's bar shows.
+* Which side is cheaper to miss the aim on (cost of 5 yds either way): right on 1, 2, 3 and 6 (left costs about
+  twice as much); left on 10, 11, 15 and 18; even on 5, 8, 9, 13 and 16.
+* The 60-yd bound binds nowhere (8's best aim is -45).
+* The engine slides the pattern sideways; a real aim turns it about the tee. On 8 (9 degrees) both clubs score
+  0.02 worse than the engine says, the best aim moves from -45.75 to -44, and the margin is unchanged (0.057 ->
+  0.059). Elsewhere under 0.013 strokes and 1.25 yds. No change needed.
 
-## 2. Dispersion
+## 9. Dispersion: is the one oval right?
 
-What the engine's central pattern is, measured on 200,000 swings at 70 F (`exp2_disp.py stats`):
+The central pattern, measured on 200,000 swings at 70 F (`exp2_disp.py stats`):
 
 | club | 95 % width (yds) | lateral SD | as an angle | carry SD, good swings | 95 % carry window, all swings | beyond 40 yds off line |
 |---|---|---|---|---|---|---|
@@ -172,25 +179,19 @@ What the engine's central pattern is, measured on 200,000 swings at 70 F (`exp2_
 | Mid iron | 37.1 | 9.5 | 2.84 deg | 5.7 | 39 | 0 |
 | 8-iron | 32.7 | 8.3 | 2.88 deg | 5.0 | 35 | 0 |
 
-* **Size.** 70 yds is DECADE's number for elite players' good swings (Fawcett: "every ounce of 70 yards"). As an
-  angle it is the Tour's (about 3.4 deg in Broadie's data, from memory). For a scratch-to-5 golfer over all
-  on-course drives the published figure is nearer 82. Under Will's scope 70 stands. At 76 and 82 no club changes
-  with the engine's table (9: margin 0.016 / 0.010; 11: 0.017 / 0.004; 3: 0.036 / 0.021). At 90 the 4-wood ties on
-  3, 9 and 11.
-* **Shape.** Wider than long for good swings: 71 wide by 35 deep (4 x 8.8) for the Driver, the DECADE shape. All
-  swings together are 59 deep because the mishits are short: 12 % carry 92-95 %, 2.5 % carry 65-85 %. Depth x0.8 or
-  x1.3: no club changes, aims within 1 yd.
-* **Per-club scaling.** The woods follow Will's own 65 : 60 : 50. As angles the 4-wood (2.97 deg) is straighter
-  than the Driver (3.47), and the irons are near 2.9. If the 4-wood were as wide as DECADE's usual fairway wood (60,
-  or the same angle as the Driver, 63): 16 stays 4-wood by 0.07-0.08, 10 becomes 2-wood by 0.09-0.10, and nothing
-  else moves. No current pick depends on the 4-wood being that straight.
-* **Tilt.** A push finishes short and a pull long (correlation 0.1), plus a carry loss with curvature. At
-  correlation 0.4 or -0.2: no club changes, aims within 3.5 yds on 10 and within 1.5 elsewhere.
-* **Tails.** The lateral miss is Gaussian apart from the mishits (kurtosis 3.1). Tested: a 6 % big-miss mode at
-  2.2x and a 10 % mode at 2.5x added on top, and Student-t with 5 and 3 degrees of freedom at the same 95 % width.
-  No club changes. Margins move by up to 0.012 for the added modes (16: 0.108 -> 0.096). Aims move 0-2.5 yds
-  (t3 on 9: 3 yds). On the
-  three holes named in the brief:
+* **Size.** 70 yds is the DECADE figure for a good player's driver (Fawcett: "every ounce of 70 yards"; quoted
+  from `spirit_hollow/research.md`). Right by that standard. At 60, 65, 76 and 82: no club changes; 9 and 11 thin
+  to 0.010 and 0.004 at 82. At 90 the 4-wood ties the Driver on 3, 9 and 11.
+* **Shape.** Good swings are 71 wide by 35 deep for the Driver (4 x 8.8): wider than long, the DECADE shape. All
+  swings together are 59 deep because mishits finish short (12 % carry 92-95 %, 2.5 % carry 65-85 %). Depth x0.8
+  or x1.3: no club changes, aims within 1 yd.
+* **Per-club scaling.** The woods follow Will's own 65 : 60 : 50. If the 4-wood were 60 (DECADE's usual fairway
+  wood) or 63 (the Driver's angle): 16 stays 4-wood by 0.07-0.08, 10 stays 2-wood by 0.09-0.10, nothing else moves.
+* **Tilt.** A push finishes short and a pull long (correlation 0.1), plus a carry loss with curvature. At 0.4 or
+  -0.2: no club changes, aims within 3.5 yds on 10 and 1.5 elsewhere.
+* **Tails.** Gaussian apart from the mishits. Tested: a big-miss mode added on top (6 % of swings at 2.2x, 10 % at
+  2.5x) and Student-t with 5 and 3 degrees of freedom at the same 95 % width. No club changes; margins move by up
+  to 0.012; aims by 0-2.5 yds (t3 on 9: 3 yds).
 
   | hole | central | + 6 % big misses | + 10 % big misses | t5, same width |
   |---|---|---|---|---|
@@ -198,91 +199,36 @@ What the engine's central pattern is, measured on 200,000 swings at 70 F (`exp2_
   | 10 (pond) | 2-wood -20.5, 0.060; water 5.7 % | -20.5, 0.057; 5.5 % | -20.5, 0.053; 5.4 % | -20, 0.069; 5.8 % |
   | 2 (pond) | Driver +14.5, 0.082; water 1.0 % | +15, 0.082; 1.6 % | +14.5, 0.079; 2.2 % | +13.5, 0.084; 1.3 % |
 
-  A fat tail at a fixed 95 % width pulls weight into the middle, so it helps the longer club; an added tail hurts
-  it slightly. Neither changes a decision: the OB on 3 starts 53 yds right of the aim, so even the 10 % big-miss
-  mode puts 0.8 % of drives there, and on 10 the water is taken by ordinary swings, not by the tail.
-* **Soft or firm ground.** Roll x0.7: no change (10: 2-wood by 0.110). Roll x1.3: 10 becomes a tie (2-wood by
-  0.011), 9 thins to 0.010.
-* **Recommendation.** Keep the pattern. One central pattern and the average over 64 "what-if golfers" give the
-  same club and the same aim within 0.5 yd on the holes compared so far (8, 9, 10; `exp6_prior_vs_central.py`), so
-  the single pattern loses nothing.
+* **Ground.** Roll x0.7: no change. Roll x1.3 (frozen or firm): 10 becomes a tie (2-wood by 0.011 over 4-wood)
+  and 9 thins to 0.010.
 
-## 3. Aim search
+## 10. Par-3 aim boxes: putting and short-game values (PAR3.md)
 
-Checked against a 0.25-yd grid on 40,000 swings with no smoothing (`exp3_aim_mc.py`):
+Reviewed from the method and the committed sensitivity table; not re-run, and not checked against the par-3
+re-solve of `ca4480af1`.
 
-* **The search is fine.** The engine's aim is within 1.25 yds of the fine optimum on 12 of 13 holes, and the loss
-  from the difference is 0.000-0.001. The exception is **10: -20.5 against -17.25, loss 0.007**. Its curve is the
-  bumpiest (green, sand and pond in the landing area). Use -18.
-* **How sharp is the optimum?** Curvature 0.0003-0.0007 strokes per yd squared (8: 0.00014). Aiming 3 yds off costs
-  0.001-0.010, 5 yds off 0.003-0.022, 10 yds off 0.014-0.075. The 0.005 window is 5-8 yds wide (8: 11.5), which is
-  what the page's bar shows. It is a fair description: inside the bar the aim does not matter.
-* **Which side to err on**, from the cost of 5 yds either way: err right on 1, 2, 3 and 6 (left costs about twice
-  as much); err left on 10, 11, 15 and 18; even on 5, 8, 9, 13 and 16.
-* **The 60-yd bound** binds nowhere (8's best aim is -45).
-* **Aim as a sideways shift.** The engine slides the pattern sideways; a real aim turns it about the tee. At 45 yds
-  left on 8 that is 9 degrees: both clubs score 0.02 worse than the engine says, the best aim moves from -45.75 to
-  -44, and the margin is unchanged (0.057 -> 0.059). Elsewhere the effect is under 0.013 strokes and 1.25 yds (10: the 4-wood scores 0.012 worse, so the 2-wood's
-  margin grows). No change
-  needed.
-* **One aim for the average golfer or an aim per golfer** is outside the scope now. For the record the per-golfer
-  best aims have an SD of 2.6-4.9 yds in the stored book, about the half-width of the bar.
+* Putting: Broadie's Tour putts by distance (1.50 from 8 ft, 1.87 from 20, 1.98 from 30) + 0.06. Short game by
+  lie + 0.15. These are the standard values with small offsets. A level offset cannot move a box, because it adds
+  the same amount to every outcome of the same kind.
+* "Aim short by 3.5-6.5 yds" is a statement about roll. The box is the landing spot; each iron rolls its stated
+  fairway roll (7-iron about 6 yds, 5-iron 8), so the ball finishes at about the centre. That is the right target
+  for an unknown pin.
+* Robust within the stated limits: half the roll puts the best landing spot 2.5-3.5 yds deeper and keeping the
+  page's box costs 0.010-0.017; 1.5x the roll, 2-3 yds shorter, 0.008-0.020. Dispersion +/-15 %, depth x2 and
+  temperature: under 0.01.
+* The carry matters more: 5 yds wrong on a club's number costs 0.03-0.08. The 5-, 7-, 9-iron and wedge carries are
+  assumed.
 
-## 4. Monte Carlo and inference
+## Risk, in one line
 
-* **Common random numbers and paired SEs: sound.** Every club and aim sees the same swings. The central margins
-  have paired SEs of 0.001-0.003.
-* **Winner's curse: none measurable.** Six independent swing sets per hole: the same club 6 of 6 times on all 13
-  holes; aim SD 0.2-0.8 yds; the chosen club's value on fresh swings differs from its in-sample value by
-  -0.002 to +0.002 (SD 0.002-0.003); in-sample and fresh margins agree within 0.002. With margins of 0.025 or more
-  and SEs of 0.002, picking the best of 7 clubs does not bias the result.
-* **The real error is model error, not Monte Carlo error.** 0.031 +/- 0.002 on 11 looks like 15 standard errors.
-  The honest statement is 0.00 to 0.03 depending on the scoring table and width (1a). The page's SE should not be
-  read as the uncertainty of the decision.
-* **"Better in X % of what-if golfers"** is the share of prior draws in which the pick beats the runner-up. It
-  mixes real differences between hypothetical golfers with noise, and on 10 it reads 0.59 for a pick that wins by
-  0.056 on average. Under Will's scope there is one golfer. Drop the line.
-* **Close-call label.** Suggested rule: "tie" when the honest margin is under 0.01, "close" under 0.02. On this map:
-  tie on 9 and 11, close on 3.
+Expected score is the right target for 36 holes of stroke play. Taking the lowest-variance club on every tee would
+cut the tee-shot SD from 1.16 to 0.46 strokes a round and cost 4.4 strokes (`exp7_risk.py`).
 
-## 5. Par-3 targets (PAR3.md)
+## Not verified
 
-Not re-run; reviewed from the method and the committed sensitivity table.
-
-* **Putting and short game.** Broadie's Tour putts by distance (1.50 from 8 ft, 1.87 from 20, 1.98 from 30) + 0.06,
-  short game by lie + 0.15. Those are the right tables and reasonable offsets for a scratch-to-5 player. As in 1a a
-  level shift cannot move the box.
-* **"Aim short by 3.5-6.5 yds" is a statement about roll, not about caution.** The box is the landing spot. The
-  model rolls each iron its stated fairway roll (7-iron about 6 yds, 5-iron 8), so a ball that lands 3.5-6.5 short
-  finishes at about the centre. That is the right target for an unknown pin: the finish at the centre, moved off
-  the expensive side.
-* **Robust?** Yes within the stated limits. With half the roll the best landing spot is 2.5-3.5 yds deeper and
-  keeping the page's box costs 0.010-0.017; with 1.5x the roll it is 2-3 yds shorter and costs 0.008-0.020. Dispersion
-  +/-15 %, depth x2 and temperature cost under 0.01.
-* **What matters more** is the carry: 5 yds wrong on the club's number costs 0.03-0.08. The 5-, 7-, 9-iron and
-  wedge carries are assumed, not Will's.
-* **Not tested:** the box for a visible pin (uniform pins only).
-
-## 6. Results log (frozen state `222f7ece4`)
-
-Filled by `run_all.sh`; numbers quoted above come from these files' logs.
-
-| file | what | status |
-|---|---|---|
-| `exp1_value.py` | scoring table and penalty variants, 13 holes x 12 | done |
-| `exp2_disp.py` | pattern variants, 13 holes x 21 | done |
-| `exp3_aim_mc.py` | fine aim curves, rotation, 6 independent swing sets | done |
-| `exp5_sd.py` | stroke-and-distance fixed point | done |
-| `exp7_risk.py` | mean and SD by club | done |
-| `exp8_coherent.py` | coherent golfers | done |
-| `exp4_mdp.py` | hole-specific rollout, spreads 1.0 / 1.6 / 2.2 | running on the frozen state; earlier-state results in 1d |
-| `exp6_prior_vs_central.py` | one pattern against the prior average | 8, 9, 10 done; 11, 16, 3 running |
-
-## 7. Not verified
-
-* Will's handicap, his real pattern and his 8-iron and wedge carries. Under the scope they are assumptions.
-* Broadie's and Fawcett's figures are quoted from memory or from `spirit_hollow/research.md`; nothing was fetched.
-* The lost-ball rate in November fescue is a guess that turns out not to matter.
-* The rollout in 1d rests on ground near the greens that was not hand-checked.
-* The frozen state is `222f7ece4`. If the map or the physics change again, the picks in section 0 move with them
-  (they moved on 8, 9, 10 and 16 between 02:10 and 03:05 UTC); the findings about the model should not.
+* Which table Will means (section 1).
+* The lost-ball rate in November fescue: a guess that does not matter.
+* The rollout rests on ground near the greens that was not hand-checked.
+* Fawcett's and Broadie's figures are quoted from `spirit_hollow/research.md` or from memory; nothing was fetched.
+* The sensitivity tables are on `222f7ece4`. On `ca4480af1` only the base picks were re-solved (same clubs; aims on
+  2, 3 and 5 as in the header).
