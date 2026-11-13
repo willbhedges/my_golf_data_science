@@ -524,9 +524,27 @@ class Fast:
             return st, sa, sb, vt, (oa, ol, olie, os_)
         return st, sa, sb, vt
 
-    def _lidar(self, hd, club, car, n, keep):
-        """The per-call constants of v2_course.lidar_flight_ev_curve, computed exactly as it does."""
+    def _lidar_flight(self, club, cm):
+        """The flight steps of v2_course.lidar_flight_ev_curve for one club at median carry cm, computed exactly as
+        it does: (F, y, sqrt(1 + slope^2), stepf)."""
         import math
+        import v2_course as vc
+        M = self.M
+        opts = M._lidar_opts
+        kind = "wood" if club in M.WOODS else "iron"
+        nst = max(4, int(np.ceil((1.0 - opts["f0"]) * cm / opts["step_yds"])))
+        F = np.linspace(opts["f0"], 1.0, nst + 1)[:-1] + 0.5 * (1.0 - opts["f0"]) / nst
+        y = vc.flight_heights(F, kind, cm)
+        dydx = np.gradient(vc.flight_heights(np.linspace(0, 1, 401), kind, cm), np.linspace(0, cm, 401))
+        slope = np.interp(F, np.linspace(0, 1, 401), dydx)
+        stepf = (1.0 - opts["f0"]) / nst
+        # the engine: (car1 * stepf) * sqrt(1 + sl^2), in that order: the kernel gets both factors
+        sq = np.array([math.sqrt(1.0 + sl * sl) for sl in slope])
+        return _f64(F), _f64(y), _f64(sq), float(stepf)
+
+    def _lidar_base(self, hd, n, keep):
+        """What every club's crown trace on this hole shares: the crown and ground-drop grids and each swing's
+        exponential draw (n swings), as v2_course.lidar_flight_ev_curve. None = no flight check on this hole."""
         import v2_course as vc
         M = self.M
         eng = M._engine_opts
@@ -537,29 +555,17 @@ class Fast:
         if C is None or k <= 0:
             return None
         ga, gl, top, base = C
-        kind = "wood" if club in M.WOODS else "iron"
-        cm = float(np.median(car))
-        nst = max(4, int(np.ceil((1.0 - opts["f0"]) * cm / opts["step_yds"])))
-        F = np.linspace(opts["f0"], 1.0, nst + 1)[:-1] + 0.5 * (1.0 - opts["f0"]) / nst
-        y = vc.flight_heights(F, kind, cm)
-        dydx = np.gradient(vc.flight_heights(np.linspace(0, 1, 401), kind, cm), np.linspace(0, cm, 401))
-        slope = np.interp(F, np.linspace(0, 1, 401), dydx)
-        stepf = (1.0 - opts["f0"]) / nst
-        # the engine: (car1 * stepf) * sqrt(1 + sl^2), in that order: the kernel gets both factors
-        sq = np.array([math.sqrt(1.0 + sl * sl) for sl in slope])
         G = drop_of(hd) if drop_of else None
         u = np.random.default_rng(int(n) * 7919 + 17).random(n)
         need = np.ascontiguousarray((-np.log1p(-np.minimum(u, 1 - 1e-12)) / k).astype(np.float32))
         top = np.ascontiguousarray(top, np.float32)
         base = np.ascontiguousarray(base, np.float32)
-        F, y, sq = _f64(F), _f64(y), _f64(sq)
         lid = Lidar()
-        lid.nf, lid.F, lid.y, lid.seg = len(F), _p(F, c_dp), _p(y, c_dp), _p(sq, c_dp)
         lid.min_along = float(opts["min_along"])
         lid.top, lid.base, lid.nga, lid.ngl = _p(top, c_fp), _p(base, c_fp), len(ga), len(gl)
         lid.ga0, lid.gl0, lid.inv_c = float(ga[0]), float(gl[0]), 1.0 / vc.CANOPY_STEP
         lid.tmax = float(top.max())
-        keep += [F, y, sq, need, top, base]
+        keep += [need, top, base]
         if G is not None:
             dga, dgl, dg = G
             dg = _f64(dg)
@@ -570,7 +576,17 @@ class Fast:
         else:
             lid.has_drop, lid.dmin = 0, 0.0
         lid.need = _p(need, c_fp)
-        lid.stepf = float(stepf)
+        return lid
+
+    def _lidar(self, hd, club, car, n, keep):
+        """The per-call constants of v2_course.lidar_flight_ev_curve, computed exactly as it does."""
+        lid = self._lidar_base(hd, n, keep)
+        if lid is None:
+            return None
+        F, y, sq, stepf = self._lidar_flight(club, float(np.median(car)))
+        lid.nf, lid.F, lid.y, lid.seg = len(F), _p(F, c_dp), _p(y, c_dp), _p(sq, c_dp)
+        lid.stepf = stepf
+        keep += [F, y, sq]
         return lid
 
     def ev_curve(self, R, S, hd, club, P, z, aims, wind=None):

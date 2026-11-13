@@ -51,6 +51,26 @@ static inline double drop_at(const lidar_t *L, double pa, double pl)
     return L->dg[(size_t)cell(pa, L->da0, L->inv_d, L->nda) * L->ndl + cell(pl, L->dl0, L->inv_d, L->ndl)];
 }
 
+/* v2_course.lidar_flight_ev_curve, one ball: the descent through the crowns, step by step. 1 when the ball stops in
+ * a crown (then at *ha, *hl), else 0. */
+static inline int crown_stop(const lidar_t *L, double c, double lat0, float need, double *ha, double *hl)
+{
+    double d_land = L->has_drop ? drop_at(L, c, lat0) : 0.0;
+    float acc = 0.0f;
+    for (int k = 0; k < L->nf; k++) {
+        double f = L->F[k], yf = L->y[k];
+        double pa = c * f;
+        if (!((yf - f * d_land + L->dmin < L->tmax) && (pa >= L->min_along))) continue;
+        double pl = lat0 * f;
+        double clear = yf - f * d_land + (L->has_drop ? drop_at(L, pa, pl) : 0.0);
+        size_t ci = (size_t)cell(pa, L->ga0, L->inv_c, L->nga) * L->ngl + cell(pl, L->gl0, L->inv_c, L->ngl);
+        if (!((clear < (double)L->top[ci]) && (clear > (double)L->base[ci]))) continue;
+        acc += (float)(c * L->stepf * L->seg[k]);   /* (car * stepf) * sqrt, as the engine */
+        if (acc >= need) { *ha = pa; *hl = pl; return 1; }
+    }
+    return 0;
+}
+
 /* One tee shot: landing (c, lat0), roll r -> finish (a, l, lie). model.finish, one sample. */
 static inline void roll_out(const int8_t *lie_g, int na, int nl, double a0, double l0, double inv,
                             double c, double lat0, double r, double rough_roll, int v1_roll,
@@ -464,22 +484,7 @@ void fs_ev(const int8_t *lie_g, const double *S, int na, int nl, double a0, doub
             double a, l, s;
             int lie;
             int stopped = 0;
-            if (L) {
-                double d_land = L->has_drop ? drop_at(L, c, lat0) : 0.0;
-                float acc = 0.0f;
-                float need = L->need[i];
-                for (int k = 0; k < L->nf; k++) {
-                    double f = L->F[k], yf = L->y[k];
-                    double pa = c * f;
-                    if (!((yf - f * d_land + L->dmin < L->tmax) && (pa >= L->min_along))) continue;
-                    double pl = lat0 * f;
-                    double clear = yf - f * d_land + (L->has_drop ? drop_at(L, pa, pl) : 0.0);
-                    size_t ci = (size_t)cell(pa, L->ga0, L->inv_c, L->nga) * L->ngl + cell(pl, L->gl0, L->inv_c, L->ngl);
-                    if (!((clear < (double)L->top[ci]) && (clear > (double)L->base[ci]))) continue;
-                    acc += (float)(c * L->stepf * L->seg[k]);   /* (car * stepf) * sqrt, as the engine */
-                    if (acc >= need) { stopped = 1; a = pa; l = pl; break; }
-                }
-            }
+            if (L) stopped = crown_stop(L, c, lat0, L->need[i], &a, &l);
             if (stopped) {
                 lie = lie_g[(size_t)cell(a, a0, inv, na) * nl + cell(l, l0, inv, nl)];
             } else {
@@ -893,10 +898,11 @@ typedef struct {
 } gctx;
 
 /* strokes after the tee shot for one swing at `cnt` aims (cnt <= 32) */
-static inline void vals(const gctx *x, double c, double dv, double rl, const double *aims, int cnt, double *out)
+static inline void vals(const gctx *x, const lidar_t *L, float need, double c, double dv, double rl,
+                        const double *aims, int cnt, double *out)
 {
 #ifdef FS_SIMD
-    if (x->lie_pad && x->Sf) {
+    if (x->lie_pad && x->Sf && !L) {
         float ab[32], buf[32];
         int nb = (cnt + 15) / 16;
         for (int k = 0; k < 16 * nb; k++) ab[k] = (float)aims[k < cnt ? k : cnt - 1];
@@ -914,7 +920,7 @@ static inline void vals(const gctx *x, double c, double dv, double rl, const dou
         __m512d aimv[NB];
         for (int b = 0; b < nb; b++) aimv[b] = _mm512_loadu_pd(ab + 8 * b);
         group_out o;
-        group(x->lie_pad, x->S, &x->g, NULL, c, dv, rl, 0.0f, aimv, x->rough_roll, x->v1_roll, &o, nb);
+        group(x->lie_pad, x->S, &x->g, L, c, dv, rl, need, aimv, x->rough_roll, x->v1_roll, &o, nb);
         double buf[32];
         for (int b = 0; b < nb; b++) _mm512_storeu_pd(buf + 8 * b, o.s[b]);
         for (int k = 0; k < cnt; k++) out[k] = buf[k];
@@ -923,7 +929,8 @@ static inline void vals(const gctx *x, double c, double dv, double rl, const dou
 #endif
     for (int k = 0; k < cnt; k++) {
         double a, l; int lie;
-        roll_out(x->lie_g, x->na, x->nl, x->a0, x->l0, x->inv, c, dv + aims[k], rl, x->rough_roll, x->v1_roll, &a, &l, &lie);
+        if (!(L && crown_stop(L, c, dv + aims[k], need, &a, &l)))
+            roll_out(x->lie_g, x->na, x->nl, x->a0, x->l0, x->inv, c, dv + aims[k], rl, x->rough_roll, x->v1_roll, &a, &l, &lie);
         out[k] = x->S[(size_t)cell(a, x->a0, x->inv, x->na) * x->nl + cell(l, x->l0, x->inv, x->nl)];
     }
 }
@@ -966,8 +973,13 @@ static int smooth_min(const double *cur, int w, int klo, int khi, const double *
 void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na, int nl, double a0, double l0, double inv,
              const double *z, int zcap, int ncell, int nclub, const double *par, const double *lim, const int *hyp,
              const shot_t *sp, double aim0, double step, int naims, const adapt_t *op,
-             double *out_club, double *out_cell, long long *balls_out, int nthreads)
+             double *out_club, double *out_cell, long long *balls_out, int nthreads,
+             const lidar_t *LB, const double *ltab, const int *lnf, const double *lstepf, int nfmax)
 {
+    /* LB (or NULL): the lidar crown trace of fs_ev in every ball of the grid. LB holds what is common to the hole
+     * (crown and ground-drop grids, need per swing); per (cell, club) the flight steps come from ltab
+     * ([F | y | seg], nfmax each), lnf and lstepf, built by adaptive.py as v2_course.lidar_flight_ev_curve does
+     * from that club's median carry in that wind. */
     gctx x;
     x.lie_g = lie_g; x.lie_pad = lie_pad; x.S = S; x.na = na; x.nl = nl; x.a0 = a0; x.l0 = l0; x.inv = inv;
     x.rough_roll = sp->rough_roll; x.v1_roll = sp->v1_roll;
@@ -975,7 +987,7 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
     x.g.a0 = _mm512_set1_pd(a0); x.g.l0 = _mm512_set1_pd(l0); x.g.inv = _mm512_set1_pd(inv);
     x.g.amax = _mm512_set1_pd((double)(na - 1)); x.g.lmax = _mm512_set1_pd((double)(nl - 1)); x.g.nl = _mm512_set1_pd((double)nl);
     float *Sf = NULL;
-    if (g_f32 && lie_pad) {
+    if (g_f32 && lie_pad && !LB) {
         Sf = (float *)malloc(sizeof(float) * (size_t)na * nl);
         for (size_t i = 0; i < (size_t)na * nl; i++) Sf[i] = (float)S[i];
         x.gf.a0 = _mm512_set1_ps((float)a0); x.gf.l0 = _mm512_set1_ps((float)l0); x.gf.inv = _mm512_set1_ps((float)inv);
@@ -1005,6 +1017,14 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
             int *w1 = w0 + nclub, *nsw = w0 + 2 * nclub, *alive = w0 + 3 * nclub, *kaim = w0 + 4 * nclub, *klo = w0 + 5 * nclub;
             double *cev = caim + nclub, *zlo = caim + 2 * nclub, *zhi = caim + 3 * nclub, *gap = caim + 4 * nclub, *gse = caim + 5 * nclub;
             int khi_[64];
+            lidar_t Lc[64];
+            if (LB)
+                for (int c = 0; c < nclub; c++) {
+                    size_t q = (size_t)ce * nclub + c;
+                    Lc[c] = *LB;
+                    Lc[c].nf = lnf[q]; Lc[c].stepf = lstepf[q];
+                    Lc[c].F = ltab + q * 3 * nfmax; Lc[c].y = Lc[c].F + nfmax; Lc[c].seg = Lc[c].y + nfmax;
+                }
             /* ---- shots of every club (model.shots, per swing) */
             for (int c = 0; c < nclub; c++) {
                 const double *p = par + ((size_t)ce * nclub + c) * 5;
@@ -1033,12 +1053,13 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
             #define EVAL(c_, i0_, i1_, n0_, n1_) do {                                                       \
                 const double *cc_ = car + (size_t)(c_) * 3 * cap, *dd_ = cc_ + cap, *rr_ = dd_ + cap;        \
                 double *bb_ = bsum + (size_t)(c_) * nbmax * naims;                                           \
+                const lidar_t *L_ = LB ? &Lc[c_] : NULL;                                                     \
                 for (int q_ = (i0_); q_ <= (i1_); q_ += 32) {                                                \
                     int cnt_ = (i1_) - q_ + 1 < 32 ? (i1_) - q_ + 1 : 32;                                    \
                     double acc_[32], v_[32];                                                                 \
                     for (int k_ = 0; k_ < cnt_; k_++) acc_[k_] = 0.0;                                        \
                     for (int i_ = (n0_); i_ < (n1_); i_++) {                                                 \
-                        vals(&x, cc_[i_], dd_[i_], rr_[i_], aims + q_, cnt_, v_);                            \
+                        vals(&x, L_, L_ ? L_->need[i_] : 0.0f, cc_[i_], dd_[i_], rr_[i_], aims + q_, cnt_, v_); \
                         for (int k_ = 0; k_ < cnt_; k_++) acc_[k_] += v_[k_];                                \
                         if ((i_ + 1) % bs == 0) {                                                            \
                             for (int k_ = 0; k_ < cnt_; k_++) { bb_[(size_t)(i_ / bs) * naims + q_ + k_] = acc_[k_]; acc_[k_] = 0.0; } \
@@ -1079,7 +1100,7 @@ void fs_grid(const int8_t *lie_g, const int8_t *lie_pad, const double *S, int na
                     int cnt = nc - q < 32 ? nc - q : 32;
                     double v[32];
                     for (int i = 0; i < op->n_coarse; i++) {
-                        vals(&x, cc[i], dd[i], rr[i], ca + q, cnt, v);
+                        vals(&x, LB ? &Lc[c] : NULL, LB ? LB->need[i] : 0.0f, cc[i], dd[i], rr[i], ca + q, cnt, v);
                         for (int k = 0; k < cnt; k++) cs[q + k] += v[k];
                     }
                     balls += (long long)cnt * op->n_coarse;

@@ -41,7 +41,8 @@ def _lib():
         i, d = ctypes.c_int, ctypes.c_double
         L.fs_grid.argtypes = [c_i8p, c_i8p, c_dp, i, i, d, d, d, c_dp, i, i, i, c_dp, c_dp, ctypes.POINTER(ctypes.c_int),
                               ctypes.POINTER(Shot), d, d, i, ctypes.POINTER(Adapt), c_dp, c_dp,
-                              ctypes.POINTER(ctypes.c_longlong), i]
+                              ctypes.POINTER(ctypes.c_longlong), i,
+                              ctypes.POINTER(fast.Lidar), c_dp, ctypes.POINTER(ctypes.c_int), c_dp, i]
         L.fs_grid.restype = None
         L.fs_set_f32.argtypes = [i]
         L.fs_set_f32.restype = None
@@ -58,12 +59,21 @@ def grid(M, D, WG2, h, P, R, S, cells, z, opts):
     nc, nk = len(cells), len(clubs)
     par, lim = np.empty((nc, nk, 5)), np.empty((nc, nk, 2))
     page = {}
+    # lidar flight trees (Eagle Knoll): the crown trace of fast.Fast._lidar in every ball. What the hole shares (crown
+    # and drop grids, each swing's exponential draw: the engine's own generator and seed for z's swing count) + per
+    # (cell, club) the flight steps from that club's median carry over z's swings in that wind, as the engine.
+    F = M._fastsolve
+    keep, flights = [], {}
+    lid = F._lidar_base(hd, z.shape[1], keep) if F.mode == "lidar" else None
     for ci, (sp, rel) in enumerate(cells):
         for ki, c in enumerate(clubs):
             carry, roll, sl, sc = M.club_numbers(hd, c, P)
             drift = 0.0
             if sp:
                 carry, roll, sl, sc, drift = WG2.wind_hook(c, sp, rel)(carry, roll, sl, sc)
+            if lid is not None:
+                car = M.shots(hd, c, P, z, WG2.wind_hook(c, sp, rel) if sp else None)[0]
+                flights[ci, ki] = F._lidar_flight(c, float(np.median(car)))
             par[ci, ki] = (carry, roll, sl, sc, drift)
             lim[ci, ki] = (-D.AIM_LIMIT - drift, D.AIM_LIMIT - drift)
             carry0, total0, width0, depth0 = M.CLUBS[c]
@@ -86,12 +96,19 @@ def grid(M, D, WG2, h, P, R, S, cells, z, opts):
     hyp = (ctypes.c_int * nk)(*[int(c in M.HYPOTHETICAL) for c in clubs])
     oc, oe = np.empty((nc, nk, 6)), np.empty((nc, 8))
     balls = ctypes.c_longlong(0)
-    L.fs_set_f32(int(bool(opts.get("f32"))))
+    nfmax = max((len(f[0]) for f in flights.values()), default=0)
+    ltab, lnf, lstepf = np.zeros((nc, nk, 3, max(nfmax, 1))), np.zeros((nc, nk), np.int32), np.zeros((nc, nk))
+    for (ci, ki), (Fr, y, sq, stepf) in flights.items():
+        ltab[ci, ki, 0, :len(Fr)], ltab[ci, ki, 1, :len(Fr)], ltab[ci, ki, 2, :len(Fr)] = Fr, y, sq
+        lnf[ci, ki], lstepf[ci, ki] = len(Fr), stepf
+    L.fs_set_f32(int(bool(opts.get("f32"))))          # float32 lanes have no crown trace: fs_grid ignores it with lid
     P_ = lambda a, t: a.ctypes.data_as(t)                                  # noqa: E731
     L.fs_grid(P_(lie, c_i8p), P_(pad, c_i8p) if L.simd else None, P_(S, c_dp), lie.shape[0], lie.shape[1], float(M.A0),
               float(M.L0), 1.0 / M.RES, P_(z, c_dp), z.shape[1], nc, nk, P_(par, c_dp), P_(lim, c_dp), hyp,
               ctypes.byref(sp_), float(aims[0]), float(aims[1] - aims[0]), len(aims), ctypes.byref(op), P_(oc, c_dp),
-              P_(oe, c_dp), ctypes.byref(balls), fast.nthreads())
+              P_(oe, c_dp), ctypes.byref(balls), fast.nthreads(),
+              ctypes.byref(lid) if lid is not None else None, P_(ltab, c_dp),
+              lnf.ctypes.data_as(ctypes.POINTER(ctypes.c_int)), P_(lstepf, c_dp), int(nfmax))
     out = []
     for ci in range(nc):
         res = {}
@@ -116,10 +133,10 @@ def install(M, D, WG2, **over):
     """-> a solve(h, P, R, S, z, speed, rel) for wind_grid_v2.main: the first cell asked of a (hole, world) runs the
     whole grid in C, the other cells are read from it."""
     F = fast.install(M, D)
-    if F.mode != "plain":
-        # flight-through-crowns courses (Eagle Knoll): fs_grid has no crown trace yet -> the exact kernel path
-        print("adaptive: engine mode %r is not covered by fs_grid; using the exact kernel solve" % (F.mode,))
-        return fast.wind_solve(F, WG2) if F.mode else WG2.solve
+    if F.mode not in ("plain", "lidar"):
+        # an engine set-up the kernel does not cover (the legacy constant-height flight check): the engine's solve
+        print("adaptive: engine mode %r is not covered by fs_grid; using the engine's own solve" % (F.mode,))
+        return WG2.solve
     opts = dict(DEFAULTS, **{k: v for k, v in over.items() if v is not None})
     z = fast.sobol_draws(opts["cap"], opts["seed"])
     cache = {}
