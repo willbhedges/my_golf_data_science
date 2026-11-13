@@ -1448,6 +1448,13 @@ def build_page(slug, which, out=None, data_out=None):
                 fetched=fc.get("fetched_utc", ""), draws=int(cfg.get("draws", 64)),
                 aim_limit=float(D.AIM_LIMIT), p3_bag=cfg.get("par3_bag"),
                 temp_k=float(M.central()["temp_k"]))
+    pt_ = cfg.get("page_text") or {}
+    if pt_.get("simple"):
+        data["simple"] = True
+    for d_ in holes:
+        cn = (pt_.get("condition_notes") or {}).get(str(d_.get("key")))
+        if cn and d_.get("kind") == "tee":
+            d_["cond_note"] = cn
     if cfg.get("par3_drift_per_mph"):
         data["p3_drift"] = float(cfg["par3_drift_per_mph"])
     if cfg.get("temp_note"):

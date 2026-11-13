@@ -410,7 +410,7 @@ function render(){
     if(r.split) badges.push(`<span class="pill tie">Models split · calm-day book: ${r.book}${h.calm ? " by " + h.calm.margin.toFixed(3) : ""}; wind model: ${r.pick} by ${r.margin.toFixed(3)} · a coin flip</span>`);
     else if(r.tie) badges.push(`<span class="pill tie">Tie · ${r.order[1]} just as good</span>`);
     else if(r.bayes && h.calm && h.calm.runner && (h.calm.margin < 0.03 || (h.calm.p != null && h.calm.p < 0.8)))
-      badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers` : ""}</span>`);
+      badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? (D.simple ? `, ${Math.round(h.calm.p * 100)}% sure` : `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers`) : ""}</span>`);
     else if(!r.bayes && r.margin < 0.03)
       badges.push(`<span class="pill tie">Close call · ${r.order[1]} +${r.margin.toFixed(3)} (wind model)</span>`);
     if(calm !== r.pick && r.T.back === 0 && !r.split) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
@@ -420,7 +420,7 @@ function render(){
     const why = [Math.abs(best.drift) > 2 ? `wind ${Math.abs(best.drift).toFixed(0)} ${best.drift < 0 ? "left" : "right"}` : "",
                  Math.abs(best.kick) > 2 ? `slope ${Math.abs(best.kick).toFixed(0)} ${best.kick < 0 ? "left" : "right"}` : ""].filter(Boolean).join(", ");
     document.getElementById("hAim").innerHTML = `Aim at the dot (anywhere on the blue bar is within 0.005 strokes)${Math.abs(mv) > 2 ? `; it finishes about ${Math.abs(mv).toFixed(0)} yds ${mv < 0 ? "left" : "right"} at the dashed spot${why ? ` (${why})` : ""}` : ""}. ${relWords(r.rel, st.mph)}, ${Math.round(r.tF)}°F.${r.bayes ? " Same club as the book (this wind and temperature don't change it)." : ""}`;
-    const allC = Object.keys(r.out).sort((a,b) => r.out[a].ev - r.out[b].ev);
+    const allC = Object.keys(r.out).sort((a,b) => (D.simple ? (HYPO(a) - HYPO(b)) : 0) || r.out[a].ev - r.out[b].ev);   /* D.simple: the club not in the bag goes last */
     const rows = allC.map(c => { const v = r.out[c], d = v.ev - r.out[r.pick].ev;
       const lost = c===r.pick ? "—" : HYPO(c) ? (d < 0 ? `would gain ${(-d).toFixed(3)}` : d < 0.01 ? "≈ tie" : "+"+d.toFixed(3)) : (d <= -0.01 ? `better by ${(-d).toFixed(3)} here` : Math.abs(d) < 0.01 ? "≈ tie" : "+"+d.toFixed(3));
       return `<tr data-club="${c}" class="${c===pickC?"best sel":""}"${HYPO(c) ? ' style="font-style:italic;opacity:.8"' : ""}><td class="${cls(c)}">${c===pickC?"● ":""}${c}${c===r.pick?" ★":""}</td><td>${Math.round(v.carry)}</td><td>${Math.round(v.total)}</td><td>${toGreen(h, r.T.back, v)}</td><td>${Math.round(v.width)}</td><td>${lost}</td></tr>`;}).join("");
@@ -434,6 +434,10 @@ function render(){
     if(note && h.calm && r.T.back === 0 && !/^Calm-day/.test(note)) note = `Calm-day book (no wind, ${Math.round(h.calm.temp)}°F): ` + note;
     if(note && h.calm && r.T.back === 0 && r.pick !== h.calm.pick)
       note = `In this wind and temperature the wind model picks ${r.pick} by ${r.margin.toFixed(3)} over ${r.order[1]}; the calm-day book is below for comparison. ` + note;
+    /* D.simple (config page_text.simple): one aim number per hole, the one at the top (it includes the wind); the
+       calm-day note keeps the club, the margin and the shares */
+    if(D.simple) note = note.replace(/ Aim .*? is within 0\.005\./, "").replace(/; it beats [^.;]*? in (\d+)% of \d+ what-if worlds/, "; $1% sure").replace(/ Driver-pattern break-even[^.]*?yds\./, "").replace(/ Same club for any driver pattern[^.]*?yds\./, "");
+    if(h.cond_note) badges.push(`<span class="pill chg">${h.cond_note}</span>`);
     if(r.T.back !== 0) note = `The calm-day book (club, aim, fairway / trouble shares, yards in) is for the ${h.base_set} tee, so it is not shown here: from this tee use the play and the club table above (solved ${Math.abs(r.T.back)} yds ${r.T.back > 0 ? "back" : "up"} the line).` +
       (Math.abs(r.T.back) >= 100 ? " This tee is placed by moving the " + h.base_set + " tee along the line, not from its own box: a rough guide." : "") +
       (h.map_note ? ` Map (yds from the ${h.base_set} tee): ${h.map_note}` : "");

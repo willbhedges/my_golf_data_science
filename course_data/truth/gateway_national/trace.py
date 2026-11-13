@@ -54,14 +54,18 @@ EXTRA = {
     # ground starts beyond it. "beyond the end" moved from 300 to 312, "inside the dogleg" from the fairway edge to
     # 12 yds off it.
     "8": [N([(312, -35), (345, -35)], [(312, 25), (345, 25)], "prairie beyond the end of the fairway (past the mown collar)"),
-          N([(220, 25), (345, 25)], [(220, 45), (345, 45)], "fescue before the trees right"),
+          # 2026-11-13 (F1, second_pass/FEATURES_1_9.md): "fescue before the trees right" (x +25..+45 at 220-345)
+          # removed: mown rough to the brush line (Dec 2020 lidar: no standing grass; NDVI Nov 2024-26 0.76-0.84).
+          # The summer photos show it tan because it is unirrigated, not because it is long.
           # 2026-11-09 eye check B (must fix): the fairway's right edge bends left round the 270 bunker; the ground
           # from it to the trees is the same fescue (NIR/red 1.03-1.13 vs turf 1.3; native_auto 8 R p 0.89)
-          N([(225, 34), (240, 31), (250, 26), (260, 21), (268, 13), (280, -5), (300, -12), (312, -30)], [(225, 45), (312, 45)],
-            "unmown ground inside the dogleg: from the mown collar to the trees"),
+          # inner edge = F1's lidar line (first standing grass): 47 at 220, 45 at 250, 34 / 28 / 21 / 9 / -7 at 260 /
+          # 270 / 280 / 290 / 300 (Sentinel-2 Nov 2026 within 0-6 yds of it); my own collar line was 10-25 yds too close
+          N([(220, 47), (250, 45), (260, 34), (270, 28), (280, 21), (290, 9), (300, -7), (312, -25)], [(220, 65), (312, 65)],
+            "unmown ground inside the dogleg: from the lidar brush line to the trees"),
           # 2026-11-13 second pass: the unmown square inside the bend, ringed by a mown bank (NAIP 2023 RGB + CIR:
           # dark, tufted; outside the +/-65 corridor, so it was priced as "unverified"). Driver territory (300-337).
-          Z("native", poly((-70, 302), (-58, 312), (-57, 323), (-70, 337), (-83, 330), (-88, 318), (-82, 306)),
+          Z("native", poly((-67, 299), (-53, 309), (-48, 316), (-72, 336), (-83, 330), (-88, 318), (-82, 306)),
             "unmown square inside the dogleg, left of the line (302-337)")],
     # 2026-11-09 audit item 3 (checked on NAIP 2023 RGB + CIR): the tufted strip left runs in to 5-8 yds off the
     # fairway at 250-340 (CIR grey / dark red, textured), not only x -48..-33
@@ -71,7 +75,7 @@ EXTRA = {
           # NDVI of Nov 8 / 10 2026 puts the dormant-grass edge in the same place; (b) the "fescue before the tree line
           # right" (x +30..+45) is mown turf: mowing stripes on NAIP 2023, NDVI 0.87 in Nov 2026 (= the fairway's):
           # removed
-          N([(250, -50), (340, -50)], [(250, -24), (265, -18), (280, -18), (300, -22), (320, -27), (340, -28)],
+          N([(250, -50), (340, -50)], [(250, -34), (260, -33), (265, -29), (270, -20), (280, -19), (300, -22), (320, -27), (340, -28)],
             "unmown strip left, in to the worn line 6-15 yds off the fairway (250-340)")],
     "10": [N([(140, -70), (345, -70)], [(140, -45), (345, -45)], "prairie left"),
            N([(140, 52), (300, 30), (345, 30)], [(140, 70), (345, 70)], "prairie beyond the cart path right")],
@@ -119,28 +123,31 @@ NOTE = {
 LATE = {"3": [Z("recovery", band([(145, 32), (345, 32)], [(145, 44), (345, 44)]), "tree / shrub line before the industrial yard right (CIR 2023, NAIP 2022)"),
               Z("ob", band([(145, 44), (345, 44)], [(145, 65), (345, 65)]), "industrial yard right (off the property)")]}
 
-# 2026-11-13 second pass (specialists F1 / F2, second_pass/FEATURES_*.md): long grass re-traced from the USGS 3DEP lidar
+# 2026-11-13 second pass (specialist F2, second_pass/FEATURES_10_18.md): long grass re-traced from the USGS 3DEP lidar
 # point clouds of Dec 2020 / Dec 2023 (vegetation height on a 0.5 m grid: mown 0.02-0.04 m, standing fescue / prairie
-# 0.10-0.35 m) with NAIP 2016-2023 and the Sentinel-2 NDVI of Nov 2026. For the holes listed, the hand native bands
-# above are REPLACED by the proposals' native polygons (confidence >= 0.7) and mown islands; fairway / water / sand /
-# trees stay as traced. The integrator checked each hole on a lidar-height + NAIP render before listing it here.
+# 0.10-0.35 m). Applied ONLY where it moves a Back or Middle aim by >= 3 yds or changes a club, and only after the
+# integrator checked the hole on a lidar-height + NAIP render: holes 10 and 16. There the hand native bands above are
+# replaced by the frozen copy of the proposals in features_applied.json (action add, kind native / rough, confidence
+# >= 0.7). Every other hole keeps its hand bands. Any other action in that file is an error.
 import json as _json  # noqa: E402
-_SP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "courses", S, "second_pass")
-FEATURE_HOLES = {"features_10_18.json": ["10", "11", "13", "15", "16", "18"]}
-FEATURE_MIN_CONF = 0.7
-for _f, _refs in FEATURE_HOLES.items():
-    _fp = os.path.join(_SP, _f)
-    if not os.path.exists(_fp):
-        continue
-    _F = _json.load(open(_fp))["holes"]
-    for _r in _refs:
-        _ed = [e for e in _F[_r]["edits"] if e["action"] == "add" and e.get("polygon_frame_x_along")
-               and float(e.get("confidence", 0)) >= FEATURE_MIN_CONF]
-        _z = [Z("native", poly(*[(x, a) for x, a in e["polygon_frame_x_along"]]), "second pass: " + e["target"][:80])
-              for e in _ed if e["kind"] == "native"]
-        _z += [Z("rough", poly(*[(x, a) for x, a in e["polygon_frame_x_along"]]), "second pass: mown island")
-               for e in _ed if e["kind"] == "rough"]
-        EXTRA[_r] = _z
+_FA = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "features_applied.json")))["holes"]
+for _r, _eds in _FA.items():
+    _z = []
+    for _k in ("native", "rough"):
+        for e in _eds:
+            if e["action"] != "add" or e["kind"] not in ("native", "rough"):
+                raise ValueError("features_applied.json: hole %s: unhandled edit %s %s" % (_r, e["action"], e["kind"]))
+            if e["kind"] == _k:
+                _z.append(Z(_k, poly(*[(x, a) for x, a in e["polygon_frame_x_along"]]),
+                            "second pass (lidar height): " + e["target"][:70]))
+    EXTRA[_r] = _z
+# 16, the mound right of the fairway at 264-298 (x +6..+43, white stones on its left edge): tufted on NAIP Aug 2023, but
+# the Dec 2023 lidar has its grass at 0.036 m (the fescue block across the fairway reads 0.22 m in the same flight) and
+# the Nov 2026 NDVI is 0.78. Decision (recorded in OPTIMIZE.md): not a lost-ball lie, but not plain rough either (a
+# hummocky mound, an awkward stance). The engine has no heavy-rough lie; it is priced as "sand" (ball found, stops
+# where it lands, about 0.3-0.4 strokes over fairway at 90 yds), between rough and native.
+EXTRA["16"].append(Z("sand", poly((8, 297), (25, 298), (38, 292), (43, 282), (40, 270), (30, 264), (18, 266), (10, 272), (6, 285)),
+                     "mound right of the fairway, inside the cart path: short tufted grass (priced as a penal lie, not lost-ball)"))
 
 for _r, (_n, _c) in NOTE.items():
     H[_r] = dict(zones=EXTRA.get(_r, []) + auto(_r) + LATE.get(_r, []), note=_n, confidence=_c)
