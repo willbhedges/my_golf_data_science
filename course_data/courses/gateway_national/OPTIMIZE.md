@@ -1,5 +1,89 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## HANDOFF: state at the stop, Nov 13 ~04:30 UTC (integrator)
+
+Work stopped on the golfer's instruction. Nothing of mine is uncommitted; no local job is running. Details of the
+second pass are in section 5 at the end of this file; AUDIT.md's last section has the status of the 13 findings.
+
+### 1. What rev 7 is solving (Actions run 43358518302, nccga-v2, started 03:22Z, head 5ef2a228c)
+
+Back rev 7 + Middle rev 6, every hole, every offset, 256 prior draws, card-tee grids refined on 16,000 swings.
+
+* **Map** (`course_data/truth/gateway_national/trace.py` + `features_applied.json` -> `hand_zones_ll.json` ->
+  `truth/package.json` -> `truth/course.py`, `truth_middle/course.py`): the Nov 9 map plus the edits of table 5c and
+  the three F1 edits added after it was written: **2** (left block beyond the pond and the unmown ground right of the
+  cart path from the lidar: Driver +14.5 -> +9), **3** (right "fescue strip" x +18..+32 is a bare track: removed;
+  Driver -9 -> -5.5), **5** (strip between rough and cart path is mown, long grass from the lidar line 64 -> 41 R
+  at 200-300; Driver 0 -> +3.5). Lidar polygons only on 2, 5, 10, 16; 16's mound priced as "sand".
+* **Config** `engine`: 8-iron, green putting, aim_limit 60, `checked_extra_ll` (hole 8), `physics` (temp_k 0.00135,
+  drift 1.5 yds / mph, per-club wind multipliers). Table "am" (golfer's decision, Nov 13).
+* **Forecast** for the book temperatures: fetched Nov 13 02:44Z (Sat 35 F at 9:00), 9:00 start on hole 1.
+* **The committed tree matches it.** `git diff 5ef2a228c HEAD` on the map, the course modules, the engine and
+  `config.engine` is empty. The commits after it touch only the par-3 boxes (ca4480af1) and page text
+  (c3b289149: `page_text.close_margin`, template).
+
+### 2. Pending items
+
+| item | status |
+|---|---|
+| 8: trees inside the dogleg (F1: canopy at x 31 / 27 / 17 / 11 / 7 / 2 / -4 / -13 at 270-340) | tested in memory, **not applied**: Driver -44.5 by 0.057 with and without (identical to 3 decimals: the Driver finishes 285 at x -48 +/- 36, the crowns start at +31) |
+| 8: unmown square as native vs rough | tested: identical (0.057). The Driver's margin does not depend on it from Back. From Middle it does (the Driver reaches it): Middle 8 is 4-wood -35.5 |
+| 10: aim | **not done.** My single-seed central solve says -20.5; the statistics review's 40,000-swing search says -17.25 (six swing sets -17 to -19). The page takes the aim from the 256-draw book, which averages its own swings: read it after rev 7 lands. If it is outside -17..-19, the cost is 0.007 strokes |
+| OB replay value on 3 / 10 | **not done** (not trivial; 3's margin 0.051 -> 0.044, aim unchanged) |
+| 18 tee note | done (`page_text.condition_notes["18"]["Back"]`, a pill on Back 18). Not yet seen on a built page |
+| par-3 boxes and ladder (ca4480af1) | committed for Back and Middle (`par3_targets.json`, `par3_ladder.json`); the page reads them at build. The boxes moved 1-2 yds deeper on every hole; a control run (7, no surround edits) gives the same shift, so it comes from the second-pass physics / forecast, not from the surrounds. Lateral moves from the surrounds: 12 1 yd left, 14 1.5 right, 17 1 right. The Tips / Champions / Forward keep the Nov 9 boxes. Not yet seen on a built page |
+| close-call badges 9 / 11 | done (`close_margin` 0.045). Not yet seen on a built page |
+| "N% sure" / "what-if" wording | removed in the template (`page_text.simple`). Checked on a local test build before the last edit; not after |
+| frozen-ground line on 10 | done (pill on 10, Back and Middle). Seen on a local test build |
+| 8's green out of frame | **not done** |
+| F1's Middle 7 tee (159 not 155) and F2's 18 tees | not applied (note on 18 only) |
+
+### 3. Steps after rev 7's merge commit lands
+
+1. **Did it land?** `git log origin/<branch> --grep 43358518302`: one commit "NCCGA courses: v2 decisions + wind
+   grids + wind page (GitHub Actions run 43358518302)". The superseded runs (rev 4 = run 43354322476, rev 5, rev 6)
+   each commit `truth/course.py` with their own timestamp line, which later commits also changed, so their
+   `git pull --rebase` conflicts and their Commit step fails after 5 tries. That is expected. If rev 7's own Commit
+   step fails, or a commit with another run id appears AFTER rev 7's, bump `rev` in both
+   `course_data/requests/nccga_v2_gateway_national*.json` (no other change) and wait ~1 h 45.
+2. **The page the merge job built is NOT the final page**: it was built at 5ef2a228c, before the par-3 boxes and the
+   last template commit. Rebuild: bump `rev` in `course_data/requests/display_gateway_national.json` (keep
+   `"year": 2023`), ~5 min.
+3. **QA**: `node course_data/courses/qa_page.js course_data/courses/gateway_national/wind_page/index.html <out> "<set>"`
+   for The Tips, Champions, Back, Middle, Forward (18 holes, 0 problems each); look at the phone screenshots of every
+   Back hole; text scan for hazard words (none expected: water, pond, creek, bunker, sand, tree, OB, fescue, prairie,
+   native, long grass) and for "what-if" / "% sure" (none expected).
+4. **Check the Back book against this table** (central world, 16,000 swings, final map; the 256-draw book should be
+   within ~2 yds and ~0.01 strokes; aim + = right of the tee line):
+
+| hole | club | calm aim | margin over | badge expected |
+|---|---|---|---|---|
+| 1 | Driver | 8.5 L | 0.054, 2-wood | none |
+| 2 | Driver | 9 R | 0.062, 2-wood | none |
+| 3 | Driver | 5.5 L | 0.059, 2-wood | none |
+| 5 | Driver | 3.5 R | 0.094, 2-wood | none |
+| 6 | Driver | 6 R | 0.118, 2-wood | none |
+| 8 | Driver | 44.5 L | 0.057, 2-wood | none |
+| 9 | Driver | 13 R | 0.025, 2-wood (4-wood 0.039) | close call |
+| 10 | 2-wood | 17-21 L (see item above) | 0.060, 4-wood | frozen-ground pill; at 35 F or into the wind the grid may show another club |
+| 11 | Driver | 17.5 R | 0.031, 4-wood | close call |
+| 13 | Driver | 1 R | 0.122, 2-wood | none |
+| 15 | Driver | 14.5 R | 0.109, 2-wood | none |
+| 16 | 4-wood | 6.5 R | 0.108, 2-wood (long iron 0.111) | none |
+| 18 | Driver | 14.5 R | 0.132, 2-wood | tee-note pill |
+
+   Par 3s on Saturday at the 9:00 default should read about 178 (4), 183 (7), 136 (12), 198 (14), 197 (17), each with
+   a crosswind line of 3-6 yds. Middle: 8 4-wood 35.5 L, 9 4-wood 11 R, 10 4-wood 16 L, 16 long iron 7 R, the rest
+   Driver.
+
+### 4. The forecast refresh (Sat 00:30 UTC)
+
+Do: bump `rev` in `course_data/requests/weather_gateway_national.json`, wait for the "weather-course" commit, then
+bump `rev` in `display_gateway_national.json` (year 2023), QA as above, publish. It rebuilds the page's wind picks and
+par-3 numbers on the new forecast. Do NOT touch the `nccga_v2_*` requests, the map, config `engine` or the par-3
+files: the calm book keeps the Nov 13 02:44Z temperatures (within a few F), and a full re-solve does not fit.
+
+
 For Will (KU club golf), NCCGA Regional 3, Gateway National Golf Links (Madison IL), Sat-Sun Nov 14-15 2026, Back
 tees (6,623). Same process as Eagle Knoll (`course_data/courses/eagle_knoll/OPTIMIZE.md`, Nov 3-8), which went well.
 Scripts: `opt/` (copied from Eagle Knoll's `opt/` and made course-generic: `SLUG` env, default gateway_national).
