@@ -188,3 +188,21 @@ Will's decisions tonight: one generic model (no player what-if cases); keep tabl
 Performance work is DONE after the speed agent's last tweaks (full solve ~2 min; one hole ~9 s; rebuilds may take up to 5 min for precision). FULL STRATEGY MODE on Gateway: perfect tee-shot decision on every hole; screenshot the pages and ask "does this make sense?"; hole 10 over the creek is the example of what to catch.
 Agents: strategy lead (only editor of map / config / v2 outputs / page; ditch sweep on all holes; integrates proposals; full re-solve + page build + QA; messages manager "page ready"); hole-10 ditch agent (second_pass/HOLE10.md); reviewers A (1-6), B (7-9, 11, 12), C (13-18) -> second_pass/REVIEW_{A,B,C}.md, read-only; speed agent finishing items 2-5 in fastsolve/.
 Manager each check-in: relay finished agents' reports to the lead; when the lead says a page is ready: qa_page.js on 5 sets, look at every Back hole screenshot, check hazard words, publish PCn2RTEcicJs2LrEC2ZBLb; keep a short summary for Will at the bottom of this file ("For Will when he wakes"); relaunch reviewers with new angles when they finish (second-shot positions, Sunday E/SE wind, Middle set, par-3 boxes, frozen ground). Pick-changing work for Saturday must be on a QA'd page by Fri 21:00Z; final forecast refresh Sat 00:30Z (trig_019fFcTP6Vff4B11b33oh97Z).
+
+## For Will when he wakes (night of Nov 12-13)
+
+Published: Gateway page version 7, https://claude.ai/artifact/PCn2RTEcicJs2LrEC2ZBLb (commit 5ed8b2279; page check 18/18 holes, 0 problems on all five tee sets; every Back hole screenshot looked at; no hazard words in the text).
+
+What changed from version 6:
+- Tall native grass is priced as penalty area on every hole (one stroke, drop where it crossed). No club changed on Back or Middle; aims moved 1 yd or less except hole 10.
+- Hole 10, Back (271): still go at the green, now aimed at the left half of the green (26 L calm, 20 L in Saturday's wind). 2-wood and 4-wood are level; the page shows the 4-wood (fewer balls lost). Lay-up with an iron to the right fairway costs about 0.3 strokes. Tested three maps (lidar judgment, your first band, your full red drawing): same pick each time. Lidar and November satellite say the right side of the green is mown; behind and left are tall grass, as you drew. The published map keeps your first band as penalty to be safe.
+- Hole 10, The Tips (317) and Champions (315): the green is out of reach. 4-wood at the right fairway, leaves about 65. Forward: long iron at the green.
+- Hole 10 red team (second_pass/HOLE10_REDTEAM.md): the go holds at Back unless your wood pattern is about 2.3 times wider than the model's; Middle about 1.6-1.9 times. A 10 mph wind from the left with the calm aim kept would flip it; not in the forecast.
+- Map edges corrected from four hole-by-hole reviews (REVIEW_A to REVIEW_D): 1 right, 3 tree row, 11 left, 13 ditch width, 18 left.
+- Page wording: one "why" sentence per tee shot, one yards-in number, "left of the dot", clearer par-3 club line.
+
+Close calls on Back: 9 Driver over 2-wood by 0.024; 11 Driver over 4-wood by 0.024; 10 the two woods.
+
+Not done yet: hole 8's green sits at the edge of the picture; par-5 greens are past the top of the frame; tall grass near the greens on 1, 3, 6, 15 (second-shot ground, no effect on tee picks) is listed but not mapped.
+
+Still needed from you: tee time and starting hole, which tee set, real iron carries, and whether tall grass is played as a drop (assumed) or a lost ball.
