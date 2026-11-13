@@ -112,6 +112,11 @@ def grid(M, D, WG2, h, P, R, S, cells, z, opts):
 def install(M, D, WG2, **over):
     """-> a solve(h, P, R, S, z, speed, rel) for wind_grid_v2.main: the first cell asked of a (hole, world) runs the
     whole grid in C, the other cells are read from it."""
+    F = fast.install(M, D)
+    if F.mode != "plain":
+        # flight-through-crowns courses (Eagle Knoll): fs_grid has no crown trace yet -> the exact kernel path
+        print("adaptive: engine mode %r is not covered by fs_grid; using the exact kernel solve" % (F.mode,))
+        return fast.wind_solve(F, WG2) if F.mode else WG2.solve
     opts = dict(DEFAULTS, **{k: v for k, v in over.items() if v is not None})
     z = fast.sobol_draws(opts["cap"], opts["seed"])
     cache = {}
