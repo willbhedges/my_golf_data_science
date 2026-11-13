@@ -115,8 +115,11 @@ Middle: 1 Driver 6.5 L (0.027 over 4-wood), 2 Driver 11 R (0.029), 3 Driver 4.5 
 
 ### Open
 
-* 8's green sits at the left edge of the picture and the par 5s' greens are past the top of the frame: the frame is
-  the fixed 920 x 2000 corridor the zones live in; not changed (needs new frames + a display rebuild).
+* Frames (third checkpoint, photo only): `display_imagery.include_green_yds` 25: the Whole hole crop reaches the
+  green + 25 yds (was 400 yds out, 75 either side). 8's green is in the picture; 2, 5, 6, 11, 13, 15, 18 show their
+  greens; 3 (630 yds) reaches the top of the 920 x 2000 render (559 yds), its green is still off the top (needs a
+  taller render = a display rebuild). Middle 3 and 8 carry their own photo (their view no longer fits inside the
+  Back photo). Every word and number on all five sets is identical to the second checkpoint (qa.json compared).
 * OB replay value on 3 / 10 (MODEL.md item 5), 18 Back tee note, Middle 7 tee: unchanged from the HANDOFF below.
 * Forecast refresh Sat 00:30 UTC: now simply re-run `v2_course.py page` after the weather fetch (REFRESH_LOCAL.md).
 

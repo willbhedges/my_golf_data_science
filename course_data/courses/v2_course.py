@@ -1333,8 +1333,21 @@ def build_page(slug, which, out=None, data_out=None):
                 box = (c - vw / 2, box[1], c + vw / 2, box[3])
             if box[3] - box[1] < 1.1 * vw:              # the extra height on the tee side
                 box = (box[0], box[1], box[2], box[1] + 1.1 * vw)
+        gy_ = di.get("include_green_yds")       # tee shots: the "Whole hole" photo reaches the green (+ this pad)
+        if gy_ and not pp:
+            try:
+                hd_ = course.HOLES[int(cur.get("key"))]
+                gx, gyp = [float(v) for v in hd_["green"]]
+                e = float(gy_) * 3.4
+                box = (min(box[0], gx - e), min(box[1], gyp - e), max(box[2], gx + e), box[3])
+                if not direct:                   # a crop of the 920-wide render: no photo above / beside the frame
+                    box = (max(box[0], 0.0), max(box[1], 0.0), min(box[2], 920.0), box[3])
+            except (KeyError, TypeError, ValueError):
+                pass
         for b in extra.get(cur.get("key"), []):  # shared photo: cover every set's view of this hole
             box = (min(box[0], b[0]), min(box[1], b[1]), max(box[2], b[2]), max(box[3], b[3]))
+        if gy_ and not pp and not direct:        # an alt set's longer view must not run off the top of the render
+            box = (max(box[0], 0.0), max(box[1], 0.0), min(box[2], 920.0), box[3])
         if direct:
             return direct(cur.get("key"), box)
         return crop(image, box, *a, **k)
