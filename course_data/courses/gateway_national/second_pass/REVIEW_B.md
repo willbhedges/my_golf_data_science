@@ -6,7 +6,9 @@ Reviewer B, Nov 13. Read-only on the map, engine and page. Page checked: `wind_p
 painted over NAIP 2023 RGB and CIR in the hole frame. Frame: x = yds right (+) / left (-) of the Back tee line,
 along = yds from the Back tee. Ground heights: `vision_any/.../dtm.tif`.
 
-**Version 1 (first pass over all five holes). Refinements follow below as they are added.**
+**Version 2.** After version 1 I drew P1 and P2 on the photo (`h11_p1`, `h7_p2`: both sit on the unmown ground),
+ran the committed map's Back 11 solve for its shares, checked 8's ground heights and tree heights on the line, and
+looked again at 9's blue strip in CIR. The page had not been rebuilt when this was written (still cee080946).
 
 ## Summary, most important first
 
@@ -54,6 +56,11 @@ Why it matters for the pick:
   edge 18-20 yds left of the ball at 320-340 and the map's edge 28 yds left. Roughly 3-4 % of Drivers finish in
   ground the map calls rough and the photo calls long grass. The page says Driver by 0.010 ("≈ tie" with 4-wood).
   This edit can turn Middle 11 into a 4-wood, or move the Driver aim right.
+
+The committed map's own solve of Back 11 (my scratch run, 64 draws): Driver aim 17.0, margin 0.027 over 4-wood,
+Driver in native 6.0 %, fairway 58 %. Its sensitivity rows show how thin this one already is: "lost ball likely"
+0.0175, "width 82" 0.003, "PGA Tour scoring table" flips it to 4-wood. P1 adds native only where the Driver goes
+and the 4-wood (finishing 264) does not, so every yard of it comes straight off the margin.
 
 OPTIMIZE.md 5c says the lidar long grass on 11 was tested and moved aims 0.5-2 yds, so it was left out. I do not
 know if that test included Middle, where the margin is 0.010.
@@ -108,6 +115,14 @@ left edge coming in at an angle, and runs up the fairway. Near the tee the line 
 block on the left (edge x -40 at 100-130) and over the corner of the small pond at 108-135 (x -53..-18): no carry
 issue for a Driver.
 
+Two more things on the line, neither a problem: a single small tree at (-15, 115) (8 ft in the 2014 lidar,
+maybe 20-25 ft now) stands 5 yds right of the line at 115 yds, where a Driver is 50+ ft up; the tree block left of
+the tee (35-45 ft in 2014) is 29-40 yds left of the line at 60-90 yds.
+
+Ground: the unmown square is a hollow. The lidar ground is 5.5-6 ft below the tee at (x -68..-75, 300-315) against
+3.5-4 ft below on the fairway at x -50, and the fairway at 286 tilts about 1 ft down to the left over 15 yds. A ball
+running long-left feeds toward the square. It is probably unmown because it is wet.
+
 Ball that runs through the bend: at x -50 the fairway ends at about 300, then the bank, then the square from ~305.
 At x -30 it ends at 305 and the native slope starts at 312. A 300+ total is the 10 % long tail; the map prices both.
 
@@ -143,8 +158,12 @@ Renders: `h9_fill` (180-400 with the lie map), `h9_none` (200-360 photo). DTM cr
   reason: the lidar ground is flat across it (0.5 ft dip). No ditch.
 * Left: brush from x -20 (mapped native from -20 at 275-300, -28 above 300), then the pond (tip at x -37, 290).
   Photo and map agree; the DTM has a ridge at x -25 and the pond floor at -45.
-* The blue strip at 300-360 (x -47..-29): this is the one that looks like a cart path on the photo (a grey line).
-  The lidar ground has a trench 5-7 ft deep there (bottom at x -45 at 320, x -35 at 340). It is a ditch. Leave it.
+* The blue strip at 300-360 (x -47..-29): on the photo it lies on a grey track (x -46..-43, the pond dam's path
+  running on north) plus the lush strip beside it (x -43..-38, bright red in CIR). The lidar ground has a trench
+  5-7 ft deep there (bottom at x -45 at 320, x -35 at 340). So there is a real ditch, and the polygon is about
+  3 yds too far left and includes the track. It is 55 yds left of the Driver's finish and behind the native band,
+  so nothing changes if it is redrawn. Leave it; if Will asks "is that the cart path?", the answer is "a ditch
+  runs beside the path there".
 * Right: rough to x +45, a tan band to the cart path at +50, trees from +55. The map starts "trees" at +48. The
   removed "fescue" band (x +30..+45) shows mowing stripes; I agree with removing it.
 * The aim: trouble edges at x -20 (left) and +48 (right) at 290; the midpoint is +14. The book's 13 R (wind version:
@@ -178,6 +197,10 @@ Sure: 75 % that it is unmown (Aug 2023 photo); its top edge is 4-5 yds short of 
 shot 20+ yds short finds it, so the box should move at most a yard deeper. Test with the par-3 target solve; apply
 only if the box moves.
 
+* The whole carry is over unmown ground (`m7` render, 15-150 yds): this is a forced carry over tall grass, not a
+  hole with a fairway short of the green.
+* Middle 7 tee: the mapped Middle tee point sits 3-5 yds left of the mown pad (pad at x +3..+20, -10..+25 in the
+  Middle frame), so the map's 155 is from beside the pad, not on it.
 * Middle 7: the page says card 160, map 155, and FEATURES_1_9 (F1) measured the Middle pad at 159. The box (157-162)
   follows the card. Unchanged from the HANDOFF ("not applied"); Will should laser it.
 
