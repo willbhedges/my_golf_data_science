@@ -4,7 +4,7 @@ For Will, NCCGA Regional 3, Back tees. Scope set by Will on Nov 13: his carries 
 DECADE-style pattern per club, the standard expected-strokes numbers kept as they are, and one club and one aim per
 hole. This review asks whether that one answer is computed correctly.
 
-**Checkpoint 2** (04:00 UTC Nov 13). The sensitivity runs are on a frozen copy of the engine and map at commit
+**Checkpoint 3** (04:20 UTC Nov 13). The sensitivity runs are on a frozen copy of the engine and map at commit
 `222f7ece4`, because the shared checkout changed under the first runs. Since then the map edges on 2, 3 and 5 moved
 (`ca4480af1`): the clubs there are the same, with aims 2 +9 (was +14.5), 3 -5.5 (was -9) and 5 +3.5 (was 0).
 The findings below are about the model and carry over; the aims quoted are the frozen state's. Code:
@@ -14,7 +14,7 @@ The findings below are about the model and carry over; the aims quoted are the f
 
 | # | finding | changes a pick? | which hole, how much |
 |---|---|---|---|
-| 1 | Which table "the standard numbers" means has to be settled (see below) | **yes, if it means the plain Tour table** | 11: Driver +17.5 -> 4-wood +8 (by 0.005, a tie); 9: Driver, 2-wood and 4-wood within 0.0014; 3: Driver by 0.007 instead of 0.051. With the engine's present table: no change |
+| 1 | Which table "the standard numbers" means has to be settled (see below) | **yes, if it means the plain Tour table** | current map: 11: Driver +17.5 -> 4-wood +8 (by 0.004, a tie); 9: 4-wood +2, 2-wood +8 and Driver +12.5 within 0.0014. Every other club stays. With the engine's present table: no change |
 | 2 | Hole 10 aim is Monte Carlo noise in the single-seed solve | **aim only** | 10: 2-wood aim -18, not -20.5; worth 0.007 |
 | 3 | Second-shot rollout on the close holes | no | 9: margin 0.025 -> 0.025-0.030; 10: 0.060 -> 0.065-0.086; 16: 0.108 -> 0.088-0.107, aim 0.5-1 yd left |
 | 4 | Lost ball in the fescue (25 % at the edge to 65 % ten yards in) | no | at 5-25 % or 40-90 %: aims within 1 yd, margins within 0.010 |
@@ -36,17 +36,20 @@ does not use the plain Broadie table today. It uses `table="am"`: Broadie's Tour
 beyond 150, with the fairway-to-rough gap multiplied by 0.75 (`spirit_hollow/v2/model.py`, `central()`). The plain
 Tour table is in the engine as `table="tour"`.
 
-The two give the same club on ten holes and differ on three (`exp1_value.py`, 16,000 common swings, SE
-0.001-0.002; `exp8_coherent.py` repeats 3, 9 and 11 on 32,000):
+On the current map (`087baac94`, same map as `ca4480af1`; 32,000 common swings, SE 0.001-0.003) the two give the
+same club on eleven holes and differ on two:
 
 | hole | engine as it is (`am`) | plain Tour table (`tour`) |
 |---|---|---|
-| 3 | Driver -9 by 0.051 over 2-wood | Driver -9 by 0.007 over 4-wood |
-| 9 | Driver +13 by 0.025 over 2-wood | 4-wood +2, 2-wood +8 and Driver +12.5 within 0.0014: a three-way tie |
-| 11 | Driver +17.5 by 0.031 over 4-wood | **4-wood +8 by 0.005 over Driver +17.5: a tie** |
-| 8 | Driver -44.5 by 0.057 | Driver -42 by 0.029 |
-| 16 | 4-wood +6.5 by 0.108 | 4-wood +6.5 by 0.054 |
-| other eight | | same club, aims within 1 yd, margins 0.01-0.03 smaller |
+| 9 | Driver +13.5 by 0.027 over 2-wood | 4-wood +2 (3.9940), 2-wood +8 (3.9947), Driver +12.5 (3.9954): a three-way tie |
+| 11 | Driver +17.5 by 0.033 over 4-wood | **4-wood +8 by 0.004 over Driver +17.5: a tie** |
+| 3 | Driver -5 by 0.059 | Driver -5 by 0.033 |
+| 8 | Driver -45.5 by 0.057 | Driver -41.5 by 0.029 |
+| 10 | 2-wood -18.5 by 0.060 | 2-wood -19 by 0.046 |
+| 16 | 4-wood +6.5 by 0.110 | 4-wood +6.5 by 0.054 |
+| 1, 2, 5, 6, 13, 15, 18 | Driver | Driver, aims within 0.5 yd, margins 0.02-0.03 smaller |
+
+(On the frozen state `222f7ece4`, before the edge fix on 3, the Tour table had 3 at Driver by only 0.007.)
 
 What separates them is one term: the 0.0012 per yard, which makes each extra yard off the tee worth about 30 %
 more than on Tour. The 0.36 level does nothing (set to 0.20: every club and aim identical). The rough multiplier
@@ -58,12 +61,15 @@ does little (x0.4 to x1.3: no club changes; 9's margin 0.036 to 0.011).
   leans 4-wood, 9 a three-way tie, and every other club stays.
 * Either way 9 and 11 are within 0.03, so either club is defensible on both. I am not proposing a rescaling;
   this is only which of the two existing tables the page should be solved on.
+* A third reading agrees that 11 is a coin flip: with the second-shot rollout's own values in place of the table
+  (section 3, "raw"), 11 is Driver by 0.003 or 4-wood by 0.019 depending on the approach spread, and 9 is Driver
+  by 0.007 to 0.026.
 
 ## 2. Hole 10: aim 18 left
 
 The 2-wood's best aim from a 0.25-yd grid on 40,000 swings is -17.25. Six other swing sets give -17, -18, -18.5,
 -19, -19, -19. The average over 64 prior draws gives -17.5. The default-seed two-stage solve gives -20.5, which
-costs 0.007. The 10th has the bumpiest aim curve (green, sand and pond in the landing area). If the re-solved book
+costs 0.007; the same solve on 32,000 swings on the current map gives -18.5. The 10th has the bumpiest aim curve (green, sand and pond in the landing area). If the re-solved book
 shows -17 to -19, nothing to do. Either way the club is the 2-wood (by 0.060 +/- 0.003; six of six swing sets).
 
 ## 3. Second shot: does the finish position change the next shot's value correctly?
@@ -97,6 +103,11 @@ Frozen state, next-shot spread 1.0 / 1.6 / 2.2 times the stated iron pattern (`e
 * 13 and 18 (par 5s) lose part of the Driver's margin. Part of that is the method: the featureless hole rewards
   a 240-yd second shot onto an open green more than the table does, and 18's green has water beside it. The Driver
   still wins in every variant.
+* **Raw rollout** (current map, `exp4_mdp.py ... raw`: the rollout's value replaces the table, so the value of
+  distance is the rollout's own, which is flatter than the table beyond 200 yds). Spread 1.6 / 1.0: every club
+  stays except 11 (Driver by 0.003 / 4-wood +9 by 0.019). 9: Driver by 0.026 / 0.007. 10: 2-wood by 0.052 / 0.054,
+  aim -20 / -19.5. 16: 4-wood by 0.052 / 0.055, aim +7 / +8.5. 18: Driver by 0.032 / 0.056. So the second shot
+  does not change 9, 10 or 16, and it confirms that 11 depends on how much a yard is worth.
 * Limit: the ground beyond 345 yds from the tee was not hand-checked (greens, greenside sand and water are OSM
   and lidar). This is a check, not a replacement for the table.
 
