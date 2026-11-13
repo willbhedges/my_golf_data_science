@@ -145,3 +145,46 @@ Saturday 11:06 (44 F, 5 mph NNW) sits between the 35 and 50 F cells: Back 2-wood
 * OPTIMIZE.md's check table says "10: 2-wood, 17-21 L, 0.060": now 20 L, 0.045.
 * The other tee sets' grids for 10 (offsets) were not re-solved here.
 * Not done: the ditch continues past the cart path (310-330, OSM strip kept); the green outline's right edge.
+
+## 7. Strategy pass, Nov 13: Will's drawings, the evidence per area, three solves (strategy lead)
+
+Will marked the page picture of 10 twice (uploads `7323133a-image.jpg`: the band between the ditch and the right
+fairway, "this is all penalty area in that native as well"; `01e42326-image.jpg`: every dead area round the green:
+behind it to the cart path, left / back-left behind the bunkers, the whole right side to the cart path, the ditch
+line down to the pond and the pond block). He then said of the right side "there might not be native grass on that
+right side ... use the lidar ... I could be wrong" and of the band "double check some of this too". His standing
+rule: tall native in which a ball cannot be found is penalty area (config `engine.native_penalty_area: relief`:
+one stroke + a shot from rough where the ball crossed the edge).
+
+Evidence per area (Dec 2020 lidar standing-grass height on the 0.5 m grid: median, share of cells over 0.10 m;
+Sentinel-2 NDVI of 8 / 10 Nov 2026; NAIP Aug 2023 texture. References on this hole: fairway 0.01 m, 0 %, NDVI 0.86,
+texture 2.5; mapped tall grass far left 0.07-0.11 m, 44-51 %, NDVI 0.55-0.59, texture 8-9):
+
+| area of his drawing | lidar grass | NDVI Nov 2026 | call | sure | map |
+|---|---|---|---|---|---|
+| behind the green, 299-305 to the cart path | 0.14 m, 56 % | 0.61 | penalty native | 90 % | was mapped (from 298-300); the 293-298 strip is mown (0.01 m): surround |
+| left / back-left behind the greenside bunkers | 0.11 m, 51 % | 0.56-0.64 | penalty native | 85 % | the 6-8-yd rough gap between the bunkers and the tall grass at 255-296 is closed (`EXTRA["10"]`, new strip) |
+| ditch line short-right, down to the pond | trench, no ground returns | - | water | 95 % | mapped (section 4) |
+| bottom-left block | pond; brush left of it 0.13 m at p75, 31 % | 0.58 | water / penalty native | 95 % | was mapped |
+| band between the ditch and the right fairway, 226-272 | 0.01 m, 0 % | 0.86-0.87 | reads as mown rough | 80 % | kept as penalty (his first drawing; low-regret, below) |
+| right of the green past the fairway's end to the cart path, 276-300 | 0.01 m, 0 % | 0.85-0.88 | reads as mown rough | 80 % | not mapped as penalty; changes nothing (outside both ovals) |
+
+Three solves (Back; book = 64 prior draws, the rest the central world on 16,000 swings):
+
+| map | calm pick | strokes | penalty share 2-wood / 4-wood | go over the best lay-up (long iron, right fairway) | dispersion +15 % | frozen ground | both |
+|---|---|---|---|---|---|---|---|
+| (a) ditch only on the right; tall grass left / behind | 2-wood 19.5 L, 0.045 over 4-wood | 3.69 | 12 % / 12 % | 0.41 | 0.38 | 4-wood 22 L, 0.33 | 0.31 |
+| (b) his first band + (a) elsewhere (**published**) | 2-wood 25.5 L, 0.010 over 4-wood (27 L): a coin flip | 3.79 | 20 % / 16 % | 0.29 | 4-wood 26 L, 0.23 | 4-wood 27.5 L, 0.26 | 0.20 |
+| (c) his full drawing | 2-wood 26 L, 0.005 over 4-wood | 3.80 | 20 % / 16 % | 0.29 | 0.23 | 0.25 | 0.20 |
+
+Middle: 4-wood in all three: (a) 18 L, 3.65, go by 0.31; (b) 21 L, 3.72, go by 0.24 (frozen 0.10); (c) 23 L, 3.73,
+go by 0.25 (frozen 0.13).
+
+Why going at the green survives even the worst-case map: a ball in a penalty area costs 3.95 strokes after the tee
+shot, a dry one 2.48 (44 % putting or chipping from short grass 2.19, 20 % greenside rough 2.76, 6 % sand 2.87), the
+lay-up's wedge from 66-88 yds 3.03-3.07. **Break-even: about 40 % of tee balls in the penalty area; he is at
+12-20 %.** There is no lay-up left: left of the fairway is the pond (160-222), then the green complex.
+
+Aim regret (2-wood): aiming 26 L when the band is really mown costs 0.025 strokes; aiming 19.5 L when the band is
+really dead costs 0.05; 24 L costs at most 0.011 either way. Hence map (b) on the page: aim at the left half of
+the green, and the 4-wood when the two woods are within the tie band (4 points fewer penalty balls).
