@@ -278,31 +278,37 @@ def main():
     ap.add_argument("--offsets")
     ap.add_argument("--temps")
     ap.add_argument("--holes", default="")
-    ap.add_argument("--draws", type=int)
+    ap.add_argument("--draws", type=int, help="prior draws (default 64 = saturation; --exact: the request's)")
     ap.add_argument("--refine", type=int)
     ap.add_argument("--refine-offsets")
     ap.add_argument("--only", choices=["decide", "wind"])
     ap.add_argument("--decide-parts", default="", help="V2_PARTS, e.g. bayes (default: bayes,ladder,sens,sweep)")
     ap.add_argument("--speeds", default="", help="wind speeds (test slices; default the engine's 0..25)")
     ap.add_argument("--dirs", default="", help="wind directions (test slices; default every 30 deg)")
-    ap.add_argument("--swings-decide", type=int, default=3000)
-    ap.add_argument("--central", type=int, default=12000)
+    ap.add_argument("--swings-decide", type=int, default=512)
+    ap.add_argument("--central", type=int, default=2048)
     ap.add_argument("--swings-wind", type=int, default=2500)
     ap.add_argument("--jobs", type=int, default=0)
     ap.add_argument("--engine", choices=["fast", "slow"], default="fast")
-    ap.add_argument("--swings", choices=["mc", "sobol", "antithetic"], default=None,
+    ap.add_argument("--swings", choices=["mc", "sobol", "antithetic"], default="sobol",
                     help="opt-in swing set (fast engine only). mc = the engine's (default, identical outputs); sobol = "
                          "scrambled Sobol points: NOT the engine's numbers, ~8x less Monte Carlo noise (README)")
     ap.add_argument("--c2f", type=int, default=1, help="1 (default): coarse-to-fine aim sweep in the wind grids "
                                                        "(same records as the full sweep); 0: every aim")
-    ap.add_argument("--adaptive", type=int, default=0, help="1: adaptive Sobol wind grids (adaptive.py): NOT the "
+    ap.add_argument("--adaptive", type=int, default=1, help="1: adaptive Sobol wind grids (adaptive.py): NOT the "
                                                             "engine's numbers; see README")
-    ap.add_argument("--adaptive-cap", type=int, default=4096, help="swing cap, refined (card-tee) offsets")
+    ap.add_argument("--adaptive-cap", type=int, default=8192, help="swing cap, refined (card-tee) offsets")
     ap.add_argument("--adaptive-n0-other", type=int, default=None, help="first-stage swings, the other offsets (512)")
-    ap.add_argument("--adaptive-cap-other", type=int, default=4096, help="swing cap, the other offsets")
+    ap.add_argument("--adaptive-cap-other", type=int, default=2048, help="swing cap, the other offsets")
     ap.add_argument("--ref")
     ap.add_argument("--show", type=int, default=8)
+    ap.add_argument("--exact", action="store_true", help="the engine's own numbers: random swings, the request's "
+                    "draws, 3,000 / 12,000 swings, full refined grids (identical to Actions)")
     a = ap.parse_args()
+    if a.exact:
+        a.swings, a.adaptive, a.swings_decide, a.central = "mc", 0, 3000, 12000
+    elif a.draws is None:
+        a.draws = 64
     a.speeds = [s for s in a.speeds.split(",") if s]
     a.dirs = [s for s in a.dirs.split(",") if s]
     if a.cmd == "solve":

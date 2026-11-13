@@ -29,6 +29,14 @@ never changes from 32 draws up; the aim is within 0.5 yd from 64; the margin at 
 256-draw margin on every hole, at 64 within 0.003 (inside its own SE of 0.003-0.016). 128 is the point where
 nothing moves; 64 is inside the noise.
 
+## Defaults (runner, from the saturation results)
+
+`run.py solve` now defaults to: Sobol swings, 64 prior draws, 512 swings per draw, 2,048 for central worlds, adaptive
+wind grids capped at 8,192 swings at the card tee (the 99 % aim saturation N) and 2,048 at the other offsets.
+`--exact` restores the engine's numbers (identical to Actions). Full Gateway (Back + Middle, run concurrently with
+`FASTSOLVE_SLOTS=<dir>:4`): 124 s; outputs in `solved_default/`. Against the 256-draw 183 s run: same club on all 26
+holes, calm aims within 1.0 yd, wind-cell club differences 116 + 4, all in tie cells.
+
 ## 1. Profile of the existing engine (one process, this box)
 
 Engine = `spirit_hollow/v2/model.py` + `decide.py` + `wind_grid_v2.py` through `v2_course.py`. Gateway Back hole 8.
