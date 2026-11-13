@@ -1,5 +1,23 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 5, Nov 13 (page: Lay up toggle on 10, pattern width on the picture; no solve)
+
+* **Lay up toggle** (config `page_text.alt_play`, hole 10, Back and Middle; template + a pass-through in
+  `v2_course.py`): a third button beside Whole hole / Landing area. On = the mid iron at its own best aim for the
+  wind, temperature and tee (the tapped-club path, no second renderer): headline, line, oval, Play text and the
+  selected table row switch, and one pill says what it leaves and costs, live from the grids (Back Sat: "Lay-up: mid
+  iron to the right fairway, leaves about 88. Costs about 0.3 strokes against going at the green."; Sun 81 / 0.4;
+  Middle 67 / 0.4 and 63 / 0.2). The pills about the pick are hidden while it is on. Not saved; it switches off when
+  another hole is opened or a club row is tapped. No toggle from The Tips / Champions (the pick is the fairway shot).
+* **Pattern width** (pages with `page_text.simple`): headline "Aim 5 yds left · 285 total · 73 wide" and "73 yds
+  wide" at the oval's edge. The number is the drawn oval's own left + right extent (the simulated finishes' 2.5-97.5 %
+  points, scaled for wind), so it can differ by 1-2 yds from the table's "95% width" (the model's symmetric figure:
+  Driver 71). The table note says what the oval is: 95 % of solid shots between its left and right edges, and 95 %
+  between its front and back (heavy mishits, 2.5 % of swings, are not in it).
+* QA: five sets, 18 holes, 0 problems; every recorded field identical to the Round 4 page; 360 solver states
+  identical; toggle driven on Back and Middle 10, Sat and Sun; width label present and equal to the headline on all
+  65 tee shots; no hazard words.
+
 ## Round 4, Nov 13 (par-3 targets: the DECADE edge rule as a constraint; PAR3.md section 0)
 
 Golfer's request: par-3 targets by the DECADE rule (5 % of the distance from every edge, +3 toward a penalty edge,

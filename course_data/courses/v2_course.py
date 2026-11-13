@@ -1505,6 +1505,11 @@ def build_page(slug, which, out=None, data_out=None):
         pf = (pt_.get("prefer_on_tie") or {}).get(str(d_.get("key")))
         if pf and d_.get("kind") == "tee":
             d_["prefer"] = pf
+        # page_text "alt_play" {hole: {tee set picked on the page: {"label", "club", "text", "versus"}}}: a second way
+        # to play the hole, a toggle on the page (Gateway 10: "Lay up" = the mid iron at its own best aim)
+        ap_ = (pt_.get("alt_play") or {}).get(str(d_.get("key")))
+        if ap_ and d_.get("kind") == "tee":
+            d_["alt_play"] = ap_
     if cfg.get("par3_drift_per_mph"):
         data["p3_drift"] = float(cfg["par3_drift_per_mph"])
     if cfg.get("temp_note"):

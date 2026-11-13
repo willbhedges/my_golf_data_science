@@ -1,7 +1,7 @@
 {
  "name": "Gateway National Golf Links",
  "title": "Gateway National Caddie",
- "sub": "NCCGA Regional 3, Nov 14-15 2026 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F \u00b7 club and aim re-solved for the wind and temperature at each hole",
+ "sub": "NCCGA Regional 3, Nov 14-15 2026 · Driver 275/300 · 2-wood 265/280 · 4-wood 255/270 at 70°F · club and aim re-solved for the wind and temperature at each hole",
  "event": "NCCGA Regional 3",
  "package": "course_data/courses/gateway_national/auto/package.json",
  "truth_package": "course_data/courses/gateway_national/truth/package.json",
@@ -158,7 +158,24 @@
   "checked_beyond": {
    "18": 45
   },
-  "checked_beyond_source": "2026-11-13 round 2: 18's hand corridor ends 345 yds from the old Back point; the ground to 395 (fairway, left long grass to 395, the two pots right at 392-402, path) was checked on NAIP 2023 + the 2020 lidar by reviewer C (18-A) and again in round 2 after the tee moved, so the Middle Driver (300 from a tee now 50 yds up) does not get the 'past the hand-checked map' pill"
+  "checked_beyond_source": "2026-11-13 round 2: 18's hand corridor ends 345 yds from the old Back point; the ground to 395 (fairway, left long grass to 395, the two pots right at 392-402, path) was checked on NAIP 2023 + the 2020 lidar by reviewer C (18-A) and again in round 2 after the tee moved, so the Middle Driver (300 from a tee now 50 yds up) does not get the 'past the hand-checked map' pill",
+  "alt_play": {
+   "10": {
+    "Back": {
+     "label": "Lay up",
+     "club": "Mid iron",
+     "text": "Lay-up: mid iron to the right fairway",
+     "versus": "going at the green"
+    },
+    "Middle": {
+     "label": "Lay up",
+     "club": "Mid iron",
+     "text": "Lay-up: mid iron to the right fairway",
+     "versus": "going at the green"
+    }
+   }
+  },
+  "alt_play_source": "2026-11-13 golfer's request: a Lay up toggle on 10. Club from second_pass/HOLE10_REDTEAM.md (the practical lay-up from Back is the mid iron, leaves about 88, 97 % fairway; the long iron is 0.03 better on paper with 9 % in the sand); the page shows the club at its own best aim for the wind / temperature / tee, the yards left and the strokes it costs, all live from the grids. Back and Middle only: from The Tips / Champions the pick is already the fairway shot."
  },
  "engine": {
   "extra_clubs": {
