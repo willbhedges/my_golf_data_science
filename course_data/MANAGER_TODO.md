@@ -206,3 +206,5 @@ Close calls on Back: 9 Driver over 2-wood by 0.024; 11 Driver over 4-wood by 0.0
 Not done yet: hole 8's green sits at the edge of the picture; par-5 greens are past the top of the frame; tall grass near the greens on 1, 3, 6, 15 (second-shot ground, no effect on tee picks) is listed but not mapped.
 
 Still needed from you: tee time and starting hole, which tee set, real iron carries, and whether tall grass is played as a drop (assumed) or a lost ball.
+
+Version 8 published (commit d029364a4; page check 0 problems on five tee sets). Back picks and calm aims identical to version 7. Added: close calls stress-tested (wider pattern, frozen, soft): Back 1, 8, 13, 16 hold; Back 9 gets a note that on frozen ground the 2-wood is just as good; Back 11 stays Driver (close call). Hole 11 from Middle, The Tips and Champions now shows the 4-wood (level with Driver, straighter). Par-3 clubs unchanged; 17 (5-iron over 6-iron by 0.018) is the one coin flip. Tall grass and the pond near the greens on 1, 3, 6, 15 are now mapped: no pick or aim moved. Still open: picture frames for hole 8 and the par 5s.
