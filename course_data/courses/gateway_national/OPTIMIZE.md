@@ -99,7 +99,7 @@ Elevation: tee and green heights from the 2020 lidar agree with the page's (4: g
 2.3 below, 14: 2.4 below, 17: 2.5 below; Middle within 0.2 ft of the page on all five).
 
 "Plays like" sums, Back (target + elevation + wind + temperature): Sat 4: 176 + 1 - 5 + 8 = 180; 7: 179 + 0 + 1 + 7 =
-187; 12: 131 - 1 + 2 + 5 = 137; 14: 195 - 1 - 1 + 7 = 200 (201 before rounding of the parts); 17: 190 - 1 + 2 + 6 =
+187; 12: 131 - 1 + 2 + 5 = 137; 14: 196 - 1 - 1 + 7 = 201; 17: 190 - 1 + 2 + 6 =
 197. Sun 4: 183, 7: 189, 12: 131, 14: 205, 17: 196. The wind term is 0.9 % per mph into, 0.6 % per mph behind.
 
 **The ladder and the close mark.** `par3_ladder.json` has a step every 2 yds; the page took the nearest step, so a
@@ -121,6 +121,16 @@ within 2 yds of a change-over on the forecast are Back 4 Sat (7-iron, 1.5 below 
 a 10 start (GW, 1.6 below the PW), Back 14 Sun from a 10 start (5-iron, 0.9 below the 4-iron), Middle 12 Sat (SW,
 0.6-0.9 below the GW), Middle 4 Sun (9-iron, 0.4-1.3 below the 8-iron), Middle 7 Sun (8-iron, 1.5 below the 7-iron).
 Every other par-3 pick is 2.3 yds or more from a change-over.
+
+### R2-4. Hole 3's green in the Whole hole picture (second checkpoint, photo only)
+
+Cause: a local build has no fetched display folder, so the page cropped the 920 x 2000 hole render (559 yds above the
+tee) and 3's green (630 yds, 53 yds right) was off the top. `display_imagery.fallback_dir` (new; `v2_course.display_dir`)
+points a build without a fetched folder at the committed package imagery (NAIP 2023 0.30 m, the photo the page
+already shows): every page photo is then rendered directly at page size (the `direct` path the Actions build used),
+and the crop box is free to go above the render. 3 shows its green from Back and Middle. The wind badge moves to the
+top left corner on tee shots whose green is 25+ yds right of the line (2, 3, 11: it sat on 3's green). qa.json of the
+five sets is identical to the first checkpoint, every field. Page file 11.9 -> 8.9 MB.
 
 ## Night of Nov 12-13: strategy pass (strategy lead; running log, newest state first)
 

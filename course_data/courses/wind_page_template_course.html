@@ -345,7 +345,8 @@ function teeMark(x, y, name){
 }
 function windArrow(h, rel, vb){
   /* screen up = the hole's line; arrow shows where the wind blows TO */
-  const u = U, a = (rel + 180) * Math.PI/180, cx = vb[0] + vb[2] - 30*u, cy = vb[1] + 30*u, L = 17*u;
+  /* the badge sits top right; top left when the green is up there (a tee shot whose green is 25+ yds right of the line) */
+  const u = U, a = (rel + 180) * Math.PI/180, gl = h.kind === "tee" && h.green_al && h.green_al[1] > 25, cx = gl ? vb[0] + 30*u : vb[0] + vb[2] - 30*u, cy = vb[1] + 30*u, L = 17*u;
   const dx = Math.sin(a)*L, dy = -Math.cos(a)*L;
   return `<g opacity=".95"><circle cx="${cx}" cy="${cy}" r="${23*u}" fill="rgba(10,20,15,.6)"/>
     <line x1="${cx-dx}" y1="${cy-dy}" x2="${cx+dx*0.5}" y2="${cy+dy*0.5}" stroke="#fff" stroke-width="${3*u}" stroke-linecap="round"/>

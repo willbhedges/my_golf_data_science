@@ -103,6 +103,10 @@ def display_dir(slug):
         return None
     d = os.environ.get("V2_DISPLAY_DIR") or di.get("dir") or f"/tmp/v2_display_{slug}_{di.get('year', 'best')}"
     d = d if os.path.isabs(d) else os.path.join(ROOT, d)
+    if not os.path.exists(os.path.join(d, "georef.json")) and di.get("fallback_dir"):
+        # no fetched display imagery on this machine: a committed folder of the same photo (Gateway: the package's
+        # NAIP 2023), so a local build still renders each page photo directly and is not tied to the 920 x 2000 frame
+        d = os.path.join(ROOT, di["fallback_dir"])
     return d if os.path.exists(os.path.join(d, "georef.json")) else None
 
 
