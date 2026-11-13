@@ -47,7 +47,10 @@ HOLES3 = (4, 7, 12, 14, 17)
 DEM = os.path.join(CD, "packages", SLUG, "imagery", "dem.tif")
 DTM_LIDAR = os.path.join(CD, "vision_any", SLUG, "raw", "dtm.tif")
 FORECAST = os.path.join(CD, "weather", "forecast_gateway_national.json")
-TEE_HOUR, MIN_PER_HOLE = 9.0, 14.0
+MIN_PER_HOLE = 14.0
+# the day's own tee time: config tee_hours [Sat, Sun] (Saturday 10:36, Sunday 9:00), else tee_hour; the page's clock
+_cfg = json.load(open(os.path.join(GW, "config.json")))
+TEE_HOURS = dict(zip(("sat", "sun"), [float(x) for x in (_cfg.get("tee_hours") or [_cfg.get("tee_hour", 9.0)] * 2)]))
 
 _spec = importlib.util.spec_from_file_location("ek_par3", os.path.join(CD, "courses", "eagle_knoll", "opt", "par3_target.py"))
 E = importlib.util.module_from_spec(_spec)
@@ -65,6 +68,12 @@ if os.environ.get("P3_NATIVE") != "found":
     E.SHORT = dict(E.SHORT)
     E.SHORT["native"] = [1.0 + v for v in E.SHORT["rough"]]
 E.OUT = OUT
+# P3_PATTERN_MULT (default 1.0 = the patterns as built): width and distance window of every par-3 club x this, for
+# the check against scratch-amateur data (PAR3.md section 8; second_pass/FAIRWAY_WOOD_DATA.md). Not set by any build.
+PATTERN_MULT = float(os.environ.get("P3_PATTERN_MULT", "1.0"))
+if PATTERN_MULT != 1.0:
+    _opts0 = E.opts
+    E.opts = lambda **over: _opts0(**{**dict(width_mult=PATTERN_MULT, depth_mult=PATTERN_MULT), **over})
 # The second rule set of the page (config engine.tall_grass_alt; golfer 2026-11-13: the tall grass may be played as
 # a lost ball): P3_TALL_GRASS=lost, set by par3_decade.py / par3_ladder.py --tall-grass lost, never by default. A
 # ball finishing in tall native is one penalty stroke and the same tee shot again, in closed form per club and aim
@@ -193,9 +202,9 @@ CUR = {"hole": 4}
 
 def conditions(_hole, bearing):
     k = CUR["hole"]
-    hr = TEE_HOUR + (k - 1) * MIN_PER_HOLE / 60.0
     out = {"calm50": dict(temp=50.0, mph=0.0, rel=0.0)}
     for nm, day in (("sat", "2026-11-14"), ("sun", "2026-11-15")):
+        hr = TEE_HOURS[nm] + (k - 1) * MIN_PER_HOLE / 60.0
         w = wx(day, hr)
         out[nm] = dict(temp=round(w["temp"], 1), mph=round(w["mph"], 1), rel=round((w["frm"] - bearing) % 360, 1),
                        gust=round(w["gust"], 1), frm=round(w["frm"]), hour=round(hr, 2))

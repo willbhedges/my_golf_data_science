@@ -8,6 +8,17 @@ study it was built on; where a box or a number there differs from section 0, sec
 Script `opt/par3_decade.py` (`solve`, `page`, `table`); results `opt/results/par3_decade.json`; page file
 `par3_targets.json`; club ladder `par3_ladder.json` (re-run on the new targets, every set).
 
+**Refresh, Nov 13 evening** (Friday-evening forecast, NWS; Saturday 10:36, Sunday 9:00). `opt/par3_target.py` reads
+the day's own tee time (`TEE_HOURS` from config `tee_hours`; it had 9:00 hard-coded for both days).
+`opt/results/par3_plays_forecast.json` (the D of the rule) rewritten from the rebuilt page: its Plays number to the
+box in the four states, minus the box depth (D is 0-5 yds smaller than before: Sunday has no wind against now;
+Back 4 187.5, 7 187.5, 12 135.5, 14 207, 17 203.5). `par3_decade.py solve` and `par3_ladder.py`, every set, both
+tall-grass rule sets (1-2 min a set). Result: no Back target moves; Middle 4 (2, -2) -> (2.5, -2.5) and Forward 14
+(1.5, -1.5) -> (1, -1.5), both under 1 yd; every target still meets the rule as before (4, 14, 17 from Back and
+behind remain lesser-of-two-evils, short by 0.1-0.2 yds less). The ladder is identical step for step (it is a
+calm 70-F table). No club changes on the page for Saturday or Sunday on any set. `par3_ladder.py` now sets
+`P3_FEATURES=1` itself (a run without it gives a different ladder: the change-overs 1-2 yds later).
+
 ### 0.1 The rule, as checked
 
 Source: the golfer's own statement of Scott Fawcett's DECADE approach rule (Nov 13). The 5 % base is also in the USGA

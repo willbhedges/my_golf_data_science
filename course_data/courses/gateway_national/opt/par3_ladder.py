@@ -31,6 +31,7 @@ GW = os.path.dirname(HERE)
 ROOT = os.path.abspath(os.path.join(GW, "..", "..", ".."))
 OUT = os.path.join(GW, "par3_ladder.json")
 
+os.environ.setdefault("P3_FEATURES", "1")       # the second-pass surrounds, as opt/par3_decade.py (PAR3.md 0.4)
 if "--tall-grass" in sys.argv and sys.argv[sys.argv.index("--tall-grass") + 1] == "lost":
     os.environ["P3_TALL_GRASS"] = "lost"      # the page's second rule set (opt/par3_target.py LOST_MODE)
     OUT = os.path.join(GW, "par3_ladder_lost.json")
