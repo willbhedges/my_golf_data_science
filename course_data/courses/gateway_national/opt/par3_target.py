@@ -120,7 +120,19 @@ def load_holes(set_name):
         zz = []
         for lie, poly in zones:
             q = (np.asarray(poly, float) - flag) / ppy
-            zz.append((lie, np.c_[q @ right, q @ v]))
+            q = np.c_[q @ right, q @ v]
+            if k in THICKET_SHORT and lie == "recovery" and q[:, 1].mean() < -5.0 and os.environ.get("P3_THICKET") != "trees":
+                lie = "native"      # 2026-11-13: the regrown thicket short of 7 is tall growth = penalty area (golfer's rule)
+            if k in STALE_TREES_LONG and lie == "recovery" and q[:, 1].mean() > 5.0 and os.environ.get("P3_TREES7") != "lidar":
+                # 2026-11-13: the 2014-lidar crown polygon behind 7 reaches 1-5 yds from the back edge; on the 2023 photo
+                # that strip is mown and the crowns start 8-9 yds behind it: cut the polygon back to that line
+                from shapely.geometry import Polygon, box
+                c = Polygon(q).buffer(0).intersection(box(-500, STALE_TREES_LONG[k], 500, 500))
+                c = max(getattr(c, "geoms", [c]), key=lambda x: x.area) if not c.is_empty else None
+                if c is None or c.geom_type != "Polygon":
+                    continue
+                q = np.array(c.exterior.coords)[:-1]
+            zz.append((lie, q))
 
         def z_at(lat, dep, fr=fr, flag=flag, v=v, right=right, ppy=ppy):
             lat, dep = np.asarray(lat, float), np.asarray(dep, float)
@@ -215,20 +227,79 @@ class GHole(E.Hole):
     the Nov 9 hand native bands (painted first) overlap the lidar trees, which keep the trees."""
 
     def _pins(self, inset):
-        from matplotlib.path import Path
         L, Dg = np.meshgrid(self.la, self.de, indexing="ij")
-        pts = np.c_[L.ravel(), Dg.ravel()]
+        self.lie = self._paint(np.c_[L.ravel(), Dg.ravel()]).reshape(L.shape)
+        return super()._pins(inset)
+
+
+
+    # 2026-11-13 (DECADE review, audit round 3 note): a ball in a penalty lie (water, or tall native = penalty area
+    # at Gateway) is priced where it LAST CROSSED THE EDGE, like the tee-shot engine: one stroke + the next shot from
+    # rough at the last dry point on the tee-to-ball line. Before, it was 1 + rough at the ball's own distance from
+    # the pin, which made a ball that came up 5 yds short in the long grass in front of 7 cost 3.4 instead of the
+    # 4.1-4.3 of hitting again from the far side of it. P3_PENALTY=ball restores the old pricing for an A/B run.
+    def _paint(self, pts):
+        from matplotlib.path import Path
         lie = np.zeros(len(pts), int)
         for nm, poly in self.g["zones"]:
             nm = "fairway" if nm == "first_cut" else nm
             if nm in E.C:
                 lie[Path(poly).contains_points(pts)] = E.C[nm]
         lie[self.gpath.contains_points(pts)] = E.C["green"]
-        self.lie = lie.reshape(L.shape)
-        return super()._pins(inset)
+        return lie
+
+    def _strokes_field(self):
+        S = super()._strokes_field()
+        if os.environ.get("P3_PENALTY") == "ball":
+            return S
+        import model as M
+        P = M.central()
+        pen_codes = [E.C["native"], E.C["water"]]
+        pen = np.isin(self.lie, pen_codes)
+        if not pen.any():
+            return S
+        # 1-yd lie raster from behind the tee to behind the green
+        d0 = -(self.center + 10.0)
+        xa = np.arange(E.LAT0, E.LAT1 + 1e-9, 1.0)
+        ya = np.arange(d0, E.DEP1 + 1e-9, 1.0)
+        XX, YY = np.meshgrid(xa, ya, indexing="ij")
+        wet = np.isin(self._paint(np.c_[XX.ravel(), YY.ravel()]), pen_codes).reshape(XX.shape)
+        L, Dg = np.meshgrid(self.la, self.de, indexing="ij")
+        b = np.c_[L[pen], Dg[pen]]
+        tee = np.array([0.0, -self.center])
+        dist = np.hypot(*(tee - b).T)
+        u = (tee - b) / np.maximum(dist, 1e-9)[:, None]
+        drop = np.tile(tee, (len(b), 1))
+        found = np.zeros(len(b), bool)
+        for s in np.arange(1.0, float(dist.max()) + 1.0, 1.0):
+            q = b + u * np.minimum(s, dist)[:, None]
+            i = np.clip(np.rint(q[:, 0] - E.LAT0).astype(int), 0, len(xa) - 1)
+            j = np.clip(np.rint(q[:, 1] - d0).astype(int), 0, len(ya) - 1)
+            hit = ~found & (~wet[i, j] | (s >= dist))
+            drop[hit] = q[hit]
+            found |= hit
+            if found.all():
+                break
+        row = np.array(E.SHORT["rough"]) + E.HCP_SHORT
+        out = np.zeros(len(b))
+        pins = self.pins
+        for i0 in range(0, len(b), 4000):
+            dd = np.hypot(pins[None, :, 0] - drop[i0:i0 + 4000, None, 0], pins[None, :, 1] - drop[i0:i0 + 4000, None, 1])
+            v = np.interp(dd, E.SHORT_D, row)
+            far = dd > 40
+            if far.any():
+                v[far] = row[-1] + (M.table("rough", dd[far], P) - M.table("rough", np.full(far.sum(), 40.0), P))
+            out[i0:i0 + 4000] = 1.0 + v.mean(1)
+        S = S.copy()
+        S[pen] = out
+        self.drop_dist = np.full(S.shape, np.nan)
+        self.drop_dist[pen] = np.hypot(*(drop - b).T)
+        return S
 
 
 E.Hole = GHole
+THICKET_SHORT = (7,)
+STALE_TREES_LONG = {7: 23.0}      # hole: trees start this many yds past the green centre (2023 photo)
 
 
 def setup_engine():

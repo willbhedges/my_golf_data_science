@@ -506,7 +506,9 @@ function render(){
     /* crosswind allowance on a par 3 (D.p3_drift yds per crosswind mph, config par3_drift_per_mph): the box is the
        place to finish, so the start line moves up wind by the drift */
     const p3x = Math.sin(r.rel*Math.PI/180) * st.mph * (D.p3_drift || 0);
-    document.getElementById("hAim").textContent = `Aim at the blue box (best spot for any pin). ${relWords(r.rel, st.mph)}.` + (Math.abs(p3x) >= 2 ? ` The wind moves the ball about ${Math.abs(p3x).toFixed(0)} yds ${p3x > 0 ? "left" : "right"}: start it that far ${p3x > 0 ? "right" : "left"} of the box.` : "") + (h.p3_source ? "" : ` DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`);
+    document.getElementById("hAim").textContent = `Aim at the blue box (best spot for any pin). ${relWords(r.rel, st.mph)}.` + (Math.abs(p3x) >= 2 ? ` The wind moves the ball about ${Math.abs(p3x).toFixed(0)} yds ${p3x > 0 ? "left" : "right"}: start it that far ${p3x > 0 ? "right" : "left"} of the box.` : "") + (h.p3_source ? "" : ` DECADE wind modifier ${r.mod > 0 ? "+" + r.mod : r.mod} yd on every edge.`) +
+      /* yds from the target to the green edge each way (boxes[mod].m: Gateway's par3_targets.json, opt/par3_decade.py) */
+      (r.box.m && r.box.m.left != null && r.box.m.right != null && r.box.m.short != null && r.box.m.long != null ? ` The middle of the box is ${Math.round(r.box.m.left)} yds from the left edge, ${Math.round(r.box.m.right)} from the right, ${Math.round(r.box.m.short)} from the front and ${Math.round(r.box.m.long)} from the back.` : "");
     const A = r.adj, mc = r.S3.ladder && r.S3.ladder.map_center;
     document.getElementById("hTable").innerHTML = `<div style="overflow-x:auto"><table><thead><tr><th>Green</th><th>Front</th><th>Centre</th><th>Back</th></tr></thead><tbody><tr><td>Card</td><td>${r.S3.front + A}</td><td>${Math.round(r.S3.center + A)}${A ? ` (${A > 0 ? "+" : "−"}${Math.abs(A)})` : ""}</td><td>${r.S3.back + A}</td></tr>` +
       (mc ? `<tr><td>Map</td><td></td><td>${Math.round(mc)}</td><td></td></tr>` : "") +

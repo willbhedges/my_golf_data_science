@@ -1,5 +1,27 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 4, Nov 13 (par-3 targets: the DECADE edge rule as a constraint; PAR3.md section 0)
+
+Golfer's request: par-3 targets by the DECADE rule (5 % of the distance from every edge, +3 toward a penalty edge,
++1-2 a bunker, lesser of two evils), checked on 12 and 7 in particular. Only par-3 fields changed on the page
+(qa.json of the five sets against 2fede0ff8: every par-4 / 5 hole identical; 260 tee-shot states of the page's own
+solver identical).
+
+* `opt/par3_decade.py` (new): the rule on every point of the green edge, the best expected strokes inside it, every
+  tee set. `par3_targets.json` and `par3_ladder.json` rewritten for all five sets.
+* `opt/par3_target.py`: penalty balls priced where they crossed the edge (was: at the ball's own distance); the
+  thicket short-left of 7 is penalty; the stale tree polygon behind 7 cut back to the 2023 photo.
+* 12: the old target already met the rule (14 yds from the left edge, 9.8 needed); the page's dashed outline was 2-3
+  yds inside the true left edge, which made it look close. The page now draws the outline the margins are measured on.
+* 7: the old targets were 1.2 (Back) to 5.7 yds (The Tips) short of the rule against the tall growth in front; now
+  Back (-1, +1.5), The Tips (0, +0.5), 14-15 yds from the front edge.
+* 4, 14, 17 from Back and behind are too narrow for the rule on both sides: lesser of two evils, each side's distance
+  is in PAR3.md 0.3 and on the page ("The middle of the box is 12 yds from the left edge, ...").
+* Cost of the constraint: 0.015 strokes on Back 7, 0.007 or less elsewhere. Club: only Champions 7 changes
+  (5-iron -> 4-iron).
+* Template (shared; fires only where `par3_targets.json` boxes carry `m`, i.e. Gateway): the edge-distance sentence
+  on par 3s. `courses/par3_targets.py`: passes `m` and the optional `green` outline through (absent elsewhere).
+
 ## Round 3, Nov 13 (page editor: wording only, after second_pass/AUDIT_R3.md; page built on 632c4927c)
 
 No solve, no map, no club, aim or table number changed (plain `v2_course.py page --slug gateway_national --which truth`, 53 s).

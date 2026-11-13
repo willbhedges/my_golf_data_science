@@ -70,11 +70,16 @@ def main():
                 nm = lambda c: E.SHORT_NAME.get(c, c)       # noqa: E731
                 steps.append([float(sh), nm(b), nm(r), round(float(d), 4), round(float(se), 4),
                               bool(d < 2 * se or d < 0.01)])
-            out.setdefault(s, {})[str(k)] = dict(p0=round(p0, 1), page0=round(page0, 1), card=cards[k], map_center=round(float(H.center), 1),
+            row = dict(p0=round(p0, 1), page0=round(page0, 1), card=cards[k], map_center=round(float(H.center), 1),
                                                  aim_dep=dep, dz=dz, steps=steps)
             print(s, k, "p0", round(p0, 1), "page0", round(page0, 1), "map", round(float(H.center), 1), "card", cards[k],
                   [(int(x[0]), x[1]) for x in steps[::3]], file=sys.stderr, flush=True)
-            json.dump(out, open(OUT, "w"), indent=0)
+            import fcntl                      # several sets may run at once: read-update-write under a lock
+            with open(OUT + ".lock", "w") as lk:
+                fcntl.flock(lk, fcntl.LOCK_EX)
+                out = json.load(open(OUT)) if os.path.exists(OUT) else {}
+                out.setdefault(s, {})[str(k)] = row
+                json.dump(out, open(OUT, "w"), indent=0)
     print("wrote", OUT)
 
 

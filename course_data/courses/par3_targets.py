@@ -60,6 +60,8 @@ def boxes_for(t, tee, f, r, ppy, scale_center, yards):
         corners = [tee + ((scale_center + d) * f + l * r) * ppy for l, d in ((l0, d0), (l1, d0), (l1, d1), (l0, d1))]
         out[str(mod)] = dict(poly=[[float(c[0]), float(c[1])] for c in corners], play=float(yards + b["aim"][1]),
                              lo=float(yards + d0), hi=float(yards + d1), aim=[float(x) for x in b["aim"]])
+        if b.get("m"):       # yds from the target to the green edge each way (Gateway 2026-11-13, opt/par3_decade.py)
+            out[str(mod)]["m"] = {k: float(v) for k, v in b["m"].items()}
     return out
 
 
@@ -86,6 +88,9 @@ def install(cfg, BW, base_set):
             tee, f, r, ppy = BW.frame(p["tee"], p["flag"], p["center"])
             d["boxes"] = boxes_for(t, tee, f, r, ppy, p["center"], p["center"])
             d["p3club"] = clubs_of(t, base_set, h)
+            if t.get("green"):      # the outline the margins are measured on (yds right, yds past the centre): drawn dashed
+                d["green"] = [[float(c[0]), float(c[1])] for c in
+                              (tee + ((p["center"] + dd) * f + l * r) * ppy for l, dd in t["green"])]
             d["p3_source"] = "expected strokes"
         return d
 

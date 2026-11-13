@@ -1,5 +1,183 @@
 # Gateway National par 3s: aim box for an unknown pin, and the plays-like number (Nov 9 2026)
 
+**Nov 13 update: the page target now obeys the DECADE edge rule (section 0). Sections 1-7 are the Nov 9 expected-strokes
+study it was built on; where a box or a number there differs from section 0, section 0 is what the page shows.**
+
+## 0. The DECADE rule as a constraint (Nov 13 2026, golfer's request)
+
+Script `opt/par3_decade.py` (`solve`, `page`, `table`); results `opt/results/par3_decade.json`; page file
+`par3_targets.json`; club ladder `par3_ladder.json` (re-run on the new targets, every set).
+
+### 0.1 The rule, as checked
+
+Source: the golfer's own statement of Scott Fawcett's DECADE approach rule (Nov 13). The 5 % base is also in the USGA
+junior-development slide deck "Picking Targets Into Greens" (160 yds -> 8 yds from the edge). I could not find a
+public page that gives the +3 / +1-2 modifiers, so those are the golfer's numbers; the repo's earlier DECADE book
+(`mozingo/yardage_book.py`: distance / 20, +3 water or OB, +2 trees or tall grass, +1 bunker) agrees with them except
+that it had tall grass at +2.
+
+The target T is the centre of the blue box, which is the **landing spot** (the number on the page is the carry to it).
+For every point b of the green edge:
+
+    distance(T, b) >= 0.05 x D + modifier(b)
+
+* **D** = the page's plays-like number to the target, the largest of the four forecast states (Sat / Sun x start 1 /
+  10). It is a yard or two more than the card on these cold days, so the margin is on the safe side.
+* **modifier(b)**, from what lies beyond that part of the edge (the par-3 solve's map: truth map +
+  `opt/par3_features.json`, checked on the 2023 photo):
+  * **+3** penalty: water, OB, tall native (penalty area at Gateway: the golfer's rule), in full when it starts within
+    5 yds of the edge, falling in a straight line to 0 at 10 yds;
+  * **+2** trees, the same taper (the golfer's statement does not name trees; this is the old book's number);
+  * **+2** a bunker within 5 yds of the edge, **+1** one 5-10 yds off;
+  * **0** mown ground.
+* **Every part of the edge** is checked, not four sides: the table gives left / right / short / long through the
+  target and the tightest edge point in any direction.
+* **Lesser of two evils**, when the margins do not all fit: the penalty margins are met first (two penalty edges that
+  conflict share the shortfall); then the worst shortfall on the other edges is made as small as possible, with
+  expected strokes allowed to buy shortfall back at 0.01 strokes a yard, so the leftover leans toward the cheaper miss.
+* **Inside the rule, expected strokes decides** (the model of section 1 with the fixes of 0.4).
+* One target for every wind class of the page (the forecast is 4-9 mph; the old book's +1 / +2 / +3 yds at 10 / 20 /
+  30 mph do not fit these greens).
+* The box drawn is the target +/- 2 yds.
+
+The roll is not in the rule: the ball finishes one roll past the box (2-3 yds with a wedge, 6-8 with a mid iron, 10
+with the 4-iron), so the finish is closer to the back edge than the "long" column by that much. Expected strokes
+knows this, which is why it takes the short end of the allowed depth.
+
+### 0.2 Green outlines against the 2023 photo
+
+The margins are measured on `opt/par3_green_check.json`: the solve's outline cut back to the putting surface classified
+on the 0.3 m 2023 photo (colour + infrared), the smaller of the two on every side. The page now draws this outline.
+
+| hole | side that matters | photo (colour / infrared profile, 0.5-yd steps) | solve outline | outline the page drew before | check outline |
+|---|---|---|---|---|---|
+| 12 | left, at the centre's depth | putting surface ends 13-14.5 yds left of the centre; collar to 15.5; bank to 17.5; waterline 17.5-18 | 14.8 | 11.5 (OSM: 2-3 yds inside the true edge) | 14.5 |
+| 12 | long, 4-8 yds left of the centre | surface ends 14.5-15.2 past the centre; water from 19-22 | 16.8-17.0 (takes in the collar) | 15-15.5 | 15.2 |
+| 12 | short-left | surface edge 2-3 yds inside the waterline (the map's line is 1-2.5 yds on the dry side of the 2023 waterline) | within 0.5 | 1-2 inside | within 0.5 |
+| 7 | front | surface ends 13-15.5 yds short of the centre; the tall growth starts 2-5 yds beyond it | 14.2-15.8 | the same polygon | 13.2-15.2 |
+| 7 | right | surface runs 1.5-3 yds further right than the outline (as noted Nov 9) | 10 | 10 | 10 |
+| 4, 14, 17 | all | within 1-2 yds; 14's left edge 1.5-2.5 yds inside the outline | | | the smaller |
+
+So on 12 the old page picture made the target look 3 yds nearer the left edge than it is.
+
+### 0.3 Result (wind class of the forecast; "have / need" in yds)
+
+L2E = lesser of two evils. "Old target" = the box on the page at 2fede0ff8, checked against the same rule.
+
+| set | hole | plays (max) | base | old target | old: tightest edge (have / need) | new model's free optimum | DECADE target | left | right | short | long | tightest | how | cost vs free optimum |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Back | 4 | 184 | 9.2 | (+2.5, -4.0) | 7.8 / 10.2 bunker **FAIL 2.4** | (+2.0, -4.0) | **(+2.5, -3.5)** | 12 / 10.2 bunker | 13 / 9.2 mown | 11 / 10.2 bunker | 14 / 9.4 mown | 8.1 / 10.2 bunker | L2E: other edges 1.4 short | +0.000 +/- 0.001 |
+| Back | 7 | 191 | 9.6 | (+0.0, -1.0) | 10.9 / 12.0 penalty **FAIL 1.2** | (+1.0, -1.5) | **(-1.0, +1.5)** | 11 / 9.6 mown | 11 / 10.6 bunker | 15 / 12.4 penalty | 13 / 11.9 penalty | 10.9 / 10.9 mown | fits | +0.015 +/- 0.002 |
+| Back | 12 | 136 | 6.8 | (-0.5, -0.5) | 10.3 / 9.2 penalty ok | (-0.5, -0.5) | **(-0.5, -0.5)** | 14 / 9.8 penalty | 12 / 6.8 mown | 16 / 9.8 penalty | 15 / 9.8 penalty | 10.3 / 9.2 penalty | fits | +0.000 +/- 0.000 |
+| Back | 14 | 207 | 10.4 | (+2.5, -5.0) | 8.6 / 11.3 bunker **FAIL 2.7** | (+2.5, -4.5) | **(+2.5, -4.0)** | 10 / 11.5 trees | 8 / 10.4 mown | 13 / 10.4 mown | 20 / 10.4 mown | 9.1 / 11.4 bunker | L2E: other edges 1.7 short | +0.001 +/- 0.001 |
+| Back | 17 | 201 | 10.1 | (-0.5, -5.5) | 10.4 / 12.0 bunker (greenside) **FAIL 1.6** | (-0.5, -5.0) | **(-0.5, -4.5)** | 9 / 10.1 mown | 12 / 12.1 bunker (greenside) | 13 / 10.1 mown | 19 / 10.1 mown | 10.7 / 12.1 bunker (greenside) | L2E: other edges 0.3 short | +0.001 +/- 0.001 |
+| The Tips | 4 | 200 | 10.1 | (+2.0, -7.0) | 5.1 / 10.9 bunker **FAIL 5.8** | (+2.5, -4.5) | **(+2.5, -4.5)** | 11 / 11.1 bunker | 13 / 10.1 mown | 10 / 11.1 bunker | 15 / 10.4 mown | 7.3 / 11.1 bunker | L2E: other edges 2.5 short | +0.000 +/- 0.000 |
+| The Tips | 7 | 215 | 10.8 | (+0.5, -5.0) | 7.4 / 13.2 penalty **FAIL 5.7** | (+1.5, -1.0) | **(+0.0, +0.5)** | 12 / 10.8 mown | 10 / 11.8 bunker | 14 / 13.5 penalty | 14 / 13.7 penalty | 9.8 / 11.8 bunker | L2E: penalty 0.7 short, others 1.1 | +0.006 +/- 0.002 |
+| The Tips | 12 | 160 | 8.0 | (+1.0, -2.5) | 11.7 / 10.9 penalty ok | (+0.5, -1.5) | **(+0.5, -1.5)** | 14 / 11.0 penalty | 11 / 9.0 bunker | 15 / 11.0 penalty | 13 / 11.0 penalty | 11.0 / 10.6 penalty | fits | +0.000 +/- 0.000 |
+| The Tips | 14 | 247 | 12.3 | (+2.0, -11.5) | 4.0 / 13.1 bunker **FAIL 9.1** | (+4.5, -8.5) | **(+3.5, -6.5)** | 10 / 13.5 trees | 8 / 12.3 mown | 11 / 12.3 mown | 22 / 12.3 mown | 7.5 / 12.3 mown | L2E: other edges 3.7 short | +0.005 +/- 0.002 |
+| The Tips | 17 | 237 | 11.8 | (-3.5, -10.0) | 6.3 / 12.7 bunker **FAIL 6.4** | (-1.5, -7.5) | **(-1.0, -6.5)** | 9 / 11.8 mown | 12 / 13.8 bunker (greenside) | 10 / 11.8 mown | 20 / 11.8 mown | 8.8 / 12.8 bunker | L2E: other edges 2.1 short | +0.004 +/- 0.001 |
+| Champions | 4 | 198 | 9.9 | (+2.0, -6.5) | 5.5 / 10.8 bunker **FAIL 5.3** | (+2.5, -4.5) | **(+2.5, -4.0)** | 12 / 10.9 bunker | 13 / 9.9 mown | 10 / 10.9 bunker | 14 / 10.2 mown | 7.6 / 10.9 bunker | L2E: other edges 2.4 short | +0.001 +/- 0.001 |
+| Champions | 7 | 211 | 10.6 | (+1.0, -5.0) | 7.9 / 13.1 penalty **FAIL 5.2** | (+0.5, -0.5) | **(+0.5, +0.5)** | 12 / 10.5 mown | 9 / 11.5 bunker | 14 / 13.3 penalty | 14 / 13.5 penalty | 9.4 / 11.5 bunker | L2E: penalty 0.3 short, others 1.7 | +0.007 +/- 0.001 |
+| Champions | 12 | 153 | 7.6 | (+1.0, -2.0) | 11.5 / 10.2 penalty ok | (+0.0, -1.0) | **(+0.0, -1.0)** | 14 / 10.6 penalty | 12 / 7.6 mown | 16 / 10.6 penalty | 14 / 10.6 penalty | 10.6 / 10.0 penalty | fits | +0.000 +/- 0.000 |
+| Champions | 14 | 244 | 12.2 | (+1.5, -11.0) | 4.0 / 12.9 bunker **FAIL 8.9** | (+4.0, -8.0) | **(+3.0, -5.5)** | 11 / 13.4 trees | 8 / 12.2 mown | 12 / 12.2 mown | 21 / 12.2 mown | 8.8 / 13.2 bunker | L2E: other edges 3.5 short | +0.007 +/- 0.002 |
+| Champions | 17 | 231 | 11.5 | (-3.0, -9.5) | 6.8 / 12.4 bunker **FAIL 5.6** | (-1.5, -8.0) | **(-1.0, -6.5)** | 9 / 11.5 mown | 12 / 13.5 bunker (greenside) | 10 / 11.5 mown | 20 / 11.5 mown | 8.8 / 12.5 bunker | L2E: other edges 1.7 short | +0.002 +/- 0.001 |
+| Middle | 4 | 158 | 7.9 | (+2.0, -2.5) | 8.6 / 8.9 bunker **FAIL 0.3** | (+2.0, -2.0) | **(+2.0, -2.0)** | 13 / 8.9 bunker | 13 / 8.3 mown | 13 / 8.9 bunker | 12 / 7.9 mown | 8.9 / 8.9 bunker | fits | +0.000 +/- 0.000 |
+| Middle | 7 | 169 | 8.4 | (-0.5, -0.5) | 10.5 / 10.4 penalty ok | (-1.0, -0.5) | **(-0.5, -0.5)** | 11 / 8.4 mown | 10 / 9.4 bunker | 13 / 11.4 penalty | 15 / 11.0 penalty | 10.5 / 10.4 penalty | fits | +0.000 +/- 0.001 |
+| Middle | 12 | 120 | 6.0 | (-1.0, -0.5) | 11.1 / 9.0 penalty ok | (-1.0, -0.5) | **(-1.0, -0.5)** | 13 / 9.0 penalty | 13 / 6.0 mown | 16 / 9.0 penalty | 15 / 9.0 penalty | 11.1 / 9.0 penalty | fits | +0.000 +/- 0.000 |
+| Middle | 14 | 193 | 9.7 | (+1.5, -3.5) | 8.6 / 10.6 bunker **FAIL 2.0** | (+1.5, -3.5) | **(+2.0, -2.5)** | 10 / 10.9 trees | 9 / 9.7 mown | 15 / 10.7 bunker | 19 / 9.7 mown | 9.5 / 10.7 bunker | L2E: other edges 1.0 short | +0.003 +/- 0.001 |
+| Middle | 17 | 180 | 9.0 | (+0.0, -4.0) | 10.5 / 10.9 bunker (greenside) **FAIL 0.5** | (+0.5, -3.5) | **(+0.0, -2.5)** | 9 / 9.0 mown | 12 / 11.0 bunker (greenside) | 15 / 9.0 mown | 17 / 9.0 mown | 11.1 / 11.0 bunker (greenside) | fits | +0.004 +/- 0.001 |
+| Forward | 4 | 135 | 6.7 | (+1.5, -2.5) | 8.4 / 7.7 bunker ok | (+1.5, -1.0) | **(+1.5, -1.0)** | 12 / 7.7 bunker | 12 / 8.4 penalty | 14 / 6.7 mown | 12 / 6.7 mown | 10.7 / 9.7 penalty | fits | +0.000 +/- 0.000 |
+| Forward | 7 | 153 | 7.6 | (-1.0, -2.0) | 9.5 / 10.0 penalty **FAIL 0.5** | (-0.5, +0.0) | **(-0.5, +0.0)** | 11 / 7.6 mown | 10 / 8.6 bunker | 13 / 10.4 penalty | 15 / 10.6 penalty | 10.6 / 9.4 penalty | fits | +0.000 +/- 0.000 |
+| Forward | 12 | 95 | 4.8 | (-0.5, +0.0) | 9.9 / 7.2 penalty ok | (-2.0, +1.0) | **(-2.0, +1.0)** | 12 / 7.8 penalty | 13 / 4.8 mown | 18 / 7.8 penalty | 15 / 7.8 penalty | 10.1 / 7.3 penalty | fits | +0.000 +/- 0.000 |
+| Forward | 14 | 162 | 8.1 | (+0.0, -3.5) | 7.4 / 9.0 trees **FAIL 1.6** | (+1.0, -1.5) | **(+1.5, -1.5)** | 10 / 9.4 trees | 9 / 8.1 mown | 16 / 8.1 mown | 19 / 8.9 mown | 9.8 / 9.4 trees | fits | +0.001 +/- 0.001 |
+| Forward | 17 | 162 | 8.1 | (-1.0, -4.0) | 8.3 / 8.0 mown ok | (+0.5, -2.5) | **(+0.5, -2.5)** | 10 / 8.1 mown | 12 / 10.1 bunker (greenside) | 14 / 8.1 mown | 18 / 8.1 mown | 10.7 / 10.1 bunker (greenside) | fits | +0.000 +/- 0.000 |
+
+Page targets and clubs, before -> now (plays-like number and club for each forecast state):
+
+| set | hole | target on the page before -> now (yds right, yds past the centre) | moved | Sat, start 1 | Sat, start 10 | Sun, start 1 | Sun, start 10 | new target against the old one, strokes |
+|---|---|---|---|---|---|---|---|---|
+| Back | 4 | (+2.0, -4.0) -> (+2.5, -3.5) | 0.7 | 180 7-iron -> 181 7-iron | 178 7-iron -> 179 7-iron | 183 6-iron -> 184 6-iron | 182 6-iron (close) -> 183 6-iron (close) | -0.000 +/- 0.001 |
+| Back | 7 | (+0.0, -1.0) -> (-1.0, +1.5) | 2.7 | 187 6-iron -> 190 6-iron | 184 6-iron -> 187 6-iron | 189 6-iron -> 191 6-iron | 187 6-iron -> 189 6-iron | +0.015 +/- 0.002 |
+| Back | 12 | (-1.0, +0.0) -> (-0.5, -0.5) | 0.7 | 137 PW (same) | 137 PW -> 136 PW | 131 GW (same) | 132 GW (same) | +0.000 +/- 0.000 |
+| Back | 14 | (+2.5, -4.5) -> (+2.5, -4.0) | 0.5 | 201 5-iron (same) | 203 5-iron -> 204 5-iron | 205 5-iron (same) | 207 5-iron (close) (same) | +0.000 +/- 0.001 |
+| Back | 17 | (-0.5, -5.0) -> (-0.5, -4.5) | 0.5 | 197 5-iron -> 198 5-iron | 201 5-iron (same) | 196 5-iron -> 197 5-iron | 198 5-iron (same) | +0.001 +/- 0.001 |
+| The Tips | 4 | (+2.0, -6.5) -> (+2.5, -4.5) | 2.1 | 195 5-iron -> 197 5-iron | 193 5-iron -> 195 5-iron | 198 5-iron -> 200 5-iron | 197 5-iron -> 199 5-iron | -0.018 +/- 0.002 |
+| The Tips | 7 | (+0.5, -5.0) -> (+0.0, +0.5) | 5.5 | 208 4-iron -> 214 4-iron | 205 4-iron (close) -> 211 4-iron | 210 4-iron -> 215 4-iron | 208 4-iron -> 213 4-iron | -0.064 +/- 0.005 |
+| The Tips | 12 | (+1.0, -2.5) -> (+0.5, -1.5) | 1.1 | 159 8-iron -> 160 8-iron | 158 8-iron -> 159 8-iron | 152 9-iron -> 153 9-iron | 153 9-iron -> 154 9-iron | -0.006 +/- 0.001 |
+| The Tips | 14 | (+1.5, -11.0) -> (+3.5, -6.5) | 4.9 | 235 between clubs -> 240 between clubs | 238 between clubs -> 243 between clubs | 240 between clubs -> 245 between clubs | 242 between clubs -> 247 between clubs | -0.019 +/- 0.003 |
+| The Tips | 17 | (-2.5, -10.0) -> (-1.0, -6.5) | 3.8 | 229 between clubs -> 233 between clubs | 233 between clubs -> 237 between clubs | 228 between clubs -> 232 between clubs | 230 between clubs -> 234 between clubs | -0.007 +/- 0.002 |
+| Champions | 4 | (+2.0, -6.5) -> (+2.5, -4.0) | 2.5 | 192 6-iron (close) -> 194 6-iron (close) | 190 6-iron -> 192 6-iron | 195 5-iron -> 198 5-iron | 194 5-iron -> 197 5-iron | -0.011 +/- 0.002 |
+| Champions | 7 | (+0.5, -4.5) -> (+0.5, +0.5) | 5.0 | 204 5-iron -> 210 4-iron | 202 5-iron -> 207 5-iron | 206 4-iron (close) -> 211 4-iron | 204 5-iron -> 209 4-iron | -0.061 +/- 0.004 |
+| Champions | 12 | (+0.5, -2.0) -> (+0.0, -1.0) | 1.1 | 152 9-iron -> 153 9-iron | 151 9-iron -> 152 9-iron | 145 9-iron -> 146 9-iron | 146 9-iron -> 147 9-iron | -0.004 +/- 0.001 |
+| Champions | 14 | (+1.5, -10.5) -> (+3.0, -5.5) | 5.2 | 231 between clubs -> 237 between clubs | 235 between clubs -> 240 between clubs | 236 between clubs -> 241 between clubs | 239 between clubs -> 244 between clubs | -0.017 +/- 0.003 |
+| Champions | 17 | (-3.0, -9.5) -> (-1.0, -6.5) | 3.6 | 224 between clubs -> 227 between clubs | 228 between clubs -> 231 between clubs | 222 between clubs -> 226 between clubs | 224 between clubs -> 227 between clubs | -0.007 +/- 0.002 |
+| Middle | 4 | (+2.0, -2.0) -> (+2.0, -2.0) | 0.0 | 155 9-iron (same) | 153 9-iron (same) | 158 9-iron (close) (same) | 157 9-iron (same) | -0.001 +/- 0.001 |
+| Middle | 7 | (+0.0, -0.5) -> (-0.5, -0.5) | 0.5 | 167 8-iron (same) | 165 8-iron (same) | 169 8-iron (same) | 167 8-iron (same) | +0.000 +/- 0.000 |
+| Middle | 12 | (-1.0, -0.5) -> (-1.0, -0.5) | 0.0 | 120 SW (same) | 119 SW (same) | 115 SW (same) | 116 SW (same) | +0.000 +/- 0.000 |
+| Middle | 14 | (+2.0, -3.5) -> (+2.0, -2.5) | 1.0 | 187 6-iron -> 188 6-iron | 189 6-iron -> 190 6-iron | 190 6-iron -> 191 6-iron | 192 6-iron -> 193 6-iron | +0.003 +/- 0.001 |
+| Middle | 17 | (+0.5, -4.0) -> (+0.0, -2.5) | 1.6 | 176 7-iron -> 177 7-iron | 179 7-iron -> 180 7-iron | 175 7-iron -> 176 7-iron | 176 7-iron -> 178 7-iron | +0.003 +/- 0.001 |
+| Forward | 4 | (+1.5, -2.5) -> (+1.5, -1.0) | 1.5 | 131 GW -> 132 GW | 129 GW -> 131 GW | 133 PW -> 135 PW | 132 PW (close) -> 134 PW (close) | -0.007 +/- 0.001 |
+| Forward | 7 | (-1.0, -2.0) -> (-0.5, +0.0) | 2.1 | 149 9-iron -> 152 9-iron | 147 9-iron -> 149 9-iron | 151 9-iron -> 153 9-iron | 149 9-iron -> 151 9-iron | -0.013 +/- 0.002 |
+| Forward | 12 | (-0.5, +0.0) -> (-2.0, +1.0) | 1.8 | 94 LW -> 95 LW | 94 LW -> 95 LW | 90 between clubs -> 91 between clubs | 91 between clubs -> 92 between clubs | -0.006 +/- 0.001 |
+| Forward | 14 | (+0.5, -3.0) -> (+1.5, -1.5) | 1.8 | 156 9-iron -> 157 9-iron (close) | 158 8-iron -> 160 8-iron | 159 8-iron -> 161 8-iron | 161 8-iron -> 162 8-iron | -0.011 +/- 0.002 |
+| Forward | 17 | (-0.5, -3.5) -> (+0.5, -2.5) | 1.4 | 158 8-iron -> 159 8-iron | 161 8-iron -> 162 8-iron | 157 8-iron (close) -> 158 8-iron (close) | 158 8-iron -> 159 8-iron | -0.007 +/- 0.001 |
+
+* **12 (all sets): the old target already met the rule.** Back: 14 yds from the left edge (9.8 needed), 16 from the
+  front, 15 from the back. It moved 0-1.5 yds. The picture misled: the dashed outline was 2-3 yds inside the true left
+  edge.
+* **7: the old targets failed, by 1.2 (Back) to 5.7 yds (The Tips)**, tightest against the tall growth short and
+  short-left. The Tips moves 5.5 yds deeper, Champions 5.5, Back 2.7, Forward 2.1; Middle already passed.
+  The Tips and Champions cannot fit both the front (13.3-13.5) and the back-right long grass (13.5-13.7) on a 31-yd
+  green: the two share a shortfall of 0.3-0.7 yd; the right-hand bunker edge gives way (9-10 yds against 11.5-11.8).
+* **4, 14, 17 from Back and behind: the greens are narrower than twice the base** (4: 16 yds across its short axis
+  against 2 x 9.2-10.1; 14 and 17: 20-23 yds wide against 2 x 10.1-12.3 plus the bunker / tree yards), so no point
+  satisfies every edge. Penalty margins are met; the other edges are short by 0.3-3.7 yds at best and the table shows
+  each side. The old targets were worse on the tightest edge on every one of them.
+* **Cost of the constraint** (last column of the first table): at most 0.015 strokes (Back 7), 0.007 or less
+  elsewhere. Against the old page target the new one is better by 0.06 on The Tips / Champions 7, 0.02 on The Tips 4
+  and 14, and within 0.004 (noise) on Back, except Back 7 (+0.015: the rule, not the model, moves it).
+* **Club**: only Champions 7 changes (5-iron -> 4-iron in three of the four states: the number rises 5-6 yds).
+  Back 7 reads 187-191 between the 6-iron (185) and the 5-iron (198); the ladder keeps the 6-iron.
+
+### 0.4 Why the old targets differed, and what was fixed in the model
+
+Free optimum of the model for The Tips 7 as each piece is added (1-yd grid, 8,000 swings):
+
+| model | The Tips 7 | Back 7 |
+|---|---|---|
+| page box at 2fede0ff8 | (+0.5, -5.0): the Nov 9 solve, never re-run for The Tips / Champions / Forward | (0, -1) |
+| today's engine on the Nov 9 map | (+1, -3) | (0, -2) |
+| + second-pass surrounds (`P3_FEATURES=1`: long grass short of 7) | (0, -2) | (-1, -1) |
+| + the thicket short-left of 7 is penalty, not a punch-out from trees | (+1, -2) | (0, -1) |
+| + the trees behind 7 cut back to where they stand on the 2023 photo | (0, -1) | (0, -1) |
+| + penalty balls priced where they crossed the edge | (0, -1) | (+1, -1) |
+| + the DECADE rule | (0, +0.5) | (-1, +1.5) |
+
+1. **Stale boxes.** The Tips, Champions and Forward still had the Nov 9 boxes (first-pass physics, no second-pass
+   surrounds): 2-5 yds too short on 4, 7, 14, 17. Every set is now solved on the same model.
+2. **Penalty priced at the crossing point** (`opt/par3_target.py`, `GHole._strokes_field`; audit round 3's note). A
+   ball in water or tall native cost 1 + a rough chip from the ball's own distance. It now costs 1 + the next shot
+   from the last dry point on the tee-to-ball line, like the tee-shot engine. Short of 7 from The Tips that point is
+   32-53 yds behind the ball: 4.12 strokes instead of about 3.4. `P3_PENALTY=ball` restores the old pricing.
+3. **7 short-left**: the 2014-lidar tree block there is a regrown thicket; it was priced as a punch-out from trees.
+   It is now tall native = penalty (`THICKET_SHORT`; `P3_THICKET=trees` restores).
+4. **7 long**: the 2014 crown polygon reached 1-5 yds from the back edge; on the 2023 photo that strip is mown and
+   the crowns start 8-9 yds behind the green. Cut back to that line (`STALE_TREES_LONG`; `P3_TREES7=lidar` restores).
+5. **What the rule adds over expected strokes**: the model's free optimum lands 1-8 yds short of centre because the
+   ball rolls; the rule asks for the landing spot itself to clear the front by 5 % + modifier, which is 1-2.5 yds
+   deeper on 7 and 14 from the longer tees. The lateral differences are under 1.5 yds.
+
+Not satisfied / open:
+* The rule cannot be met in full on 4, 14, 17 (Back, The Tips, Champions), Middle 14, and The Tips / Champions 7, as
+  above.
+* The page text gives the four distances ("The middle of the box is 11 yds from the left edge, ...") without naming
+  what is beyond them.
+* The 10-yd "counts as beside the green" distance, the taper and the trees / bunker steps are my reading, not the
+  golfer's words; `NEAR`, `FULL`, `ADD` in `opt/par3_decade.py`.
+* The Card row (front / centre / back) still uses the package outline.
+* `P3_FEATURES=1` is now the default of `opt/par3_decade.py`; `opt/par3_ladder.py` must be run with it set.
+
+
 Holes 4, 7, 12, 14 and 17 (Back 180 / 180 / 131 / 200 / 195), every tee set. The page's par-3 box was the DECADE box
 (`yardage_book.par3_plan`: cushions in from each edge, the worse side first). This page replaces it with the
 **expected-strokes optimum for a pin anywhere on the green, on Will's own iron pattern**. It is the method of Eagle
