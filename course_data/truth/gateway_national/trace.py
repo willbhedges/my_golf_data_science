@@ -49,18 +49,30 @@ EXTRA = {
           N([(140, 56), (345, 58)], [(140, 70), (345, 70)], "prairie beyond the cart path right")],
     "6": [N([(255, -48), (345, -48)], [(255, -30), (345, -30)], "fescue between rough and trees left"),
           N([(140, 48), (345, 48)], [(140, 70), (345, 70)], "prairie beyond the cart path right")],
-    "8": [N([(300, -40), (345, -40)], [(300, 25), (345, 25)], "prairie beyond the end of the fairway"),
+    # 2026-11-13 second pass: a mown collar ~10-12 yds wide runs round the outside of the fairway (tan, smooth on NAIP
+    # 2023, like the ring round the square inside the bend; green in the Sentinel-2 NDVI of Nov 2026); the unmown
+    # ground starts beyond it. "beyond the end" moved from 300 to 312, "inside the dogleg" from the fairway edge to
+    # 12 yds off it.
+    "8": [N([(312, -35), (345, -35)], [(312, 25), (345, 25)], "prairie beyond the end of the fairway (past the mown collar)"),
           N([(220, 25), (345, 25)], [(220, 45), (345, 45)], "fescue before the trees right"),
           # 2026-11-09 eye check B (must fix): the fairway's right edge bends left round the 270 bunker; the ground
           # from it to the trees is the same fescue (NIR/red 1.03-1.13 vs turf 1.3; native_auto 8 R p 0.89)
-          N([(225, 22), (240, 19), (250, 14), (260, 8), (268, 0), (280, -20), (300, -25)], [(225, 45), (300, 45)],
-            "fescue inside the dogleg: fairway right edge to the trees")],
+          N([(225, 34), (240, 31), (250, 26), (260, 21), (268, 13), (280, -5), (300, -12), (312, -30)], [(225, 45), (312, 45)],
+            "unmown ground inside the dogleg: from the mown collar to the trees"),
+          # 2026-11-13 second pass: the unmown square inside the bend, ringed by a mown bank (NAIP 2023 RGB + CIR:
+          # dark, tufted; outside the +/-65 corridor, so it was priced as "unverified"). Driver territory (300-337).
+          Z("native", poly((-70, 302), (-58, 312), (-57, 323), (-70, 337), (-83, 330), (-88, 318), (-82, 306)),
+            "unmown square inside the dogleg, left of the line (302-337)")],
     # 2026-11-09 audit item 3 (checked on NAIP 2023 RGB + CIR): the tufted strip left runs in to 5-8 yds off the
     # fairway at 250-340 (CIR grey / dark red, textured), not only x -48..-33
     "9": [N([(140, -48), (300, -48)], [(140, -33), (300, -33)], "fescue strip left"),
-          N([(250, -50), (340, -50)], [(250, -24), (270, -21), (285, -19), (300, -14), (315, -16), (330, -20), (340, -22)],
-            "unmown strip left, in to the fairway edge (250-340)"),
-          N([(140, 30), (340, 30)], [(140, 45), (340, 45)], "fescue before the tree line right")],
+          # 2026-11-13 second pass: (a) the Nov 9 inner edge overshot at 290-340 (drawn to x -14..-22): on NAIP 2023 the
+          # tufted grass stops at a worn line x -18 (265-280) -> -22 (300) -> -27 (320) -> -28 (340), and the Sentinel-2
+          # NDVI of Nov 8 / 10 2026 puts the dormant-grass edge in the same place; (b) the "fescue before the tree line
+          # right" (x +30..+45) is mown turf: mowing stripes on NAIP 2023, NDVI 0.87 in Nov 2026 (= the fairway's):
+          # removed
+          N([(250, -50), (340, -50)], [(250, -24), (265, -18), (280, -18), (300, -22), (320, -27), (340, -28)],
+            "unmown strip left, in to the worn line 6-15 yds off the fairway (250-340)")],
     "10": [N([(140, -70), (345, -70)], [(140, -45), (345, -45)], "prairie left"),
            N([(140, 52), (300, 30), (345, 30)], [(140, 70), (345, 70)], "prairie beyond the cart path right")],
     # 2026-11-09 eye check B: left inner edge 5-9 yds off the fairway at 160-280 (was on it); right fescue starts
@@ -80,7 +92,9 @@ EXTRA = {
     # 264-298 yds, x +6..+43 (it was rough after the Nov 9 right-band edit)
     "16": [Z("native", poly((8, 297), (25, 298), (38, 292), (43, 282), (40, 270), (30, 264), (18, 266), (10, 272), (6, 285)),
              "fescue mound right of the fairway, inside the cart path"),
-           N([(140, -70), (300, -70)], [(140, -32), (220, -34), (300, -30)], "prairie left"),
+           # 2026-11-13 second pass: inner edge at 240-300 is x -27 -> -22 (NAIP 2023 at 7 px / yd: the tan tufted
+           # patch starts 6-8 yds off the fairway edge at -16), was -30..-34
+           N([(140, -70), (300, -70)], [(140, -32), (220, -33), (240, -27), (260, -24), (280, -22), (295, -23), (300, -28)], "prairie left"),
            N([(140, 33), (170, 38), (180, 45), (200, 51), (220, 57), (260, 55), (280, 52), (300, 49)], [(140, 70), (300, 70)], "fescue right from the cart path out")],
     # 2026-11-09 eye check C: the fescue swings out with the cart path from 260 (was a straight strip 15-30 yds too close)
     "18": [N([(140, -46), (170, -46), (200, -48), (230, -48), (260, -52), (290, -75), (320, -90), (345, -90)], [(140, -18), (200, -22), (245, -30), (275, -36), (290, -42), (305, -48), (320, -58), (345, -64)], "fescue left between the cart path and the rough")],

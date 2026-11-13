@@ -313,6 +313,8 @@ def activate(slug, which):
     eng = dict(cfg.get("engine") or {})
     if eng.get("green_putting"):
         attach_greens(cfg, which, course, M)
+    if eng.get("checked_extra_ll"):
+        attach_checked_extra(eng["checked_extra_ll"], course)
     if eng.get("flight_trees"):
         dem = os.path.join(ROOT, meta["dem"]) if meta.get("dem") else None
         cache = {}
@@ -401,10 +403,14 @@ def install_engine(eng, M, D):
                 BP.SHORT.setdefault(c, c)
         except Exception:                                # noqa: BLE001
             pass
+    if eng.get("physics"):
+        install_physics(M, D, eng["physics"])
     if eng.get("green_putting"):
         install_green_putting(M, eng["green_putting"])
     if eng.get("aim_limit"):
         install_aim_limit(D, float(eng["aim_limit"]))
+    if eng.get("checked_extra_ll"):
+        install_checked_extra(M)
     ft = eng.get("flight_trees")
     if ft and ft.get("mode") == "lidar" and lidar_opts(ft) is not None:
         o = lidar_opts(ft)
@@ -414,6 +420,40 @@ def install_engine(eng, M, D):
         M.ev_curve = flight_tree_ev_curve(M, float(os.environ.get("V2_FLIGHT_HEIGHT") or ft.get("height_yds", 20.0)),
                                           float(os.environ.get("V2_FLIGHT_PHIT") or ft.get("p_hit", 0.7)),
                                           drop_of=eng.get("_drop_of"))
+
+
+def install_physics(M, D, ph):
+    """config engine "physics" (Gateway National second pass 2026-11-13, second_pass/PHYSICS.md: the engine's rules
+    against an independent trajectory model). Per course, so the other pages keep the numbers they were solved with.
+      "temp_k": carry lost per F below 70 (engine 0.00075 = the air alone; + the ball at air temperature + the
+                weekend's high pressure = 0.00135). Central world, the prior draws (scaled) and the page's par 3s.
+      "wind_sensitivity": {club: multiplier} replaces wind.SENSITIVITY entries (head / tail and drift per club).
+      "drift_per_mph_275": wind.DRIFT_PER_MPH_275 (yds of drift per crosswind mph at 275 carry)."""
+    if getattr(M, "_physics", None) is not None:
+        return
+    M._physics = dict(ph)
+    import wind as W
+    if ph.get("wind_sensitivity"):
+        W.SENSITIVITY.update({c: float(v) for c, v in ph["wind_sensitivity"].items()})
+    if ph.get("drift_per_mph_275"):
+        W.DRIFT_PER_MPH_275 = float(ph["drift_per_mph_275"])
+    if ph.get("temp_k"):
+        K = float(ph["temp_k"])
+        K0 = float(M.central()["temp_k"])
+        base_central = M.central
+
+        def central(**over):
+            return base_central(**dict(dict(temp_k=K), **over))
+        M.central = central
+        base_prior = D.prior_draws
+
+        def prior_draws(*a, **kw):
+            out = base_prior(*a, **kw)
+            for P in out:
+                # decide.prior_draws passes its own U(0.0005, 0.0009) draw: keep its relative spread round K
+                P["temp_k"] = P["temp_k"] * K / K0 if abs(P["temp_k"] - K) > 1e-12 else K
+            return out
+        D.prior_draws = prior_draws
 
 
 def install_aim_limit(D, L):
@@ -560,6 +600,50 @@ def attach_greens(cfg, which, course, M):
         tee, fwd, right, ppy = M.frame(hd)
         d = (px - tee) / ppy
         hd["green_poly"] = np.column_stack([d @ fwd, d @ right])
+        hd["green_poly_px"] = np.asarray(px, float)      # the Raster re-projects it from the tee in use (moved tees)
+
+
+def attach_checked_extra(spec, course):
+    """config engine "checked_extra_ll": {hole: [[lon, lat], ...] or a list of such rings}: ground outside the
+    +/-65-yd hand corridor that was checked by eye as well (a dogleg whose fairway leaves the corridor: Gateway 8).
+    Rough cells inside the ring stay rough instead of "unverified" (priced as half trees). Stored in photo px so a
+    moved tee keeps it on the ground."""
+    if os.path.join(CD, "imagery") not in sys.path:
+        sys.path.insert(0, os.path.join(CD, "imagery"))
+    import render as RD
+    for k, rings in spec.items():
+        k = int(k) if str(k).isdigit() else k
+        if k not in course.HOLES or k not in course.FRAMES:
+            continue
+        if rings and not isinstance(rings[0][0], (list, tuple)):
+            rings = [rings]
+        fr = RD.Frame.from_json(course.FRAMES[k])
+        course.HOLES[k]["checked_extra_px"] = [np.asarray(fr.ll_to_px(np.asarray(r, float)), float) for r in rings]
+
+
+def install_checked_extra(M):
+    if getattr(M.Raster, "_checked_extra", False):
+        return
+    from matplotlib.path import Path as _Path
+    base = M.Raster.__init__
+
+    def init(self, hd, *a, **kw):
+        base(self, hd, *a, **kw)
+        rings = hd.get("checked_extra_px")
+        if not rings:
+            return
+        tee, fwd, right, ppy = M.frame(hd)
+        pts = np.column_stack([self.AA.ravel(), self.LL.ravel()])
+        inside = np.zeros(len(pts), bool)
+        for r in rings:
+            d = (np.asarray(r, float) - tee) / ppy
+            inside |= _Path(np.column_stack([d @ fwd, d @ right])).contains_points(pts)
+        m = inside.reshape(self.lie.shape) & (self.lie == M.CODE["unverified"])
+        if m.any():
+            self.lie[m] = M.CODE["rough"]
+            self._blocked()
+    M.Raster.__init__ = init
+    M.Raster._checked_extra = True
 
 
 def footprint_ends(cfg, which, course, M):
@@ -621,6 +705,13 @@ def install_green_putting(M, opts):
                     delta = delta + mult * gap
                 S[m] = S[m] + delta
         gp = self.hd.get("green_poly")
+        if self.hd.get("green_poly_px") is not None:
+            # a tee moved along the line (wind grids of the other tee sets, wind_grid.shift_tees) moves the frame:
+            # project the polygon from the tee in use (2026-11-13: it stayed in the card tee's yards, so from a
+            # moved tee the putting area sat `back` yds off the green)
+            tee, fwd, right, ppy = M.frame(self.hd)
+            dd = (np.asarray(self.hd["green_poly_px"], float) - tee) / ppy
+            gp = np.column_stack([dd @ fwd, dd @ right])
         if gp is not None:
             AA, LL = np.meshgrid(self.a, self.l, indexing="ij")
             g = _Path(np.asarray(gp, float)).contains_points(np.column_stack([AA.ravel(), LL.ravel()])).reshape(AA.shape)
@@ -1357,6 +1448,10 @@ def build_page(slug, which, out=None, data_out=None):
                 fetched=fc.get("fetched_utc", ""), draws=int(cfg.get("draws", 64)),
                 aim_limit=float(D.AIM_LIMIT), p3_bag=cfg.get("par3_bag"),
                 temp_k=float(M.central()["temp_k"]))
+    if cfg.get("par3_drift_per_mph"):
+        data["p3_drift"] = float(cfg["par3_drift_per_mph"])
+    if cfg.get("temp_note"):
+        data["temp_note"] = str(cfg["temp_note"])
     if data_out:
         json.dump(data, open(data_out, "w"), separators=(",", ":"))
         return

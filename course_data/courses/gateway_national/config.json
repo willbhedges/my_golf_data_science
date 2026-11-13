@@ -45,7 +45,7 @@
   "wind_from": 200,
   "source": "mid-November normals for St. Louis (lows ~38 F, highs ~57 F, prevailing SSW wind ~10 mph)"
  },
- "foot": "Tee sets: Back (6,623, 72.4/133) is the set the NCCGA played here in 2024 (6,623; Nov 2025 used a 6,377 combo); Middle (6,154) is fully solved from its own boxes; The Tips, Champions and Forward move the Back tee along the line. The tee sheet is not posted: check each tee plaque and use Move this tee (5-yd steps) to match it. Calm-day picks: 256 prior draws per hole; the wind grids at the card tee are refined on 16,000 common swings per club. Clubs: Driver to Mid iron plus an 8-iron (162 carry, assumed ~12-yd gapping below the 210 long iron). A tee ball on or by a green is scored with putts (drivable 10). The map was checked on NAIP 2023 (0.3 m, colour infrared), NAIP 2022 and the 2014 3DEP lidar, and re-checked hole by hole on Nov 9. Photos: USDA NAIP 2023-08-19.",
+ "foot": "Tee sets: Back (6,623, 72.4/133) is the set the NCCGA played here in 2024 (6,623; Nov 2025 used a 6,377 combo); Middle (6,154) is fully solved from its own boxes; The Tips, Champions and Forward move the Back tee along the line. The tee sheet is not posted: check each tee plaque and use Move this tee to match it (tee shots are solved every 20 yds; par 3s move in 5-yd steps). Calm-day picks: 256 prior draws per hole; the wind grids at the card tee are refined on 16,000 common swings per club. Clubs: Driver to Mid iron plus an 8-iron (162 carry, assumed ~12-yd gapping below the 210 long iron). A tee ball on or by a green is scored with putts (drivable 10). The map was checked on NAIP 2023 (0.3 m, colour infrared), NAIP 2022 and the 2014 3DEP lidar, and re-checked hole by hole on Nov 9. Photos: USDA NAIP 2023-08-19.",
  "display_imagery": {
   "year": 2023,
   "img_w": 900,
@@ -90,7 +90,66 @@
   },
   "source": "Gateway National 2026-11-09 (OPTIMIZE.md section 2): the Eagle Knoll engine options that apply. 8-iron = Will's 210 long iron with ~12-yd gapping (assumed, as Eagle Knoll); green putting (a tee ball on or by the green scores putts / short game: the drivable 10th). Flight-path trees NOT enabled: the lidar crowns along every Back tee shot change no pick and no margin by more than 0.0004 strokes, even with +6 m growth and k 0.25 (section 2c), and the 2014 Madison Co. HAG has 40-55 m spikes at the pond edges.",
   "aim_limit": 60,
-  "aim_limit_source": "audit 2026-11-09 item 6: hole 8 (dogleg left) had its best line on the default 40-yd bound; the stored prior-averaged curves show no other hole with a better aim past 40 (Back / Middle)"
+  "aim_limit_source": "audit 2026-11-09 item 6: hole 8 (dogleg left) had its best line on the default 40-yd bound; the stored prior-averaged curves show no other hole with a better aim past 40 (Back / Middle)",
+  "checked_extra_ll": {
+   "8": [
+    [
+     -90.1465511,
+     38.6551839
+    ],
+    [
+     -90.1465944,
+     38.6552305
+    ],
+    [
+     -90.1465588,
+     38.6553322
+    ],
+    [
+     -90.1465356,
+     38.6554472
+    ],
+    [
+     -90.146531,
+     38.6555823
+    ],
+    [
+     -90.1465078,
+     38.6556973
+    ],
+    [
+     -90.1464784,
+     38.6558056
+    ],
+    [
+     -90.1464305,
+     38.655894
+    ],
+    [
+     -90.1460483,
+     38.6561119
+    ],
+    [
+     -90.1456593,
+     38.6556923
+    ]
+   ]
+  },
+  "checked_extra_source": "2026-11-13 second pass: hole 8 (dogleg left) leaves the +/-65-yd hand corridor at 240-345; the ground between the fairway's left edge and the cart path there (Back frame x -65..-128) was checked on NAIP 2023 + Sentinel-2 Nov 2026: mown rough. Without it the engine priced that rough as 'unverified' (half trees), which cost the Driver's line 0.05 strokes",
+  "physics": {
+   "temp_k": 0.00135,
+   "wind_sensitivity": {
+    "Driver": 1.0,
+    "2-wood": 1.2,
+    "4-wood": 1.3,
+    "Hybrid ~235 (not in bag)": 1.4,
+    "Long iron": 1.5,
+    "Mid iron": 1.65,
+    "8-iron": 2.0
+   },
+   "drift_per_mph_275": 1.5,
+   "source": "2026-11-13 second pass, second_pass/PHYSICS.md (independent trajectory model fitted to the TrackMan tour tables): the engine's 0.00075 / F is the air alone; a ball at air temperature adds ~0.0004 / F (about 1 % of ball speed at 45 F) and the weekend's 1027-1031 hPa high another ~0.0002 / F equivalent between 38 and 52 F -> 0.00135; crosswind drift 1.5 yds per mph for every full shot (was 1.14 for the driver, 0.8 for a mid iron); head / tail multipliers for the shorter clubs (mid iron 1.65: -9 % of carry into 10 mph)"
+  }
  },
  "draws": 256,
  "par3_targets": "course_data/courses/gateway_national/par3_targets.json",
@@ -122,5 +181,8 @@
   "SW": 113,
   "LW": 100
  },
- "par3_bag_source": "70-F stock carries of the par-3 model (opt/par3_target.py bag; 4-iron = the engine's 210 long iron, 6-iron = the 185 mid iron; 5-, 7-, 9-iron, PW, GW, SW, LW assumed ~12-yd gapping)"
+ "par3_bag_source": "70-F stock carries of the par-3 model (opt/par3_target.py bag; 4-iron = the engine's 210 long iron, 6-iron = the 185 mid iron; 5-, 7-, 9-iron, PW, GW, SW, LW assumed ~12-yd gapping)",
+ "par3_drift_per_mph": 1.4,
+ "par3_drift_source": "second_pass/PHYSICS.md 2b: every full iron drifts 1.4-1.5 yds per crosswind mph (flight time 6.3-7 s); the page had no crosswind allowance on par 3s",
+ "temp_note": "air, a ball at air temperature and this weekend's high pressure"
 }
