@@ -438,7 +438,7 @@ function render(){
       badges.push(`<span class="pill tie">Close call · ${h.calm.runner} +${h.calm.margin.toFixed(3)}${h.calm.p != null ? (D.simple ? "" : `, ${r.pick} better in ${Math.round(h.calm.p * 100)}% of what-if golfers`) : ""}</span>`);
     else if(!r.bayes && r.margin < (D.close_margin || 0.03))
       badges.push(`<span class="pill tie">Close call · ${r.order[1]} +${r.margin.toFixed(3)} (wind model)</span>`);
-    if(calm !== r.pick && r.T.back === 0 && !r.split && !r.pref) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
+    if(calm !== r.pick && r.T.back === 0 && !r.split && !r.pref && !(h.prefer && r.pick === h.prefer.club)) badges.push(`<span class="pill chg">Calm-day pick: ${calm}</span>`);
     const Lim = D.aim_limit || 40;
     if(Math.abs(aimC + best.drift) >= Lim - 1) badges.push(`<span class="pill chg">Aim at the edge of the solved range (${Lim} yds): the best line may be further out</span>`);
     const mv = best.drift + best.kick + cL;
@@ -459,12 +459,12 @@ function render(){
     else document.getElementById("hElev").innerHTML = be ? (B ? `Elevation measured from the ${h.base_set} tee. ` : "") + `<b>Elevation</b> (USGS lidar ground): landing area for ${r.pick} is ${Math.abs(be.drop).toFixed(0)} ft ${be.drop > 0 ? "below" : "above"} the tee, so it carries ${be.dc >= 0 ? "+" : ""}${be.dc.toFixed(0)} yds and rolls ×${be.rf.toFixed(2)}${Math.abs(be.kick) >= 1 ? `; the side slope kicks it ${Math.abs(be.kick).toFixed(0)} yds ${be.kick < 0 ? "left" : "right"}` : ""}. Carry and total in the table include this and the wind.` : "No elevation data for this hole.";
     let note = h.note || "";
     if(note && h.calm && r.T.back === 0 && !/^Calm-day/.test(note)) note = `Calm-day book (no wind, ${Math.round(h.calm.temp)}°F): ` + note;
-    if(note && h.calm && r.T.back === 0 && r.pick !== h.calm.pick && !r.pref)
+    if(note && h.calm && r.T.back === 0 && r.pick !== h.calm.pick && !r.pref && !(h.prefer && r.pick === h.prefer.club))   /* the level-rule club winning outright needs no models talk */
       note = `In this wind and temperature the wind model picks ${r.pick} by ${r.margin.toFixed(3)} over ${r.order[1]}; the calm-day book is below for comparison. ` + note;
     /* D.simple (config page_text.simple): one aim number per hole, the one at the top (it includes the wind); the
        calm-day note keeps the club, the margin and the shares */
     if(D.simple) note = note.replace(/, about \d+ yds in\./, ".").replace(/ Aim .*? is within 0\.005\./, "").replace(/; it beats [^.;]*? in (\d+)% of \d+ what-if worlds/, "").replace(/ Driver-pattern break-even[^.]*?yds\./, "").replace(/ Same club for any driver pattern[^.]*?yds\./, "");
-    if(h.why && r.T.back === 0 && !own) note = (r.pick === (h.calm && h.calm.pick) || r.pref ? h.why + " " : "") + note;
+    if(h.why && r.T.back === 0 && !own) note = (r.pick === (h.calm && h.calm.pick) || r.pref || (h.prefer && r.pick === h.prefer.club) ? h.why + " " : "") + note;   /* also when the level-rule club wins outright (10 on Sunday) */
     if(h.set_note && h.set_note[st.set]) badges.push(`<span class="pill chg">${h.set_note[st.set]}</span>`);
     if(h.cond_note && (r.T.back === 0 || !D.simple)) badges.push(`<span class="pill chg">${h.cond_note}</span>`);
     if(r.T.back !== 0) note = `The calm-day book (club, aim, fairway / trouble shares, yards in) is for the ${h.base_set} tee, so it is not shown here: from this tee use the play and the club table above (solved ${Math.abs(r.T.back)} yds ${r.T.back > 0 ? "back" : "up"} the line).` +

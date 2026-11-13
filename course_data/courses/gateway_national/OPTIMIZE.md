@@ -132,6 +132,60 @@ and the crop box is free to go above the render. 3 shows its green from Back and
 top left corner on tee shots whose green is 25+ yds right of the line (2, 3, 11: it sat on 3's green). qa.json of the
 five sets is identical to the first checkpoint, every field. Page file 11.9 -> 8.9 MB.
 
+### R2-3. Tee positions (photo + lidar pads): no coordinate moved; pills rewritten (third checkpoint)
+
+**18.** Pads on the 2023 photo and as flat raised rectangles in the 2020 lidar ground, in yds along the line from the
+mapped Back point: A -10..+2, B 14..33, C 44..68, forward pad 152..164. Behind A is the cart path and brush: no pad.
+The mapped points are Tips / Champions -11, Back 0, Middle 42, Forward 145. Writing each set's position as
+(533 - card + o), o = how much longer the card's line is than the map's tee - corner - green line: Tips -17 + o,
+Champions -12 + o, Back 6 + o, Middle 39 + o, Forward 142 + o. All five are on a pad only for o = 10..14, which puts
+**Back at +16..+20 (pad B), Middle at +49..+53 (pad C)**, Tips and Champions on pad A. Back on pad A would need the
+Tips 4+ yds behind pad A, in the path. So F2's reading stands (my confidence 0.85): the Back markers are one pad
+forward. Effect on the tee shot, from the stored grids: Driver either way (0.13 over the 2-wood), aim 14.5 R at the
+mapped spot, 12 R from the grid 20 yds forward. Under the freeze rule (a club change or 3 yds of aim) the coordinate
+stays; the pill now says "probably on the next pad forward, about 17 yds ahead ... same club and line, every
+yardage 17 shorter", and Middle 18 has its own (8 yds). Moving the tee (holes_truth.py TEE_FIX, re-solve of 18 for
+both bases and the offset grids) is the next step if he confirms on site.
+
+**Middle 7.** One 57-yd strip tee. The mapped Middle point is 20.6 yds ahead of the Back point; the card says 20.
+The card is 4-5 yds longer than the map for ALL five sets on 7 (and 3-5 on 4), so the Middle point is not the odd one
+out; F1's 159 would fit the card for Middle only. Left as is; the page already shows card 160 / map 155 and, new in
+this round, at which laser distance the 7-iron takes over ("163 or more to the middle of the green today").
+
+### R2-5. The two failing Eagle Knoll tests: both fail since Nov 6, neither from the Nov 12-13 engine edit
+
+Checked on a sparse worktree (full checkout does not fit on this disk), `git bisect`:
+
+* `test_eagle_knoll_cloud_is_wider_than_long`: passes at 1d173fa34 (Nov 5), first fails at 8731bf7eb (Nov 6, "Eagle
+  Knoll tee shots: lidar flight trees, green putting on 14, hole 9 phantom tree removed"): with the phantom tree
+  gone, hole 9's Driver pattern is 27.7 short / 27.5 long and the test wants short > long + 3. Same numbers at
+  233afd672 (before the strategy pass) and now.
+* `test_eagle_knoll_nov6_calm_book`: passes at a78e0dc0e~1, fails from a78e0dc0e (Nov 6 21:59, Actions run
+  42260496093 rewrote the stored decisions without the hand re-solve's `replaced` flag). It only reads stored JSON.
+
+Nothing in tonight's engine touches either. Eagle Knoll's data and page are untouched; the tests are left failing
+(fixing them means editing Eagle Knoll's stored records or the tests' expectations: the manager's call).
+
+### R2-6. Reviewer items skipped last night, each tested in memory on Back and Middle (64 draws)
+
+| item | test | Back | Middle | verdict |
+|---|---|---|---|---|
+| A 1b: OB right of the road on 1 (x 57..110) | add it | Driver 8.5 L 0.050 -> identical, 0.0 % of drives | identical | no effect: not applied |
+| C 15-A: right long-grass edge 3 yds closer on 15 | whole edge moved 3 yds in | Driver 14 R -> 12.5 R, 0.103 -> 0.102 | 7 R -> 6.5 R | evidence does not support it at the landing distance: the cart path's outer edge measured on the photo (brightness profile) is at x 72.9 / 63.0 / 52.4 / 41.2 at 232 / 260 / 290 / 320, the mapped edge 73 / 63 / 53 / 43; only at 305 is the map 4 yds generous. Not applied |
+| B P3: tan grass by the square on 8 | add it | Driver 45 L -> 46 L, 0.047 = 0.047 | 4-wood 34.5 L, 0.059 -> 0.057 | no effect: not applied |
+| C 18-B: cart-path crest stored as a channel left of 18 | remove it | Driver 14.5 R, 0.127 -> 0.125 (noise) | not in the Middle corridor | no effect, not drawn on the page: left |
+| B P4: 12's green edge | | | | already in the par-3 solve (`opt/par3_features.json`: outline re-traced, left edge 2 yds further left) |
+
+### R2-7. Text a golfer would misread (third checkpoint)
+
+* The "Why" sentences carried yards-in numbers from the calm book's average over all swings: 3-11 yds above the
+  table's "To green" on the same screen on Saturday (1: 92 against 91; 2: 133 / 122; 9: 108 / 100; 11: 128 / 118;
+  15: 144 / 138) and 15 above on Sunday's 1 (92 / 77). Rewritten as differences between clubs, which hold in any
+  wind ("20 yds closer than the 2-wood").
+* 10 on Sunday (4-wood outright): the page dropped the "Why" sentence and showed "Calm-day pick: 2-wood" and a
+  sentence about the two models. Now the Why line stays and the pill / models sentence are not shown when the club on
+  the page is the level-rule club (`prefer_on_tie`).
+
 ## Night of Nov 12-13: strategy pass (strategy lead; running log, newest state first)
 
 **State.** Map, config and engine option below are committed. Back + Middle re-solved in full with the local fast
