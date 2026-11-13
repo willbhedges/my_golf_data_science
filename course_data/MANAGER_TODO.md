@@ -229,3 +229,11 @@ Version 15 published (commit cadbcaf2c; page check 0 problems on five tee sets; 
 - Hole 10 has a Lay up button (Back and Middle): mid iron to the right fairway, leaves about 88, costs about 0.3.
 - The headline and the oval now show the pattern width (Driver 73 yds).
 Also today: lidar tree handling added to the fast C path (Eagle Knoll wind solve 188 s -> 96 s; Gateway output byte-identical); higher-precision Back re-solve reproduces every pick (aims within 0.5 yd, margins within 0.002); cart-path bounce study: no club change, no aim move of 2 yds (second_pass/CARTPATH.md). Running: hole 13 deep dive, variance study + hole 6 check.
+
+Versions 16, 17, 18 published (commits d35c47a31, 31861b882, 9636579cd; page check 0 problems on five tee sets each; no tee-shot club, aim or number changed since version 14 apart from the par-3 targets in 15).
+- 16: par-5 second-shot block and markers (go / lay-up from the Driver's and 2-wood's spots). Driver stays the tee pick on 3, 6, 13, 18; if Will lays up regardless the woods are level on 6, 13, 18 (cards say so).
+- 17: hole 10 Lay up mode is a lay-up table. Back: long iron over the fairway sand (194-200 out), leaves 65; mid iron short of it is 0.03 (Sat) / 0.07 (Sun) worse; 4-wood lay-up loses 13 %. Middle: long iron; the mid iron lands at the sand; 8-iron to stay short. (second_pass/HOLE10_LAYUP.md)
+- 18: "Second shot" mode on the par 5s: start from the Driver's spot, the 2-wood's spot, or any distance 180-340, fairway or rough; ranked table with strokes vs best; line and oval drawn. Go is the best row out to 250-270 from the fairway (6: 260 Sat / 270 Sun; 13: 250; 18: 260 / 250), rests on an assumed 4-wood off the fairway (240 carry at 70 F). First build had the "vs best" column cut off on phones: caught on the screenshot, fixed, fit now measured at 375-430 px. (PAR5.md)
+Studies today: CARTPATH.md (no change), HOLE13.md, VARIANCE.md (hole 6 Driver holds; one club less everywhere costs ~2.5 strokes per 36 holes for almost no consistency; fragile Driver holes 11, 9, 3, 1).
+Offline copies sent to Will from version 16 (PDF per day + html); regenerate after tonight's forecast refresh.
+Open for the next map pass: hole 6 right tall-grass band drawn 10-15 yds too tight; 18 far-left strip mapped as water is the cart path.
