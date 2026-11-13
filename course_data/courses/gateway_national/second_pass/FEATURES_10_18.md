@@ -1,6 +1,6 @@
 # Gateway National, holes 10-18: second-pass feature detection (specialist F2)
 
-Status: **CHECKPOINT 1** (native lines, tree lines, par-3 surrounds, bunker / water table). Machine-applicable edits:
+Status: **CHECKPOINT 2** (native lines, tree lines, par-3 surrounds, tees, tee chutes, fairway outlines 10 / 15 / 18, bunker / water table). Machine-applicable edits:
 `features_10_18.json` (same folder). All coordinates: corridor frame of `render/frames.json` (x = yds right of the Back
 tee -> aim line, along = yds from the Back tee; par 3s: Back tee -> green centre) and WGS84.
 
@@ -79,14 +79,124 @@ Offsets are detected - mapped, in yds; "closer" = closer to the fairway / line o
    front-left includes ~6-8 yds of exposed bank (keep it: it is inside the penalty area); green outline is ~2 yds
    small on the left / front (minor).
 
+9. **18 tees: the Back marker is probably one pad too far back (17 yds), Middle 8 yds.** Pads on NAIP 2023 0.3 m:
+   A along -10..+2, B 14..33, C 44..68, forward 152..164 (x +22..+30). The map has Tips / Champions at -11 (1.5 yds
+   behind pad A), Back at 0 (front of pad A), Middle at 42.3 (1.5 yds behind pad C), Forward at 144.8, x +33 (by the
+   path, not on a pad): spacings 11 / 42 / 102. The card spacings are Tips-Champions 5, Champions-Back 18,
+   Back-Middle 33, Middle-Forward 103; the only placement that puts all five on mown pads with those spacings is
+   Tips -6, Champions -1 (pad A), **Back +17 (pad B), Middle +50 (pad C)**, Forward +153 (forward pad), +/-3. The map
+   chose markers to match the card length along its 3-point line (533 vs 527); with the pads the line measures
+   ~516, i.e. the card is ~11 yds longer than the straight tee - corner - green line (normal for a dogleg par 5).
+   Effect: every "from the Back tee" distance on 18 is ~17 yds too long (Middle ~8). Confidence 0.7; if the
+   integrator keeps the mapped markers, at least treat Back as "pad A front edge .. pad B" (+0..+33).
+10. **11: grass hollow inside the fairway at 212-238 yds, x -4..+12** (213 yd2, ~9 x 26 yds on the diagonal):
+   longer textured grass in NAIP 2023, a shadowed hollow in NAIP 2021 / 2022; both NAIP classifiers break the
+   fairway here. Plays as rough in the middle-right of the lay-up zone. Confidence 0.7.
+
+## Tees (all sets) and tee chutes
+
+Back and Middle pads read on NAIP 2023 0.3 m at 4x (+/-1.5 yds); other sets +/-4 yds. All Back / Middle markers of
+10-17 sit on their own mown pad and their spacing matches the card within 1 yd; only 18 is inconsistent (item 9).
+Useful ranges for "tee moved on the day": 14 Back pad is 23 yds long (hole plays 195-218), 12 Back / Middle share a
+32-yd pad, 13 Back / Middle share a 27-yd pad.
+
+| hole | set | card | marker x / along | pad along range | note |
+|---|---|---|---|---|---|
+| 10 | The Tips | 317 | -0.0 / -46.1 | ? | as Champions |
+| 10 | Champions | 315 | -0.0 / -44.1 | ? | no pad visible under the marker (shadow, across the service path); a mown patch lies 10-20 yds LEFT at along -37..-44: lateral position uncertain +/-10 |
+| 10 | Back | 271 | 0.0 / 0.0 | -7 .. 10 | centre of its pad |
+| 10 | Middle | 251 | 2.9 / 20.1 | 14 .. 29 | on its pad, right of centre |
+| 10 | Forward | 202 | 20.4 / 71.3 | 66 .. 77 | on its pad |
+| 11 | The Tips | 444 | -0.5 / -28.1 | -33 .. -22 | on the small back pad |
+| 11 | Champions | 442 | -0.6 / -26.1 | -33 .. -22 | on the small back pad |
+| 11 | Back | 416 | 0.0 / 0.0 | -12 .. 9 | centre of its pad |
+| 11 | Middle | 394 | 1.0 / 22.2 | 12 .. 32 | centre of its pad |
+| 11 | Forward | 330 | -19.3 / 85.7 | 80 .. 92 | on its pad |
+| 12 | The Tips | 154 | -0.5 / -23.1 | -27 .. -12 | on the back pad |
+| 12 | Champions | 147 | -0.0 / -16.1 | -27 .. -12 | on the back pad |
+| 12 | Back | 131 | 0.0 / 0.0 | -8 .. 24 | one 32-yd rectangular pad shared with Middle |
+| 12 | Middle | 115 | 0.4 / 16.6 | -8 .. 24 | same pad as Back |
+| 12 | Forward | 90 | 13.4 / 41.8 | 37 .. 47 | on the round forward pad |
+| 13 | The Tips | 562 | 5.0 / -29.0 | -29 .. -11 | back end of the back pad |
+| 13 | Champions | 557 | 5.2 / -24.0 | -29 .. -11 | on the back pad |
+| 13 | Back | 533 | 0.0 / 0.0 | -4 .. 24 | one 27-yd pad shared with Middle; marker at its back end |
+| 13 | Middle | 520 | -0.3 / 13.0 | -4 .. 24 | same pad as Back |
+| 13 | Forward | 462 | -14.1 / 72.1 | 65 .. 80 | on its pad |
+| 14 | The Tips | 240 | 1.6 / -40.1 | -44 .. -31 | back edge of the back pad |
+| 14 | Champions | 236 | 1.6 / -36.1 | -44 .. -31 | on the back pad |
+| 14 | Back | 200 | 0.0 / 0.0 | -18 .. 5 | front quarter of a 23-yd pad: the hole plays 195-218 off this pad |
+| 14 | Middle | 185 | 5.6 / 15.1 | 9 .. 27 | on its pad |
+| 14 | Forward | 155 | 13.8 / 45.9 | 40 .. 54 | on its pad |
+| 15 | The Tips | 458 | -7.1 / -26.2 | -30 .. -21 | as Champions |
+| 15 | Champions | 454 | -7.1 / -26.2 | -30 .. -21 | small clearing under the canopy (lidar), not visible in NAIP |
+| 15 | Back | 428 | 0.0 / 0.0 | -15 .. 2 | front-right corner of the clearing in the tree chute (pad x -11..+4) |
+| 15 | Middle | 408 | 2.1 / 20.0 | 18 .. 32 | back edge of its pad |
+| 15 | Forward | 330 | 34.5 / 98.6 | 99 .. 113 | back edge of its pad |
+| 16 | The Tips | 390 | 4.1 / -35.8 | -38 .. -24 | back edge of the back pad |
+| 16 | Champions | 384 | 4.0 / -30.0 | -38 .. -24 | on the back pad |
+| 16 | Back | 354 | 0.0 / 0.0 | -10 .. 10 | centre of its pad |
+| 16 | Middle | 325 | 2.7 / 29.1 | 21 .. 40 | centre of its pad |
+| 16 | Forward | 274 | 19.2 / 81.2 | 76 .. 86 | on its pad |
+| 17 | The Tips | 231 | 10.2 / -34.3 | -36 .. -22 | back edge of the back pad |
+| 17 | Champions | 225 | 9.6 / -29.2 | -36 .. -22 | on the round back pad |
+| 17 | Back | 195 | 0.0 / 0.0 | -11 .. 12 | centre of its pad |
+| 17 | Middle | 173 | 0.9 / 22.2 | 16 .. 28 | centre of its pad |
+| 17 | Forward | 156 | -0.8 / 39.1 | 33 .. 46 | on its pad |
+| 18 | The Tips | 550 | -0.0 / -11.1 | -10 .. 2 | mapped marker 1.5 yds behind pad A |
+| 18 | Champions | 545 | -0.0 / -11.1 | -10 .. 2 | mapped marker 1.5 yds behind pad A |
+| 18 | Back | 527 | 0.0 / 0.0 | -10 .. 2 | MAPPED marker is on pad A (-10..+2) with Champions / Tips; card spacing puts Back on pad B (14..33): see the tee edit |
+| 18 | Middle | 494 | 5.5 / 42.3 | 44 .. 68 | mapped marker 1.5 yds behind pad C; card spacing puts it at ~50 |
+| 18 | Forward | 391 | 33.0 / 144.8 | 152 .. 164 | mapped marker (144.8, x +33) is NOT on a pad (by the path); the forward pad is at 152-164, x +22..+30 |
+
+Tee chutes (lidar canopy >= 2.5 m within 15 yds of the tee -> aim line; rows only where something is that close):
+
+| hole | tee | yds from tee | nearest canopy >= 2.5 m left / right of the line (yds) | canopy top over the line +/-2 yds (m) |
+|---|---|---|---|---|
+| 10 | Back | 10 | -38 / 4 | open |
+| 10 | Back | 20 | -32 / 5 | open |
+| 10 | Back | 30 | -27 / 9 | open |
+| 10 | Back | 50 | -15 / . | open |
+| 10 | Middle | 10 | -32 / 5 | open |
+| 13 | Back | 10 | . / 11 | open |
+| 13 | Back | 20 | . / 12 | open |
+| 13 | Back | 30 | . / 6 | open |
+| 13 | Middle | 10 | . / 13 | open |
+| 13 | Middle | 20 | . / 4 | open |
+| 15 | Back | 10 | -0 / 0 | 32 |
+| 15 | Back | 20 | -14 / 4 | open |
+| 15 | Back | 30 | -26 / 9 | open |
+| 15 | Back | 40 | -16 / 9 | open |
+| 15 | Back | 50 | -35 / 10 | open |
+| 15 | Middle | 10 | -28 / 7 | open |
+| 15 | Middle | 20 | -18 / 7 | open |
+| 15 | Middle | 30 | -37 / 8 | open |
+| 17 | Back | 120 | . / 12 | open |
+| 17 | Middle | 90 | . / 15 | open |
+| 17 | Middle | 100 | . / 14 | open |
+| 18 | Back | 10 | . / 12 | open |
+| 18 | Back | 20 | . / 14 | open |
+| 18 | Back | 30 | . / 15 | open |
+| 18 | Middle | 10 | . / 14 | open |
+
+- **15 (tee in the tree chute)**, from the 2023 point cloud by 3-yd lanes: the canopy closes over the line 0-20 yds
+  in front of the Back marker but its lowest limbs there are 20-27 m up (x -1.5..+1.5) and 14-17 m (x +1.5..+4.5):
+  not in a drive's flight. At ball-flight height the clear lane is x -10..+7.5 out to 50 yds (brush 1.5-2.5 m at
+  x < -10.5 from 20-45 yds; limbs down to 7.6-11 m at x >= +7.5 from 30-50 yds). Start lines within about 8 deg
+  either side of the line are clear from the Back tee; the Middle tee (pad 18-31) is in the open. The mapped tree
+  zone (-11 / +4 at 35 yds) is 5-6 yds too tight on the right, right elsewhere. The Back marker sits at the
+  front-right corner of the pad clearing (pad x -11..+4, along -15..+2).
+- 10 Back: crowns of the big trees right reach x +4..+9 over the first 30 yds (2020 lidar, limb height not
+  measured); single tree left at 45-60 yds, x -15..-30. The green is at x -18, so the line is clear.
+- 13 Back / Middle: tall reeds / shrubs on the pond bank right of the tees, x +4..+13 at 10-30 yds.
+
 ## Minor
 
 - Fairway edges: all within +/-3 yds of OSM except the right edges of 10 (-2 ... -5), 15 (-3 ... -4) and 18
   (-2 ... -4), and 13 left (+2 ... +3): narrower than mapped.
-- 11: an oval rough hollow inside the fairway at 215-240 yds, x +5 ... +12 (visible 2023; to verify).
-- Bunkers: every mapped bunker found in NAIP 2023 within 2 yds (table below) except 10 (-71, 276), which is not
-  sand in 2023 (grassed over or shadow: to verify).
-- Tees: not yet measured (next checkpoint).
+- Bunkers: every mapped bunker found in NAIP 2023 within 2 yds (table below) except 10 (-71, 276): no sand there
+  in RGB or CIR (phantom OSM bunker inside the native: remove edit in the json).
+- Fairway outlines for 10, 15, 18 are in the json as `replace fairway` (confidence 0.6).
+- 12: green outline ~2 yds small on the left / front; bunker ~1.5 yds off (short-right).
 
 ## Not resolved / caveats
 
