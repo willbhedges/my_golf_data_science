@@ -3,13 +3,26 @@
 Read-only reviewer playing the golfer. Each entry: question in Will's voice -> what I checked -> verdict
 (fine / doubt / wrong) -> what to do. Most important first. Times are UTC.
 
-## Top 5 push-backs (pass 1, Nov 13 03:05Z)
+## Top 5 push-backs (pass 2, Nov 13 03:17Z)
 
+1. **16 mound: answered in 222f7ece4 (now a penal lie), not yet proven.** The rev 6 solve has to bring the 4-wood aim back to about the middle of the neck (0 to +3) and the 2-wood back to clearly worse. Until I see that, 16 is open.
+2. **The picture does not show the green on 8 (113 yds left, cut off) and barely on 11; on 3, 5, 6, 13, 18 "Whole hole" stops ~440 yds from the tee.** On a 46-left corner cut I want to see what I am cutting toward.
+3. **9 Driver is still only a 0.03-0.04 call** (a tie on firm ground by the integrator's own roll test). F1 now confirms the right side is mown, so I accept Driver, but it must be shown as a close call with "4-wood centre is the same score".
+4. **Map is frozen (good). Keep it frozen.** Anything F1 / F2 find from here goes in a list for after the tournament unless it moves an aim 3+ yds on a hole where the club is close (8, 9, 10, 16).
+5. **Model workstream has produced no finding yet and most of it cannot change a club** (scratch / 5-handicap levels, "what-if golfers"). Only the second-shot check on 10 and 16 earns its time. And nobody has asked Will for his real iron carries, which decide every par-3 club.
+
+Closed since pass 1: map freeze + 3-yd rule (222f7ece4); frost / firm-ground roll test done (8 holds, 9 ties, 10 goes
+back to 4-wood on very firm ground and the page will say so, 16 holds); page wording clean-up is in the template
+(one aim number, "N % sure", the not-in-bag club last): to be checked on the rebuilt page.
+
+<details><summary>Pass 1 top 5 (03:05Z)</summary>
 1. **16: tonight's map swap deleted the rocky mound right of the fairway, and the aim walked 10 yds toward it.** Put it back (penalised), keep 4-wood, aim the middle of the neck.
 2. **Six holes' hand-checked long grass (10, 11, 13, 15, 16, 18) were replaced wholesale at 02:53Z by machine polygons, read from a file that is still being edited.** Freeze that file now; no map change after tonight unless it moves a club or an aim by 3+ yds.
 3. **8 Driver: I buy it. 9 Driver: coin flip (0.03-0.04) that has flipped twice tonight on one label.** Ship 9 as a close call, not as a confident change; wait for the holes 1-9 feature check before publishing either.
 4. **The page I would hold on the tee is still the Nov 12 build and has things I would have to stop and think about:** 8's green is not in the picture; three different aim numbers per hole; "what-if worlds / golfers"; a club I do not own listed above my club.
 5. **Nobody is checking the frost.** 24 F overnight, 35 F at 9:00 Saturday: frost delay (tee times and temperatures shift) and firm ground (more roll) hit exactly the three "longer club" changes (8 Driver, 9 Driver, 10 2-wood). Meanwhile the model workstream is running player what-if cases that cannot change a club.
+
+</details>
 
 ---
 
@@ -178,3 +191,32 @@ holes. Every 40+ yd aim (8 only) is a real dog-leg.
 - Rebuilt page (watch `git log -- wind_page/index.html`); then re-render and redo B and D.
 - FEATURES_1_9.md (8 left side, 9 right band), MODEL.md.
 - Rev 5 Actions solve: check 16 again after the mound is restored.
+
+## Pass 2 (Nov 13, 03:00-03:17Z): what landed, and does it answer the question?
+
+- **FEATURES_1_9 checkpoint 1 (946a0398f).** "Is the right side of 9 really mown?" -> F1 measured it independently:
+  no lidar height, green on Nov 2024 / 2025 / 2026 satellite out to the trees. **fine**: 9 Driver's reason stands.
+  "Is the left of 8 what the integrator says?" -> right-side long grass on 8 starts 13-26 yds further right than
+  mapped; fairway left edge on the Driver side is 3-7 yds narrower than mapped. Net: still Driver (0.042 even with
+  roll x1.25). **fine.**
+  Why-are-we-doing-this check: a 7-year fairway-edge table to 0.1 yd is more than the question needs, but it took
+  minutes and it settled 8 and 9. Stop there on 1-7 unless a club is close (none is: all Driver by 0.05+).
+- **16 mound evidence (ddafc786a).** F2: unmown every summer, short in December, "a stone retaining wall on its
+  fairway face". That is a place you do not want to be whatever the grass height. **fine**: penal lie is right.
+- **Final map (222f7ece4).** Checked the built map: mound points now carry a penal zone (priced as sand); left
+  fescue edge on 16 at about 20 L. Lidar long grass kept on 10 and 16 only, from a frozen copy. **fine.**
+  Open: the solve result (rev 6) and the page.
+- **Frozen ground (config `condition_source`).** Roll x1.25 / x1.5: 8 Driver 0.042 / 0.028, 9 Driver 0.020 / 0.007,
+  10 2-wood 0.019 then 4-wood by 0.015, 16 4-wood holds. One line on 10: "Frozen or very firm ground (drives
+  running 35+ yds): 4-wood, same line". **fine**, that is the right size of answer. One nit: on the tee of 10
+  (his 10th hole, or his 1st off a split start) he may not yet know how far drives are running. If he starts on
+  the back nine, default to 4-wood on a frosty morning.
+
+**[pictures] "Where is the green?"** (old build, measured from the page data)
+- 8 Back / Middle: green centre is 19-21 yds outside the left edge of the picture. 11: 8-9 yds inside the right edge
+  (half a green). 3, 6, 13, 18 (par 5s) and 5 (452): the picture ends before the green; 15: green centre is on the
+  top edge. 1, 2, 9, 10, 16: fine.
+- Verdict: **wrong** on 8 (the aim only makes sense if you can see the green), **doubt** on 11, acceptable on the
+  par 5s if the button did not say "Whole hole".
+- Do: widen / shift the crop on 8 and 11 so the green is in; rename the button "Tee shot" on holes where the
+  green is not shown, or leave it. Do not spend more than one edit on this.
