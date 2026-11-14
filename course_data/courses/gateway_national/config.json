@@ -172,7 +172,8 @@
       "club": "Long iron",
       "within": 0.04
      },
-     "note": "Carry the fairway sand (195-200 out) or stay short? Carry it: the long iron flies it. Short of it is the mid iron; the table has the cost. A wood at the right fairway finishes beside the green, about 25 yds from the middle"
+     "short_of": {"front": 194, "clear": 10, "what": "the fairway sand"},
+     "note": "Fairway sand is 194-200 from this tee. To stay short of it: the club marked ☆ (the 8-iron; the mid iron only when it stops 10 yds or more short of it in this wind). The long iron flies it; a wood at the right fairway finishes beside the green, about 25 yds from the middle"
     },
     "Middle": {
      "label": "Lay up",
@@ -183,10 +184,12 @@
       "club": "Long iron",
       "within": 0.04
      },
-     "note": "Fairway sand is 174-180 from this tee: the long iron flies it by 20. The mid iron lands at it: to stay short take the 8-iron"
+     "short_of": {"front": 174, "clear": 10, "what": "the fairway sand"},
+     "note": "Fairway sand is 174-180 from this tee: the long iron flies it by 20. The mid iron lands at it: to stay short take the 8-iron (☆)"
     }
    }
   },
+  "alt_play_short_source": "2026-11-14 golfer: if he does not go at the green on 10 he stays SHORT of the fairway sand (no high shot over it): 'either go for it or hit 8-iron'. short_of = the sand's front edge from each tee (HOLE10_LAYUP.md: 194 Back, 174 Middle) and the clearance a club's total needs (10 yds: the mid iron stopping 10 short has no ball in it, 4-5 short 2 %; at this weekend's 187 total it is 7 short, so the 8-iron is the marked club from both tees); the page marks that club ☆ and names it in the lay-up pill; every row stays",
   "alt_play_source": "2026-11-13 golfer request (second_pass/HOLE10_LAYUP.md, opt/layup10.py): with config layup_grid the Lay up mode shows every club at its best lay-up aim (finishing line 5 L..45 R of the tee line for irons, 5 R..45 R for woods) and stars the best; prefer = the long iron when within 0.04 (Back at 35-45 F the 4-wood lay-up is 0.03 better on the table with 13 % of balls lost; with the next shot played out the long iron is best by 0.08); club / text are the fallback without a grid",
   "alt_play_source": "2026-11-13 golfer's request: a Lay up toggle on 10. Club from second_pass/HOLE10_REDTEAM.md (the practical lay-up from Back is the mid iron, leaves about 88, 97 % fairway; the long iron is 0.03 better on paper with 9 % in the sand); the page shows the club at its own best aim for the wind / temperature / tee, the yards left and the strokes it costs, all live from the grids. Back and Middle only: from The Tips / Champions the pick is already the fairway shot."
  },
