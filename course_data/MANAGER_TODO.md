@@ -247,3 +247,15 @@ Version 20 published (commit 8e4eb175d; page check 0 problems on five tee sets i
 - 10:36 start: 42 F on the 1st tee to 48 F on 18. No club changes from Back (tee shots or par 3s); aims move up to 4 yds.
 - Par-5 second shots on real data (second_pass/FAIRWAY_WOOD_DATA.md): approach patterns were Tour-accurate; now 1.75x wider to a scratch level. Go still right on 6 and 13 by 0.15-0.25 (was 0.3-0.45); 18 a small edge / tie from ~265. Closest fairway lay-up beats lay-up to 90.
 Still to do tonight: par-5 second-shot tables and par-3 box sizes still on the 9:00 forecast (re-run at 10:36); final forecast refresh; offline PDFs; hole 10 Lay up mode now stars a 4-wood to the right fairway (Will wants go or 8-iron: check wording); par-3 iron patterns may be Tour-tight (check clubs with 1.5x).
+
+## Friday evening Nov 13 (Central) - final state before round 1
+
+Versions 21-27 published; version 27 = commit 26b40e93d (page check 0 problems on five tee sets in both tall-grass modes; mode tables fit at 375-430 px; no hazard words).
+- Forecast on the page: Open-Meteo fetched 00:45 UTC Sat. Saturday from 10:36: N-NNW 4-5 mph easing to 3-4, 43 F rising to 48 F. Sunday from 9:00 (tee time unknown): near calm then SE 2-3 mph, 36 F rising to ~51 F. Do NOT use the old GitHub Actions refresh for Gateway any more: only the local rebuild (REFRESH_LOCAL.md) knows the tall-grass rule sets, tee times, par-5 data.
+- Back, Saturday, Drop: Driver on 1, 2, 3, 5, 6, 8, 9, 11, 13, 15, 18; 4-wood on 10 (15 L, level with the 2-wood) and 16. Par 3s: 4 plays 178 7-iron; 7 189 6-iron; 12 135 PW; 14 201 5-iron; 17 199 5-iron.
+- Par-5 second-shot menus: in-between 220 / 230 / 240 shots and 5- / 7-iron added; approach pattern now sideways x1.25 of the tee pattern, distance x2.0 with more short mishits (a 220 shot is 58 yds wide, was 79 after the first data fix); par-3 tee irons sideways x1.1, distance x1.75. Going is best from 220-270 on 6, 13, 18 by 0.07-0.28 over the best lay-up.
+- Hole 10 Lay up mode: best lay-up 4-wood to the right fairway; 8-iron marked as the club short of the fairway sand.
+- holesolve (whole-hole value solver, research): same club on all 13 Back tee shots; not wired into the page.
+- Container restarted once (~01:00 UTC); the cut-off rebuild was validated and redone.
+Known inconsistency left for after the tournament: tee-table iron rows (long iron 43, mid iron 37, 8-iron 32 wide) are still the Tour-tight patterns and feed the tee solve (hole 16 long-iron row, hole 10 lay-up table); consistent widths would be ~48 / 41 / 36 with deeper distance windows. Also: calm-book temperatures within 1 F of the forecast, not re-solved; Forward 13 has no static second-shot block; hole 6 right band 10-15 yds too tight; 18 far-left strip is the cart path.
+To do: final independent audit of version 27; offline PDFs (Back, 10:36, hole 1, Drop); Sunday tee time from Will; after the weekend: his tee-shot results and scores for calibration.
