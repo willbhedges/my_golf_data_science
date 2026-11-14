@@ -68,9 +68,9 @@ if os.environ.get("P3_NATIVE") != "found":
     E.SHORT = dict(E.SHORT)
     E.SHORT["native"] = [1.0 + v for v in E.SHORT["rough"]]
 E.OUT = OUT
-# P3_PATTERN_MULT (default 1.0 = the patterns as built): width and distance window of every par-3 club x this, for
-# the check against scratch-amateur data (PAR3.md section 8; second_pass/FAIRWAY_WOOD_DATA.md). Not set by any build.
-PATTERN_MULT = float(os.environ.get("P3_PATTERN_MULT", "1.0"))
+# Width and distance window of every par-3 club x config par3_pattern_mult (1.5 since Nov 14: the patterns as built
+# were Tour-level; PAR3.md section 8, second_pass/FAIRWAY_WOOD_DATA.md). P3_PATTERN_MULT overrides (1.0 = as built).
+PATTERN_MULT = float(os.environ.get("P3_PATTERN_MULT", _cfg.get("par3_pattern_mult", 1.0)))
 if PATTERN_MULT != 1.0:
     _opts0 = E.opts
     E.opts = lambda **over: _opts0(**{**dict(width_mult=PATTERN_MULT, depth_mult=PATTERN_MULT), **over})

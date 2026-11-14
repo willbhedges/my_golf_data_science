@@ -328,6 +328,8 @@
   "LW": 100
  },
  "par3_bag_source": "70-F stock carries of the par-3 model (opt/par3_target.py bag; 4-iron = the engine's 210 long iron, 6-iron = the 185 mid iron; 5-, 7-, 9-iron, PW, GW, SW, LW assumed ~12-yd gapping)",
+ "par3_pattern_mult": 1.5,
+ "par3_pattern_source": "2026-11-14 check against published data (PAR3.md section 8, second_pass/FAIRWAY_WOOD_DATA.md): the par-3 solver's iron patterns were Tour-level (flat 15-yd-radius green: 92 % of greens and 25 ft from 135, 80-83 % and 31-33 ft from 180, 75 % and 36 ft from 200; Tour proximity 24 / 34 / 42 ft). Width and distance window of every par-3 club x 1.5 (a tee is a perfect lie: the low end of the 1.5-1.75 used off the deck) gives 75 % / 36 ft, 56-60 % / 44-47 ft, 46-51 % / 50-54 ft = Tour x 1.4-1.5, a scratch amateur. opt/par3_target.py reads it (P3_PATTERN_MULT overrides); targets and ladder of both rule sets re-solved on it",
  "par3_drift_per_mph": 1.4,
  "par3_drift_source": "second_pass/PHYSICS.md 2b: every full iron drifts 1.4-1.5 yds per crosswind mph (flight time 6.3-7 s); the page had no crosswind allowance on par 3s",
  "temp_note": "air, a ball at air temperature and this weekend's high pressure"

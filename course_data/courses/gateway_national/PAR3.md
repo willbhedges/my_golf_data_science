@@ -446,3 +446,46 @@ The Middle alt-base page (`truth_middle`, tee_set Middle) takes the file's own M
 `par3_targets.json` covers all five sets. `d["p3club"]` names the club for the two forecast days. On Tips and
 Champions 14 / 17 it reads "4-iron", which lands 14-33 yds short; a template showing p3club should not show it for
 those sets.
+
+## 8. Pattern check against published data, Nov 14 (the par-3 irons were Tour-level; now x 1.5)
+
+The par-5 study (second_pass/FAIRWAY_WOOD_DATA.md) found the approach patterns Tour-accurate. Same test for the
+par-3 tee irons (`E.shot_set`, mishits on; flat ground, nothing around, pin where a solid strike finishes, calm,
+70 F, 40,000 swings; green = 15-yd-radius circle):
+
+| from | club | pattern | 95 % width | proximity (mean) | on the green | good shot (>= 90 % of the distance, within 10 yds) |
+|---|---|---|---|---|---|---|
+| 135 | PW | as built | 28 | 25 ft | 92 % | 82 % |
+| 135 | PW | x 1.5 | 42 | 36 ft | 75 % | 64 % |
+| 135 | PW | x 1.75 | 49 | 41 ft | 65 % | 56 % |
+| 180 | 7-iron / 6-iron | as built | 35 / 37 | 31 / 33 ft | 83 / 80 % | 73 / 70 % |
+| 180 | 7-iron / 6-iron | x 1.5 | 52 / 55 | 44 / 47 ft | 60 / 56 % | 54 / 52 % |
+| 180 | 7-iron / 6-iron | x 1.75 | 61 / 65 | 50 / 53 ft | 51 / 46 % | 47 / 45 % |
+| 200 | 5-iron / 4-iron | as built | 40 / 43 | 36 / 39 ft | 75 / 70 % | 66 / 63 % |
+| 200 | 5-iron / 4-iron | x 1.5 | 60 / 65 | 50 / 54 ft | 51 / 46 % | 48 / 45 % |
+| 200 | 5-iron / 4-iron | x 1.75 | 70 / 76 | 57 / 62 ft | 41 / 37 % | 42 / 39 % |
+
+Data: PGA Tour proximity 125-150 yds 24 ft, 175-200 34 ft, 200-225 42 ft; Tour hits 50 % of greens from 205; a
+scratch amateur's pattern is about 1.5 x the Tour's (36 / 51 / 63 ft), scratch 80 ft and about 25 % of greens from
+200-225 by distance (with a longer club than Will's), scratch "good shot" from 200: 39 %. So the patterns as built
+were at or inside Tour level; x 1.5 gives Tour x 1.4-1.5 = the scratch level club for club. A tee is a perfect lie,
+so x 1.5 (the low end; the deck shots use 1.75).
+
+Applied: config `par3_pattern_mult` 1.5 (read by `opt/par3_target.py`; `P3_PATTERN_MULT=1.0` gives the run
+before); `par3_decade.py solve` + `par3_ladder.py`, every set, both rule sets. The margins of section 0 are
+geometric and unchanged; every target still meets them as before (the shortfalls on 4, 14, 17 are 0.1 smaller).
+Inside the margins the best point moves away from the costly side, and the shorter club holds a little longer.
+Back (plays number and club on the page, before -> after):
+
+| hole | target (yds right, yds past the middle) | Sat, Drop | Sun, Drop | Sat, Lost ball | Sun, Lost ball |
+|---|---|---|---|---|---|
+| 4 | (2.5, -3.5) -> (3.5, -4.5) | 180 7-iron -> 179 7-iron | 184 6-iron -> 183 6-iron | 179 7-iron -> 179 7-iron | 184 6-iron -> 183 6-iron |
+| 7 | (-1.0, 1.5) -> (-1.0, 1.5) | 189 6-iron -> 189 6-iron | 188 6-iron -> 188 6-iron | 189 6-iron -> 189 6-iron | 188 6-iron -> 188 6-iron |
+| 12 | (-0.5, -0.5) -> (2.0, -0.5) | 134 PW -> 134 PW | 133 GW -> 133 GW | 134 PW -> 134 GW | 133 GW -> 133 GW |
+| 14 | (2.5, -4.0) -> (3.5, -6.0) | 202 5-iron -> 200 5-iron | 201 5-iron -> 199 5-iron | 202 5-iron -> 200 5-iron | 201 5-iron -> 199 5-iron |
+| 17 | (-0.5, -4.5) -> (-1.0, -5.0) | 198 5-iron -> 197 5-iron | 195 5-iron -> 195 6-iron | 198 5-iron -> 197 5-iron | 195 5-iron -> 195 6-iron |
+
+Club changes on Back: 17 on Sunday 5-iron -> 6-iron (195, "5-iron close": the two are within a hundredth);
+12 on Saturday under Lost ball PW -> GW ("PW close"; under Drop the PW stays, "GW a tie"). Saturday, Drop: no club
+changes; 12's box moves 2.5 yds right, 14's 2 yds shorter and 1 right, 4's 1 yd shorter and 1 right. Other sets:
+Forward 14 Saturday 8-iron -> 9-iron. No tee shot on a par 4 or 5 changed.
