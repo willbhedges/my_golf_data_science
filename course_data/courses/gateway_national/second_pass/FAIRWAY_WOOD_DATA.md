@@ -255,6 +255,60 @@ Calibration (same flat test as above: pin at the club's stock total, 15-yd-radiu
 * What moved is where the misses go: from 220, 31 % finish 15+ yds short (was 14 %), and about half as many
   finish wide. A front carry is harder to make; trouble left and right is hit less.
 
+### Second step, the same night: sideways x 1.0 (the golfer's planning width; this is what the page shows)
+
+Golfer, on the x 1.25 page (230 shot drawn 62 yds wide): "Is that still 62 yards wide? A 230-yard shot should only
+be planned for like a 40 or 50-yard dispersion." The x 1.25 was a prior, not data (no published split found), and
+the player's own planning width is better evidence than that prior. So **sideways = the tee pattern x 1.0**, off
+the fairway and on par-3 tees: long iron 43-44, 230 shot 48-49, 4-wood 54-56 yds at 95 % (the upper figure
+counts the slightly mishit shots, which scatter 15 % wider), one sigma 2.7-2.9 deg. That is also the tee table's
+iron rows, so the tee table and the approach shots are now one pattern sideways.
+
+All of the gap to a scratch amateur's proximity is then distance. With the distance side as first fitted (x 2.0,
+12 -> 28 %, 2.5 -> 5 %) the long clubs came out 7-10 ft kind (long iron 56 ft against 63, 4-wood 71 against 81),
+so the difference went into distance: **window x 2.25, slight mishits 12 % -> 32 % (4-wood), bad 2.5 -> 6 %**
+(`approach_pattern.deck` = {lat 1.0, depth 2.25, mis_slight [0.12, 0.32], mis_heavy [0.025, 0.06]}). Par-3 tee:
+lat 1.0, the distance side kept (x 1.75, 12 -> 22 %, 2.5 -> 4 %): 2-3 ft kinder than before, inside 5.
+
+95 % width / depth, yds (x 1.75 -> x 1.25 step -> now):
+
+| shot (carry / total at 70 F) | off a tee as built | fairway x 1.75 | fairway, first split | fairway now | one sigma, deg | par-3 tee x 1.5 | first split | par-3 tee now |
+|---|---|---|---|---|---|---|---|---|
+| LW (100 / 101) | 21 / 14 | 38 / 23 | 27 / 27 | 21 / 30 | 5.3 -> 3.8 -> 3.1 | 32 / 20 | 24 / 25 | 21 / 25 |
+| 9-iron (150 / 154) | 30 / 20 | 53 / 31 | 38 / 39 | 30 / 42 | 4.9 -> 3.5 -> 2.8 | 45 / 27 | 33 / 36 | 30 / 36 |
+| Mid iron (185 / 192) | 37 / 25 | 64 / 38 | 46 / 47 | 37 / 50 | 4.8 -> 3.4 -> 2.7 | 55 / 33 | 41 / 44 | 37 / 44 |
+| Long iron (210 / 220; 212 in the cold) | 43 / 28 | 75 / 42 | 55 / 53 | 44 / 57 | 4.9 -> 3.5 -> 2.8 | 64 / 37 | 48 / 50 | 43 / 50 |
+| 220 shot (220 / 231) | 45 / 30 | 79 / 44 | 58 / 56 | 46 / 59 | 4.9 -> 3.5 -> 2.8 | 68 / 38 | 51 / 52 | 46 / 52 |
+| 230 shot (230 / 242) | 48 / 31 | 84 / 46 | 61 / 58 | 49 / 62 | 4.9 -> 3.5 -> 2.8 | 72 / 40 | 53 / 55 | 48 / 55 |
+| 240 shot (240 / 253) | 50 / 33 | 88 / 48 | 64 / 61 | 52 / 64 | 5.0 -> 3.6 -> 2.8 | 75 / 42 | 56 / 57 | 51 / 57 |
+| 4-wood (255 / 270; 260 in the cold) | 54 / 35 | 94 / 51 | 69 / 65 | 56 / 68 | 5.0 -> 3.6 -> 2.9 | 81 / 44 | 60 / 61 | 55 / 61 |
+
+Calibration, fairway (x 1.75 / first split / now), same flat test:
+
+| club, pin at | proximity (mean) | data | on the green | good shot | data | within 10 yds L / R | 15+ yds short |
+|---|---|---|---|---|---|---|---|
+| LW 101 | 31 / 28 / 27 ft | Tour x 1.5 = 30; scratch 26 from 90 | 81 / 87 / 89 % (scratch 74 % from 100) | 66 / 74 / 78 % | scratch 78 % from 100 | 70 / 85 / 93 % | 3 / 4 / 5 % |
+| SW 115 | 35 / 31 / 30 ft | 30 | 75 / 81 / 83 % | 62 / 71 / 77 % | | 65 / 81 / 90 % | 4 / 7 / 8 % |
+| PW 141 | 41 / 38 / 37 ft | 36 | 65 / 69 / 71 % | 55 / 64 / 70 % | | 57 / 73 / 83 % | 5 / 13 / 15 % |
+| 8-iron 167 | 47 / 45 / 44 ft | 42 | 55 / 57 / 59 % | 49 / 57 / 64 % | | 51 / 66 / 76 % | 6 / 19 / 22 % |
+| Mid iron 192 | 54 / 52 / 51 ft | 51 | 46 / 47 / 49 % | 44 / 51 / 58 % | | 46 / 60 / 70 % | 9 / 25 / 28 % |
+| Long iron 220 | 62 / 61 / 59 ft | 63 (scratch by distance 80) | 37 / 37 / 38 % | 38 / 44 / 50 % | scratch 39 % from 200 | 40 / 52 / 62 % | 14 / 31 / 35 % |
+| 230 shot 242 | 68 / 68 / 67 ft | | 31 / 31 / 32 % | 35 / 40 / 46 % | | 36 / 47 / 57 % | 18 / 36 / 40 % |
+| 4-wood 270 | 76 / 77 / 76 ft | 81 | 26 / 25 / 25 % | 31 / 35 / 41 % | | 32 / 43 / 51 % | 22 / 41 / 47 % |
+
+Par-3 tee (x 1.5 / first split / now): PW 141 36 / 34 / 33 ft, 74 / 77 / 79 % of greens, good shot 63 / 71 /
+74 %; 6-iron 192 47 / 46 / 44 ft, 56 / 57 / 60 %, 51 / 58 / 62 %; 4-iron 220 54 / 53 / 51 ft, 46 / 46 / 49 %,
+44 / 51 / 55 %, 15+ short 11 / 25 / 25 %.
+
+* Proximity within 1-5 ft of the scratch figures at every distance (kind by 4-5 ft with the long iron and the
+  4-wood, by 3 ft on the par-3 tee); greens hit within 2 points of the x 1.75 pattern.
+* Good-shot rate: 78 % at 100 (data 78), about 55 % at 200 (data 39). The 200-yd benchmark is NOT met and cannot
+  be at this width: 62 % of 220 shots finish inside 10 yds left / right, so 39 % would need four shots in ten
+  20+ yds short. Either the average scratch player (a hybrid or wood from 200) is wider than the golfer plans
+  for, or his planning width is narrower than what he does. The page follows his width; this is the open item.
+* Now 35 % of long irons and 47 % of 4-woods off the fairway finish 15+ yds short of a pin at their stock
+  distance (the engine's stock pattern: 7 % and 13 %). That is where the scratch-level proximity comes from.
+
 ## Re-run: holes 6, 13, 18
 
 From the middle of the fairway on the hole's line of play at each distance to the middle of the green (the menu's

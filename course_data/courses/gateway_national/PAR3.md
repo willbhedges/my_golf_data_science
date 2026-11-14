@@ -539,3 +539,31 @@ hole 10 lay-up table) are the patterns as built = Tour-tight, and they feed the 
 row, hole 10's lay-up table), so they were left alone. Consistent with this section they would be 48 / 41 / 36
 wide (10 % more) with the distance window 75 % deeper (28 -> 50, 25 -> 44, 22 -> 39 yds) and more short misses.
 
+### 9.1 Sideways x 1.0, the same night (this is what the page shows; version 28)
+
+Golfer on the x 1.25 / x 1.1 page: "A 230-yard shot should only be planned for like a 40 or 50-yard dispersion."
+The sideways multiplier was a prior, not data, so it is now his planning width: **the tee pattern x 1.0** on the
+par-3 tee (`approach_pattern.par3_tee.lat` 1.0; PW 28 yds wide, 6-iron 37, 4-iron 43 at 95 %), which is the tee
+table's own iron rows: the inconsistency noted at the end of section 9 is gone sideways (the par-3 irons still
+have the deeper distance window and the extra short misses; the tee table's irons do not). Distance side kept
+(x 1.75, slight mishits 12 -> 22 %, bad 2.5 -> 4 %). Flat test (x 1.5 / section 9 / now): PW 141 36 / 34 / 33 ft,
+74 / 77 / 79 % of greens; 6-iron 192 47 / 46 / 44 ft, 56 / 57 / 60 %; 4-iron 220 54 / 53 / 51 ft, 46 / 46 / 49 %,
+15+ yds short 11 / 25 / 25 %: 2-3 ft closer than the scratch figure, inside the 5 ft allowed, so nothing more was
+put into distance.
+
+Re-solved, every set, both rule sets. Margins: 7 and 12 fit; 4, 14, 17 lesser-of-two-evils, penalty margins met
+(other edges short by 1.6, 1.6, 0.3 at best). Back, Drop (before = section 9's build, commit 26b40e93d):
+
+| hole | target before -> now | margins now (left / right / short / long) | Saturday | Sunday |
+|---|---|---|---|---|
+| 4 | (2.5, -3.5) -> (2.5, -3.5) | 12.0 / 13.0 / 11.0 / 13.8 | 7-iron, plays 178, no change | 6-iron, plays 184, no change |
+| 7 | (-1.0, 1.5) -> (-1.0, 1.5) | 11.0 / 10.9 / 14.6 / 13.3 | 6-iron, plays 189, no change | 6-iron, plays 189, no change |
+| 12 | (0.5, 0.0) -> (0.0, 0.5) | 14.8 / 11.8 / 17.3 / 13.0 | PW, plays 135, no change | GW, plays 131 -> 132 |
+| 14 | (3.0, -5.0) -> (2.5, -3.5) | 10.4 / 8.4 / 13.7 / 19.6 | 5-iron, plays 201 -> 203 | 5-iron, plays 204 -> 206 |
+| 17 | (-1.0, -5.0) -> (-0.5, -4.5) | 9.3 / 12.1 / 12.6 / 18.8 | 5-iron, plays 199 -> 200 | 5-iron, plays 198 -> 199 |
+
+Lost ball: the same targets except 12 (0.0, 0.0) and 14 (3.0, -5.0, unchanged). Expected strokes on Back are
+0.02-0.03 better on every par 3. No club changes on Back, either day, either
+rule set. Other sets, club changes on the page: The Tips 4 Saturday (Drop) 6-iron -> 5-iron ("6-iron a tie");
+Middle 7 Sunday under Lost ball back to the 8-iron ("7-iron a tie").
+

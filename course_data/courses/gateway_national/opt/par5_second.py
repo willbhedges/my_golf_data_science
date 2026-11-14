@@ -81,8 +81,8 @@ VAR = dict(wood_spread=float(os.environ.get("P5_WOOD_SPREAD", 1.0)), wood_carry=
 #                 and 50 % wider.
 # Distance off the deck is the golfer's own (central, pessimistic); "assumed" keeps the first build's 240 carry.
 # central since Nov 14 (late) = ANISOTROPIC, from config approach_pattern.deck (golfer: "why 79 yards wide with a
-# 220-yard shot?"; FAIRWAY_WOOD_DATA.md "Sideways and distance apart"): `lat` multiplies the 95 % width only (x 1.25:
-# the same angle as his Driver), `depth` the carry window (x 2.0), and the slightly mishit share grows with the club
+# 220-yard shot?"; FAIRWAY_WOOD_DATA.md "Sideways and distance apart"): `lat` multiplies the 95 % width only (x 1.0:
+# the tee pattern, his planning width), `depth` the carry window (x 2.25), and the slightly mishit share grows with the club
 # (`mis_slight` / `mis_heavy` = [at carry c0, at carry c1], linear in the club's 70-F carry, `mis_slight_carry` = the
 # share of the carry a slight mishit goes). central_175 = the run before (x 1.75 on both axes).
 _AP = json.load(open(os.path.join(GW, "config.json"))).get("approach_pattern", {}).get("deck")

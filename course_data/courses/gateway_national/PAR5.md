@@ -205,6 +205,91 @@ step shorter. Trouble shares fall on 6 (13 -> 8 % from the Driver's spot: less b
 same shots except three near-ties (13 from the Driver's spot both days and 6 Sunday from 260: the 240 shot
 instead of the 4-wood).
 
+### Sideways x 1.0, the same night (this is what the page shows now; version 28)
+
+Golfer on the x 1.25 page: "Is that still 62 yards wide? A 230-yard shot should only be planned for like a 40 or
+50-yard dispersion." The x 1.25 was a prior, not data; his planning width is the better evidence. Now
+(`approach_pattern.deck`): **sideways = the tee pattern x 1.0** (long iron 43, 220 shot 45, 230 shot 48, 240 shot
+50, 4-wood 54 yds at 95 % of solid strikes: the tee table's own iron rows), **distance window x 2.25, slight
+mishits 12 % -> 32 % with the club, bad ones 2.5 -> 6 %** (the distance side was raised from x 2.0 / 28 % / 5 %
+because at x 1.0 sideways the long clubs came out 7-10 ft closer than the scratch figures; now within 4-5 ft).
+Calibration: second_pass/FAIRWAY_WOOD_DATA.md, "Second step". The oval and "N yds wide" label on the page count
+every ball of the row, mishits included (they scatter wider), so they read 2-4 yds more: 45 long iron, 51 for the
+230 shot, 57-58 for the 4-wood.
+
+Also in this build (audit of version 27, second_pass/AUDIT_FINAL.md):
+* the tee re-check (`two_stage`) re-run on this pattern, Back and Middle, both rule sets (Saturday), so the pill is
+  on the current numbers; the pill is not shown where the green is out of reach from the Driver's spot (hole 3)
+  and reads "Only if you would never go for the green in two: the 2-wood and 4-wood lose nothing off the tee";
+* Second shot mode: when the best row is an in-between shot, the row selected by default (top bar, Play label,
+  drawn shot) is the best club he carries (the ☆ row); the sentence leads with it and says what the in-between
+  shot would gain. The ranking and both stars are unchanged;
+* pill now on: Back 18 (both days), Middle 6 (both days), Middle 3 (Saturday), in both rule sets; nowhere else
+  (Back 3: green out of reach; Back 6 and 13: the woods cost 0.04-0.09 under "always lay up"; The Tips, Champions
+  and Forward: their re-check was not re-run, so no pill is shown from the stored first-build values);
+* not par 5s, same build: the hand-written "why" sentences of Back 8 and 18 no longer quote a fairway share (they
+  were 66 % and 72 % beside computed 64 % and 79 %); the Settings wind dial's needle is turned so the round yellow
+  end sits where the wind comes from and the arrow points downwind like the card arrows, caption to match
+  (shared template `wind_page_template_course.html`: other course pages get it at their next rebuild). Audit item
+  5 (the "N wide" strip against the table's 95 % width, the Close-call pill's margin) is NOT done;
+* the static Second shot block on the tee card is built from the mode's own menu rows (`menu_lines` in
+  `opt/par5_page.py`: same totals and leaves as the mode; Forward has no menu and keeps the solver's lines), and
+  leads with the club he carries.
+
+Back, fairway, Drop rule, from the page's menu; before = the x 1.25 build (commit 26b40e93d):
+
+| hole | day | from (to middle / front) | best shot before -> now | strokes | carry front / green / trouble, before -> now | drawn width x depth | best club he carries | costs | best lay-up (leaves) | costs before -> now |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 6 | Sat | Driver spot (237 / 224) | 230 shot | 3.71 -> 3.67 | 37 / 18 / 8 -> 35 / 20 / 5 % | 62 x 53 -> 51 x 55 | Long iron | +0.10 | 5-iron (42) | +0.08 -> +0.22 |
+| 6 | Sat | 220 (221 / 207) | Long iron | 3.65 -> 3.61 | 33 / 21 / 5 -> 33 / 23 / 3 % | 55 x 50 -> 45 x 54 | Long iron | +0.00 | Mid iron (38) | +0.20 -> +0.22 |
+| 6 | Sat | 230 (230 / 216) | 220 shot | 3.69 -> 3.64 | 34 / 19 / 6 -> 32 / 21 / 4 % | 58 x 53 -> 48 x 55 | Long iron | +0.04 | 5-iron (34) | +0.15 -> +0.17 |
+| 6 | Sat | 240 (241 / 227) | 230 shot | 3.72 -> 3.68 | 32 / 18 / 8 -> 30 / 19 / 4 % | 62 x 54 -> 51 x 57 | Long iron | +0.12 | Long iron (32) | +0.11 -> +0.12 |
+| 6 | Sat | 250 (250 / 236) | 240 shot | 3.75 -> 3.70 | 33 / 16 / 9 -> 31 / 18 / 5 % | 65 x 56 -> 53 x 58 | 4-wood | +0.04 | Long iron (41) | +0.17 -> +0.19 |
+| 6 | Sat | 260 (259 / 245) | 240 shot -> 4-wood | 3.80 -> 3.73 | 17 / 12 / 7 -> 37 / 17 / 7 % | 65 x 55 -> 57 x 59 | 4-wood | +0.00 | Long iron (52) | +0.22 -> +0.25 |
+| 6 | Sat | 270 (269 / 255) | 4-wood | 3.82 -> 3.77 | 23 / 13 / 10 -> 22 / 14 / 6 % | 69 x 57 -> 57 x 62 | 4-wood | +0.00 | Long iron (63) | +0.28 -> +0.30 |
+| 13 | Sat | Driver spot (241 / 225) | 4-wood | 3.76 -> 3.73 | 71 / 13 / 6 -> 66 / 16 / 6 % | 71 x 57 -> 58 x 62 | 4-wood | +0.00 | Long iron (38) | +0.13 -> +0.12 |
+| 13 | Sat | 220 (219 / 204) | 230 shot | 3.70 -> 3.68 | 70 / 18 / 6 -> 64 / 20 / 6 % | 63 x 51 -> 51 x 56 | Long iron | +0.06 | 5-iron (31) | +0.14 -> +0.12 |
+| 13 | Sat | 230 (230 / 214) | 240 shot | 3.73 -> 3.71 | 67 / 15 / 6 -> 61 / 17 / 7 % | 67 x 53 -> 54 x 58 | 4-wood | +0.03 | Long iron (29) | +0.10 -> +0.09 |
+| 13 | Sat | 240 (239 / 224) | 240 shot -> 4-wood | 3.76 -> 3.74 | 49 / 15 / 7 -> 68 / 16 / 6 % | 67 x 54 -> 58 x 62 | 4-wood | +0.00 | Long iron (38) | +0.12 -> +0.12 |
+| 13 | Sat | 250 (250 / 234) | 4-wood | 3.79 -> 3.77 | 53 / 13 / 7 -> 47 / 14 / 7 % | 72 x 58 -> 58 x 62 | 4-wood | +0.00 | Long iron (46) | +0.15 -> +0.14 |
+| 13 | Sat | 260 (260 / 244) | 4-wood | 3.82 -> 3.81 | 36 / 12 / 9 -> 33 / 12 / 8 % | 72 x 56 -> 58 x 60 | 4-wood | +0.00 | Long iron (56) | +0.16 -> +0.15 |
+| 13 | Sat | 270 (271 / 254) | 4-wood | 3.86 -> 3.83 | 20 / 8 / 6 -> 20 / 7 / 3 % | 71 x 58 -> 58 x 62 | 4-wood | +0.00 | Long iron (66) | +0.16 -> +0.17 |
+| 18 | Sat | Driver spot (219 / 205) | 220 shot | 3.73 -> 3.70 | 60 / 22 / 8 -> 55 / 24 / 7 % | 58 x 50 -> 47 x 55 | Long iron | +0.00 | Mid iron (37) | +0.14 -> +0.14 |
+| 18 | Sat | 220 (221 / 207) | 220 shot | 3.75 -> 3.71 | 56 / 22 / 9 -> 51 / 24 / 7 % | 58 x 51 -> 47 x 55 | Long iron | +0.01 | Mid iron (40) | +0.13 -> +0.14 |
+| 18 | Sat | 230 (231 / 216) | 230 shot | 3.78 -> 3.74 | 55 / 20 / 10 -> 49 / 21 / 8 % | 62 x 52 -> 50 x 57 | Long iron | +0.03 | 5-iron (37) | +0.10 -> +0.10 |
+| 18 | Sat | 240 (239 / 225) | 230 shot | 3.80 -> 3.77 | 38 / 16 / 8 -> 35 / 19 / 8 % | 62 x 55 -> 51 x 58 | 4-wood | +0.01 | Long iron (34) | +0.07 -> +0.06 |
+| 18 | Sat | 250 (251 / 237) | 240 shot | 3.84 -> 3.80 | 33 / 14 / 8 -> 31 / 13 / 6 % | 65 x 56 -> 53 x 60 | 4-wood | +0.00 | Long iron (44) | +0.08 -> +0.09 |
+| 18 | Sat | 260 (261 / 247) | 4-wood | 3.85 -> 3.82 | 40 / 12 / 8 -> 36 / 15 / 9 % | 70 x 58 -> 57 x 62 | 4-wood | +0.00 | Long iron (52) | +0.08 -> +0.11 |
+| 18 | Sat | 270 (269 / 255) | 4-wood | 3.87 -> 3.83 | 27 / 12 / 8 -> 26 / 11 / 4 % | 70 x 58 -> 57 x 62 | 4-wood | +0.00 | Long iron (59) | +0.09 -> +0.13 |
+| 6 | Sun | Driver spot (238 / 225) | 230 shot | 3.72 -> 3.68 | 34 / 17 / 8 -> 32 / 19 / 5 % | 62 x 53 -> 51 x 55 | Long iron | +0.11 | Long iron (32) | +0.11 -> +0.11 |
+| 6 | Sun | 220 (221 / 207) | Long iron | 3.67 -> 3.62 | 31 / 20 / 5 -> 30 / 22 / 2 % | 55 x 50 -> 45 x 54 | Long iron | +0.00 | Mid iron (39) | +0.21 -> +0.22 |
+| 6 | Sun | 230 (230 / 216) | 220 shot | 3.69 -> 3.65 | 32 / 19 / 6 -> 30 / 21 / 3 % | 58 x 52 -> 48 x 56 | Long iron | +0.05 | 5-iron (36) | +0.16 -> +0.17 |
+| 6 | Sun | 240 (241 / 227) | 230 shot | 3.72 -> 3.69 | 30 / 17 / 7 -> 28 / 17 / 4 % | 62 x 54 -> 51 x 56 | 4-wood | +0.10 | Long iron (34) | +0.13 -> +0.12 |
+| 6 | Sun | 250 (250 / 236) | 240 shot | 3.76 -> 3.71 | 31 / 16 / 9 -> 30 / 16 / 5 % | 66 x 54 -> 53 x 58 | 4-wood | +0.03 | Long iron (42) | +0.18 -> +0.19 |
+| 6 | Sun | 260 (259 / 245) | 4-wood | 3.80 -> 3.75 | 38 / 15 / 12 -> 35 / 16 / 8 % | 69 x 55 -> 57 x 59 | 4-wood | +0.00 | Long iron (53) | +0.22 -> +0.25 |
+| 6 | Sun | 270 (269 / 255) | 4-wood | 3.82 -> 3.78 | 22 / 13 / 9 -> 21 / 13 / 6 % | 69 x 58 -> 57 x 62 | 4-wood | +0.00 | Long iron (64) | +0.28 -> +0.30 |
+| 13 | Sun | Driver spot (241 / 225) | 4-wood | 3.76 -> 3.73 | 71 / 13 / 6 -> 66 / 16 / 6 % | 72 x 57 -> 58 x 62 | 4-wood | +0.00 | Long iron (38) | +0.13 -> +0.12 |
+| 13 | Sun | 220 (219 / 204) | 230 shot | 3.70 -> 3.68 | 70 / 17 / 5 -> 65 / 20 / 5 % | 63 x 52 -> 52 x 56 | Long iron | +0.06 | 5-iron (31) | +0.13 -> +0.12 |
+| 13 | Sun | 230 (230 / 214) | 240 shot | 3.73 -> 3.71 | 67 / 16 / 6 -> 62 / 17 / 7 % | 67 x 53 -> 54 x 58 | 4-wood | +0.03 | Long iron (30) | +0.10 -> +0.08 |
+| 13 | Sun | 240 (239 / 224) | 240 shot -> 4-wood | 3.76 -> 3.74 | 49 / 16 / 9 -> 68 / 16 / 6 % | 67 x 55 -> 58 x 62 | 4-wood | +0.00 | Long iron (37) | +0.13 -> +0.12 |
+| 13 | Sun | 250 (250 / 234) | 4-wood | 3.79 -> 3.77 | 53 / 13 / 8 -> 48 / 13 / 6 % | 72 x 58 -> 58 x 63 | 4-wood | +0.00 | Long iron (46) | +0.15 -> +0.15 |
+| 13 | Sun | 260 (260 / 244) | 4-wood | 3.82 -> 3.81 | 36 / 12 / 8 -> 33 / 11 / 8 % | 72 x 56 -> 58 x 60 | 4-wood | +0.00 | Long iron (55) | +0.16 -> +0.16 |
+| 13 | Sun | 270 (271 / 254) | 4-wood | 3.86 -> 3.82 | 19 / 7 / 5 -> 19 / 9 / 5 % | 71 x 58 -> 59 x 63 | 4-wood | +0.00 | Long iron (66) | +0.16 -> +0.18 |
+| 18 | Sun | Driver spot (222 / 207) | 220 shot -> 230 shot | 3.74 -> 3.71 | 52 / 22 / 9 -> 64 / 25 / 8 % | 59 x 52 -> 51 x 56 | Long iron | +0.02 | 5-iron (32) | +0.10 -> +0.09 |
+| 18 | Sun | 220 (221 / 207) | 220 shot -> 230 shot | 3.75 -> 3.71 | 52 / 22 / 9 -> 64 / 25 / 8 % | 59 x 51 -> 51 x 56 | Long iron | +0.02 | Mid iron (43) | +0.10 -> +0.16 |
+| 18 | Sun | 230 (231 / 216) | 230 shot | 3.78 -> 3.74 | 51 / 19 / 10 -> 46 / 20 / 7 % | 63 x 53 -> 51 x 57 | 4-wood | +0.04 | 5-iron (39) | +0.07 -> +0.12 |
+| 18 | Sun | 240 (239 / 225) | 240 shot -> 4-wood | 3.81 -> 3.77 | 52 / 17 / 10 -> 70 / 18 / 7 % | 66 x 54 -> 58 x 62 | 4-wood | +0.00 | Long iron (36) | +0.08 -> +0.07 |
+| 18 | Sun | 250 (251 / 237) | 4-wood | 3.84 -> 3.81 | 53 / 12 / 7 -> 48 / 15 / 8 % | 71 x 57 -> 58 x 63 | 4-wood | +0.00 | Long iron (46) | +0.08 -> +0.10 |
+| 18 | Sun | 260 (261 / 247) | 4-wood | 3.85 -> 3.82 | 37 / 12 / 7 -> 33 / 14 / 8 % | 71 x 59 -> 58 x 62 | 4-wood | +0.00 | Long iron (54) | +0.09 -> +0.12 |
+| 18 | Sun | 270 (269 / 255) | 4-wood | 3.88 -> 3.83 | 23 / 10 / 7 -> 22 / 12 / 6 % | 71 x 58 -> 59 x 62 | 4-wood | +0.00 | Long iron (62) | +0.09 -> +0.13 |
+
+In short: nothing he would do differently. Going is best from every spot from 220 to 270 on 6, 13 and 18, by
+0.06-0.30 over the best lay-up. Every shot is 0.02-0.07 strokes better than on the x 1.25 pattern and trouble
+shares are down 0-5 points (less ball goes wide); the share carrying the front edge is down 2-6 points (more
+finish short). Shots that change: 6 Saturday from 260 the full 4-wood (was the 240 shot); 13 from 240 the full
+4-wood; 18 Sunday from the Driver's spot and 220 the 230 shot (was 220), from 240 the 4-wood. Lost ball rule: the
+same best shot in every one of these 42 rows.
+
 ### Answer at the data pass (Back, from where the tee shot finishes; Thursday's forecast, 9:00 both days)
 
 | hole | day | from | to front / middle | GO: club, strokes | green / carry the front / penalty + trees | LAY-UP: club, leaves, strokes | go - lay-up | first build: go - lay-up |

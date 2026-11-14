@@ -108,7 +108,7 @@
     "Back": "Why Driver: 79% fairway into the widest part of the hole."
    },
    "8": {
-    "Back": "Why Driver down the left: it shortens the hole with 66% fairway; the 2-wood leaves 20 yds more."
+    "Back": "Why Driver down the left: it shortens the hole; the 2-wood leaves 20 yds more."
    },
    "9": {
     "Back": "Why Driver, narrowly: it gets 20-30 yds closer, but only half the balls find fairway; the 2-wood and 4-wood find more fairway and are almost as good."
@@ -130,7 +130,7 @@
     "Back": "Why 4-wood: it stops at the mouth of the narrow part (77% fairway); the Driver runs through the fairway half the time and the 2-wood a quarter of the time."
    },
    "18": {
-    "Back": "Why Driver: a par 5 with 72% fairway; nothing in reach that a shorter club avoids."
+    "Back": "Why Driver: a par 5 with nothing in reach that a shorter club avoids."
    }
   },
   "why_source": "2026-11-13 strategy pass (OPTIMIZE.md 'Night of Nov 12-13'): one sentence per Back tee shot from the solved shares (fairway share, yards in, strokes against the next club); no hazard words; 2026-11-13 round 2: the absolute yards-in numbers taken out (they were the calm-day average over all swings, 3-11 yds above the table's To green on Saturday and 15 above on Sunday's hole 1); differences between clubs kept, from the table",
@@ -332,10 +332,10 @@
  },
  "par3_bag_source": "70-F stock carries of the par-3 model (opt/par3_target.py bag; 4-iron = the engine's 210 long iron, 6-iron = the 185 mid iron; 5-, 7-, 9-iron, PW, GW, SW, LW assumed ~12-yd gapping)",
  "approach_pattern": {
-  "deck": {"lat": 1.25, "depth": 2.0, "mis_slight": [0.12, 0.28], "mis_heavy": [0.025, 0.05], "mis_carry_range": [113, 255], "mis_slight_carry": [0.85, 0.95]},
-  "par3_tee": {"lat": 1.1, "depth": 1.75, "mis_slight": [0.12, 0.22], "mis_heavy": [0.025, 0.04], "mis_carry_range": [113, 255], "mis_slight_carry": [0.85, 0.95]}
+  "deck": {"lat": 1.0, "depth": 2.25, "mis_slight": [0.12, 0.32], "mis_heavy": [0.025, 0.06], "mis_carry_range": [113, 255], "mis_slight_carry": [0.85, 0.95]},
+  "par3_tee": {"lat": 1.0, "depth": 1.75, "mis_slight": [0.12, 0.22], "mis_heavy": [0.025, 0.04], "mis_carry_range": [113, 255], "mis_slight_carry": [0.85, 0.95]}
  },
- "approach_pattern_source": "2026-11-14 late, golfer: 'why 79 yards wide with a 220-yard shot? wouldn't that be a lot more narrow?' The single x 1.75 (deck) / x 1.5 (par-3 tee) on width AND distance window drew a 220-yd shot wider in yds than his Driver. Proximity data cannot tell sideways error from distance error; now split (second_pass/FAIRWAY_WOOD_DATA.md 'Sideways and distance apart', PAR3.md section 9): off the fairway the width is the tee pattern x 1.25 (one sigma 3.5 deg, his Driver's 3.6), the distance window x 2.0, slight mishits 12 % (sand wedge) rising to 28 % (4-wood) at 85-95 % of the carry, bad ones 2.5 -> 5 %; par-3 tee x 1.1 / x 1.75 / 12 -> 22 % / 2.5 -> 4 %. Flat-green proximity stays at the scratch level (Tour x 1.5 club for club). opt/par5_second.py DECK_SETS central and opt/par3_target.py read it; P5_DECK_SET=central_175 and P3_PATTERN_MULT=1.5 give the runs before. par3_pattern_mult is kept for that override only",
+ "approach_pattern_source": "2026-11-14 late, golfer: 'why 79 yards wide with a 220-yard shot? wouldn't that be a lot more narrow?', then on the first split (x 1.25, 230 shot 62 wide): 'a 230-yard shot should only be planned for like a 40 or 50-yard dispersion'. The single x 1.75 (deck) / x 1.5 (par-3 tee) on width AND distance window drew a 220-yd shot wider in yds than his Driver. Proximity data cannot tell sideways error from distance error and no published split by handicap was found, so the sideways half is the golfer's own planning width = the tee pattern x 1.0 (long iron 43, 230 shot 48, 4-wood 54 yds at 95 %: the tee table's iron rows), off the fairway and on par-3 tees; all of the gap to a scratch amateur's proximity is distance (second_pass/FAIRWAY_WOOD_DATA.md 'Sideways and distance apart', PAR3.md section 9): off the fairway the distance window x 2.25, slight mishits 12 % (sand wedge) rising to 32 % (4-wood) at 85-95 % of the carry, bad ones 2.5 -> 6 %; par-3 tee x 1.75 / 12 -> 22 % / 2.5 -> 4 %. Flat-green proximity stays within 5 ft of the scratch level (Tour x 1.5 club for club). opt/par5_second.py DECK_SETS central and opt/par3_target.py read it; P5_DECK_SET=central_175 and P3_PATTERN_MULT=1.5 give the single-multiplier runs. par3_pattern_mult is kept for that override only",
  "par3_pattern_mult": 1.5,
  "par3_pattern_source": "2026-11-14 check against published data (PAR3.md section 8, second_pass/FAIRWAY_WOOD_DATA.md): the par-3 solver's iron patterns were Tour-level (flat 15-yd-radius green: 92 % of greens and 25 ft from 135, 80-83 % and 31-33 ft from 180, 75 % and 36 ft from 200; Tour proximity 24 / 34 / 42 ft). Width and distance window of every par-3 club x 1.5 (a tee is a perfect lie: the low end of the 1.5-1.75 used off the deck) gives 75 % / 36 ft, 56-60 % / 44-47 ft, 46-51 % / 50-54 ft = Tour x 1.4-1.5, a scratch amateur. opt/par3_target.py reads it (P3_PATTERN_MULT overrides); targets and ladder of both rule sets re-solved on it",
  "par3_drift_per_mph": 1.4,

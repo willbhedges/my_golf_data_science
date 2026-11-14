@@ -70,7 +70,7 @@ if os.environ.get("P3_NATIVE") != "found":
 E.OUT = OUT
 # Width and distance window of every par-3 club x config par3_pattern_mult (1.5 since Nov 14: the patterns as built
 # were Tour-level; PAR3.md section 8, second_pass/FAIRWAY_WOOD_DATA.md). P3_PATTERN_MULT overrides (1.0 = as built).
-# Since Nov 14 (late) ANISOTROPIC, config approach_pattern.par3_tee (PAR3.md section 9): `lat` on the width (x 1.1),
+# Since Nov 14 (late) ANISOTROPIC, config approach_pattern.par3_tee (PAR3.md section 9): `lat` on the width (x 1.0),
 # `depth` on the distance window (x 1.75), and a slightly-mishit share that grows with the club (as off the deck, less
 # of it: a tee is a perfect lie). P3_PATTERN_MULT set = the old single multiplier on both axes (1.5 = the run before).
 _AP3 = None if os.environ.get("P3_PATTERN_MULT") else _cfg.get("approach_pattern", {}).get("par3_tee")
