@@ -489,3 +489,53 @@ Club changes on Back: 17 on Sunday 5-iron -> 6-iron (195, "5-iron close": the tw
 12 on Saturday under Lost ball PW -> GW ("PW close"; under Drop the PW stays, "GW a tie"). Saturday, Drop: no club
 changes; 12's box moves 2.5 yds right, 14's 2 yds shorter and 1 right, 4's 1 yd shorter and 1 right. Other sets:
 Forward 14 Saturday 8-iron -> 9-iron. No tee shot on a par 4 or 5 changed.
+
+## 9. Sideways and distance apart, Nov 14 late (replaces the x 1.5 of section 8)
+
+Golfer, on the par-5 page: "why is it saying 79 yards wide with like a 220-yard shot? Wouldn't that be a lot more
+narrow?" The same single multiplier was on the par 3s (x 1.5 on width AND distance window: a 4-iron 64 yds wide
+at 220, against 43 for the same club in the tee table). Proximity data cannot tell a sideways miss from a short
+one; split now, as off the fairway (second_pass/FAIRWAY_WOOD_DATA.md, "Sideways and distance apart"), with less of
+everything because a tee is a perfect lie. `config.json approach_pattern.par3_tee`, read by `opt/par3_target.py`
+(wraps `E.opts` and `E.shot_set`); `P3_PATTERN_MULT=1.5` gives the run before:
+
+* width x 1.1 (one sigma 3.0-3.2 deg; his Driver 3.6); distance window x 1.75;
+* slightly-mishit share 12 % (sand wedge) rising to 22 % (4-wood), each going 85-95 % of the carry (was 12 % at
+  92-95 %); bad mishits 2.5 % -> 4 %.
+
+Same flat test as section 8 (200,000 swings; before = x 1.5 -> now):
+
+| club, pin at | 95 % width | 95 % depth | proximity (mean) | on the green | good shot | 15+ yds short |
+|---|---|---|---|---|---|---|
+| PW 141 | 42 -> 31 | 25 -> 33 | 36 -> 34 ft | 74 -> 77 % | 63 -> 71 % | 4 -> 11 % |
+| 8-iron 167 | 48 -> 36 | 29 -> 39 | 41 -> 40 ft | 65 -> 66 % | 56 -> 64 % | 5 -> 15 % |
+| 6-iron 192 | 55 -> 41 | 33 -> 44 | 47 -> 46 ft | 56 -> 57 % | 51 -> 58 % | 7 -> 20 % |
+| 4-iron 220 | 64 -> 48 | 37 -> 50 | 54 -> 53 ft | 46 -> 46 % | 44 -> 51 % | 11 -> 25 % |
+
+Proximity and greens hit are unchanged (the scratch level of section 8); the misses moved from the sides to short.
+
+Applied: `par3_decade.py solve` + `par3_ladder.py`, every set, both rule sets (4 and 8 min). The margins of section
+0 are geometric: 7 and 12 fit; 4, 14 and 17 remain lesser-of-two-evils with the penalty margins met (other edges
+short by 1.6, 1.5 and 0.3 yds at best). Back (target = yds right, yds past the middle; margins left / right / short /
+long through the target):
+
+| hole | target before -> now | margins now | Saturday (Drop) | Sunday (Drop) |
+|---|---|---|---|---|
+| 4 | (2.5, -3.5) -> (2.5, -3.5) | 12.0 / 13.0 / 11.0 / 13.8 | 7-iron, no change | 6-iron, no change |
+| 7 | (-1.0, 1.5) -> (-1.0, 1.5) | 11.0 / 10.9 / 14.6 / 13.3 | 6-iron, no change | 6-iron, no change |
+| 12 | (2.0, -0.5) -> (0.5, 0.0) | 15.2 / 11.3 / 16.8 / 11.9 | PW, plays 134 -> 135 | GW, no change |
+| 14 | (3.5, -6.0) -> (3.0, -5.0) | 10.6 / 8.0 / 12.6 / 20.8 | 5-iron, plays 200 -> 201 | 5-iron, plays 203 -> 204 |
+| 17 | (-1.0, -5.0) -> (-1.0, -5.0) | 8.8 / 12.2 / 12.1 / 19.1 | 5-iron, no change | 5-iron, no change |
+
+No club changes on Back, either day, either rule set (Lost ball, 4 on Sunday: the 7-iron is now "a tie" with the
+6-iron, was "close"). With less sideways scatter the box moves back toward the middle (12: 1.5 yds left; 14: 1 yd
+deeper). Other sets, club changes on the page: The Tips 12 Saturday 9-iron -> 8-iron (both rule sets); Middle 7
+Saturday 8-iron -> 7-iron (both rule sets, "8-iron a tie / close"), Sunday under Lost ball 8-iron -> 7-iron ("a
+tie"). Expected strokes on Back: 4, 12, 14, 17 better by 0.02-0.09 (less ball in the trouble at the sides), 7 worse
+by 0.06 (short is the costly miss there).
+
+Tee table (par 4s and 5s), not changed: its iron rows (long iron 43 yds wide, mid iron 37; the 8-iron's 32 in the
+hole 10 lay-up table) are the patterns as built = Tour-tight, and they feed the tee-shot solve (hole 16's long-iron
+row, hole 10's lay-up table), so they were left alone. Consistent with this section they would be 48 / 41 / 36
+wide (10 % more) with the distance window 75 % deeper (28 -> 50, 25 -> 44, 22 -> 39 yds) and more short misses.
+

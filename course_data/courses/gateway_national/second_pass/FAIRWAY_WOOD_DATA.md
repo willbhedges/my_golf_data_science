@@ -178,6 +178,83 @@ Against the data:
   irons and x 1.75-1.9 in the long clubs. The wedges come out slightly wide on x 1.75; that only touches lay-up
   shots, which are aimed at wide ground.
 
+## Sideways and distance apart (Nov 14, late; this replaces the single x 1.75 on the page)
+
+Golfer: "On the approach, why is it saying 79 yards wide with like a 220-yard shot? Wouldn't that be a lot more
+narrow than that?" He is right. The single multiplier put all of the gap between the Tour and a scratch amateur
+on BOTH axes. Distance from the hole cannot tell a sideways miss from a short one, so the split was an assumption,
+and it gave a 220 shot 79 yds wide (one sigma 4.9 deg) against his Driver's 73 yds at 290 (3.6 deg) and the same
+long iron's 43 yds off a tee.
+
+What can pin the split:
+
+* **The good-shot benchmark has a sideways half** (Stagner / Arccos, fairway: at least 90 % of the distance AND
+  within 10 yds left / right; scratch 78 % from 100, 39 % from 200). From 100, 78 % inside 10 yds caps one sigma
+  at 4.6 deg even with perfect distance, and at about 3.8 deg with one shot in ten short. The x 1.75 pattern was
+  5.2 deg in the wedges (62 % good at 115): too wide by its own data.
+* **Angle against his tee shots.** Driver 3.6 deg (73 yds at 290; Fawcett's 65-70 yds for scratch-or-better AND
+  for the Tour: the sideways pattern does not grow from Tour to scratch with the Driver). Irons off a tee as built
+  2.7-2.9 deg. MyGolfSpy's tee-against-turf test (table (a)) found no extra width off turf. So off the fairway:
+  the tee width x 1.0-1.25; x 1.25 taken (3.4-3.7 deg, the Driver's angle), the wide end, because the
+  good-shot rate from 200 asks for more width, not less.
+* **The rest is distance**: amateurs' misses from 200 are short (heavy, thin), and the longer the club off the
+  ground the more of them. Carried as a wider distance window (x 2.0) and a slightly-mishit share that grows with
+  the club: 12 % with the sand wedge (the engine's figure) to 28 % with the 4-wood, each 85-95 % of the carry
+  (was 92-95 %); bad mishits 2.5 % -> 5 %.
+* Search for a published split of sideways against distance error by handicap (Stagner, Arccos, Shot Scope,
+  DECADE "pattern is X % of the distance wide"): **none found** (two searches, extracts only, nothing opened).
+  Nearest: par-3 tee shots miss short about 1 in 5 for scratch, nearly 1 in 2 for high handicaps (MyGolfSpy on
+  Arccos, https://mygolfspy.com/news-opinion/youre-playing-par-3s-wrong-heres-what-the-data-says-to-do-instead/,
+  extract only, unverified); Stagner has a "% of shots reaching 90 % of the target distance from 175, scratch /
+  10 / 20" episode whose numbers the extract does not give (https://www.spotsports.com/episodes/p9twgym9mu);
+  GOLFTEC 7-iron depth 36 ft best shots against 56 ft for an 8-handicap
+  (https://golf.com/instruction/approach-shots/key-lowering-handicap-stats-golftec/, extract only). All say
+  distance is where amateurs lose it; none gives the split. So the split is: sideways from the tee patterns
+  (prior), distance fitted to the proximity figures.
+
+`config.json approach_pattern.deck` = {lat 1.25, depth 2.0, mis_slight [0.12, 0.28], mis_heavy [0.025, 0.05] over
+carry 113..255, mis_slight_carry [0.85, 0.95]}; `DECK_SETS["central"]` reads it; `P5_DECK_SET=central_175` is the
+run before. Rough: 25 % wider and deeper on top, 4 % shorter, as before.
+
+95 % width / 95 % depth of the finish (bad mishits left out, as the page draws it), yds, flat and calm at 70 F:
+
+| shot (carry / total at 70 F; about 4 % less in the cold) | off a tee as built | fairway before (x 1.75) | fairway now | one sigma, deg | par-3 tee before (x 1.5) | par-3 tee now |
+|---|---|---|---|---|---|---|
+| LW (100 / 101) | 21 / 14 | 38 / 23 | 27 / 27 | 5.3 -> 3.8 | 32 / 20 | 24 / 25 |
+| 9-iron (150 / 154) | 30 / 20 | 53 / 31 | 38 / 39 | 4.9 -> 3.5 | 45 / 27 | 33 / 36 |
+| Mid iron (185 / 192) | 37 / 25 | 64 / 38 | 46 / 47 | 4.8 -> 3.4 | 55 / 33 | 41 / 44 |
+| Long iron (210 / 220; 212 in the cold) | 43 / 28 | 75 / 42 | 55 / 53 | 4.9 -> 3.5 | 64 / 37 | 48 / 50 |
+| 220 shot (220 / 231) | 45 / 30 | 79 / 44 | 58 / 56 | 4.9 -> 3.5 | 68 / 38 | 51 / 52 |
+| 230 shot (230 / 242) | 48 / 31 | 84 / 46 | 61 / 58 | 4.9 -> 3.5 | 72 / 40 | 53 / 55 |
+| 240 shot (240 / 253) | 50 / 33 | 88 / 48 | 64 / 61 | 5.0 -> 3.6 | 75 / 42 | 56 / 57 |
+| 4-wood (255 / 270; 260 in the cold) | 54 / 35 | 94 / 51 | 69 / 65 | 5.0 -> 3.6 | 81 / 44 | 60 / 61 |
+
+The depth leans short: the long iron's 95 % runs from 30 short of its stock total to 23 past (4-wood 37 short to
+28 past, sand wedge 16 short to 14 past).
+
+Calibration (same flat test as above: pin at the club's stock total, 15-yd-radius green, 200,000 swings):
+
+| club, pin at | pattern | proximity (mean) | data | on the green | good shot | data | within 10 yds L / R | reaches 90 % | 15+ yds short |
+|---|---|---|---|---|---|---|---|---|---|
+| LW 101 | before | 31 ft | Tour 20 x 1.5 = 30; scratch 26 from 90 | 81 % | 66 % | scratch 78 % from 100 | 70 % | 93 % | 3 % |
+| LW 101 | now | 28 ft | | 87 % (scratch 74 % from 100) | 74 % | | 85 % | 86 % | 4 % |
+| SW 115 | before / now | 35 / 31 ft | 30 | 75 / 81 % | 62 / 71 % | about 72 % (between 100 and 200) | 65 / 81 % | 94 / 86 % | 4 / 7 % |
+| PW 141 | before / now | 41 / 38 ft | 36 | 65 / 69 % | 55 / 64 % | about 62 % | 57 / 73 % | 95 / 86 % | 5 / 13 % |
+| 8-iron 167 | before / now | 47 / 45 ft | 42 | 55 / 57 % | 49 / 57 % | about 52 % | 51 / 66 % | 95 / 85 % | 6 / 19 % |
+| Mid iron 192 | before / now | 54 / 52 ft | 51 | 46 / 47 % | 44 / 51 % | about 42 % | 46 / 60 % | 95 / 84 % | 9 / 25 % |
+| Long iron 220 | before / now | 62 / 61 ft | 63 (scratch by distance 80) | 37 / 37 % | 38 / 44 % | scratch 39 % from 200 | 40 / 52 % | 95 / 82 % | 14 / 31 % |
+| 230 shot 242 | before / now | 68 / 68 ft | | 31 / 31 % | 35 / 40 % | | 36 / 47 % | 96 / 81 % | 18 / 36 % |
+| 4-wood 270 | before / now | 76 / 77 ft | 81 | 26 / 25 % | 31 / 35 % | | 32 / 43 % | 96 / 80 % | 22 / 41 % |
+
+* Proximity and greens hit are the same as before within 3 ft and 6 points (a touch better in the wedges, where
+  x 1.75 was too wide): the scratch level, Tour x 1.5 club for club.
+* Good-shot rate: 74 % at 100 (data 78; was 66), about 49 % at 200 (data 39; was 42). The two cannot both be met
+  with a sideways angle no wider than the Driver's: 39 % from 200 would need either one sigma 4.1 deg with one
+  shot in four short of 90 %, or one shot in three short at 3.5 deg. The benchmark is the average scratch player,
+  who hits a hybrid or a wood from 200; he hits an iron. Read the long clubs as 5-10 points kind on that measure.
+* What moved is where the misses go: from 220, 31 % finish 15+ yds short (was 14 %), and about half as many
+  finish wide. A front carry is harder to make; trouble left and right is hit less.
+
 ## Re-run: holes 6, 13, 18
 
 From the middle of the fairway on the hole's line of play at each distance to the middle of the green (the menu's

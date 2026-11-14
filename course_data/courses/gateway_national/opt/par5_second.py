@@ -80,9 +80,17 @@ VAR = dict(wood_spread=float(os.environ.get("P5_WOOD_SPREAD", 1.0)), wood_carry=
 #   pessimistic = the scratch amateur's proximity by distance (80 ft from 200-225), more mishits, rough 8 % shorter
 #                 and 50 % wider.
 # Distance off the deck is the golfer's own (central, pessimistic); "assumed" keeps the first build's 240 carry.
+# central since Nov 14 (late) = ANISOTROPIC, from config approach_pattern.deck (golfer: "why 79 yards wide with a
+# 220-yard shot?"; FAIRWAY_WOOD_DATA.md "Sideways and distance apart"): `lat` multiplies the 95 % width only (x 1.25:
+# the same angle as his Driver), `depth` the carry window (x 2.0), and the slightly mishit share grows with the club
+# (`mis_slight` / `mis_heavy` = [at carry c0, at carry c1], linear in the club's 70-F carry, `mis_slight_carry` = the
+# share of the carry a slight mishit goes). central_175 = the run before (x 1.75 on both axes).
+_AP = json.load(open(os.path.join(GW, "config.json"))).get("approach_pattern", {}).get("deck")
 DECK_SETS = {
     "assumed": dict(spread=1.0, mis=None, wood_carry=-15.0, rough=(1.25, 0.96)),
-    "central": dict(spread=1.75, mis=None, wood_carry=0.0, rough=(1.25, 0.96)),
+    "central": (dict(spread=1.0, lat=_AP["lat"], depth=_AP["depth"], mis=None, mis_by_carry=_AP, wood_carry=0.0,
+                     rough=(1.25, 0.96)) if _AP else dict(spread=1.75, mis=None, wood_carry=0.0, rough=(1.25, 0.96))),
+    "central_175": dict(spread=1.75, mis=None, wood_carry=0.0, rough=(1.25, 0.96)),
     "pessimistic": dict(spread=2.0, mis=(0.20, 0.06), wood_carry=0.0, rough=(1.5, 0.92)),
 }
 # The par-5 page data (this file's solve, par5_menu.py) is built on "central" (P5_DECK_SET overrides); a plain import
@@ -236,13 +244,21 @@ def shot_numbers(Wd, P, club, lie, wx, bearing_shot):
     key = "deck:" + club
     P2 = dict(P)
     P2["width"] = dict(P["width"])
-    P2["width"][key] = DECK[club][2] * (70.0 / 65.0) * spread * (VAR["wood_spread"] if club == "4-wood" else 1.0)
+    P2["width"][key] = (DECK[club][2] * (70.0 / 65.0) * spread * SET.get("lat", 1.0)
+                        * (VAR["wood_spread"] if club == "4-wood" else 1.0))
     P2["c_club"] = dict(P.get("c_club") or {})
     if club == "4-wood":
         P2["c_club"][key] = VAR["wood_carry"] + SET["wood_carry"]
     if SET["mis"]:
         P2["mis_slight"], P2["mis_heavy"] = SET["mis"]
-    P2["depth_mult"] = P["depth_mult"] * spread
+    mb = SET.get("mis_by_carry")
+    if mb:                                                   # mishit share by club length (config approach_pattern)
+        c0, c1 = mb["mis_carry_range"]
+        f = float(np.clip((DECK[club][0] - c0) / (c1 - c0), 0.0, 1.0))
+        P2["mis_slight"] = mb["mis_slight"][0] + f * (mb["mis_slight"][1] - mb["mis_slight"][0])
+        P2["mis_heavy"] = mb["mis_heavy"][0] + f * (mb["mis_heavy"][1] - mb["mis_heavy"][0])
+        P2["mis_slight_carry"] = tuple(mb["mis_slight_carry"])
+    P2["depth_mult"] = P["depth_mult"] * spread * SET.get("depth", 1.0)
     P2["_cmult"] = cmult
     rel = (wx["frm"] - bearing_shot) % 360
     sens = DECK[club][4]

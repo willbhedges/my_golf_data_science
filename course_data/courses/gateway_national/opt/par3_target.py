@@ -70,9 +70,31 @@ if os.environ.get("P3_NATIVE") != "found":
 E.OUT = OUT
 # Width and distance window of every par-3 club x config par3_pattern_mult (1.5 since Nov 14: the patterns as built
 # were Tour-level; PAR3.md section 8, second_pass/FAIRWAY_WOOD_DATA.md). P3_PATTERN_MULT overrides (1.0 = as built).
+# Since Nov 14 (late) ANISOTROPIC, config approach_pattern.par3_tee (PAR3.md section 9): `lat` on the width (x 1.1),
+# `depth` on the distance window (x 1.75), and a slightly-mishit share that grows with the club (as off the deck, less
+# of it: a tee is a perfect lie). P3_PATTERN_MULT set = the old single multiplier on both axes (1.5 = the run before).
+_AP3 = None if os.environ.get("P3_PATTERN_MULT") else _cfg.get("approach_pattern", {}).get("par3_tee")
 PATTERN_MULT = float(os.environ.get("P3_PATTERN_MULT", _cfg.get("par3_pattern_mult", 1.0)))
-if PATTERN_MULT != 1.0:
-    _opts0 = E.opts
+_opts0 = E.opts
+if _AP3:
+    E.opts = lambda **over: _opts0(**{**dict(width_mult=_AP3["lat"], depth_mult=_AP3["depth"]), **over})
+    _shot_set0 = E.shot_set
+
+    def _shot_set(tup, cond, o, z, name="Mid iron"):
+        import model as M
+        c0, c1 = _AP3["mis_carry_range"]
+        f = float(np.clip((tup[0] - c0) / (c1 - c0), 0.0, 1.0))
+        mis = dict(mis_slight=_AP3["mis_slight"][0] + f * (_AP3["mis_slight"][1] - _AP3["mis_slight"][0]),
+                   mis_heavy=_AP3["mis_heavy"][0] + f * (_AP3["mis_heavy"][1] - _AP3["mis_heavy"][0]),
+                   mis_slight_carry=tuple(_AP3["mis_slight_carry"]))
+        central0 = M.central
+        M.central = lambda **ov: central0(**{**mis, **ov})
+        try:
+            return _shot_set0(tup, cond, o, z, name)
+        finally:
+            M.central = central0
+    E.shot_set = _shot_set
+elif PATTERN_MULT != 1.0:
     E.opts = lambda **over: _opts0(**{**dict(width_mult=PATTERN_MULT, depth_mult=PATTERN_MULT), **over})
 # The second rule set of the page (config engine.tall_grass_alt; golfer 2026-11-13: the tall grass may be played as
 # a lost ball): P3_TALL_GRASS=lost, set by par3_decade.py / par3_ladder.py --tall-grass lost, never by default. A

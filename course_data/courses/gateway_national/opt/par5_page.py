@@ -111,7 +111,9 @@ def block(r, base_back):
             bag_line = f"With a club you carry: {short(k, o)}. " + ("About the same." if d < 0.02 else f"Costs {cost(d)}.")
             lines.insert(1, bag_line)
     # an ordinary approach (an iron reaches comfortably): the lay-up line says nothing
-    if go and go["reach_total"] >= 0.9 and go["club"] != "4-wood" and lay and lay["ev"] - go["ev"] > 0.2:
+    # (0.75, was 0.9: since the Nov 14 anisotropic pattern more irons finish short, and 0.9 no longer held for a mid iron
+    # from 186; with 0.75 the same spots are ordinary approaches as before)
+    if go and go["reach_total"] >= 0.75 and go["club"] != "4-wood" and lay and lay["ev"] - go["ev"] > 0.2:
         lines = [option_line("go", go, True, None, None)] + ([bag_line] if bag_line else [])
         lay = None
     # the full-wedge lay-up, when the best lay-up leaves a part swing
