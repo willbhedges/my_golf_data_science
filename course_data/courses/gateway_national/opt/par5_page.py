@@ -20,6 +20,9 @@ BASE = {"Back": "Back", "The Tips": "Back", "Champions": "Back", "Middle": "Midd
 PAR5 = (3, 6, 13, 18)
 NAME = {"Long iron": "long iron", "Mid iron": "mid iron"}      # wedges stay PW / GW / SW
 LEVEL = 0.03
+# in-between shots (par5_second.GAP): not stock clubs; the first line that names one says what it is
+GAP_WHAT = {"220 shot": "220 shot (a long iron hit hard)", "230 shot": "230 shot (a hybrid, not in your bag)",
+            "240 shot": "240 shot (an easy 4-wood)"}
 
 
 def nm(c):
@@ -54,13 +57,14 @@ def cost(d):
 
 def option_line(kind, o, first, d, other):
     """One line for an option; d = its strokes minus the other option's (None when it is the only one)."""
+    c = GAP_WHAT.get(o["club"], nm(o["club"]))
     if kind == "go":
         if o["reach_total"] >= 0.5:
-            t = f"Go: {nm(o['club'])} {go_aim(o)}; {share(o['reach_carry'])} to the front edge"
+            t = f"Go: {c} {go_aim(o)}; {share(o['reach_carry'])} to the front edge"
         else:
-            t = f"Get close: {nm(o['club'])} {go_aim(o)}, a solid one finishes about {round(o['leave'])} short of the middle"
+            t = f"Get close: {c} {go_aim(o)}, a solid one finishes about {round(o['leave'])} short of the middle"
     else:
-        t = f"Lay up: {nm(o['club'])} ({round(o['stock'])} total) to {fw_words(o)}, leaves about {round(o['leave'] / 5) * 5}"
+        t = f"Lay up: {c} ({round(o['stock'])} total) to {fw_words(o)}, leaves about {round(o['leave'] / 5) * 5}"
     if d is None:
         return t + "."
     if abs(d) < 0.02:
@@ -96,13 +100,23 @@ def block(r, base_back):
             other = ("laying up" if ok == "lay" else "going") if (ok == "lay" or oo["reach_total"] >= 0.5) else "the longer club"
             lines.append(option_line(kind, o, i == 0, o["ev"] - oo["ev"], other))
     go, lay = v.get("go"), v.get("lay")
+    # the best shot is an in-between one: the best with a club he carries, and what it costs
+    bag_line = None
+    if opts and opts[0][1]["club"] in GAP_WHAT:
+        bo = sorted([(k, v.get(k + "_bag") or v[k]) for k in ("go", "lay") if v.get(k)], key=lambda t: t[1]["ev"])
+        bo = [t for t in bo if t[1]["club"] not in GAP_WHAT]
+        if bo:
+            k, o = bo[0]
+            d = o["ev"] - opts[0][1]["ev"]
+            bag_line = f"With a club you carry: {short(k, o)}. " + ("About the same." if d < 0.02 else f"Costs {cost(d)}.")
+            lines.insert(1, bag_line)
     # an ordinary approach (an iron reaches comfortably): the lay-up line says nothing
     if go and go["reach_total"] >= 0.9 and go["club"] != "4-wood" and lay and lay["ev"] - go["ev"] > 0.2:
-        lines = [option_line("go", go, True, None, None)]
+        lines = [option_line("go", go, True, None, None)] + ([bag_line] if bag_line else [])
         lay = None
     # the full-wedge lay-up, when the best lay-up leaves a part swing
     if lay and lay["leave"] < 72:
-        cands = [x for x in v["by_club"] if x["kind"] == "lay" and 82 <= x["leave"] <= 112 and x["target_lie"] in ("fairway", "first_cut")]
+        cands = [x for x in v["by_club"] if x["kind"] == "lay" and x["club"] not in GAP_WHAT and 82 <= x["leave"] <= 112 and x["target_lie"] in ("fairway", "first_cut")]
         if cands:
             x = min(cands, key=lambda q: abs(q["leave"] - 95))
             lines.append(f"Full-wedge lay-up: {nm(x['club'])} ({round(x['stock'])}) to {fw_words(x)}, leaves about {round(x['leave'] / 5) * 5}. "

@@ -47,6 +47,80 @@ get close, 0.2 better than laying up (Sun 0.1); 13 go with the 4-wood, 0.2; 18 S
 Sun long iron to get close, 0.07 (was the 4-wood by 0.03: the helping wind is gone). Menu best row changes in
 4-11 of 136 spots per tee and day. The stray `_m / _u* / _h* / _n*` result files of the data pass are deleted.
 
+### The gaps closed, Nov 14 (in-between shots; this is what the page shows)
+
+Golfer: "You never put in like a 230-yard shot ... what is really best here? Make sure we have all those gaps
+closed." The deck bag jumped from the long iron (210 carry) to the 4-wood (255), full swings only. Now
+(`GAP`, `LADDER` in `opt/par5_second.py`, switched on by `use_set()`; `P5_GAPS=0` gives the run before):
+
+* **220 / 230 / 240 shot** (carry at 70 F): a long iron hit hard, a hybrid he does not carry, an eased 4-wood.
+  Total, width and carry window interpolated on carry between the long iron's and the 4-wood's (then the same
+  central x 1.75 as every club); wind sensitivity of the nearer club. No 250: the full 4-wood is 255.
+  From rough the 220 shot is the longest (was the long iron); no 4-wood there, as before.
+* **5-iron (198) and 7-iron (174)** from the par-3 bag, so the lay-up clubs have no 25-yd hole.
+* `summarise()` also returns the best stock club (`go_bag` / `lay_bag`) when the best is an in-between shot; the
+  tee re-check (`two_stage`) plays stock clubs only and was not re-run (stored values kept).
+* Page: menu rows for the in-between shots in italics with what they are; ★ best, ☆ best stock club when they
+  differ; the top sentence names the shot, its aim, the gain over the best club he carries and what laying up
+  costs (stock clubs only count as a lay-up); the static block adds "With a club you carry: ...".
+* Run: `par5_second.py --no-two-stage` one set per process (1.5-2.5 min), merged keeping `two_stage`;
+  `par5_menu.py solve --holes <h> --tag _r<h>`; `describe`; `par5_menu.py page`; `par5_page.py`; both rule sets.
+
+Back, fairway, Drop rule (Lost ball: the same shots within 0.02). "costs" = strokes behind the best shot:
+
+| hole | day | from (to middle / front) | best shot, aim | carry front / green / trouble | strokes | best club he carries | costs | best lay-up (leaves) | costs |
+|---|---|---|---|---|---|---|---|---|---|
+| 6 | Sat | Driver spot (236 / 223) | 220 shot, 4 L | 23 / 15 / 9 % | 3.77 | Long iron (lay-up) | +0.08 | Long iron (26) | +0.08 |
+| 6 | Sat | 220 (221 / 207) | Long iron, 4 L | 40 / 19 / 9 % | 3.72 | Long iron | +0.00 | Mid iron (37) | +0.19 |
+| 6 | Sat | 230 (230 / 216) | 220 shot, 4 L | 41 / 18 / 11 % | 3.75 | Long iron | +0.03 | 5-iron (32) | +0.14 |
+| 6 | Sat | 240 (241 / 227) | 230 shot, 4 L | 39 / 17 / 12 % | 3.78 | Long iron (lay-up) | +0.11 | Long iron (30) | +0.11 |
+| 6 | Sat | 250 (250 / 236) | 240 shot, 4 L | 42 / 16 / 14 % | 3.81 | 4-wood | +0.15 | Long iron (39) | +0.17 |
+| 6 | Sat | 260 (259 / 245) | 240 shot, 5 L | 19 / 13 / 11 % | 3.85 | 4-wood | +0.03 | Long iron (49) | +0.22 |
+| 6 | Sat | 270 (269 / 255) | 4-wood, 5 L | 30 / 13 / 13 % | 3.86 | 4-wood | +0.00 | Long iron (60) | +0.27 |
+| 6 | Sun | Driver spot (239 / 226) | 230 shot, 8 L | 34 / 16 / 11 % | 3.79 | Long iron (lay-up) | +0.14 | Long iron (32) | +0.14 |
+| 6 | Sun | 220 (221 / 207) | Long iron, 8 L | 33 / 18 / 8 % | 3.73 | Long iron | +0.00 | 5-iron (27) | +0.08 |
+| 6 | Sun | 230 (230 / 216) | 220 shot, 8 L | 33 / 16 / 10 % | 3.76 | Long iron | +0.05 | 5-iron (36) | +0.16 |
+| 6 | Sun | 240 (241 / 227) | 230 shot, 8 L | 32 / 16 / 11 % | 3.79 | Long iron (lay-up) | +0.14 | Long iron (33) | +0.14 |
+| 6 | Sun | 250 (250 / 236) | 240 shot, 9 L | 35 / 15 / 12 % | 3.82 | 4-wood | +0.12 | Long iron (42) | +0.19 |
+| 6 | Sun | 260 (259 / 245) | 4-wood, 9 L | 48 / 14 / 17 % | 3.86 | 4-wood | +0.00 | Long iron (52) | +0.22 |
+| 6 | Sun | 270 (269 / 255) | 4-wood, 9 L | 24 / 13 / 13 % | 3.87 | 4-wood | +0.00 | Long iron (63) | +0.28 |
+| 13 | Sat | Driver spot (239 / 223) | 240 shot, 8 L | 67 / 16 / 7 % | 3.75 | 4-wood | +0.06 | Long iron (37) | +0.18 |
+| 13 | Sat | 220 (219 / 204) | 220 shot, 11 L | 66 / 19 / 6 % | 3.71 | Long iron | +0.04 | 5-iron (30) | +0.17 |
+| 13 | Sat | 230 (230 / 214) | 230 shot, 8 L | 65 / 17 / 7 % | 3.73 | Long iron (lay-up) | +0.14 | Long iron (27) | +0.14 |
+| 13 | Sat | 240 (239 / 224) | 240 shot, 8 L | 65 / 16 / 7 % | 3.76 | 4-wood | +0.06 | Long iron (39) | +0.18 |
+| 13 | Sat | 250 (250 / 234) | 4-wood, 9 L | 72 / 12 / 7 % | 3.79 | 4-wood | +0.00 | Long iron (45) | +0.17 |
+| 13 | Sat | 260 (260 / 244) | 4-wood, 14 L | 50 / 13 / 7 % | 3.81 | 4-wood | +0.00 | Long iron (54) | +0.20 |
+| 13 | Sat | 270 (271 / 254) | 4-wood, 14 L | 26 / 10 / 11 % | 3.88 | 4-wood | +0.00 | Long iron (62) | +0.15 |
+| 13 | Sun | Driver spot (238 / 222) | 240 shot, 4 L | 70 / 16 / 7 % | 3.75 | 4-wood | +0.07 | Long iron (35) | +0.17 |
+| 13 | Sun | 220 (219 / 204) | 220 shot, 8 L | 68 / 19 / 6 % | 3.70 | Long iron | +0.03 | 5-iron (29) | +0.17 |
+| 13 | Sun | 230 (230 / 214) | 230 shot, 4 L | 67 / 17 / 7 % | 3.73 | Long iron | +0.14 | 5-iron (40) | +0.19 |
+| 13 | Sun | 240 (239 / 224) | 240 shot, 4 L | 67 / 16 / 7 % | 3.76 | 4-wood | +0.06 | Long iron (38) | +0.18 |
+| 13 | Sun | 250 (250 / 234) | 4-wood, 9 L | 74 / 12 / 6 % | 3.79 | 4-wood | +0.00 | Long iron (44) | +0.17 |
+| 13 | Sun | 260 (260 / 244) | 4-wood, 9 L | 52 / 13 / 7 % | 3.80 | 4-wood | +0.00 | Long iron (53) | +0.20 |
+| 13 | Sun | 270 (271 / 254) | 4-wood, 9 L | 27 / 11 / 10 % | 3.88 | 4-wood | +0.00 | Long iron (63) | +0.16 |
+| 18 | Sat | Driver spot (220 / 206) | 220 shot, 12 R | 71 / 21 / 9 % | 3.77 | Long iron | +0.05 | 5-iron (33) | +0.13 |
+| 18 | Sat | 220 (221 / 207) | 220 shot, 15 R | 68 / 18 / 6 % | 3.78 | Long iron | +0.05 | 5-iron (33) | +0.13 |
+| 18 | Sat | 230 (231 / 216) | 230 shot, 16 R | 68 / 16 / 7 % | 3.81 | Long iron | +0.09 | Mid iron (48) | +0.12 |
+| 18 | Sat | 240 (239 / 225) | 240 shot, 17 R | 69 / 14 / 7 % | 3.84 | 4-wood | +0.04 | 5-iron (46) | +0.11 |
+| 18 | Sat | 250 (251 / 237) | 4-wood, 18 R | 74 / 11 / 7 % | 3.86 | 4-wood | +0.00 | 5-iron (55) | +0.09 |
+| 18 | Sat | 260 (261 / 247) | 4-wood, 23 R | 52 / 12 / 8 % | 3.90 | 4-wood | +0.00 | Long iron (52) | +0.06 |
+| 18 | Sat | 270 (269 / 255) | 4-wood, 28 R | 33 / 10 / 7 % | 3.94 | 4-wood | +0.00 | Long iron (58) | +0.03 |
+| 18 | Sun | Driver spot (222 / 208) | 230 shot, 12 R | 88 / 17 / 7 % | 3.78 | Long iron | +0.08 | 5-iron (37) | +0.14 |
+| 18 | Sun | 220 (221 / 207) | 230 shot, 12 R | 90 / 16 / 6 % | 3.78 | Long iron | +0.07 | 5-iron (36) | +0.14 |
+| 18 | Sun | 230 (231 / 216) | 240 shot, 12 R | 89 / 14 / 7 % | 3.82 | 4-wood | +0.09 | Long iron (36) | +0.11 |
+| 18 | Sun | 240 (239 / 225) | 240 shot, 17 R | 66 / 15 / 9 % | 3.84 | 4-wood | +0.02 | 5-iron (48) | +0.11 |
+| 18 | Sun | 250 (251 / 237) | 4-wood, 22 R | 71 / 11 / 6 % | 3.87 | 4-wood | +0.00 | 5-iron (56) | +0.09 |
+| 18 | Sun | 260 (261 / 247) | 4-wood, 23 R | 48 / 13 / 10 % | 3.91 | 4-wood | +0.00 | Long iron (54) | +0.06 |
+| 18 | Sun | 270 (269 / 255) | 4-wood, 28 R | 29 / 10 / 8 % | 3.95 | 4-wood | +0.00 | Long iron (60) | +0.03 |
+
+In short: going is best from every spot from 220 to 270 on 6, 13 and 18. The best shot is the one whose total
+matches the distance to the middle: on 6 from the Driver's spot (236-239) a 220-230 shot is 0.08-0.14 better than
+the long iron (which comes up 26-32 short) and 0.37 better than the full 4-wood (too much: 38 % in trouble); on 13
+(238) an easy 4-wood (240) is 0.06 better than the full one; on 18 (220) a hard long iron is 0.05-0.08 better than
+the stock one. From 250 out the full 4-wood is the shot.
+Hole 10 tee (information only): the tee table's hypothetical Hybrid ~235 row is +0.26 behind the 4-wood on both
+days, so no in-between tee club is the play there.
+
 ### Answer at the data pass (Back, from where the tee shot finishes; Thursday's forecast, 9:00 both days)
 
 | hole | day | from | to front / middle | GO: club, strokes | green / carry the front / penalty + trees | LAY-UP: club, leaves, strokes | go - lay-up | first build: go - lay-up |

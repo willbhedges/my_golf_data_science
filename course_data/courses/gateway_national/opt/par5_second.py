@@ -90,10 +90,31 @@ DECK_SETS = {
 SET = dict(DECK_SETS[os.environ.get("P5_DECK_SET", "assumed")])
 
 
-def use_set(name=None):
+# In-between shots (golfer, Nov 14: "you never put in like a 230-yard shot ... make sure we have all those gaps
+# closed"): the bag jumps from the long iron (210 carry) to the 4-wood (255). GAP = carries 220 / 230 / 240 at 70 F: a
+# long iron hit hard, a hybrid he does not carry, an eased 4-wood. Total, width and carry window interpolated on
+# carry between the long iron's and the 4-wood's tuples (so they get the same pattern set as every deck club);
+# wind sensitivity of the nearer club. Not stock clubs: the page marks them, and summarise() also gives the best
+# stock club (go_bag / lay_bag). LADDER = the 5-iron and 7-iron of the par-3 bag (config par3_bag), which close the
+# 25- and 23-yd holes among the lay-up clubs. Both are added by use_set() only (the par-5 page path): a plain
+# import keeps the first build's DECK, so layup10.py reproduces. From rough the longest shot is the 220 shot.
+GAP = {
+    "240 shot": (240, 253.3, 46.7, 22.7, "4-wood"),
+    "230 shot": (230, 242.2, 44.4, 21.8, "Hybrid ~235 (not in bag)"),
+    "220 shot": (220, 231.1, 42.2, 20.9, "Long iron"),
+}
+LADDER = {"5-iron": (198, 206, 37, 19, "Long iron"), "7-iron": (174, 180, 32, 17, "Mid iron")}
+
+
+def use_set(name=None, gaps=True):
     name = name or os.environ.get("P5_DECK_SET", "central")
     SET.clear()
     SET.update(DECK_SETS[name])
+    if gaps and os.environ.get("P5_GAPS", "1") != "0":
+        allc = sorted({**DECK, **GAP, **LADDER}.items(), key=lambda kv: -kv[1][0])
+        DECK.clear()
+        DECK.update(allc)
+        LIE["rough"] = LIE["rough"][:2] + ("220 shot",)
     return name
 ANG = np.arange(-28.0, 28.01, 1.0)
 LAY_GAP = 20.0
@@ -329,7 +350,19 @@ def summarise(Wd, F, res):
                          penalty=round(float(o["pen"][:, j].mean()), 4),
                          target_lie=M.LIES[int(F.R.lie_at(np.array([ta]), np.array([tl]))[0])]))
     out["by_club"] = rows
-    for kind, b in best.items():
+    best_bag = {"go": None, "lay": None}                    # the same, stock clubs only (no in-between shot)
+    for o in res["opts"]:
+        if o["club"] in GAP:
+            continue
+        kind = "lay" if o["stock"] <= d_front - LAY_GAP else "go"
+        sm = np.convolve(o["ev"], [0.25, 0.5, 0.25], mode="same")
+        sm[0], sm[-1] = o["ev"][0], o["ev"][-1]
+        j = int(np.argmin(sm))
+        if best_bag[kind] is None or sm[j] < best_bag[kind][0]:
+            best_bag[kind] = (float(sm[j]), o, j)
+    todo = [(k, b) for k, b in best.items()]
+    todo += [(k + "_bag", b) for k, b in best_bag.items() if b is not None and best[k] is not None and best[k][1]["club"] in GAP]
+    for kind, b in todo:
         if b is None:
             out[kind] = None
             continue
@@ -448,7 +481,8 @@ def two_stage_check(Wd, F, hd, R0, S0, P, wx, bearing, tees, zt, n_grid, step=6.
             if not occ[i, j]:
                 continue
             for lie in LIE:
-                res = play(Wd, F, P, z, float(a0), float(l0), lie, wx, bearing)
+                # the tee re-check plays the second shot with stock clubs only (no in-between shot)
+                res = play(Wd, F, P, z, float(a0), float(l0), lie, wx, bearing, clubs=[c for c in deck_clubs(lie) if c not in GAP])
                 b, ly = np.inf, np.inf
                 for o in res["opts"]:
                     m = float(o["ev"].min())
@@ -568,7 +602,7 @@ def describe(a):
                 return [float(Rb.l[lo]), float(Rb.l[hi])]
             for v in r["second"].values():
                 v["start_fw"] = span(v["start"])
-                for kind in ("go", "lay"):
+                for kind in ("go", "lay", "go_bag", "lay_bag"):
                     if v.get(kind):
                         v[kind]["fw"] = span(v[kind]["target"])
                 for row in v["by_club"]:

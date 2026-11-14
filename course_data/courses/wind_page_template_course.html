@@ -415,12 +415,27 @@ function solveLay(h){
    second-shot menu (every club at its best line from a spot, a lie) for the forecast day. SS = the mode's state:
    {key, start: "D" | "W" | yds to the middle of the green, lie: "F" | "R", row: club tapped}; never stored */
 let SS = null;
+const SSN = 9;       /* rows of the menu shown (best first); the best stock club and the best lay-up are always in */
 function ssHtml(h, E0, E, sel, spots){
   const NM = c => c.replace(/^(Long|Mid) /, x => x.toLowerCase()), KD = r => r.k === "g" ? "Go" : "Lay up";
-  const rows = E.rows.slice(0, 8), go = rows.filter(r => r.k === "g"), lay = rows.filter(r => r.k === "l"), best = rows[0];
+  /* in-between shots ("220 shot", "230 shot", "240 shot": par5_second.GAP) are not stock clubs: italic, a third line
+     saying what they are, and ☆ on the best stock club when the best row is one of them */
+  const GAPW = {"220 shot": "hard long iron", "230 shot": "not in bag", "240 shot": "easy 4-wood"}, isGap = c => !!GAPW[c];
+  const rows = E.rows.slice(0, SSN), go = E.rows.filter(r => r.k === "g"), lay = E.rows.filter(r => r.k === "l" && !isGap(r.c)), best = rows[0];
+  const bag = E.rows.find(r => !isGap(r.c)), bagStar = isGap(best.c) && bag ? bag : null;
+  if(bagStar && !rows.includes(bagStar)) rows.push(bagStar);
+  if(lay.length && !rows.includes(lay[0])) rows.push(lay[0]);
+  const aimW = r => { const off = Math.tan(r.ax * Math.PI / 180) * E.d;
+    return Math.abs(off) < 3 ? "at the middle of the green" : Math.abs(off) <= 14 ? `at the ${off < 0 ? "left" : "right"} half of the green` : `${Math.round(Math.abs(off))} yds ${off < 0 ? "left" : "right"} of the middle of the green`; };
+  rows.sort((a, b) => a.ev - b.ev);
   const sh = p => p >= 95 ? "almost every ball carries" : p <= 4 ? "almost none carry" : `${Math.round(p/10)} in 10 carry`;
   let say;
-  if(go.length && lay.length){ const d = go[0].ev - lay[0].ev;
+  if(isGap(best.c)){
+    say = best.k === "g" ? `a ${best.c} ${aimW(best)} is best` : `a ${best.c} is best (leaves ${best.lv})`;
+    if(bag) say += (bag.ev - best.ev < 0.015 ? `, level with your ${NM(bag.c)}` : `, ${(bag.ev - best.ev).toFixed(2)} better than your ${NM(bag.c)}`) + (bag === lay[0] ? `, which leaves ${bag.lv}` : "");
+    if(best.k === "g" && lay.length && bag !== lay[0]) say += `; laying up costs ${(lay[0].ev - best.ev).toFixed(2)}`;
+  }
+  else if(go.length && lay.length){ const d = go[0].ev - lay[0].ev;
     say = d < -0.02 ? `going is better by ${(-d).toFixed(2)} (${NM(go[0].c)}); ${sh(go[0].rc)} the front edge`
         : d > 0.02 ? `laying up is better by ${d.toFixed(2)} (${NM(lay[0].c)}, leaves ${lay[0].lv})` : `going and laying up are level`; }
   else if(!go.length) say = `the green is out of reach${E.rows.some(r => r.c === "4-wood") ? "" : " from this lie"}. Best: ${NM(best.c)} as far up as it goes, leaves ${best.lv}`;
@@ -433,12 +448,13 @@ function ssHtml(h, E0, E, sel, spots){
   const top = `<b>From ${E.d}: ${say}.</b>${ctl}Start: ${where}. ${E.d} to the middle, ${E.f} to the front edge, ${SS.lie === "F" ? "fairway" : "rough"} lie. Tap a row to see that shot.`;
   /* seven columns on a 375-px phone: a two-line first cell (tag over club), "vs best" second, 13-px cells, 3-px side padding */
   const C = 'style="padding:5px 3px;font-size:13px"', CH = 'style="padding:5px 3px;font-size:11px;letter-spacing:.03em"';
-  const tr = rows.map(r => `<tr data-club="${r.c}" class="${r === sel ? "best sel" : ""}"><td class="${cls(r.c)}" ${C}><span style="font-size:11px;letter-spacing:.05em;text-transform:uppercase;opacity:.8">${r === sel ? "● " : ""}${KD(r)}</span><br>${NM(r.c)}${r === best ? " ★" : ""}</td><td ${C}>${r === best ? "0" : "+" + (r.ev - best.ev).toFixed(2)}</td><td ${C}>${r.tot}</td><td ${C}>${r.lv}</td><td ${C}>${r.k === "g" ? r.rc + "%" : "–"}</td><td ${C}>${r.g}%</td><td ${C}>${r.x}%</td></tr>`).join("");
-  const table = `<div style="overflow-x:auto"><table style="table-layout:auto"><thead><tr><th ${CH}>Shot</th><th ${CH}>vs best</th><th ${CH}>Total</th><th ${CH}>Leaves</th><th ${CH}>Front</th><th ${CH}>Green</th><th ${CH}>Trbl</th></tr></thead><tbody>${tr}</tbody></table></div><div class="sub">★ best on expected strokes; vs best = strokes that choice costs. Each club at its own best line. Total: yards a solid one goes. Leaves: yards to the middle of the green. Front: share that carry to the front edge. Green: share that finish on it. Trbl (trouble): share lost or blocked (a stroke or more gone).</div>`;
+  const tr = rows.map(r => `<tr data-club="${r.c}" class="${r === sel ? "best sel" : ""}"><td class="${cls(r.c)}" ${C}><span style="font-size:11px;letter-spacing:.05em;text-transform:uppercase;opacity:.8">${r === sel ? "● " : ""}${KD(r)}</span><br>${isGap(r.c) ? `<i>${r.c}</i>` : NM(r.c)}${r === best ? " ★" : r === bagStar ? " ☆" : ""}${isGap(r.c) ? `<br><span style="font-size:10px;opacity:.8">${GAPW[r.c]}</span>` : ""}</td><td ${C}>${r === best ? "0" : "+" + (r.ev - best.ev).toFixed(2)}</td><td ${C}>${r.tot}</td><td ${C}>${r.lv}</td><td ${C}>${r.k === "g" ? r.rc + "%" : "–"}</td><td ${C}>${r.g}%</td><td ${C}>${r.x}%</td></tr>`).join("");
+  const table = `<div style="overflow-x:auto"><table style="table-layout:auto"><thead><tr><th ${CH}>Shot</th><th ${CH}>vs best</th><th ${CH}>Total</th><th ${CH}>Leaves</th><th ${CH}>Front</th><th ${CH}>Green</th><th ${CH}>Trbl</th></tr></thead><tbody>${tr}</tbody></table></div><div class="sub">★ best on expected strokes${bagStar ? "; ☆ best with a club you carry at a full swing" : ""}; vs best = strokes that choice costs. Each club at its own best line. In italics: an in-between shot (220 = a long iron hit hard, 230 = a hybrid, not in your bag, 240 = an easy 4-wood). Total: yards a solid one goes. Leaves: yards to the middle of the green. Front: share that carry to the front edge. Green: share that finish on it. Trbl (trouble): share lost or blocked (a stroke or more gone).</div>`;
   const out = [];
-  if(go.length) out.push(`Go, ${NM(go[0].c)}: ${go[0].g}% on the green, ${go[0].ar}% around it, ${go[0].x}% in trouble.`);
+  if(go.length) out.push(`Go, ${NM(go[0].c)}: ${go[0].rc}% carry the front edge, ${go[0].g}% on the green, ${go[0].ar}% around it, ${go[0].x}% in trouble.`);
+  if(bagStar && bagStar.k === "g" && bagStar !== go[0]) out.push(`Go, your ${NM(bagStar.c)}: ${bagStar.rc}% carry the front edge, ${bagStar.g}% on the green, ${bagStar.ar}% around it, ${bagStar.x}% in trouble.`);
   if(lay.length) out.push(`Lay up, ${NM(lay[0].c)}: leaves ${lay[0].lv}; ${lay[0].ar < 5 ? lay[0].fw + "% fairway, " : ""}${lay[0].x}% in trouble.`);
-  const below = `<b>Outcomes</b><br>${out.join("<br>")}<details style="margin-top:6px"><summary>Assumptions</summary>How wide each shot scatters is based on published data, not on your own measured shots: PGA Tour distance-from-the-hole figures by yardage, made 1.5 times wider to a scratch amateur's level (Arccos shot data). 4-wood off the fairway as you gave it: 255 carry at 70°F, the same as off a tee (about 245 in this cold). No Driver or 2-wood off the fairway. From rough: no 4-wood, 4% shorter, 25% wider. Full swings only. Strokes = expected strokes to hole out from this spot; "vs best" is what that choice costs. Numbers are for the forecast of ${D.day_labels[st.src === "d1" ? 1 : 0]} at this hole (wind ${Math.round(SS.wx.mph)} mph, ${Math.round(SS.wx.temp)}°F): the wind and tee controls do not change this menu.</details>`;
+  const below = `<b>Outcomes</b><br>${out.join("<br>")}<details style="margin-top:6px"><summary>Assumptions</summary>How wide each shot scatters is based on published data, not on your own measured shots: PGA Tour distance-from-the-hole figures by yardage, made 1.5 times wider to a scratch amateur's level (Arccos shot data). 4-wood off the fairway as you gave it: 255 carry at 70°F, the same as off a tee (about 245 in this cold). No Driver or 2-wood off the fairway. From rough: no 4-wood, 4% shorter, 25% wider. In-between shots (220, 230, 240 carry at 70°F): a harder long iron or an easier 4-wood, patterns and roll interpolated between those two clubs; from rough the 220 shot is the longest. 5-iron and 7-iron as on the par 3s. Otherwise full swings only. Strokes = expected strokes to hole out from this spot; "vs best" is what that choice costs. Numbers are for the forecast of ${D.day_labels[st.src === "d1" ? 1 : 0]} at this hole (wind ${Math.round(SS.wx.mph)} mph, ${Math.round(SS.wx.temp)}°F): the wind and tee controls do not change this menu.</details>`;
   return {top, table, below, KD, NM};
 }
 let ALTC = null;     /* lay-up mode with a grid: the club row tapped while it is on (null = the best lay-up) */
@@ -618,7 +634,7 @@ function render(){
       const spots = st.adj[h.key] ? null : (ssD.spots[st.set] || null);      /* a moved tee has no solved spots: distances only */
       if(typeof SS.start !== "number" && !spots) SS.start = 250;
       const E0 = typeof SS.start === "number" ? ssD.dist[String(SS.start)] : spots[SS.start], E = E0[SS.lie];
-      const sel = E.rows.slice(0, 8).find(r => r.c === SS.row) || E.rows[0];
+      const sel = E.rows.find(r => r.c === SS.row) || E.rows[0];
       SS.wx = ssD.wx;
       const H2 = ssHtml(h, E0, E, sel, spots);
       const p0 = P(h, at(h, E.p[0], E.p[1])), pt = P(h, at(h, sel.t[0], sel.t[1]));
