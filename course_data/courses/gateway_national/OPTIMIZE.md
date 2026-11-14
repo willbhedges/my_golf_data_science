@@ -1,5 +1,26 @@
 # Gateway National: page, engine, map fixes and re-solve (Nov 9-12 2026)
 
+## Round 10, Nov 13 evening - Nov 14 (final pre-tournament refresh; page versions 21-26)
+
+Local path only (REFRESH_LOCAL.md); the Actions request files were not bumped.
+
+* **Forecast** twice: Friday 23:08 UTC NWS hourly (Open-Meteo over its daily limit), then Saturday 00:45 UTC
+  Open-Meteo again (the documented primary; 1-2 mph more wind and 1-2 F colder than NWS on Saturday, so everything
+  forecast-dependent was rebuilt on it). Saturday from 10:36: N-NNW 3-5 mph, 43 F on 1 to 48 F on 18; Sunday from
+  9:00: SE 1-3 mph turning E-NE, 36 F to 52 F.
+* **Per-day tee time** in `opt/par5_second.py` (`World.wx`) and `opt/par3_target.py` (`TEE_HOURS`): config
+  `tee_hours` [10.6, 9.0]. Par-5 tables and par-3 targets / ladder re-run for both rule sets (PAR5.md, PAR3.md 0).
+* **Par 5s, the gaps closed** (PAR5.md): 220 / 230 / 240 shots and the 5- and 7-iron in the Second shot menu.
+* **Par 3s x 1.5 patterns** (PAR3.md 8; config `par3_pattern_mult`): the irons were Tour-level.
+* **Hole 10 Lay up mode**: the club that stays short of the fairway sand is marked (config `alt_play.short_of`).
+* **Close-hole check** (fast solver, cap 81,920 swings, exact Friday-evening forecast per hole, 256-draw book; scratch
+  folder only): Back 9, 10, 11 and Middle 1, 2, 11, both days: every club, aim (within 1 yd) and margin (within
+  0.005) as the page shows; Back 10 and Middle 11 are true ties (0.004-0.006) decided by the page's level rule.
+* A container restart cut the last rebuild; every output was validated (loads, all sets / holes / days) and the
+  unfinished Lost ball menus and the par-3 runs were redone in the foreground before the page was rebuilt.
+* Known: Forward 13 has no static Second shot block under Drop on this forecast (the par-5 model's tee pick there is
+  the 4-wood by 0.01 and the block is only written for a Driver / 2-wood pick); the Second shot mode works.
+
 ## Round 9, Nov 13 (a second rule set: tall grass played as a lost ball; page control "Tall grass: Drop | Lost ball")
 
 Golfer: the tall grass may be played as a lost ball (re-tee) instead of a one-stroke drop; he wants to switch on the
