@@ -287,3 +287,15 @@ Round 1 played ("it worked great"). Sunday: 10:45 am, Back, Drop; starting hole 
 ## Saturday evening Nov 14 - Sunday refresh
 
 Will after round 1: "It worked great". Sunday tee time 10:45. Version 29 published (commit e89106bd8; page check 0 problems on five tee sets in both tall-grass modes; all 18 Back Sunday cards looked at; Sunday PDF sent). Page opens on Sunday. Forecast (Open-Meteo, 03:32 UTC Nov 15): near calm, 47 F on the 1st tee to 53 F on 18. Back, Sunday, Drop: same tee clubs as Saturday (Driver; 4-wood on 10 at 23 L and on 16); par 3s 4: 183 6-iron (7-iron close; 179 or less = 7-iron), 7: 187 6-iron, 12: 133 GW (132 or more = PW), 14: 203 5-iron, 17: 197 5-iron (192 or less = 6-iron). Close-hole check agrees on 9, 10, 11. Asked Will for round-1 feedback (misses, Driver distance vs page) - none yet.
+
+## Sunday morning Nov 15, 8:50-9:25 am Central - last refresh before the 10:45 tee time
+
+Open-Meteo fetched 14:50 UTC: wind now a steady 3 mph (was 1-2), E on 1-5, ESE 6-10, SE 11-14, SSE 15-18; gusts
+6 falling to 3; temperatures unchanged (47 F on 1 to 53 F on 18). Step 1 (commit e77505ec4): forecast + page
+rebuild only. Step 2 (next commit): Sunday par-5 tables, menus, tee re-check and par-3 targets / ladder re-solved
+on it, both rule sets, the same recipe as REFRESH_LOCAL.md "Sunday refresh"; Saturday's tables untouched.
+Back, Sunday, Drop: tee clubs unchanged, aims move up to 5 yds (10: 4-wood 26 L, 2-wood 0.043 behind). Par 3s:
+4 plays 181 7-iron (6-iron close), 7 189 6-iron, 12 132 GW, 14 202 5-iron, 17 193 6-iron (198+ = 5-iron).
+Second shots from the Driver's spot: 3 lay up 4-wood leaves 73; 6 long iron leaves 24; 13 4-wood go; 18 now the
+4-wood (into the wind, 227 out; was the long iron). 18's pill now names the 2-wood only. Back 12 box 0.5 yd right.
+QA: 18 holes / 0 problems on five sets in both modes, tables fit, no hazard words in 20 page states.
