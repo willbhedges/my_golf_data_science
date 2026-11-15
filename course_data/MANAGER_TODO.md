@@ -299,3 +299,5 @@ Back, Sunday, Drop: tee clubs unchanged, aims move up to 5 yds (10: 4-wood 26 L,
 Second shots from the Driver's spot: 3 lay up 4-wood leaves 73; 6 long iron leaves 24; 13 4-wood go; 18 now the
 4-wood (into the wind, 227 out; was the long iron). 18's pill now names the 2-wood only. Back 12 box 0.5 yd right.
 QA: 18 holes / 0 problems on five sets in both modes, tables fit, no hazard words in 20 page states.
+
+Sunday morning Nov 15: Will asked for one more weather refresh. Versions 30 (e77505ec4, forecast + page) and 31 (ab48d7b24, Sunday par-5 tables and par-3 boxes re-run) published; page check 0 problems on five tee sets in both tall-grass modes for each; Sunday PDF resent from 31. Forecast (Open-Meteo, 8:50 am): steady 3 mph, E early swinging to SSE, 47 F to 53 F. Back Sunday: same tee clubs; hole 10 4-wood 26 L; par 3s 4: 181 7-iron (181+ = 6-iron), 7: 189 6-iron, 12: 132 GW (133+ = PW), 14: 202 5-iron, 17: 193 6-iron (198+ = 5-iron). Close-hole precision check not repeated this morning. After the round: ask Will for scores and tee-shot results for calibration.
