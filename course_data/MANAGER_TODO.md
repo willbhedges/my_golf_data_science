@@ -283,3 +283,7 @@ Round 1 played ("it worked great"). Sunday: 10:45 am, Back, Drop; starting hole 
 - QA: qa_page 18 holes, 0 problems on five tee sets in both modes; mode tables fit; no hazard words in 20 page
   states (5 sets x 2 days x 2 modes); all 18 Back Sunday cards, hole 10 Lay up and 3 / 6 / 13 / 18 Second shot
   looked at at phone width.
+
+## Saturday evening Nov 14 - Sunday refresh
+
+Will after round 1: "It worked great". Sunday tee time 10:45. Version 29 published (commit e89106bd8; page check 0 problems on five tee sets in both tall-grass modes; all 18 Back Sunday cards looked at; Sunday PDF sent). Page opens on Sunday. Forecast (Open-Meteo, 03:32 UTC Nov 15): near calm, 47 F on the 1st tee to 53 F on 18. Back, Sunday, Drop: same tee clubs as Saturday (Driver; 4-wood on 10 at 23 L and on 16); par 3s 4: 183 6-iron (7-iron close; 179 or less = 7-iron), 7: 187 6-iron, 12: 133 GW (132 or more = PW), 14: 203 5-iron, 17: 197 5-iron (192 or less = 6-iron). Close-hole check agrees on 9, 10, 11. Asked Will for round-1 feedback (misses, Driver distance vs page) - none yet.
