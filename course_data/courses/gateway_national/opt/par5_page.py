@@ -261,7 +261,8 @@ def main():
                     continue
                 # one source for the numbers: the Second shot mode's menu rows (Forward has no menu: block() lines)
                 menu_lines(b, r, r["second"].get(r["tee_pick_engine"] + "|fairway"), menu.get(str(h), {}).get(BASE[s], {}).get(key), s)
-                ts = (res.get(f"{h}|sat") or {}).get("two_stage")
+                # the day's own tee re-check when it was run (Sunday: re-run Nov 14 evening), else Saturday's
+                ts = r.get("two_stage") or (res.get(f"{h}|sat") or {}).get("two_stage")
                 # the pill only where going for the green is a real option from the Driver's spot (never on hole 3:
                 # the green is out of reach there, so "if you lay up anyway" is always true and the table already says it)
                 # ... and only for Back and Middle: their tee re-check is re-run on the current pattern (PAR5.md); the

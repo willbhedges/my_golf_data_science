@@ -567,3 +567,20 @@ Lost ball: the same targets except 12 (0.0, 0.0) and 14 (3.0, -5.0, unchanged). 
 rule set. Other sets, club changes on the page: The Tips 4 Saturday (Drop) 6-iron -> 5-iron ("6-iron a tie");
 Middle 7 Sunday under Lost ball back to the 8-iron ("7-iron a tie").
 
+
+### 9.2 Sunday refresh, Nov 14 evening (round 2; this is what the page shows)
+
+Sunday 10:45 start (`tee_hours` [10.6, 10.75]), Open-Meteo fetched 03:32 UTC Nov 15: 49-53 F on the par 3s, calm
+to 2 mph (the 9:00 page had 42-51 F). `opt/results/par3_plays_forecast.json` (the D of the rule) rewritten from the
+rebuilt page for SUNDAY only (start on 1 and start on 10; Saturday is played): D is 1-3.5 yds smaller (Back 4
+187.5, 7 187.5, 12 133.5, 14 206.5, 17 201.5). `par3_decade.py solve` every set, both rule sets (two at a time,
+about 1 min a set); `par3_ladder.py` re-run for the four holes whose target moved (the ladder is a calm 70-F table
+of the target: every other hole is unchanged by construction), no ladder step changes club.
+
+Targets that moved (both rule sets): Back 4 (2.5, -3.5) -> (3.5, -4.5) (margins left / right / short / long 11.8 /
+11.9 / 10.2 / 14.5); Middle 4 (2.5, -2.5) -> (2.0, -2.0); Middle 17 (0.0, -2.5) -> (0.0, -3.0); The Tips 4
+(3.0, -5.0) -> (3.0, -4.5). All others identical.
+
+Back, Sunday, Drop, on the page: 4 plays 183, 6-iron ("7-iron close"; 179 or less to the middle = 7-iron);
+7 plays 187, 6-iron; 12 plays 133, GW (132 or more to the middle = PW); 14 plays 203, 5-iron; 17 plays 197, 5-iron
+(192 or less to the middle = 6-iron). Lost ball: the same clubs; 14 reads 201 (its own target).

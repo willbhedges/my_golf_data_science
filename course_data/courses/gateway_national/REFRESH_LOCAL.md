@@ -37,3 +37,14 @@ solved on in both rule sets, as before. To re-solve the Lost ball set (only afte
 
 QA with the control on: `QA_TALL=1 node course_data/courses/qa_page.js <page> <out> "<set>"` and
 `QA_TALL=1 node course_data/courses/gateway_national/opt/qa_mode_fit.js <page> <out>`.
+
+## Sunday refresh (run Nov 14 evening, end to end, about 35 min)
+
+1. `tee_hours` in config.json = [Saturday, Sunday]; `default_day: "by_date"` makes the page open on the day about
+   to be played (day 2 from 5 pm the evening before, device clock; once per switch, so a tap back sticks).
+2. Forecast fetch as above (Open-Meteo answered).
+3. Par 5s, Sunday half only: PAR5.md "Sunday refresh". Par 3s: rebuild the page once on the new forecast, rewrite
+   `opt/results/par3_plays_forecast.json` from its Plays numbers, then PAR3.md 9.2.
+4. Rebuild, QA both modes (run the five `qa_page.js` sets one after another: five browsers at once fail on the
+   screenshot), `qa_mode_fit.js` both modes. `qa_page.js` opens the page's default day, which is now picked by date.
+5. Delete `*.lock` and `*_s*.json` / `*_r*.json` part files under `opt/results*` before committing.

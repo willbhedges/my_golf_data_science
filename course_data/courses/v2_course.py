@@ -1572,8 +1572,10 @@ def build_page(slug, which, out=None, data_out=None):
                 colors=cfg.get("colors", {}), set_totals=tot, days=cfg["days"],
                 day_labels=cfg.get("day_labels") or cfg["days"], tee_hour=float(cfg.get("tee_hour", 9.0)),
                 # optional "tee_hours" [day 1, day 2]: the Tee time slider's default per day (Gateway: Saturday 10:36,
-                # Sunday not known yet = 9:00); absent = tee_hour for both days
+                # Sunday 10:45); absent = tee_hour for both days
                 **({"tee_hours": [float(x) for x in cfg["tee_hours"]]} if cfg.get("tee_hours") else {}),
+                # optional "default_day" "by_date": the page opens on the day about to be played (template)
+                **({"default_day": cfg["default_day"]} if cfg.get("default_day") else {}),
                 sub=cfg.get("sub", ""), foot_extra=cfg.get("foot", ""), placeholder=bool(fc.get("placeholder")),
                 fc_note=fc.get("note", ""), imagery=meta.get("imagery_date"), imagery_src=_photo_source(slug, which),
                 speeds=grid["speeds"], dirs=grid["dirs"], temps=grid["temps"], holes=holes, offsets=sorted(grids),

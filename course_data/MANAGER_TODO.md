@@ -261,3 +261,25 @@ Known inconsistency left for after the tournament: tee-table iron rows (long iro
 To do: final independent audit of version 27; offline PDFs (Back, 10:36, hole 1, Drop); Sunday tee time from Will; after the weekend: his tee-shot results and scores for calibration.
 
 Version 28 published (commit a64d56ed9) - the final page for round 1. Page check 0 problems on five tee sets in both tall-grass modes; tables fit; no hazard words. Approach pattern: sideways = tee pattern x1.0 (Will: "a 230-yard shot should be planned for a 40-50 yard dispersion"; the 230 shot is 48 wide on solid strikes, label 51 incl. mishits), distance x2.25 with more short mishits. Independent audit of version 27 (second_pass/AUDIT_FINAL.md): no wrong club / aim / par-3 number on the Saturday Back cards; its wording findings fixed in 28 (hole 3 pill removed, pill reworded and re-checked, second-shot mode opens on a club he carries, block numbers = menu numbers, why lines on 8 / 18, wind dial). Not done: "N wide" label vs table width column (1-4 yds apart on tee shots), close-call pill quotes the calm book. Offline PDFs regenerated from 28 and sent.
+
+## Saturday evening Nov 14 (Central) - Sunday refresh for round 2
+
+Round 1 played ("it worked great"). Sunday: 10:45 am, Back, Drop; starting hole not stated (hole 1 kept).
+- Config: `tee_hours` [10.6, 10.75]; `default_day: "by_date"` (Gateway only): the page opens on Sunday from 5 pm
+  Saturday on the device clock, on the starting hole, once per day switch (a tap back to Saturday sticks). Tested
+  with a stored Saturday state on hole 18.
+- Forecast: Open-Meteo answered (fetched 03:32 UTC Nov 15). Sunday 10:45 -> 2:43 pm: 47 F rising to 53 F, wind
+  1-2 mph (SSE turning ESE then ENE), gusts 2-4. The page had 36-51.5 F for a 9:00 start.
+- Re-solved for Sunday, both tall-grass rule sets: par-5 Second shot tables + menus (every set), tee re-check
+  (Back, Middle), par-3 targets (every set) and the ladder where a target moved. Saturday's tables untouched.
+  Tee-shot grids and calm book not re-solved (calm-book temperatures are Saturday's, 4.5-5 F below Sunday's; the
+  page says so per hole and interpolates the grids at the day's temperature).
+- Back, Sunday, Drop: same tee clubs as Saturday (Driver on 1, 2, 3, 5, 6, 8, 9, 11, 13, 15, 18; 4-wood on 10 at
+  23 L and on 16). Par 3s: 4 plays 183 6-iron (Sat 178 7-iron), 7 187 6-iron, 12 133 GW (Sat 135 PW), 14 203
+  5-iron, 17 197 5-iron. Lost ball: 11 becomes the 4-wood (level), as on Saturday.
+- Fast-solver check at ten times the swings (160,000 on the refine), exact Sunday wind and temperature: 9 Driver
+  14.0 R by 0.024 over 2-wood (page 14 R, 0.024); 10 4-wood 23.0 L by 0.024 over 2-wood (page 23 L, 0.020);
+  11 Driver 16.5 R by 0.028 over 4-wood (page 16 R, 0.029).
+- QA: qa_page 18 holes, 0 problems on five tee sets in both modes; mode tables fit; no hazard words in 20 page
+  states (5 sets x 2 days x 2 modes); all 18 Back Sunday cards, hole 10 Lay up and 3 / 6 / 13 / 18 Second shot
+  looked at at phone width.

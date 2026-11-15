@@ -152,6 +152,13 @@ const st = {src:"d0", hour:D.tee_hour, start:1, from:180, mph:10, idx:0, view:"h
 try{ const s = JSON.parse(localStorage.getItem(SKEY)||"null"); if(s) Object.assign(st, s);}catch(e){}
 if(!D.sets.includes(st.set)) st.set = D.base_set;
 if(st.src !== "custom" && !/^d[01]$/.test(st.src)) st.src = "d0";
+/* D.default_day "by_date" (optional; Gateway): the page opens on the day about to be played - day 2 from 5 pm the
+   evening before (device clock) - and on the starting hole. Applied once per day switch (st.dayAuto), so a tap on
+   the other day afterwards sticks. Pages without the key keep the stored / first day. */
+if(D.default_day === "by_date" && D.days){ let k = 0;
+  D.days.forEach((d, i) => { const p = String(d).split("-").map(Number); if(i > 0 && Date.now() >= new Date(p[0], p[1] - 1, p[2]).getTime() - 7 * 3600e3) k = i; });
+  if(st.dayAuto !== D.days[k]){ st.dayAuto = D.days[k]; st.src = "d" + Math.min(k, 1);
+    const j = D.holes.findIndex(h => parseInt(h.key, 10) === (st.start || 1)); st.idx = j >= 0 ? j : 0; } }
 document.getElementById("title").textContent = D.title;
 document.getElementById("subt").textContent = D.sub;
 if(D.placeholder){ const b = document.getElementById("phBanner"); b.hidden = false; b.textContent = "Placeholder weather (climate normals), not a forecast"; }

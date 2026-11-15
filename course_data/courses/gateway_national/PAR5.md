@@ -657,3 +657,31 @@ second row; 6 and 18 the same four; 3 from 300 and from the Driver's spot; Middl
 * The re-check values penalty and tree balls off the tee with the engine's table (not the rollout), a 6-yd value
   lattice and 500 swings a node: margins good to about 0.01.
 * 6's right tall-grass band is drawn 10-15 yds tighter than the ground at 260-300 (noted by the manager; not fixed).
+
+### Sunday refresh, Nov 14 evening (round 2; this is what the page shows for Sunday)
+
+Sunday's tee time is 10:45 (config `tee_hours` [10.6, 10.75]); forecast Open-Meteo fetched 03:32 UTC Nov 15
+(par 5s: 48-53 F, SSE to ENE 1-2 mph; the 9:00 tables were on 40-52 F). Only the Sunday half was re-run; the
+Saturday results, menus and page blocks are byte-identical (checked). Same pattern as above (sideways x 1.0,
+distance x 2.25, in-between shots), both tall-grass rule sets, every set:
+
+* `par5_second.py --days sun --two-stage-days sun --holes <h> --tag _s<h>` one hole per process for Back and
+  Middle (about 2 min each, four at a time), `--days sun --no-two-stage --tag _s` for The Tips + Champions and for
+  Forward; each `<h>|sun` record copied into `par5_second_<set>.json` after a completeness check, part files deleted;
+* `par5_menu.py solve --day sun --holes <h> --tag _r<h>`, merged into `par5_menu_<base>_sun.json`; `describe`;
+  `par5_menu.py page`; `par5_page.py`; all again with `P5_TALL_GRASS=lost`.
+* The tee re-check (`two_stage`) now exists for Sunday too (Back, Middle, both rule sets) and `par5_page.py` reads
+  the day's own re-check when there is one (it read Saturday's for both days). Sunday pills: Back 18, Middle 6 and
+  now Middle 3 (the Sunday re-check has the woods level there); Back 6 and 13 still none (woods 0.04-0.09 behind
+  under "always lay up"). Back 18 Sunday: 2-wood +0.015, 4-wood +0.030 under "always lay up".
+
+Back, Driver's spot, fairway, Sunday, Drop (Lost ball: the same shots within 0.01):
+
+| hole | from (middle / front) | shown (club he carries) | best row | best lay-up | before (9:00 tables) |
+|---|---|---|---|---|---|
+| 3 | 332 / 318 | lay up, 4-wood, leaves 81 | the same | - | 4-wood, leaves 86 |
+| 6 | 236 / 222 | long iron at the left half, leaves 28 (+0.08) | 230 shot | 5-iron, leaves 40, +0.20 (0.12 behind the long iron) | long iron counted as a lay-up, leaves 32 |
+| 13 | 239 / 223 | go, 4-wood, leaves 9 | the same (240 shot level) | long iron, leaves 36, +0.11 | the same, leaves 38 |
+| 18 | 222 / 207 | long iron at the right half, leaves 21 (+0.02) | 230 shot | mid iron, leaves 43, +0.16 | 5-iron lay-up, leaves 32, +0.07 |
+
+Forward 13 now has a static block on Sunday (it had none).
