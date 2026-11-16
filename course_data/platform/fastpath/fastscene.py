@@ -37,10 +37,44 @@ GREEN_P = 0.5               # green candidate threshold on the seg layer (percep
 PAD_M = 40.0                   # the classifier runs inside the course outline + this
 
 
-def _perc():
-    if PERC not in sys.path:
+# perception/ has modules named like other folders' (scene: structure/scene.py; truth: zero_tap/truth.py; features,
+# paths, geo, ...). They are imported and called only inside perception_ns(): the names point at perception's
+# modules there and at whatever they were before outside it (stage_select's structure solver imports `scene`).
+PERC_NAMES = ("stack", "detect", "features", "paths", "perceive", "scene", "geo", "truth", "evaluate", "split",
+              "train", "fetch_stack", "report", "route_check")
+_PERC_MODS = {}
+_DEPTH = [0]
+
+
+class perception_ns:
+    def __enter__(self):
+        _DEPTH[0] += 1
+        if _DEPTH[0] > 1:
+            return self
+        self.saved = {n: sys.modules.pop(n) for n in PERC_NAMES if n in sys.modules}
+        sys.modules.update(_PERC_MODS)
         sys.path.insert(0, PERC)
-    import stack as S
+        return self
+
+    def __exit__(self, *exc):
+        _DEPTH[0] -= 1
+        if _DEPTH[0] > 0:
+            return False
+        try:
+            sys.path.remove(PERC)
+        except ValueError:
+            pass
+        for n in PERC_NAMES:
+            if n in sys.modules:
+                _PERC_MODS[n] = sys.modules.pop(n)
+        sys.modules.update(self.saved)
+        return False
+
+
+def _perc():
+    """perception's stack module (the Stack class needs no other perception module at call time)."""
+    with perception_ns():
+        import stack as S
     return S
 
 
@@ -440,9 +474,9 @@ def object_models(model):
         return {}
     d = os.path.join(os.path.dirname(model["path"]), "objects")
     if os.path.isdir(d):
-        _perc()
-        import perceive as PV
-        m, _ = PV.load_models(d)
+        with perception_ns():
+            import perceive as PV
+            m, _ = PV.load_models(d)
         return m
     return None
 
@@ -458,8 +492,11 @@ def fill_seg(st, P, model):
     model.json "smooth_m" (per-pixel trees are noisier than a U-Net; a green must come out as one blob)."""
     from scipy.ndimage import gaussian_filter
     sg = _opt(model, "smooth_m", "FASTSCENE_SMOOTH", 0.0)
+    tee_w = _opt(model, "green_plus_tee", "FASTSCENE_GREEN_PLUS_TEE", 0.0)
     for i, c in enumerate(SEG_ORDER):
         p = P[CLASSES.index(c)]
+        if c == "green" and tee_w > 0:          # short-mown surfaces: a green the classifier half-calls tee
+            p = np.minimum(p + tee_w * P[CLASSES.index("tee")], 1.0)
         if sg > 0:
             p = gaussian_filter(p, sg / st.res)
         st.a["seg"][i] = np.clip(np.round(p * 255), 0, 255).astype(np.uint8)
@@ -481,7 +518,11 @@ def _keep(D, keep, st):
 
 def perceive(st, paths=False, T=None, models=None, keep=None):
     """perception/perceive.run + scene.build_scene on a filled stack (rules + the perception object models)."""
-    _perc()
+    with perception_ns():
+        return _perceive(st, paths, T, models, keep)
+
+
+def _perceive(st, paths, T, models, keep):
     import detect as DT
     import features as PF
     import networkx as nx

@@ -29,11 +29,11 @@ def score_course(pkg_dir, model=None, impl="py", paths=False):
     lab = FS.label_raster(st, fc)
     mask = FS.course_mask(st)
     out = dict(pixel=TP.pixel_scores(P, lab, mask), seconds=info["seconds"], summary=sc.get("summary"))
-    FS._perc()
-    import evaluate as EV
-    import truth as TR
-    T = TR.Truth(st)
-    ev = EV.evaluate(st, None, D, T)
+    with FS.perception_ns():
+        import evaluate as EV
+        import truth as TR
+        T = TR.Truth(st)
+        ev = EV.evaluate(st, None, D, T)
     for k in KEYS:
         v = ev.get(k) or {}
         out[k] = {kk: v.get(kk) for kk in ("precision", "recall", "tp_pred", "n_pred", "tp_true", "n_true", "eligible")
