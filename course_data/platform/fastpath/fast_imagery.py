@@ -27,6 +27,95 @@ SCORE_YEARS = 4
 SCORE_RES = 2.4          # metres for the year-scoring reads (naip_years' own is 1.2: 4x the pixels, same ranking signal)
 
 
+STAC_SEARCH = "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+SAS_TOKEN = "https://planetarycomputer.microsoft.com/api/sas/v1/token/{account}/{container}"
+PREFETCH_KM = 4.0        # the NAIP search box round the national-index point, started before the course is resolved
+
+
+def _http():
+    import requests
+    s = requests.Session()
+    s.headers["User-Agent"] = fi.UA
+    return s
+
+
+def stac_search(bbox_wsen, http=None):
+    """Every NAIP STAC item intersecting the box, signed: the search POST (paged) and the SAS token GET run at once
+    (pystac_client opens the catalog first and planetary_computer fetches the token after the search: about 2.0 s
+    serial, 0.8 s this way). -> [pystac.Item]"""
+    import pystac
+    from urllib.parse import urlparse
+    http = http or _http()
+    tok = {}
+
+    def token():
+        r = http.get(SAS_TOKEN.format(account="naipeuwest", container="naip"), timeout=30)
+        r.raise_for_status()
+        tok["naipeuwest/naip"] = r.json()["token"]
+    with ThreadPoolExecutor(1) as ex:
+        ft = ex.submit(token)
+        feats, body = [], dict(collections=["naip"], bbox=list(bbox_wsen), limit=250)
+        while True:
+            r = http.post(STAC_SEARCH, json=body, timeout=60)
+            r.raise_for_status()
+            j = r.json()
+            feats += j.get("features", [])
+            nxt = next((ln for ln in j.get("links", []) if ln.get("rel") == "next"), None)
+            if not nxt or not j.get("features"):
+                break
+            body = nxt.get("body") or dict(body, token=(nxt.get("href", "").split("token=") + [""])[1])
+        ft.result()
+    items = [pystac.Item.from_dict(f) for f in feats]
+    for it in items:
+        for a in it.assets.values():
+            u = urlparse(a.href)
+            key = u.netloc.split(".")[0] + "/" + u.path.lstrip("/").split("/")[0]
+            if u.netloc.endswith(".blob.core.windows.net") and "?" not in a.href:
+                if key not in tok:
+                    r = http.get(SAS_TOKEN.format(account=key.split("/")[0], container=key.split("/")[1]), timeout=30)
+                    r.raise_for_status()
+                    tok[key] = r.json()["token"]
+                a.href = a.href + "?" + tok[key]
+    return items
+
+
+def stac_prefetch(lat, lon, km=PREFETCH_KM):
+    """the NAIP items round a point (the national index row), searched while the course outline is being resolved
+    -> (box [W, S, E, N], items)"""
+    dy = km * 1000.0 / 111320.0
+    dx = dy / math.cos(math.radians(lat))
+    box = (lon - dx, lat - dy, lon + dx, lat + dy)
+    return box, stac_search(box)
+
+
+def list_years(bbox_snwe, prefetch=None):
+    """naip_years.list_years (every NAIP acquisition over the box, grouped by year -> [{year, items, dates, coverage,
+    gsd_m}]) from stac_search, or from a stac_prefetch result (a Future or the tuple) when its box holds this one
+    (the items intersecting the box are the ones a search on the box returns)."""
+    from shapely.geometry import box, shape
+    from shapely.ops import unary_union
+    s, w, n, e = bbox_snwe
+    items = None
+    if prefetch is not None:
+        try:
+            (pw, ps, pe, pn), its = prefetch.result() if hasattr(prefetch, "result") else prefetch
+            if pw <= w and ps <= s and pe >= e and pn >= n:
+                aoi = box(w, s, e, n)
+                items = [it for it in its if shape(it.geometry).intersects(aoi)]
+        except Exception:                                            # noqa: BLE001
+            items = None
+    if items is None:
+        items = stac_search((w, s, e, n))
+    aoi = box(w, s, e, n)
+    years = []
+    for yr in sorted({it.datetime.year for it in items}):
+        its = [it for it in items if it.datetime.year == yr]
+        cov = unary_union([shape(it.geometry) for it in its]).intersection(aoi).area / aoi.area
+        years.append(dict(year=yr, items=its, dates=sorted({it.datetime.date().isoformat() for it in its}),
+                          coverage=round(cov, 4), gsd_m=its[0].properties.get("gsd")))
+    return years
+
+
 def _item_grid(it):
     """(crs, pixel size) of a NAIP item from its STAC record (proj:code / proj:epsg, proj:transform): no file open
     (a first byte from the blob host is 0.4-0.9 s). None when the record lacks them."""
@@ -59,22 +148,28 @@ def read_year_ovr(its, bbox_snwe, res=SCORE_RES):
     tr = rasterio.transform.from_origin(x0, y1, res, res)
     # NAIP overviews are the factors 2, 4, 8, ...: level i is factor 2 ** (i + 1); -1 is full resolution
     lvl = int(math.floor(math.log2(res / sres * 1.001))) - 1 if res > sres else -1
-    out = None
-    for it in its:
-        try:
-            src = rasterio.open(it.assets["image"].href, **({} if lvl < 0 else dict(overview_level=lvl)))
-        except rasterio.errors.RasterioIOError:
-            if lvl < 0:
-                raise
-            src = rasterio.open(it.assets["image"].href)             # no such overview: the warp reads full resolution
-        with src:
-            nb = min(src.count, 4)
-            if out is None:
-                out = np.zeros((nb, H, W), np.uint8)
-            dst = np.zeros((nb, H, W), np.uint8)
-            reproject(rasterio.band(src, list(range(1, nb + 1))), dst, src_nodata=0, dst_transform=tr, dst_crs=crs,
-                      dst_nodata=0, resampling=Resampling.average)
-            out[:nb] = np.where(dst > 0, dst, out[:nb])
+    env = rasterio.env.getenv() if rasterio.env.hasenv() else {}
+
+    def one(it):                        # the items at once (each open is a 0.4-0.9 s round trip)
+        with rasterio.Env(**env):
+            try:
+                src = rasterio.open(it.assets["image"].href, **({} if lvl < 0 else dict(overview_level=lvl)))
+            except rasterio.errors.RasterioIOError:
+                if lvl < 0:
+                    raise
+                src = rasterio.open(it.assets["image"].href)         # no such overview: the warp reads full resolution
+            with src:
+                nb = min(src.count, 4)
+                dst = np.zeros((nb, H, W), np.uint8)
+                reproject(rasterio.band(src, list(range(1, nb + 1))), dst, src_nodata=0, dst_transform=tr, dst_crs=crs,
+                          dst_nodata=0, resampling=Resampling.average)
+                return dst
+    with ThreadPoolExecutor(len(its)) as ex:
+        parts = list(ex.map(one, its))
+    out = np.zeros((parts[0].shape[0], H, W), np.uint8)
+    for dst in parts:                   # in item order: a later item's valid pixels win, as naip_years.read_year
+        nb = dst.shape[0]
+        out[:nb] = np.where(dst > 0, dst, out[:nb])
     return out, crs, tr
 
 
@@ -121,6 +216,34 @@ def read_window(items, bounds, res):
     return arr, rasterio.transform.from_origin(x0, y1, res, res), crs
 
 
+def write_cog(path, arr, crs, transform, jpeg_quality):
+    """fetch_imagery.write_cog for the NAIP JPEG COGs in one pass: the array goes to an uncompressed /vsimem tiff and
+    the COG driver encodes it once, its overviews (2, 4, 8, ... average) included, on all cores. The old way encoded
+    a tiled tmp file, built its overviews, then re-encoded it as the COG. Same layout (512 blocks, YCbCr JPEG at the
+    same quality, the same overview levels), same error against the raw mosaic; Yorba Linda RGB + NIR 2.2 -> 0.5 s.
+    -> (format, MB). Falls back to fetch_imagery.write_cog."""
+    import rasterio
+    import rasterio.shutil
+    from rasterio.shutil import copy as rcopy
+    count, h, w = arr.shape
+    mem = f"/vsimem/{os.getpid()}_{id(arr)}_{os.path.basename(path)}"
+    try:
+        with rasterio.open(mem, "w", driver="GTiff", height=h, width=w, count=count, dtype=arr.dtype, crs=crs,
+                           transform=transform, tiled=True, blockxsize=512, blockysize=512) as dst:
+            dst.write(arr)
+        rcopy(mem, path + ".tmp.tif", driver="COG", BLOCKSIZE=512, COMPRESS="JPEG", QUALITY=jpeg_quality,
+              OVERVIEW_RESAMPLING="AVERAGE", NUM_THREADS="ALL_CPUS")
+        os.replace(path + ".tmp.tif", path)
+    except Exception:                                                # noqa: BLE001
+        return fi.write_cog(path, arr, crs, transform, jpeg_quality=jpeg_quality)
+    finally:
+        try:
+            rasterio.shutil.delete(mem)
+        except Exception:                                            # noqa: BLE001
+            pass
+    return "COG", round(os.path.getsize(path) / 1e6, 2)
+
+
 def _read_strips(items, bounds, res):
     """the year's mosaic over bounds (x0, y0, x1, y1) in the items' CRS: horizontal strips read by threads"""
     import rasterio
@@ -144,38 +267,51 @@ def _read_strips(items, bounds, res):
     return np.concatenate([p[0] for p in parts], axis=1), parts[0][1], parts[0][2]
 
 
-def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
+def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None, prefetch=None):
     import rasterio
     from rasterio.warp import transform_bounds
     T = T if T is not None else {}
     s, w, n, e = bbox
     t0 = time.time()
-    years = NY.list_years(bbox)
+    try:
+        years = list_years(bbox, prefetch)
+    except Exception:                                                # noqa: BLE001
+        years = NY.list_years(bbox)     # pystac_client + planetary_computer, as before
     if not years:
         raise RuntimeError("no NAIP items intersect the bbox")
     T["naip_list"] = round(time.time() - t0, 2)
-    if hasattr(osm, "result"):          # a Future: the listing ran while the OSM features were still on their way
+    t0 = time.time()
+    cov = [y for y in years if y["coverage"] > 0.9] or years
+    years = cov[-SCORE_YEARS:]          # only the newest few years compete (older flights predate renovations anyway)
+    pool = ThreadPoolExecutor(max(1, len(years)))
+
+    def rd(y):                          # the overview reads start before the OSM turf is in (they need only the box)
+        try:
+            with rasterio.Env(**GDAL_ENV):
+                return read_year_ovr(y["items"], bbox)
+        except Exception as ex:                                      # noqa: BLE001
+            return ex
+    reads = {y["year"]: pool.submit(rd, y) for y in years} if year == "auto" and osm is not None else {}
+    if hasattr(osm, "result"):          # a Future: the listing and reads ran while the OSM features were on their way
         t1 = time.time()
         osm = osm.result()
         T["naip_wait_osm"] = round(time.time() - t1, 2)
-    t0 = time.time()
     scores = {}
     polys = NY.turf_polygons(osm) if (year == "auto" and osm) else None
     if polys is not None and not any(polys.values()):
         year = "latest"                 # no OSM turf to score on (unmapped course): the newest covering year, no reads
-    cov = [y for y in years if y["coverage"] > 0.9] or years
-    years = cov[-SCORE_YEARS:]          # only the newest few years compete (older flights predate renovations anyway)
     if year == "auto" and osm:
 
         def sc(y):
+            got = reads[y["year"]].result()
+            if isinstance(got, Exception):
+                return y["year"], got
             try:
-                with rasterio.Env(**GDAL_ENV):
-                    arr, crs, tr = read_year_ovr(y["items"], bbox)
-                return y["year"], NY._score_array(arr, crs, tr, polys, {})
+                return y["year"], NY._score_array(*got, polys, {})
             except Exception as ex:                                  # noqa: BLE001
                 return y["year"], ex
-        with ThreadPoolExecutor(max(1, len(years))) as ex:
-            scores = dict(ex.map(sc, years))
+        scores = dict(pool.map(sc, years))
+    pool.shutdown(wait=False, cancel_futures=True)
 
     def scorer(y):
         v = scores[y["year"]]
@@ -200,12 +336,15 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
     T["naip_read"] = round(time.time() - t0, 2)
     t0 = time.time()
     nb = arr.shape[0]
-    kind, mb_rgb = fi.write_cog(os.path.join(out_dir, "naip_rgb.tif"), arr[:3], crs, tr, jpeg_quality=90)
-    files, sizes = {"rgb": "naip_rgb.tif"}, {"naip_rgb.tif": mb_rgb}
-    if nb >= 4:
-        _, mb = fi.write_cog(os.path.join(out_dir, "naip_nir.tif"), arr[3:4], crs, tr, jpeg_quality=92)
-        files["nir"], sizes["naip_nir.tif"] = "naip_nir.tif", mb
-    lo = fi.write_lo(arr, tr, lo_res, out_dir, "naip")
+    with ThreadPoolExecutor(3) as ex:   # the two COGs and the plain JPEGs at once (GDAL / Pillow release the GIL)
+        f_rgb = ex.submit(write_cog, os.path.join(out_dir, "naip_rgb.tif"), arr[:3], crs, tr, 90)
+        f_nir = ex.submit(write_cog, os.path.join(out_dir, "naip_nir.tif"), arr[3:4], crs, tr, 92) if nb >= 4 else None
+        f_lo = ex.submit(fi.write_lo, arr, tr, lo_res, out_dir, "naip")
+        kind, mb_rgb = f_rgb.result()
+        files, sizes = {"rgb": "naip_rgb.tif"}, {"naip_rgb.tif": mb_rgb}
+        if f_nir is not None:
+            files["nir"], sizes["naip_nir.tif"] = "naip_nir.tif", f_nir.result()[1]
+        lo = f_lo.result()
     T["naip_write"] = round(time.time() - t0, 2)
     return dict(source="USDA NAIP via Microsoft Planetary Computer (collection 'naip')", year=yr,
                 years_available=[y["year"] for y in years], acquired=sorted({it.datetime.date().isoformat() for it in its}),
@@ -215,9 +354,10 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
                 files=files, format=kind, lo=lo, sizes_mb=sizes, license="Public domain (USDA FSA)")
 
 
-def fetch(bbox_wsen, out_dir, osm_fc=None, year="auto", margin=100.0, label=None, quiet=True):
+def fetch(bbox_wsen, out_dir, osm_fc=None, year="auto", margin=100.0, label=None, quiet=True, prefetch=None):
     """bbox_wsen: the course bbox [W, S, E, N] (course.json); osm_fc: the OSM FeatureCollection, or a Future of it
-    (needed only for the year scoring, after the NAIP listing). -> (georef dict, timings)"""
+    (needed only for the year scoring, after the NAIP listing); prefetch: stac_prefetch's result or Future.
+    -> (georef dict, timings)"""
     if quiet:
         fi.log = lambda *a: None
     os.makedirs(out_dir, exist_ok=True)
@@ -241,7 +381,7 @@ def fetch(bbox_wsen, out_dir, osm_fc=None, year="auto", margin=100.0, label=None
             T["dem"] = round(time.time() - t0, 2)
 
     def naip():
-        return fetch_naip(padded, out_dir, 0.6, year, osm_fc, T)
+        return fetch_naip(padded, out_dir, 0.6, year, osm_fc, T, prefetch)
     with ThreadPoolExecutor(2) as ex:
         fd, fn = ex.submit(dem), ex.submit(naip)
         try:

@@ -124,6 +124,10 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     pkg_dir = os.path.join(pc.PACKAGES, slug)
     raw = os.path.join(pkg_dir, "raw")
     os.makedirs(raw, exist_ok=True)
+    prefetch = None                # the NAIP search round the index point runs while the outline is resolved
+    if imagery and not os.path.exists(os.path.join(pkg_dir, "imagery", "georef.json")):
+        import fast_imagery as fim
+        prefetch = ThreadPoolExecutor(1).submit(fim.stac_prefetch, row["lat"], row["lon"])
     course = osm_api.course_from_row(row, CACHE)
     pc.write_json(os.path.join(raw, "course.json"), course)
     lap("resolve", t0)
@@ -136,18 +140,20 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     import fetch_package as fp
     from concurrent.futures import Future
     osm_future = Future()          # the year scoring needs the OSM turf; the NAIP listing, DEM and canopy only the bbox
+    summ_future = Future()         # the card checks need the OSM hole lengths; three of its four sources do not
 
     def cards():
         t = time.time()
         if not os.path.exists(os.path.join(raw, "scorecard_web.json")):
-            fp.fetch_scorecards(req, course, summ, raw, parallel=True)
+            fp.fetch_scorecards(req, course, summ_future, raw, parallel=True)
         T["card"] = round(time.time() - t, 2)
 
     def img():
         t = time.time()
         if imagery and not os.path.exists(os.path.join(pkg_dir, "imagery", "georef.json")):
             import fast_imagery as fim
-            _, ti = fim.fetch(course["bbox"], os.path.join(pkg_dir, "imagery"), osm_future, year, label=course["name"])
+            _, ti = fim.fetch(course["bbox"], os.path.join(pkg_dir, "imagery"), osm_future, year, label=course["name"],
+                              prefetch=prefetch)
             T.update(ti)
         T["imagery"] = round(time.time() - t, 2)
     def route_no_lines():
@@ -187,24 +193,26 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             import canopy
             canopy.fetch(course["bbox"], os.path.join(pkg_dir, "canopy"))
         T["canopy"] = round(time.time() - t, 2)
-    # the fetch DAG: imagery (NAIP listing || DEM, then year scoring once OSM is in) || canopy || OSM features, then the
-    # card search (it needs the OSM hole lengths). The build waits for the card only while the other fetches run, plus
+    # the fetch DAG: imagery (NAIP listing || DEM, then year scoring once OSM is in) || canopy || card search (its
+    # checks once OSM is in) || OSM features. The build waits for the card only while the other fetches run, plus
     # CARD_GRACE_S, and never past CARD_BUDGET_S from the start of the fetch; a late card is picked up by wait_card()
     t0 = time.time()
     import threading
     with ThreadPoolExecutor(2) as ex:
         fs = [ex.submit(img), ex.submit(trees)]
+        tc = threading.Thread(target=cards, daemon=True)
+        tc.start()
+        LATE["card"] = tc
         t = time.time()
         try:
             fc, summ = osm_api.features(course, raw, CACHE, req)
         except BaseException as e:
             osm_future.set_exception(e)
+            summ_future.set_exception(e)
             raise
         osm_future.set_result(fc)
+        summ_future.set_result(summ)
         lap("osm", t)
-        tc = threading.Thread(target=cards, daemon=True)
-        tc.start()
-        LATE["card"] = tc
         for f in fs:
             f.result()
     tc.join(max(0.0, min(CARD_GRACE_S, CARD_BUDGET_S - (time.time() - t0))))

@@ -98,18 +98,22 @@ def fetch_osm(course, raw, drop_holes=False, supplement=None):
 
 def fetch_scorecards(req, course, summ, raw, parallel=False):
     """parallel: the four sources (four hosts, each keeping its own courtesy interval) run at once; the result is
-    assembled in the same order, so the output is the serial one (the fast path: about the slowest source's time)."""
+    assembled in the same order, so the output is the serial one (the fast path: about the slowest source's time).
+    summ may then be a Future (the OSM summary): only the club site and the checks wait for it."""
     out = dict(fetched_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), tried=[], cards=[])
     rawdir = os.path.join(raw, "scorecard")
-    lengths = {str(h["ref"]): h["length_yd"] for h in summ.get("holes", []) if h.get("length_yd")}
-    n = len(lengths) or None
+
+    def ln():
+        sm = summ.result() if hasattr(summ, "result") else summ
+        lengths = {str(h["ref"]): h["length_yd"] for h in sm.get("holes", []) if h.get("length_yd")}
+        return len(lengths) or None, lengths
     sources = []
     for label, fn in (("golfify", lambda: scm.fetch_golfify(course["name"], course["state"], course.get("town"), rawdir,
                                                             course.get("center"))),
                       ("allsquare", lambda: scm.fetch_allsquare(course["name"], course["state"], course.get("town"), rawdir,
                                                                 course.get("center"))),
                       ("club_site", lambda: scm.fetch_club_site(req.get("website") or course.get("website"), rawdir,
-                                                                n, lengths)),
+                                                                *ln())),
                       ("opengolfapi", lambda: scm.fetch_opengolfapi(course["name"], course["state"], course.get("center"),
                                                                     rawdir, course_id=req.get("opengolfapi_id")))):
         if label == "opengolfapi" and not req.get("opengolfapi", True):
@@ -128,6 +132,7 @@ def fetch_scorecards(req, course, summ, raw, parallel=False):
             res = list(ex.map(lambda lf: run(lf[1], lf[0]), sources))
     else:
         res = [run(fn, label) for label, fn in sources]
+    n, lengths = ln()
     for (label, _), (card, info) in zip(sources, res):
         if card and not scm.plausible(card, n, lengths) and not (label == "opengolfapi" and req.get("opengolfapi_id")):
             info, card = f"{label}: card at {info} rejected (hole count / lengths don't fit OSM)", None
@@ -150,7 +155,8 @@ def fetch_scorecards(req, course, summ, raw, parallel=False):
                     break
     try:                                                      # advisory: cards settled on the OSM hole lines
         import card_consensus as ccs
-        r = ccs.consensus([(c["source"], c["card"], c["url"]) for c in out["cards"]], ccs.ground_from_summary(summ))
+        sm = summ.result() if hasattr(summ, "result") else summ
+        r = ccs.consensus([(c["source"], c["card"], c["url"]) for c in out["cards"]], ccs.ground_from_summary(sm))
         if r:
             out["consensus"] = {k: r[k] for k in ("base", "base_url", "changes", "flags", "scores")}
     except Exception as e:                                    # noqa: BLE001
