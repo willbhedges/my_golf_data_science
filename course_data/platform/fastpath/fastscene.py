@@ -433,12 +433,12 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     return sc, dict(seconds=T, stack=st, D=D, P=P)
 
 
-UNET_DEFAULT = os.path.join(MODEL_DIR, "unet", "model.safetensors")
+UNET_DEFAULT = os.path.join(CD, "segment", "models", "golfseg_own", "model.safetensors")   # ours (README there)
 
 
 def unet_weights():
-    """The segment U-Net's weights (FASTSCENE_UNET=<file.safetensors>, else fastscene_model/unet/model.safetensors;
-    FASTSCENE_UNET=0 turns it off). None -> the pixel classifier. Not in the repo yet: NOTES_PERCEPTION.md."""
+    """The segment U-Net's weights (FASTSCENE_UNET=<file.safetensors>, else our own segment/models/golfseg_own;
+    FASTSCENE_UNET=0 turns it off). None -> the pixel classifier."""
     p = os.environ.get("FASTSCENE_UNET", UNET_DEFAULT)
     return p if p and p != "0" and os.path.exists(p) else None
 
@@ -469,7 +469,9 @@ def unet_probs(pkg_dir, st, weights, keep):
     from affine import Affine
     reproject(keep.astype(np.float32), k6, src_transform=Affine(*g["transform"][:6]), src_crs=g["crs"], dst_transform=tr,
               dst_crs=crs, resampling=Resampling.nearest)
-    P6 = unet.predict_raster(net, img, keep=k6 > 0.5)
+    pre = os.path.join(os.path.dirname(weights), "preprocessor_config.json")
+    norm = json.load(open(pre)) if os.path.exists(pre) else dict(image_mean=unet.MEAN, image_std=unet.STD)
+    P6 = unet.predict_raster(net, img, keep=k6 > 0.5, mean=norm["image_mean"], std=norm["image_std"])
     out = np.zeros((len(CLASSES), st.H, st.W), np.float32)
     for k in range(len(CLASSES)):
         reproject(P6[k], out[k], src_transform=tr, src_crs=crs, dst_transform=Affine(*g["transform"][:6]),

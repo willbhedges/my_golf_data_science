@@ -136,7 +136,7 @@ def test_unet_c_equals_numpy_random_weights():
     x = np.random.default_rng(1).normal(size=(4, 64, 96)).astype(np.float32)
     a = unet.UNet(W, "py")(x)
     b = unet.UNet(W, "c")(x)
-    assert a.shape == (6, 64, 96) and np.array_equal(a, b)
+    assert a.shape == (6, 64, 96) and np.abs(a - b).max() <= 1e-4 * np.abs(a).max()   # direct 3x3 convs: float32 order
 
 
 def test_unet_tiles_and_safetensors(tmp_path):
@@ -160,3 +160,13 @@ def test_unet_tiles_and_safetensors(tmp_path):
     net = unet.UNet(W2, "c")
     P = unet.predict_raster(net, img)
     assert P.shape == (6, 300, 520) and np.allclose(P.sum(0), 1.0, atol=1e-4)
+
+
+def test_conv3x3_direct_close_to_gemm():
+    rng = np.random.default_rng(6)
+    x = rng.normal(size=(20, 70, 90)).astype(np.float32)
+    w = rng.normal(size=(11, 20, 3, 3)).astype(np.float32)
+    b = rng.normal(size=11).astype(np.float32)
+    ref = fastperc.bias_act(w.reshape(11, -1) @ fastperc.im2col(x, 3, 1, 1), b, True).reshape(11, 70, 90)
+    out = fastperc.conv3x3(x, w, b, True)
+    assert np.abs(out - ref).max() <= 1e-4 * np.abs(ref).max()

@@ -475,3 +475,44 @@ int fp_up2(const float *x, long C, long H, long W, float *out) {
         }
     return 0;
 }
+
+/* direct 3x3 convolution, stride 1, zero padding 1, + bias (+ ReLU): for the high-resolution, few-channel layers of
+ * the U-Net decoder (im2col there is memory traffic, not arithmetic). Sums run over (c, ky, kx) per output in a
+ * different order than the GEMM: equal to the im2col path within float32 rounding (test_fastperc.py: 1e-4). */
+#define OB 8
+int fp_conv3x3(const float *x, long C, long H, long W, const float *w, const float *b, long O, int relu, float *out) {
+    long nob = (O + OB - 1) / OB;
+    #pragma omp parallel
+    {
+        float *acc = (float *)malloc(sizeof(float) * OB * (W + 2));
+        float *row = (float *)malloc(sizeof(float) * (W + 2));
+        #pragma omp for collapse(2) schedule(static)
+        for (long ob = 0; ob < nob; ob++)
+            for (long y = 0; y < H; y++) {
+                long o0 = ob * OB, on = O - o0 < OB ? O - o0 : OB;
+                for (long q = 0; q < on * W; q++) acc[q] = 0.f;
+                for (long c = 0; c < C; c++)
+                    for (int ky = 0; ky < 3; ky++) {
+                        long yy = y + ky - 1;
+                        if (yy < 0 || yy >= H) continue;
+                        const float *src = x + (c * H + yy) * W;
+                        row[0] = 0.f; row[W + 1] = 0.f;
+                        memcpy(row + 1, src, sizeof(float) * W);
+                        for (long oo = 0; oo < on; oo++) {
+                            const float *wk = w + (((o0 + oo) * C + c) * 3 + ky) * 3;
+                            float w0 = wk[0], w1 = wk[1], w2 = wk[2];
+                            float *a = acc + oo * W;
+                            for (long xx = 0; xx < W; xx++) a[xx] += w0 * row[xx] + w1 * row[xx + 1] + w2 * row[xx + 2];
+                        }
+                    }
+                for (long oo = 0; oo < on; oo++) {
+                    float bo = b[o0 + oo];
+                    float *dst = out + ((o0 + oo) * H + y) * W;
+                    const float *a = acc + oo * W;
+                    for (long xx = 0; xx < W; xx++) { float v = a[xx] + bo; dst[xx] = relu ? (v > 0.f ? v : 0.f) : v; }
+                }
+            }
+        free(acc); free(row);
+    }
+    return 0;
+}

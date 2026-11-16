@@ -30,6 +30,7 @@ BLOCKS = (3, 4, 6, 3)                      # resnet34 BasicBlocks per stage
 WIDTH = (64, 128, 256, 512)
 DECODER = (256, 128, 64, 32, 16)
 EPS = 1e-5
+DIRECT_MAX_K, DIRECT_MAX_O = 300, 32     # impl="c": 3x3 convs with C*9 <= 300 inputs and <= 32 outputs run direct
 
 
 def load_safetensors(path):
@@ -131,6 +132,10 @@ class UNet:
         pad = k // 2
         C, H, Wd = x.shape
         Ho, Wo = (H + 2 * pad - k) // stride + 1, (Wd + 2 * pad - k) // stride + 1
+        if self.impl == "c" and k == 3 and stride == 1 and residual is None and C * 9 <= DIRECT_MAX_K \
+                and wm.shape[0] <= DIRECT_MAX_O:
+            self.flops += 2.0 * wm.shape[0] * wm.shape[1] * H * Wd     # high-res decoder layers: direct C conv
+            return _lib().conv3x3(x, wm.reshape(shp[0], C, 3, 3), b, relu)
         cols = im2col(x, k, stride, pad, self.impl) if k > 1 or stride > 1 else x.reshape(C, -1)
         y = wm @ cols                                               # OpenBLAS SGEMM (both paths)
         self.flops += 2.0 * wm.shape[0] * wm.shape[1] * cols.shape[1]

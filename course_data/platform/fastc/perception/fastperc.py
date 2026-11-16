@@ -55,6 +55,7 @@ def lib():
     L.fp_bias_act.argtypes = [P, P, ctypes.c_long, ctypes.c_long, ctypes.c_int, P]
     L.fp_maxpool3s2.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P]
     L.fp_up2.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P]
+    L.fp_conv3x3.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P, P, ctypes.c_long, ctypes.c_int, P]
     L.fp_grey_disk.argtypes = [P, P, ctypes.c_long, ctypes.c_long, ctypes.c_int, ctypes.c_int]
     _L[0] = L
     return L
@@ -239,4 +240,16 @@ def up2(x):
     C, H, W = x.shape
     out = np.empty((C, 2 * H, 2 * W), np.float32)
     lib().fp_up2(_p(x), C, H, W, _p(out))
+    return out
+
+
+def conv3x3(x, w, b, relu):
+    """direct 3x3 / stride 1 / pad 1 convolution + bias (+ ReLU); w (O, C, 3, 3)"""
+    x = np.ascontiguousarray(x, np.float32)
+    w = np.ascontiguousarray(w, np.float32)
+    b = np.ascontiguousarray(b, np.float32)
+    C, H, W = x.shape
+    O = w.shape[0]
+    out = np.empty((O, H, W), np.float32)
+    lib().fp_conv3x3(_p(x), C, H, W, _p(w), _p(b), O, int(bool(relu)), _p(out))
     return out
