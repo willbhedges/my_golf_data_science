@@ -341,7 +341,7 @@ CASCADE_BG = 0.97           # ... a pixel whose 3 x 3 coarse neighbours are all 
                             # coarse answer; every other pixel in the mask is classified at 1 m
 
 
-def predict(model, F, mask, impl="auto", cascade=True):
+def predict(model, F, mask, impl="auto", cascade=False):
     P = _predict(model, F, mask, impl, cascade)
     w = os.environ.get("FASTSCENE_PRIOR")
     w = [float(x) for x in w.split(",")] if w else (model.get("meta") or {}).get("prior_scale")
@@ -352,7 +352,7 @@ def predict(model, F, mask, impl="auto", cascade=True):
     return P
 
 
-def _predict(model, F, mask, impl="auto", cascade=True):
+def _predict(model, F, mask, impl="auto", cascade=False):
     """(6, H, W) float32 class probabilities inside mask (background = 1 outside). cascade: classify a 2 m grid
     first; pixels whose coarse neighbourhood is confidently background (> CASCADE_BG) take the coarse answer, the
     rest (turf, sand, water and their edges) are classified at 1 m. cascade=False classifies every pixel."""
@@ -522,7 +522,29 @@ def perceive(st, paths=False, T=None, models=None, keep=None):
         return _perceive(st, paths, T, models, keep)
 
 
+def _c_hooks():
+    """C kernels under perception's own functions (identical results, test_fastperc.py); GOLF_FASTC=0 keeps numpy."""
+    import geo
+    if os.environ.get("GOLF_FASTC", "1") == "0" or hasattr(geo, "_comp_stats_py"):
+        return
+    try:
+        sys.path.insert(0, os.path.join(PLAT, "fastc", "perception"))
+        import fastperc
+        fastperc.lib()
+    except Exception:                                            # noqa: BLE001
+        return
+    py = geo._comp_stats_py = geo.comp_stats
+
+    def comp_stats(lab, n, arrays):
+        try:
+            return fastperc.comp_stats(lab, n, arrays)
+        except TypeError:                                        # a float64 plane: numpy keeps it exact
+            return py(lab, n, arrays)
+    geo.comp_stats = comp_stats
+
+
 def _perceive(st, paths, T, models, keep):
+    _c_hooks()
     import detect as DT
     import features as PF
     import networkx as nx

@@ -47,6 +47,7 @@ def lib():
     L.fp_gather.argtypes = [P, ctypes.c_long, ctypes.c_int, P, ctypes.c_long, P]
     L.fp_label8.argtypes = [P, ctypes.c_long, ctypes.c_long, P]
     L.fp_label8.restype = ctypes.c_long
+    L.fp_comp_stats.argtypes = [P, ctypes.c_long, ctypes.c_int, P, ctypes.c_int, P, P, P, P, P, ctypes.c_long]
     L.fp_grey_disk.argtypes = [P, P, ctypes.c_long, ctypes.c_long, ctypes.c_int, ctypes.c_int]
     _L[0] = L
     return L
@@ -171,3 +172,30 @@ def grey_disk(a, r, op):
 def grey_opening_disk(a, r):
     """== scipy.ndimage.grey_opening(a, footprint=disk(r)) (mode 'reflect'), exactly."""
     return grey_disk(grey_disk(a, r, 0), r, 1)
+
+
+def comp_stats(lab, n, arrays):
+    """== perception geo.comp_stats(lab, n, arrays) (per-label NaN-safe means, area, centroid), bit for bit."""
+    lab = np.ascontiguousarray(lab, np.int32)
+    H, W = lab.shape
+    names = list(arrays)
+    k = len(names)
+    keep = []
+    for nm in names:
+        a = np.asarray(arrays[nm])
+        if a.dtype != np.float32:
+            if a.dtype.kind != "f" or a.dtype.itemsize > 4:
+                raise TypeError("float32 planes only (float64 would round)")
+            a = a.astype(np.float32)
+        keep.append(np.ascontiguousarray(a))
+    ptrs = (ctypes.c_void_p * max(k, 1))(*[a.ctypes.data for a in keep])
+    cnt, rs, cs = (np.empty(n + 1) for _ in range(3))
+    s, m = np.empty((max(k, 1), n + 1)), np.empty((max(k, 1), n + 1))
+    lib().fp_comp_stats(_p(lab), H * W, int(n), ptrs, k, _p(cnt), _p(rs), _p(cs), _p(s), _p(m), W)
+    out = dict(area_px=cnt[1:].copy())
+    with np.errstate(invalid="ignore", divide="ignore"):
+        out["r"] = rs[1:] / cnt[1:] if n else np.zeros(0)
+        out["c"] = cs[1:] / cnt[1:] if n else np.zeros(0)
+        for j, nm in enumerate(names):
+            out[nm] = np.where(m[j, 1:] > 0, s[j, 1:] / np.maximum(m[j, 1:], 1), np.nan)
+    return out

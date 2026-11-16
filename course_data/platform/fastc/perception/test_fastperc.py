@@ -101,3 +101,30 @@ def test_label8_exact():
     a, na = ndi.label(m, np.ones((3, 3)))
     b, nb = fastperc.label8(m)
     assert na == nb and np.array_equal(a, b)
+
+
+def test_comp_stats_exact():
+    from scipy import ndimage as ndi
+    with FS.perception_ns():
+        import geo
+    rng = np.random.default_rng(4)
+    m = ndi.gaussian_filter(rng.normal(size=(400, 300)), 2) > 0.3
+    lab, n = ndi.label(m)
+    arr = {k: ndi.gaussian_filter(rng.normal(size=m.shape), 1).astype(np.float32) for k in "abc"}
+    arr["a"][rng.random(m.shape) < 0.05] = np.nan
+    A, B = geo.comp_stats(lab, n, arr), fastperc.comp_stats(lab, n, arr)
+    assert set(A) == set(B) and all(np.array_equal(A[k], B[k], equal_nan=True) for k in A)
+
+
+def test_scene_c_equals_numpy():
+    """the whole perception pass on a stack: C hooks on == GOLF_FASTC=0 (same scene)."""
+    import subprocess
+    code = ("import sys, json; sys.path[:0] = [%r]; import fastscene as FS, test_fastperc as T; st = T.synthetic_stack(); "
+            "import numpy as np; st.a['seg'][0][100:130, 100:140] = 230; st.a['seg'][1][50:60, 200:215] = 200; "
+            "sc, D = FS.perceive(st, models={}); print(json.dumps([sc['summary'], [g['centroid'] for g in sc['greens']], "
+            "[t['centroid'] for t in sc['tee_complexes']]]))") % FP
+    env = dict(os.environ, PYTHONPATH=HERE)
+    a = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=dict(env, GOLF_FASTC="1"))
+    b = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=dict(env, GOLF_FASTC="0"))
+    assert a.returncode == 0, a.stderr[-800:]
+    assert a.stdout.strip().splitlines()[-1] == b.stdout.strip().splitlines()[-1]

@@ -371,3 +371,35 @@ int fp_grey_disk(const double *in, double *out, long H, long W, int r, int op) {
     free(hw);
     return 0;
 }
+
+/* perception geo.comp_stats in one raster pass: per label 1..n the pixel count, the mean row / col, and for each
+ * of the k float32 planes the sum and count of its finite values. Sums are accumulated in double in raster order,
+ * as numpy's bincount (behind ndimage.sum) does, so the means are bit-identical. out_cnt (n+1), out_rs / out_cs
+ * (n+1), out_s / out_m (k, n+1). */
+int fp_comp_stats(const int32_t *lab, long npx, int n, const float *const *planes, int k,
+                  double *cnt, double *rs, double *cs, double *s, double *m, long W) {
+    for (long i = 0; i <= n; i++) { cnt[i] = 0; rs[i] = 0; cs[i] = 0; }
+    for (long i = 0; i < (long)k * (n + 1); i++) { s[i] = 0; m[i] = 0; }
+    long nz = 0;
+    for (long p = 0; p < npx; p++) nz += lab[p] > 0 && lab[p] <= n;
+    long *idx = (long *)malloc(sizeof(long) * (nz ? nz : 1));
+    if (!idx) return -1;
+    long q = 0;
+    for (long p = 0; p < npx; p++) if (lab[p] > 0 && lab[p] <= n) idx[q++] = p;
+    for (long t = 0; t < nz; t++) {
+        long p = idx[t]; int l = lab[p];
+        cnt[l] += 1.0; rs[l] += (double)(p / W); cs[l] += (double)(p % W);
+    }
+    #pragma omp parallel for schedule(dynamic, 1)
+    for (int j = 0; j < k; j++) {               /* planes are independent: each keeps raster order */
+        const float *a = planes[j];
+        double *sj = s + (long)j * (n + 1), *mj = m + (long)j * (n + 1);
+        for (long t = 0; t < nz; t++) {
+            long p = idx[t];
+            float v = a[p];
+            if (isfinite(v)) { sj[lab[p]] += (double)v; mj[lab[p]] += 1.0; }
+        }
+    }
+    free(idx);
+    return 0;
+}
