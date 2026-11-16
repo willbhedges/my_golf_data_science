@@ -170,3 +170,25 @@ def test_conv3x3_direct_close_to_gemm():
     ref = fastperc.bias_act(w.reshape(11, -1) @ fastperc.im2col(x, 3, 1, 1), b, True).reshape(11, 70, 90)
     out = fastperc.conv3x3(x, w, b, True)
     assert np.abs(out - ref).max() <= 1e-4 * np.abs(ref).max()
+
+
+def test_dist_to_rings_exact():
+    """== structure/scene.py _dist_to_rings (its own Python), points inside / outside / on vertices."""
+    import importlib.util
+    p = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(HERE))), "structure", "scene.py")
+    spec = importlib.util.spec_from_file_location("structure_scene_t", p)
+    S = importlib.util.module_from_spec(spec)
+    sys.modules["structure_scene_t"] = S
+    spec.loader.exec_module(S)
+    rng = np.random.default_rng(8)
+    ang = np.sort(rng.uniform(0, 2 * np.pi, 40))
+    r1 = np.c_[300 * np.cos(ang), 200 * np.sin(ang)]
+    r1 = np.vstack([r1, r1[:1]])
+    r2 = np.array([[500.0, 0], [600, 0], [600, 80], [500, 80], [500, 0]])
+    rings = [r1, r2]
+    pts = np.vstack([rng.uniform(-700, 800, (300, 2)), r1[:5], r2[:3]])
+    os.environ["GOLF_FASTC"] = "0"
+    ref = [S._dist_to_rings(q, rings) for q in pts]
+    os.environ.pop("GOLF_FASTC")
+    out = fastperc.dist_to_rings(pts, rings)
+    assert np.array_equal(np.asarray(ref, float), out)

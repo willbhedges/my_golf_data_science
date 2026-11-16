@@ -21,9 +21,12 @@ import json
 import math
 import os
 import random
+import sys
 from dataclasses import dataclass, field
 
 import numpy as np
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 YD = 0.9144
 
@@ -160,9 +163,27 @@ def _inside(pt, rings):
     return False
 
 
+def _fastc():
+    """platform/fastc/perception's dist_to_rings (identical numbers) unless GOLF_FASTC=0 or it cannot be built."""
+    if os.environ.get("GOLF_FASTC", "1") == "0":
+        return None
+    try:
+        p = os.path.join(os.path.dirname(HERE), "platform", "fastc", "perception")
+        if p not in sys.path:
+            sys.path.append(p)
+        import fastperc
+        fastperc.lib()
+        return fastperc.dist_to_rings
+    except Exception:                                              # noqa: BLE001
+        return None
+
+
 def _dist_to_rings(pt, rings):
     if not rings:
         return 0.0
+    f = _fastc()
+    if f is not None:
+        return float(f(pt, rings)[0])
     if _inside(pt, rings):
         return 0.0
     best = 1e9

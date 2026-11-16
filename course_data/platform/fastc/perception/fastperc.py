@@ -58,6 +58,7 @@ def lib():
     L.fp_conv3x3.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P, P, ctypes.c_long, ctypes.c_int, P]
     L.fp_roll.argtypes = [P, P, P, P, ctypes.c_long, ctypes.c_double, P, ctypes.c_long, ctypes.c_long, ctypes.c_double,
                           ctypes.c_double, ctypes.c_double, P, ctypes.c_int, ctypes.c_int, ctypes.c_double]
+    L.fp_dist_to_rings.argtypes = [P, ctypes.c_long, P, P, ctypes.c_int, P]
     L.fp_grey_disk.argtypes = [P, P, ctypes.c_long, ctypes.c_long, ctypes.c_int, ctypes.c_int]
     _L[0] = L
     return L
@@ -254,4 +255,26 @@ def conv3x3(x, w, b, relu):
     O = w.shape[0]
     out = np.empty((O, H, W), np.float32)
     lib().fp_conv3x3(_p(x), C, H, W, _p(w), _p(b), O, int(bool(relu)), _p(out))
+    return out
+
+
+_RINGS = {}
+
+
+def dist_to_rings(pts, rings):
+    """== structure/scene.py _dist_to_rings for each point of pts (n, 2): 0 inside any ring, else the distance to
+    the nearest ring segment (same double arithmetic)."""
+    key = id(rings)
+    pk = _RINGS.get(key)
+    if pk is None or pk[0] is not rings:
+        rs = [np.asarray(r, np.float64).reshape(-1, 2) for r in rings]
+        v = np.ascontiguousarray(np.vstack(rs) if rs else np.zeros((0, 2)))
+        off = np.array(np.cumsum([0] + [len(r) for r in rs]), np.int64)
+        pk = _RINGS[key] = (rings, v, off)
+        if len(_RINGS) > 64:
+            _RINGS.pop(next(iter(_RINGS)))
+    _, v, off = pk
+    p = np.ascontiguousarray(np.asarray(pts, np.float64).reshape(-1, 2))
+    out = np.empty(len(p))
+    lib().fp_dist_to_rings(_p(p), len(p), _p(v), _p(off), len(off) - 1, _p(out))
     return out

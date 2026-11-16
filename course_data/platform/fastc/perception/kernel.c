@@ -545,3 +545,44 @@ int fp_roll(double *pts, const double *heading, double *roll, int32_t *lie, long
     }
     return 0;
 }
+
+/* ---- package build: structure/scene.py _inside / _dist_to_rings for many points at once ---- */
+/* rings: concatenated (x, y) vertices, ring r = [off[r], off[r+1]). _inside's even-odd test (with its
+ * (yj - yi) or 1e-12 guard) and _dist_to_rings' segment distance (numpy's clip / hypot formula over consecutive
+ * vertices) in the same double arithmetic. out[i] = 0 when inside any ring, else the min distance. */
+int fp_dist_to_rings(const double *pts, long n, const double *v, const long *off, int nr, double *out) {
+    #pragma omp parallel for schedule(dynamic, 16)
+    for (long i = 0; i < n; i++) {
+        double x = pts[2 * i], y = pts[2 * i + 1];
+        int ins = 0;
+        for (int r = 0; r < nr && !ins; r++) {
+            long a = off[r], m = off[r + 1] - a, j = m - 1;
+            int in = 0;
+            for (long k = 0; k < m; k++) {
+                double xi = v[2 * (a + k)], yi = v[2 * (a + k) + 1], xj = v[2 * (a + j)], yj = v[2 * (a + j) + 1];
+                double dy = yj - yi;
+                if (dy == 0.0) dy = 1e-12;
+                if (((yi > y) != (yj > y)) && x < (xj - xi) * (y - yi) / dy + xi) in = !in;
+                j = k;
+            }
+            ins = in;
+        }
+        if (ins) { out[i] = 0.0; continue; }
+        double best = 1e9;
+        for (int r = 0; r < nr; r++) {
+            long a = off[r], m = off[r + 1] - a;
+            for (long k = 0; k + 1 < m; k++) {
+                double ax = v[2 * (a + k)], ay = v[2 * (a + k) + 1];
+                double abx = v[2 * (a + k + 1)] - ax, aby = v[2 * (a + k + 1) + 1] - ay;
+                double den = abx * abx + aby * aby;
+                if (den < 1e-9) den = 1e-9;
+                double t = ((x - ax) * abx + (y - ay) * aby) / den;
+                t = t < 0 ? 0 : (t > 1 ? 1 : t);
+                double d = hypot(ax + abx * t - x, ay + aby * t - y);
+                if (d < best) best = d;
+            }
+        }
+        out[i] = best;
+    }
+    return 0;
+}
