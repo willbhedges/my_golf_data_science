@@ -39,6 +39,9 @@ def lib():
             tmp = so + f".{os.getpid()}.tmp"
             subprocess.run([os.environ.get("CC", "gcc"), *FLAGS, SRC, "-o", tmp, "-lm"], check=True)
             os.replace(tmp, so)
+    # libgomp threads spin after each parallel region by default and then steal the cores OpenBLAS's GEMM threads
+    # need (U-Net: 0.9 s -> 1.6 s a tile); passive waiting costs nothing measurable in the other kernels
+    os.environ.setdefault("OMP_WAIT_POLICY", "PASSIVE")
     L = ctypes.CDLL(so)
     P = ctypes.c_void_p
     L.fp_features.argtypes = [P, P, P, ctypes.c_long, ctypes.c_long, ctypes.c_float, P, P]
@@ -48,6 +51,10 @@ def lib():
     L.fp_label8.argtypes = [P, ctypes.c_long, ctypes.c_long, P]
     L.fp_label8.restype = ctypes.c_long
     L.fp_comp_stats.argtypes = [P, ctypes.c_long, ctypes.c_int, P, ctypes.c_int, P, P, P, P, P, ctypes.c_long]
+    L.fp_im2col.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, ctypes.c_int, ctypes.c_int, ctypes.c_int, P]
+    L.fp_bias_act.argtypes = [P, P, ctypes.c_long, ctypes.c_long, ctypes.c_int, P]
+    L.fp_maxpool3s2.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P]
+    L.fp_up2.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P]
     L.fp_grey_disk.argtypes = [P, P, ctypes.c_long, ctypes.c_long, ctypes.c_int, ctypes.c_int]
     _L[0] = L
     return L
@@ -198,4 +205,38 @@ def comp_stats(lab, n, arrays):
         out["c"] = cs[1:] / cnt[1:] if n else np.zeros(0)
         for j, nm in enumerate(names):
             out[nm] = np.where(m[j, 1:] > 0, s[j, 1:] / np.maximum(m[j, 1:], 1), np.nan)
+    return out
+
+
+# ---- U-Net primitives (unet.py impl="c")
+def im2col(x, k, s, p):
+    x = np.ascontiguousarray(x, np.float32)
+    C, H, W = x.shape
+    Ho, Wo = (H + 2 * p - k) // s + 1, (W + 2 * p - k) // s + 1
+    out = np.empty((C * k * k, Ho * Wo), np.float32)
+    lib().fp_im2col(_p(x), C, H, W, k, s, p, _p(out))
+    return out
+
+
+def bias_act(y, b, relu, res=None):
+    y = np.ascontiguousarray(y, np.float32)
+    b = np.ascontiguousarray(b, np.float32)
+    r = None if res is None else np.ascontiguousarray(res, np.float32)
+    lib().fp_bias_act(_p(y), _p(b), y.shape[0], y.shape[1], int(bool(relu)), None if r is None else _p(r))
+    return y
+
+
+def maxpool3s2(x):
+    x = np.ascontiguousarray(x, np.float32)
+    C, H, W = x.shape
+    out = np.empty((C, (H - 1) // 2 + 1, (W - 1) // 2 + 1), np.float32)
+    lib().fp_maxpool3s2(_p(x), C, H, W, _p(out))
+    return out
+
+
+def up2(x):
+    x = np.ascontiguousarray(x, np.float32)
+    C, H, W = x.shape
+    out = np.empty((C, 2 * H, 2 * W), np.float32)
+    lib().fp_up2(_p(x), C, H, W, _p(out))
     return out

@@ -403,3 +403,75 @@ int fp_comp_stats(const int32_t *lab, long npx, int n, const float *const *plane
     free(idx);
     return 0;
 }
+
+/* ---- U-Net primitives (fastc/perception/unet.py): the GEMMs stay in OpenBLAS ---- */
+/* im2col: x (C, H, W) -> cols (C*k*k, Ho*Wo), zero padding, row order (c, ky, kx) = torch's weight layout */
+int fp_im2col(const float *x, long C, long H, long W, int k, int s, int p, float *cols) {
+    long Ho = (H + 2 * p - k) / s + 1, Wo = (W + 2 * p - k) / s + 1;
+    #pragma omp parallel for collapse(2) schedule(static)
+    for (long c = 0; c < C; c++)
+        for (int q = 0; q < k * k; q++) {
+            int ky = q / k, kx = q % k;
+            float *o = cols + ((c * k + ky) * k + kx) * Ho * Wo;
+            const float *xc = x + c * H * W;
+            for (long i = 0; i < Ho; i++) {
+                long y = i * s - p + ky;
+                float *oi = o + i * Wo;
+                if (y < 0 || y >= H) { for (long j = 0; j < Wo; j++) oi[j] = 0.f; continue; }
+                const float *row = xc + y * W;
+                for (long j = 0; j < Wo; j++) { long xx = j * s - p + kx; oi[j] = (xx < 0 || xx >= W) ? 0.f : row[xx]; }
+            }
+        }
+    return 0;
+}
+
+/* y (O, N) += b[o] (+ res), then ReLU if relu: in place; the numpy order is ((y + b) + res) */
+int fp_bias_act(float *y, const float *b, long O, long N, int relu, const float *res) {
+    #pragma omp parallel for schedule(static)
+    for (long o = 0; o < O; o++) {
+        float bo = b[o];
+        float *yo = y + o * N;
+        const float *ro = res ? res + o * N : 0;
+        for (long n = 0; n < N; n++) {
+            float v = yo[n] + bo;
+            if (ro) v = v + ro[n];
+            yo[n] = relu ? (v > 0.f ? v : 0.f) : v;
+        }
+    }
+    return 0;
+}
+
+/* 3x3 max pool, stride 2, padding 1 (-inf) */
+int fp_maxpool3s2(const float *x, long C, long H, long W, float *out) {
+    long Ho = (H + 2 - 3) / 2 + 1, Wo = (W + 2 - 3) / 2 + 1;
+    #pragma omp parallel for schedule(static)
+    for (long c = 0; c < C; c++)
+        for (long i = 0; i < Ho; i++)
+            for (long j = 0; j < Wo; j++) {
+                float m = -INFINITY;
+                for (int dy = -1; dy <= 1; dy++) {
+                    long y = 2 * i + dy;
+                    if (y < 0 || y >= H) continue;
+                    for (int dx = -1; dx <= 1; dx++) {
+                        long xx = 2 * j + dx;
+                        if (xx < 0 || xx >= W) continue;
+                        float v = x[(c * H + y) * W + xx];
+                        if (v > m) m = v;
+                    }
+                }
+                out[(c * Ho + i) * Wo + j] = m;
+            }
+    return 0;
+}
+
+/* nearest x2 up-sampling */
+int fp_up2(const float *x, long C, long H, long W, float *out) {
+    #pragma omp parallel for schedule(static)
+    for (long c = 0; c < C; c++)
+        for (long i = 0; i < 2 * H; i++) {
+            const float *row = x + (c * H + i / 2) * W;
+            float *o = out + (c * 2 * H + i) * 2 * W;
+            for (long j = 0; j < 2 * W; j++) o[j] = row[j / 2];
+        }
+    return 0;
+}

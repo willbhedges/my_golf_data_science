@@ -128,3 +128,35 @@ def test_scene_c_equals_numpy():
     b = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=dict(env, GOLF_FASTC="0"))
     assert a.returncode == 0, a.stderr[-800:]
     assert a.stdout.strip().splitlines()[-1] == b.stdout.strip().splitlines()[-1]
+
+
+def test_unet_c_equals_numpy_random_weights():
+    import unet
+    W = unet.random_weights(3)
+    x = np.random.default_rng(1).normal(size=(4, 64, 96)).astype(np.float32)
+    a = unet.UNet(W, "py")(x)
+    b = unet.UNet(W, "c")(x)
+    assert a.shape == (6, 64, 96) and np.array_equal(a, b)
+
+
+def test_unet_tiles_and_safetensors(tmp_path):
+    """predict_raster blends tiles into probabilities; a fp16 safetensors file round-trips through the loader."""
+    import json as _json
+    import struct
+    import unet
+    W = unet.random_weights(4)
+    hdr, blobs, off = {}, [], 0
+    for k, v in W.items():
+        b = v.astype(np.float16).tobytes()
+        hdr[k] = dict(dtype="F16", shape=list(v.shape), data_offsets=[off, off + len(b)])
+        blobs.append(b)
+        off += len(b)
+    h = _json.dumps(hdr).encode()
+    p = tmp_path / "m.safetensors"
+    p.write_bytes(struct.pack("<Q", len(h)) + h + b"".join(blobs))
+    W2 = unet.load_safetensors(str(p))
+    assert set(W2) == set(W) and all(np.array_equal(W2[k], W[k].astype(np.float16).astype(np.float32)) for k in W)
+    img = np.random.default_rng(0).integers(0, 255, (4, 300, 520), dtype=np.uint8)
+    net = unet.UNet(W2, "c")
+    P = unet.predict_raster(net, img)
+    assert P.shape == (6, 300, 520) and np.allclose(P.sum(0), 1.0, atol=1e-4)

@@ -411,10 +411,19 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     t = lap("features", t)
     mask = course_mask(st)
     neg = osm_negative_mask(st, pkg_dir)
-    P = predict(model, F, mask & ~neg, impl)
-    t = lap("classify", t)
-    fill_seg(st, P, model)
-    sc, D = perceive(st, paths=paths, T=T, models=object_models(model), keep=course_mask(st, KEEP_PAD_M) & ~neg)
+    uw = unet_weights()
+    if uw:                                       # the segment U-Net (perception's own input), when its weights exist
+        P = unet_probs(pkg_dir, st, uw, mask & ~neg)
+        t = lap("unet", t)
+        for i, c in enumerate(SEG_ORDER):
+            st.a["seg"][i] = np.clip(np.round(P[CLASSES.index(c)] * 255), 0, 255).astype(np.uint8)
+        objm = None                              # perception/models: trained on U-Net candidates
+    else:
+        P = predict(model, F, mask & ~neg, impl)
+        t = lap("classify", t)
+        fill_seg(st, P, model)
+        objm = object_models(model)
+    sc, D = perceive(st, paths=paths, T=T, models=objm, keep=course_mask(st, KEEP_PAD_M) & ~neg)
     T["total"] = round(time.time() - t0, 2)
     sc["fastscene"] = dict(model=os.path.basename(os.path.dirname(model["path"])), seconds=T,
                            pixel_model=model.get("meta", {}).get("id"))
@@ -422,6 +431,50 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
         out = out or pkg_dir
         json.dump(sc, open(os.path.join(out, "scene.json"), "w"), separators=(",", ":"))
     return sc, dict(seconds=T, stack=st, D=D, P=P)
+
+
+UNET_DEFAULT = os.path.join(MODEL_DIR, "unet", "model.safetensors")
+
+
+def unet_weights():
+    """The segment U-Net's weights (FASTSCENE_UNET=<file.safetensors>, else fastscene_model/unet/model.safetensors;
+    FASTSCENE_UNET=0 turns it off). None -> the pixel classifier. Not in the repo yet: NOTES_PERCEPTION.md."""
+    p = os.environ.get("FASTSCENE_UNET", UNET_DEFAULT)
+    return p if p and p != "0" and os.path.exists(p) else None
+
+
+_NET = {}
+
+
+def unet_probs(pkg_dir, st, weights, keep):
+    """U-Net class probabilities on the stack grid: NAIP 0.6 m in its own CRS (as segment/model.py runs it), tiles
+    touching the course outline only, area-averaged onto the 1 m grid. -> (6, H, W) float32."""
+    import rasterio
+    from rasterio.enums import Resampling
+    from rasterio.warp import reproject
+    sys.path.insert(0, os.path.join(PLAT, "fastc", "perception"))
+    import unet
+    net = _NET.get(weights)
+    if net is None:
+        net = _NET[weights] = unet.UNet(unet.load_safetensors(weights), impl="c")
+    src = find_inputs(pkg_dir)
+    with rasterio.open(src["rgb"]) as d:
+        rgb, tr, crs = d.read(), d.transform, d.crs
+    with rasterio.open(src["nir"]) as d:
+        nir = d.read(1)
+    img = np.concatenate([rgb[:3], nir[None]], 0).astype(np.uint8)
+    # the keep mask (stack grid) onto the NAIP grid (nearest), dilated by a tile margin implicitly by the tiling
+    k6 = np.zeros(img.shape[1:], np.float32)
+    g = st.meta["grid"]
+    from affine import Affine
+    reproject(keep.astype(np.float32), k6, src_transform=Affine(*g["transform"][:6]), src_crs=g["crs"], dst_transform=tr,
+              dst_crs=crs, resampling=Resampling.nearest)
+    P6 = unet.predict_raster(net, img, keep=k6 > 0.5)
+    out = np.zeros((len(CLASSES), st.H, st.W), np.float32)
+    for k in range(len(CLASSES)):
+        reproject(P6[k], out[k], src_transform=tr, src_crs=crs, dst_transform=Affine(*g["transform"][:6]),
+                  dst_crs=g["crs"], resampling=Resampling.average)
+    return out
 
 
 def _opt(model, key, env, default):
