@@ -1,0 +1,97 @@
+name: import-golfseg-own
+
+# One-off (approved by the user, 2026-11-16): copy OUR OWN NAIP U-Net (segment_train.yml, run 38987845450, artifact
+# "golfseg-own-model") into the repo at course_data/segment/models/golfseg_own/ so the fast path can run it without
+# torch (course_data/platform/fastc/perception/unet.py). It downloads that one artifact and commits it; nothing else.
+# The ariadgolf weights (no licence grant) are never imported. Trigger: course_data/requests/import_golfseg_own.json.
+
+on:
+  push:
+    branches:
+      - claude/mozingo-lake-tee-strategy-ef54wl
+    paths:
+      - "course_data/requests/import_golfseg_own.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: import-golfseg-own
+  cancel-in-progress: false
+
+jobs:
+  import:
+    if: github.ref_name == 'claude/mozingo-lake-tee-strategy-ef54wl'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: golfseg-own-model
+          run-id: 38987845450
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/golfseg_own
+
+      - name: Copy the weights + README
+        run: |
+          set -e
+          ls -la /tmp/golfseg_own
+          D=course_data/segment/models/golfseg_own
+          mkdir -p "$D"
+          for f in /tmp/golfseg_own/*.safetensors /tmp/golfseg_own/config.json /tmp/golfseg_own/preprocessor_config.json \
+                   /tmp/golfseg_own/train_log.json; do
+            [ -f "$f" ] && cp "$f" "$D/"
+          done
+          ls "$D"/*.safetensors
+          SHA=$(sha256sum "$D"/*.safetensors | awk '{print $1}')
+          BYTES=$(stat -c %s "$D"/*.safetensors)
+          python3 - "$D" "$SHA" "$BYTES" <<'PY'
+          import json, os, sys
+          d, sha, nbytes = sys.argv[1], sys.argv[2], sys.argv[3]
+          log = json.load(open(os.path.join(d, "train_log.json"))) if os.path.exists(os.path.join(d, "train_log.json")) else {}
+          fv = log.get("final_val") or {}
+          iou = ", ".join(f"{k} {v}" for k, v in (fv.get("iou") or {}).items())
+          names = [f for f in os.listdir(d) if f.endswith(".safetensors")]
+          open(os.path.join(d, "README.md"), "w").write(f"""# golfseg_own: our own NAIP golf-feature U-Net
+
+          * Source: GitHub Actions run 38987845450 (`.github/workflows/segment_train.yml`, 2026-10-17, 4 h 58 min on a CPU
+            runner), artifact `golfseg-own-model`; copied by `.github/workflows/import_golfseg_own.yml`.
+          * File: `{names[0] if names else '?'}`, {nbytes} bytes, sha256 `{sha}`.
+          * Architecture: segmentation_models_pytorch Unet, ResNet-34 encoder (ImageNet start), 4 bands R, G, B, NIR (NAIP
+            0.6 m, uint8), 6 classes background / green / tee / fairway / bunker / water; normalisation and tile size in
+            `preprocessor_config.json` / `train_log.json` (mean / std of the training tiles).
+          * Training data: NAIP (USDA, via Microsoft Planetary Computer) with OpenStreetMap golf polygons as labels
+            (ODbL 1.0), well-mapped Iowa / Missouri courses (`course_data/segment/train/dataset_index.json`); 320 px crops,
+            batch 8, {fv.get('step', '?')} steps.
+          * Validation (held-out courses of the same states): IoU {iou or 'see train_log.json'}.
+          * Licence: ours (trained by this project). The ariadgolf/golf-course-segmentation weights are a different model
+            and are not in this repository (no licence grant).
+          * Used by: `course_data/platform/fastc/perception/unet.py` (forward pass without torch) through
+            `course_data/platform/fastpath/fastscene.py`.
+          """.replace("\n          ", "\n"))
+          PY
+          cat "$D/README.md"
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/segment/models/golfseg_own
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "segment: our own NAIP U-Net weights (Actions run 38987845450) into course_data/segment/models/golfseg_own" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
