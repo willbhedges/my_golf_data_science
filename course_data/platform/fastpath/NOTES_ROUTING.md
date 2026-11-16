@@ -107,3 +107,26 @@ Reproduce: `route_bench.py eval --scene fast --router v2 --prep --card-only --ve
 `ROUTE_BENCH_SC=cache/val/sc3/cv` (train) / `cache/val/sc3/test` (test); the overrides come from
 `ROUTE_LEARN_KINDS=h,w,s,e route_learn.py table|cv|fit --out cache/val/sc3` (tables need the v2 prep pickles that
 an eval with --router v2 --prep writes first). Pixel maps cached at cache/val/maps (85 MB).
+
+### Detector feae37f33, probs d0+yall (the detection side's routing version), same v2 recipe refitted on its scenes
+
+route_learn_model.pkl and route_gate.json are now the d0+yall fit (production runs multi-year by default).
+`ROUTE_BENCH_PROBS=d0+yall ROUTE_LEARN_VER=feae37f33_d0+yall ROUTE_LEARN_KINDS=h,w,s,e`, sc overrides in cache/val/sc5;
+d0+yall on the bench = d0 averaged with every cached extra-year probability (20 of 51 train courses and all 31 test
+courses have them; the others are d0 alone).
+
+| split | v1 | v2 |
+|---|---|---|
+| train (43, out-of-fold) | 69.2 % / 3 | 75.9 % / 6 |
+| test (28) | 73.3 % / 3 | 73.7 % / 5 |
+
+Gate (v2, d0+yall): precision 1.0 on train is reached at P(all) >= 0.174, but by two courses only (willowhill 9 / 9 at
+0.33, hatherly 18 / 18 at 0.17; next is billy_caldwell 8 / 9 at 0.10). No test course clears 0.174; the top two test
+courses (empire_ranch, westhaven, about 0.10) are both all-right. In the blind loop, Remsen (D) scored 0.170 against
+that 0.174. That margin is too thin, so route_gate.MIN_SHOWN = 3 train courses are required and the threshold stays
+1.1: nothing is shown. Blind loop after the change: A / B / C picks and gates identical to the v1 run; D: Sunset, Glenwild
+and Hawk's Point blocked, Remsen a draft, Makena North no build.
+
+Not done (detection-side handoffs): splitting tee complexes that serve two hole starts by hole direction (29 of 963
+on the detector's test 40), and practice greens taken as hole greens (15 of 77). Both are behind the sequence errors
+that remain. A per-hole floor (every hole p >= 0.5) on top of P(all) is the next gate idea once more courses clear it.

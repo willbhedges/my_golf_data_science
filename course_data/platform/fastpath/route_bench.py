@@ -595,7 +595,7 @@ def cmd_gate(a):
     te = gate_rows(json.load(open(a.test))["courses"]) if a.test else []
     w = RG.fit(tr)
     ct, ce = RG.curve(tr, w), RG.curve(te, w)
-    thr = RG.pick_threshold(ct, len(tr))
+    thr = RG.pick_threshold(ct, len(tr), min_shown=RG.MIN_SHOWN)
     def at(cur, t):
         s = [r for r in cur if r["threshold"] >= t]
         return s[-1] if s else dict(shown=0, right=0, precision=None)

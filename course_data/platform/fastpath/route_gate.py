@@ -26,6 +26,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PARAMS = os.path.join(HERE, "route_gate.json")
 FEATS = ["margin_c", "margin_lo", "card_rel", "card_bad", "virtual", "ob", "ph_lo", "cross", "ph_l", "pw_l", "pw_none", "g_l", "g_map", "t_l"]
 MARGIN_CAP = 12.0
+MIN_SHOWN = 3        # a threshold counts only when at least this many train courses clear it, all of them right: with
+                     # 2 (d0+yall: willowhill 0.33, hatherly 0.17, then billy_caldwell 0.10 wrong) the blind loop's
+                     # Remsen sat at 0.170 against 0.174, too thin a margin to show a course on
 
 
 def hole_x(h):
