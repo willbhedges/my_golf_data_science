@@ -377,7 +377,8 @@ def card_fit(feats, card, n):
     return best
 
 
-PREP = os.environ.get("ROUTE_BENCH_PREP") or os.path.join(VAL, "prep")
+PREP = os.environ.get("ROUTE_BENCH_PREP") or os.path.join(
+    VAL, "prep" if os.environ.get("ROUTE_SPLIT_TEES", "1") == "0" else "prep_split")    # split tee complexes (route_scene)
 
 
 def prep_path(slug, scene_kind, seed, router, ver=None):
@@ -418,6 +419,8 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
             pv = (ver or scene_version()).split("_", 1)[1]
             pd = (dict(pd[0], _maps=RL.bench_maps(x["slug"], sc0, pv).bind(pd[0]["co"]["pj"])), pd[1])
             Pb = bench_probs(x["slug"], pv)
+            if Pb is not None:
+                pd[0]["_maps"].green, pd[0]["_maps"].tee = Pb[1], Pb[2]     # P(green) / P(tee): virtual end anchors
             if Pb is not None:                           # detector p / map flag of each candidate (the gate reads them)
                 sca, _ = RL.augment_scene(sc0, Pb)
                 pd[0]["_gattr"], pd[0]["_tattr"] = RL.obj_attrs(pd[0], sca, pd[0]["_maps"])
@@ -595,12 +598,15 @@ def cmd_gate(a):
     te = gate_rows(json.load(open(a.test))["courses"]) if a.test else []
     w = RG.fit(tr)
     ct, ce = RG.curve(tr, w), RG.curve(te, w)
-    thr = RG.pick_threshold(ct, len(tr), min_shown=RG.MIN_SHOWN)
+    thr = RG.pick_threshold(ct, len(tr), min_shown=RG.MIN_SHOWN, min_ratio=RG.MIN_RATIO)
+    thr_any = RG.pick_threshold(ct, len(tr), min_shown=RG.MIN_SHOWN)        # without the ratio rule (reported)
     def at(cur, t):
         s = [r for r in cur if r["threshold"] >= t]
         return s[-1] if s else dict(shown=0, right=0, precision=None)
     res = dict(w=w, feats=RG.FEATS, threshold=thr, fitted_on=a.train, train_courses=len(tr), test_courses=len(te),
-               train_at_threshold=at(ct, thr), test_at_threshold=at(ce, thr), train_curve=ct[:40], test_curve=ce[:40])
+               train_at_threshold=at(ct, thr), test_at_threshold=at(ce, thr),
+               threshold_min_shown_only=thr_any, train_at_min_shown_only=at(ct, thr_any),
+               test_at_min_shown_only=at(ce, thr_any), train_curve=ct[:40], test_curve=ce[:40])
     log(json.dumps({k: v for k, v in res.items() if not k.endswith("curve")}))
     if a.write:
         json.dump(res, open(RG.PARAMS, "w"), indent=1)

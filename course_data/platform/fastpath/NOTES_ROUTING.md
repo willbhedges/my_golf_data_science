@@ -130,3 +130,62 @@ and Hawk's Point blocked, Remsen a draft, Makena North no build.
 Not done (detection-side handoffs): splitting tee complexes that serve two hole starts by hole direction (29 of 963
 on the detector's test 40), and practice greens taken as hole greens (15 of 77). Both are behind the sequence errors
 that remain. A per-hole floor (every hole p >= 0.5) on top of P(all) is the next gate idea once more courses clear it.
+
+## State 2026-11-16 (latest): split tee complexes, virtual greens on image evidence, per-hole confidence in gate.json
+
+Measured on the d0+yall bench (detector feae37f33), train out-of-fold, test read once at the end.
+
+What changed (router v2, all defaults):
+* `route_scene.split_complex` / `SPLIT_TEES` (env `ROUTE_SPLIT_TEES`, default 1): a scene tee complex spanning >= 25 yd
+  whose boxes have a >= 6 yd gap along its long axis is also offered as its two halves (`<id>/a`, `<id>/b`). In
+  solve2 the whole complex clashes with each half (tee bit = its own | both halves'), the halves not with each other,
+  so two holes can start from one merged complex without the reuse cost. The learned models were refitted on the new
+  candidates (route_learn tables `cache/val/learn/split`, prep `cache/val/prep_split`, sc overrides
+  `cache/val/sc_split`; route_learn_model.pkl is this fit).
+* `solve2.refine_virtual` (V2_PARAMS refine=1): a virtual green (VG: tee found, green not) is moved from the card
+  ring onto the strongest U-Net P(green) spot (>= 0.3) at 0.70-1.08 x card yards from its tee (fairway along the line
+  as a bonus, never within 18 yd of a green the routing uses), else onto a fairway centreline end at card distance
+  (+15 yd). Virtual tees stay on the ring (moving them onto P(tee) / fairway starts: +1 / -4 holes on train).
+  Maps carry optional `green` / `tee` channels (route_learn.corridor_maps; the bench takes them from the cached probs).
+* V2_PARAMS w_s 0.75 (loop start / end weight; coordinate-descent on train, everything else flat).
+* gate: route_gate.pick_threshold had a bug (it stopped at the first row below MIN_SHOWN, so it could never pick a
+  threshold); fixed, plus MIN_RATIO = 1.25 (the threshold must sit 25 % above the best-scored wrong train course).
+  gate.json gains `routing` = p_all, threshold, per-hole calibrated P(hole right) `p_holes` and `unsure` (p < 0.5),
+  for a draft view; shown / not shown is unchanged (p_all + hard blocks). Per-hole calibration (train out-of-fold /
+  test): AUC 0.77 / 0.82, log-loss 0.43 / 0.43; bins 0.85-0.95 -> 0.92 / 0.89 right, 0.7-0.85 -> 0.81 / 0.77.
+
+Bench (web-card courses, holes right / all-right):
+
+| split | before (v2, d0+yall) | now |
+|---|---|---|
+| train (43, out-of-fold) | 75.9 % / 6 | 76.2 % / 11 |
+| test (28) | 73.7 % / 5 | 73.7 % / 7 |
+
+Gate refit on the new train results: willowhill 0.32, metamora 0.195, hatherly 0.159 all right, then sun_hills 0.137
+wrong. MIN_SHOWN alone would give 0.159 (train 3 / 3 right; test: no course clears it, the top test course somerby
+0.142 is wrong). With MIN_RATIO the threshold stays 1.1: nothing is shown.
+
+Tried, measured on train, not kept (code left off by default):
+* practice-green model (`route_learn.prac_features` / `cmd_prac`, kind 'p' -> sc 'pp', solver `w_pr`): labels = OSM
+  greens ending no hole way, minus those a detected tee plays into (other courses on 27 / 36-hole sites); out-of-fold
+  AUC 0.92, but as a cost (w_pr 1-2) it moved 1-3 holes either way (net 0). The practice greens the router takes are
+  mostly small U-Net map greens near the clubhouse where the true green is undetected, and penalising them only
+  hands the hole to a virtual end.
+* dropping card tee sets that do not follow the card's other sets (`solve2.consistent_sets`, set_corr): derryfield's
+  odd set is in fact useful there (-12 holes); off.
+* final local search: every pairwise swap of two positions, the nine swap and each nine reversed, scored by the full
+  objective (fixed-assignment beam): none of the 42 train routings improves. The beam is at a local optimum of the
+  objective; the remaining numbering errors are objective errors (the true routing costs more than the chosen one on
+  every train course, `oracle` check), not search errors.
+* tee box choice by the median card set / the middle box / blended: -0.3 to -0.4 pts.
+* per-hole gate with neighbour-hole margin / card fit: train out-of-fold AUC 0.769 -> 0.764; not kept.
+
+Reproduce: `ROUTE_BENCH_PROBS=d0+yall ROUTE_LEARN_VER=feae37f33_d0+yall ROUTE_LEARN_KINDS=h,w,s,e` and
+`route_bench.py eval --scene fast --router v2 --card-only --prep --ver feae37f33_d0+yall` with
+`ROUTE_BENCH_SC=cache/val/sc_split/cv` (train) / `cache/val/sc_split/test` (test); the overrides come from the same
+env + `route_learn.py table|cv|fit --out cache/val/sc_split` after an eval with --prep. Renders (green right, red wrong):
+cache/val/render/v3_{ozaukee_wi,south_hills_ca,green_harbor_ma,woods_hole_ma}.jpg.
+
+Blind loop after the change (all 20): tier A / B / C statuses, picks and flagged picks identical to the previous run;
+D: Sunset and Remsen drafts (Remsen P(all) 0.104, hole 9 the unsure one in gate.json routing), Glenwild and Hawk's
+Point blocked, Makena North no build. Nothing shown.

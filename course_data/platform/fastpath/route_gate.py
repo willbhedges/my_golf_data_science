@@ -29,6 +29,9 @@ MARGIN_CAP = 12.0
 MIN_SHOWN = 3        # a threshold counts only when at least this many train courses clear it, all of them right: with
                      # 2 (d0+yall: willowhill 0.33, hatherly 0.17, then billy_caldwell 0.10 wrong) the blind loop's
                      # Remsen sat at 0.170 against 0.174, too thin a margin to show a course on
+MIN_RATIO = 1.25     # ... and the threshold must sit 25 % above the best-scored wrong train course: 2026-11-16 (split tees,
+                     # anchored virtual greens) 3 train courses clear 0.159, the next is wrong at 0.137 (ratio 1.15) and
+                     # the top test course, wrong, scores 0.142
 
 
 def hole_x(h):
@@ -159,14 +162,16 @@ def curve(courses, w):
     return out
 
 
-def pick_threshold(cur, n_courses, min_shown=1):
-    """the lowest threshold whose shown set is still all right (precision 1.0); 1.1 (show nothing) when none"""
+def pick_threshold(cur, n_courses, min_shown=1, min_ratio=1.0):
+    """the lowest threshold whose shown set is still all right (precision 1.0) with at least min_shown courses above
+    it, and at least min_ratio times the P(all) of the best-scored wrong course; 1.1 (show nothing) when none"""
     best = 1.1
+    wrong = next((r["threshold"] for r in cur if r["right"] != r["shown"]), 0.0)
     for r in cur:
-        if r["right"] == r["shown"] and r["shown"] >= min_shown:
-            best = r["threshold"]
-        else:
+        if r["right"] != r["shown"]:
             break
+        if r["shown"] >= min_shown and r["threshold"] >= min_ratio * wrong:
+            best = r["threshold"]
     return best
 
 

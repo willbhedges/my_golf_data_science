@@ -32,7 +32,9 @@ sys.path[:0] = [HERE, os.path.dirname(HERE)]
 CACHE = os.environ.get("FASTPATH_CACHE") or os.path.join(HERE, "cache")
 ROUTER = os.environ.get("ROUTE_LEARN_ROUTER", "v2")          # the bench prep the tables are built on
 VER = os.environ.get("ROUTE_LEARN_VER", "2ef0018e4_d0")         # bench scene version (detector commit _ probs variant)
-LEARN = os.path.join(CACHE, "val", "learn", ROUTER + ("" if VER == "2ef0018e4_d0" else "_" + VER))
+LEARN = os.environ.get("ROUTE_LEARN_DIR") or (
+    os.path.join(CACHE, "val", "learn", ROUTER + ("" if VER == "2ef0018e4_d0" else "_" + VER))
+    if os.environ.get("ROUTE_SPLIT_TEES", "1") == "0" else os.path.join(CACHE, "val", "learn", "split"))
 MODEL = os.path.join(HERE, "route_learn_model.pkl")
 CLASSES = ("background", "green", "tee", "fairway", "bunker", "water")
 TREE_M = 3.0
@@ -47,6 +49,7 @@ class Maps:
         self.crs, self.tf = crs, transform
         self.H, self.W = fair.shape
         self.A = None
+        self.green = self.tee = None          # optional U-Net P(green) / P(tee) (uint8): solve2.refine_virtual
 
     def bind(self, pj):
         """affine local yd (x, y) -> (row, col), fitted on a grid of points through pj.inv + the UTM transform"""
@@ -92,8 +95,10 @@ def corridor_maps(P, grid, chm=None, hag=None):
         tree = (np.nan_to_num(chm, nan=0.0) >= TREE_M).astype(np.uint8)
     else:
         tree = np.zeros(f.shape, np.uint8)
-    return Maps(u8(f), turf, u8(P[CLASSES.index("water")].astype(np.float32)),
-                u8(P[CLASSES.index("bunker")].astype(np.float32)), tree, grid["crs"], grid["transform"])
+    M = Maps(u8(f), turf, u8(P[CLASSES.index("water")].astype(np.float32)),
+             u8(P[CLASSES.index("bunker")].astype(np.float32)), tree, grid["crs"], grid["transform"])
+    M.green, M.tee = u8(g), u8(t)
+    return M
 
 
 def warp_chm(path, grid):
@@ -268,7 +273,7 @@ def obj_attrs(d, scene, M):
                    float(g.get("kind") == "map"), float(M.sample(xy[None], "turf")[0])])
     ta = []
     for t in co["T"]:
-        o = ts.get(t["id"]) or {}
+        o = ts.get(t["id"].split("/")[0]) or {}
         ta.append([float(o.get("p", np.nan) or np.nan), float(len(t["pts"])), float(o.get("length_m") or np.nan)])
     return np.asarray(ga, float).reshape(-1, 4), np.asarray(ta, float).reshape(-1, 3)
 
@@ -349,6 +354,103 @@ def walk_features(d, M, ph=None):
     back = np.sum(din[wp[:, 0]] * dw, 1)
     return np.c_[st["turf_mean"], st["tree_mean"], best[wp[:, 1]], np.hypot(*dw.T), own, tout, cos_in, rank_x,
                  rel_x, back]
+
+
+# ----------------------------------------------------------------------------- practice greens
+PXF = ["pr_club", "pr_club_rk", "pr_park", "pr_area", "pr_p", "pr_map", "pr_ph1", "pr_ph2", "pr_ng60", "pr_ng120",
+       "pr_nt60", "pr_dgreen", "pr_pe", "pr_appr", "pr_bunker", "pr_turf", "pr_cen_rk"]
+
+
+def prac_features(d, M):
+    """[ng, len(PXF)] per candidate green: what a practice / putting green looks like (near the clubhouse and car
+    parks, small, next to other greens, no tee playing into it, no fairway corridor leading in, few bunkers)"""
+    co, geo = d["co"], d["geo"]
+    G = np.asarray(co["G"], float)
+    ng = len(G)
+    if not ng:
+        return np.zeros((0, len(PXF)))
+    club = co.get("club")
+    dc = np.hypot(*(G - np.asarray(club, float)).T) if club is not None else np.full(ng, np.nan)
+    rk = np.argsort(np.argsort(np.where(np.isnan(dc), 1e9, dc))).astype(float)
+    pk = np.asarray(co.get("park"), float).reshape(-1, 2)
+    dp = np.min(np.hypot(G[:, None, 0] - pk[None, :, 0], G[:, None, 1] - pk[None, :, 1]), 1) if len(pk) \
+        else np.full(ng, np.nan)
+    ga = d.get("_gattr")
+    ga = np.full((ng, 4), np.nan) if ga is None else ga
+    Ph = ph_matrix(d)
+    srt = -np.sort(-Ph, axis=0) if Ph.shape[0] else np.zeros((2, ng))
+    ph1 = srt[0] if len(srt) else np.zeros(ng)
+    ph2 = srt[1] if len(srt) > 1 else np.zeros(ng)
+    Dgg = np.hypot(G[:, None, 0] - G[None, :, 0], G[:, None, 1] - G[None, :, 1])
+    np.fill_diagonal(Dgg, np.inf)
+    Tc = np.asarray(geo["Tc"], float).reshape(-1, 2)
+    Dgt = np.hypot(G[:, None, 0] - Tc[None, :, 0], G[:, None, 1] - Tc[None, :, 1]) if len(Tc) else np.full((ng, 1), np.inf)
+    pe = np.asarray(d["sc"].get("pe", np.zeros(ng)), float)
+    # approach corridor: best fairway mean on a line 40 -> 160 yd out from the green, over 16 bearings
+    ang = np.linspace(0, 2 * np.pi, 16, endpoint=False)
+    U = np.c_[np.cos(ang), np.sin(ang)]
+    s = np.linspace(40, 160, 9)
+    Q = G[:, None, None, :] + U[None, :, None, :] * s[None, None, :, None]
+    appr = M.sample(Q, "fair").mean(-1).max(-1)
+    ring = np.c_[np.cos(ang), np.sin(ang)]
+    bk = np.mean([M.sample(G[:, None, :] + r * ring[None], "bunker").mean(1) for r in (12.0, 22.0)], 0)
+    tu = np.mean([M.sample(G[:, None, :] + r * ring[None], "turf").mean(1) for r in (15.0, 30.0)], 0)
+    cen = G.mean(0)
+    crk = np.argsort(np.argsort(-np.hypot(*(G - cen).T))).astype(float)
+    return np.c_[dc, rk, dp, ga[:, 1], ga[:, 0], ga[:, 2], ph1, ph2, (Dgg < 60).sum(1), (Dgg < 120).sum(1),
+                 (Dgt < 60).sum(1), Dgg.min(1) if ng > 1 else np.full(ng, 999.0), pe, appr, bk, tu, crk]
+
+
+def prac_labels(d, fc):
+    """1 for a candidate green within 20 yd of an OSM golf=green that ends no hole way (+ 30 yd), i.e. a practice /
+    putting green (or a green of another course on the site); fc: the course's full OSM feature collection"""
+    import routing as R
+    pj = d["co"]["pj"]
+    G = np.asarray(d["co"]["G"], float)
+    truth = R.truth_from_fc(fc)
+    ends = np.array([pj.fwd(*np.asarray(t["line"], float)[-1, :2]) for t in truth.values()]).reshape(-1, 2)
+    og = []
+    for f in fc.get("features", []):
+        p = f.get("properties") or {}
+        if p.get("golf") != "green":
+            continue
+        g = f["geometry"]
+        rings = [g["coordinates"][0]] if g["type"] == "Polygon" else \
+            ([q[0] for q in g["coordinates"]] if g["type"] == "MultiPolygon" else [])
+        for r in rings:
+            a = np.asarray(r, float)
+            og.append(pj.fwd(a[:, 0].mean(), a[:, 1].mean()))
+    og = np.asarray(og, float).reshape(-1, 2)
+    if len(ends):
+        og = og[np.min(np.hypot(og[:, None, 0] - ends[None, :, 0], og[:, None, 1] - ends[None, :, 1]), 1) > 30]
+    if not len(og) or not len(G):
+        return np.zeros(len(G), int)
+    return (np.min(np.hypot(G[:, None, 0] - og[None, :, 0], G[:, None, 1] - og[None, :, 1]), 1) < 20).astype(int)
+
+
+def prac_table(slug, split, ver=None, sc_dir=None):
+    """practice-green feature / label table of a bench course (cache/val/learn/.../prac/<slug>.pkl); the learned
+    pe / ph of sc_dir (out-of-fold for train) are used when given"""
+    import route_bench as RB
+    p = os.path.join(LEARN, "prac", slug + ".pkl")
+    if os.path.exists(p):
+        return pickle.load(open(p, "rb"))
+    ver = ver or VER
+    x, pd = _prep(slug, split, ver)
+    if pd is None:
+        return None
+    d, _ = pd
+    if sc_dir and os.path.exists(os.path.join(sc_dir, slug + ".pkl")):
+        d = dict(d, sc=dict(d["sc"], **pickle.load(open(os.path.join(sc_dir, slug + ".pkl"), "rb"))))
+    scene = RB.rd(RB.scene_path(slug, ver))
+    M = bench_maps(slug, scene, ver.split("_", 1)[1]).bind(d["co"]["pj"])
+    scene, _ = augment_scene(scene, RB.bench_probs(slug, ver.split("_", 1)[1]))
+    d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)
+    fc, _, _ = RB.course_files(slug)
+    out = dict(slug=slug, px=prac_features(d, M), yp=prac_labels(d, fc), yh=np.asarray(labels(d, x["truth"])["g2h"]) > 0)
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    pickle.dump(out, open(p, "wb"))
+    return out
 
 
 # ----------------------------------------------------------------------------- labels
@@ -545,6 +647,71 @@ def cmd_fit(out_dir, kinds=KINDS):
     print("fit on", len(ts), "train courses ->", MODEL)
 
 
+PPAR = dict(n_estimators=200, learning_rate=0.05, num_leaves=7, min_child_samples=15, subsample=0.8, subsample_freq=1,
+            colsample_bytree=0.8, reg_lambda=2.0, verbose=-1, n_jobs=2)
+
+
+def _prac_rows(split):
+    import route_bench as RB
+    out = []
+    for c in RB.courses(split):
+        q = os.path.join(LEARN, "prac", c["slug"] + ".pkl")
+        if os.path.exists(q):
+            t = pickle.load(open(q, "rb"))
+            t["state"] = c["state"]
+            out.append(t)
+    return out
+
+
+def _pmask(t):
+    """rows the practice model trains on: OSM non-hole greens that a detected tee plays into well (ph >= 0.5) are
+    greens of another course on the site (27 / 36-hole sites), not practice greens: left out"""
+    return ~((t["yp"] == 1) & (t["px"][:, PXF.index("pr_ph1")] >= 0.5))
+
+
+def _pfit(ts):
+    import lightgbm as lgb
+    m = lgb.LGBMClassifier(**PPAR)
+    m.fit(np.vstack([t["px"][_pmask(t)] for t in ts]), np.concatenate([t["yp"][_pmask(t)] for t in ts]))
+    return m
+
+
+def _merge_sc(out_dir, slug, extra):
+    q = os.path.join(out_dir, slug + ".pkl")
+    cur = pickle.load(open(q, "rb")) if os.path.exists(q) else {}
+    cur.update(extra)
+    pickle.dump(cur, open(q, "wb"))
+
+
+def cmd_prac(out_dir, k=5):
+    """practice-green model: out-of-fold P(practice) per train green -> out_dir/cv, all-train fit -> the model file
+    (models['p']) and out_dir/test. The sc override pickles there gain 'pp' (copy sc5's first)."""
+    from sklearn.metrics import roc_auc_score
+    ts = _prac_rows("train")
+    states = sorted({t["state"] for t in ts})
+    fold = {s: i % k for i, s in enumerate(states)}
+    ys, ps = [], []
+    for i in range(k):
+        tr = [t for t in ts if fold[t["state"]] != i]
+        m = _pfit(tr)
+        for t in ts:
+            if fold[t["state"]] == i and len(t["px"]):
+                p = m.predict_proba(t["px"])[:, 1]
+                _merge_sc(os.path.join(out_dir, "cv"), t["slug"], dict(pp=p))
+                ys.append(t["yp"][_pmask(t)])
+                ps.append(p[_pmask(t)])
+    print("practice AUC (train out-of-fold)", round(roc_auc_score(np.concatenate(ys), np.concatenate(ps)), 4))
+    m = _pfit(ts)
+    if os.path.exists(MODEL):
+        mm = pickle.load(open(MODEL, "rb"))
+        mm["models"]["p"] = m
+        mm["PXF"] = PXF
+        pickle.dump(mm, open(MODEL, "wb"))
+    for t in _prac_rows("test"):
+        if len(t["px"]):
+            _merge_sc(os.path.join(out_dir, "test"), t["slug"], dict(pp=m.predict_proba(t["px"])[:, 1]))
+
+
 _MODEL = {}
 
 
@@ -564,6 +731,8 @@ def rescore(d, scene, M, card=None, n_holes=None, path=MODEL):
     t = dict(hx=d["hx"], hx2=pair_features(d, M), wx=d["wx"], wx2=walk_features(d, M), sx=loop_x(d, "start"),
              ex=loop_x(d, "end"))
     d["sc"] = dict(d["sc"], **predict(m["models"], t))
+    if m["models"].get("p") is not None and len(d["co"]["G"]):
+        d["sc"]["pp"] = m["models"]["p"].predict_proba(prac_features(d, M))[:, 1]
     d["_maps"] = M
     d.pop("_pw", None)
     return True
@@ -603,3 +772,5 @@ if __name__ == "__main__":
         auc_report("train", os.path.join(a.out, "cv"))
     elif a.cmd == "fit":
         cmd_fit(os.path.join(a.out, "test"))
+    elif a.cmd == "prac":
+        cmd_prac(a.out)

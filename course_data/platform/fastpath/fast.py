@@ -322,7 +322,17 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                 blocked.append(f"{len(confirm)} holes rest on imagery detections (more than {MAX_CONFIRMS}): shown only after "
                                "the golfer confirms them (confirm_scene.json)")
             pc.write_json(os.path.join(pkg_dir, "confirm_scene.json"), route_scene.confirm_questions(package, scene_routed))
-    pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked, confirm=confirm, draft=draft))
+    gate_out = dict(blocked=blocked, confirm=confirm, draft=draft)
+    if scene_routed is not None and scene_routed.get("gate"):
+        # per-hole calibrated P(hole numbered right) next to the course-level P(all): a draft view can mark the unsure
+        # holes; what is shown is decided by p_all and the hard blocks only
+        gg = scene_routed["gate"]
+        ph = gg.get("p_holes") or []
+        refs = [h.get("ref") for h in scene_routed.get("hole_features") or []]
+        gate_out["routing"] = dict(p_all=gg.get("p_all"), threshold=gg.get("threshold"),
+                                   p_holes={str(r): p for r, p in zip(refs, ph)},
+                                   unsure=[str(r) for r, p in zip(refs, ph) if p < 0.5])
+    pc.write_json(os.path.join(pkg_dir, "gate.json"), gate_out)
     T["total"] = round(time.time() - t_all, 2)
     T["stages"] = package.get("stages")
     pc.write_json(os.path.join(pkg_dir, "timing.json"), T)

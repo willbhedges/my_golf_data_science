@@ -1,20 +1,20 @@
 {
  "w": [
-  -0.2789787069777333,
-  0.30525084785541273,
-  -1.2124976234682239,
-  -0.6359945933774743,
-  -0.4564400773905178,
-  -1.8317980972179173,
-  -0.31854490126914237,
-  0.07933157520185909,
-  -0.32584516198231817,
-  0.8752705929671203,
-  -0.2029319933752349,
-  -0.3548552552528167,
-  1.36055288516966,
-  -0.4680252342635146,
-  0.43688108529461034
+  0.0790605637056199,
+  1.0075554402692,
+  -1.343878837704313,
+  -0.5998512492958677,
+  -0.22126736383157333,
+  -0.8436795598493727,
+  -0.1337483823914505,
+  -0.5061393474871502,
+  -0.06161291212427631,
+  0.5668682352425836,
+  -0.27903694284182473,
+  -0.19757247629811864,
+  0.38829909759239223,
+  -1.254366858246587,
+  0.650765371595064
  ],
  "feats": [
   "margin_c",
@@ -33,7 +33,7 @@
   "t_l"
  ],
  "threshold": 1.1,
- "fitted_on": "route_bench.py eval --scene fast --router v2 --split train (detector feae37f33_d0+yall, route_learn out-of-fold scores, V2_PARAMS); test: route_learn all-train fit",
+ "fitted_on": "route_bench.py eval --scene fast --router v2 --split train (detector feae37f33_d0+yall, split tee complexes, anchored virtual greens, route_learn out-of-fold scores cache/val/sc_split/cv, V2_PARAMS); test: route_learn all-train fit",
  "train_courses": 42,
  "test_courses": 27,
  "train_at_threshold": {
@@ -46,411 +46,422 @@
   "right": 0,
   "precision": null
  },
+ "threshold_min_shown_only": 0.15859,
+ "train_at_min_shown_only": {
+  "threshold": 0.15859,
+  "shown": 3,
+  "right": 3,
+  "precision": 1.0
+ },
+ "test_at_min_shown_only": {
+  "shown": 0,
+  "right": 0,
+  "precision": null
+ },
  "train_curve": [
   {
-   "threshold": 0.32858,
+   "threshold": 0.31957,
    "shown": 1,
    "right": 1,
    "precision": 1.0
   },
   {
-   "threshold": 0.17387,
+   "threshold": 0.19473,
    "shown": 2,
    "right": 2,
    "precision": 1.0
   },
   {
-   "threshold": 0.10591,
+   "threshold": 0.15859,
    "shown": 3,
-   "right": 2,
-   "precision": 0.667
-  },
-  {
-   "threshold": 0.10004,
-   "shown": 4,
-   "right": 2,
-   "precision": 0.5
-  },
-  {
-   "threshold": 0.09909,
-   "shown": 5,
-   "right": 2,
-   "precision": 0.4
-  },
-  {
-   "threshold": 0.09478,
-   "shown": 6,
-   "right": 2,
-   "precision": 0.333
-  },
-  {
-   "threshold": 0.08415,
-   "shown": 7,
-   "right": 2,
-   "precision": 0.286
-  },
-  {
-   "threshold": 0.07886,
-   "shown": 8,
    "right": 3,
-   "precision": 0.375
-  },
-  {
-   "threshold": 0.07616,
-   "shown": 9,
-   "right": 3,
-   "precision": 0.333
-  },
-  {
-   "threshold": 0.07505,
-   "shown": 10,
-   "right": 3,
-   "precision": 0.3
-  },
-  {
-   "threshold": 0.06888,
-   "shown": 11,
-   "right": 3,
-   "precision": 0.273
-  },
-  {
-   "threshold": 0.05493,
-   "shown": 12,
-   "right": 4,
-   "precision": 0.333
-  },
-  {
-   "threshold": 0.05146,
-   "shown": 13,
-   "right": 4,
-   "precision": 0.308
-  },
-  {
-   "threshold": 0.04872,
-   "shown": 14,
-   "right": 4,
-   "precision": 0.286
-  },
-  {
-   "threshold": 0.03823,
-   "shown": 15,
-   "right": 4,
-   "precision": 0.267
-  },
-  {
-   "threshold": 0.03464,
-   "shown": 16,
-   "right": 4,
-   "precision": 0.25
-  },
-  {
-   "threshold": 0.03073,
-   "shown": 17,
-   "right": 4,
-   "precision": 0.235
-  },
-  {
-   "threshold": 0.02185,
-   "shown": 18,
-   "right": 5,
-   "precision": 0.278
-  },
-  {
-   "threshold": 0.01118,
-   "shown": 19,
-   "right": 5,
-   "precision": 0.263
-  },
-  {
-   "threshold": 0.01105,
-   "shown": 20,
-   "right": 5,
-   "precision": 0.25
-  },
-  {
-   "threshold": 0.00748,
-   "shown": 21,
-   "right": 5,
-   "precision": 0.238
-  },
-  {
-   "threshold": 0.00704,
-   "shown": 22,
-   "right": 5,
-   "precision": 0.227
-  },
-  {
-   "threshold": 0.00498,
-   "shown": 23,
-   "right": 5,
-   "precision": 0.217
-  },
-  {
-   "threshold": 0.00446,
-   "shown": 24,
-   "right": 5,
-   "precision": 0.208
-  },
-  {
-   "threshold": 0.0039,
-   "shown": 25,
-   "right": 5,
-   "precision": 0.2
-  },
-  {
-   "threshold": 0.00257,
-   "shown": 26,
-   "right": 5,
-   "precision": 0.192
-  },
-  {
-   "threshold": 0.00188,
-   "shown": 27,
-   "right": 5,
-   "precision": 0.185
-  },
-  {
-   "threshold": 0.00109,
-   "shown": 28,
-   "right": 5,
-   "precision": 0.179
-  },
-  {
-   "threshold": 0.00067,
-   "shown": 29,
-   "right": 5,
-   "precision": 0.172
-  },
-  {
-   "threshold": 0.0005,
-   "shown": 30,
-   "right": 5,
-   "precision": 0.167
-  },
-  {
-   "threshold": 0.00048,
-   "shown": 31,
-   "right": 5,
-   "precision": 0.161
-  },
-  {
-   "threshold": 0.00036,
-   "shown": 32,
-   "right": 5,
-   "precision": 0.156
-  },
-  {
-   "threshold": 8e-05,
-   "shown": 33,
-   "right": 5,
-   "precision": 0.152
-  },
-  {
-   "threshold": 5e-05,
-   "shown": 34,
-   "right": 5,
-   "precision": 0.147
-  },
-  {
-   "threshold": 3e-05,
-   "shown": 35,
-   "right": 5,
-   "precision": 0.143
-  },
-  {
-   "threshold": 1e-05,
-   "shown": 36,
-   "right": 6,
-   "precision": 0.167
-  },
-  {
-   "threshold": 0.0,
-   "shown": 37,
-   "right": 6,
-   "precision": 0.162
-  },
-  {
-   "threshold": 0.0,
-   "shown": 38,
-   "right": 6,
-   "precision": 0.158
-  },
-  {
-   "threshold": 0.0,
-   "shown": 39,
-   "right": 6,
-   "precision": 0.154
-  },
-  {
-   "threshold": 0.0,
-   "shown": 40,
-   "right": 6,
-   "precision": 0.15
-  }
- ],
- "test_curve": [
-  {
-   "threshold": 0.10311,
-   "shown": 1,
-   "right": 1,
    "precision": 1.0
   },
   {
-   "threshold": 0.101,
-   "shown": 2,
-   "right": 2,
-   "precision": 1.0
+   "threshold": 0.13746,
+   "shown": 4,
+   "right": 3,
+   "precision": 0.75
   },
   {
-   "threshold": 0.09532,
-   "shown": 3,
-   "right": 2,
+   "threshold": 0.12339,
+   "shown": 5,
+   "right": 4,
+   "precision": 0.8
+  },
+  {
+   "threshold": 0.11135,
+   "shown": 6,
+   "right": 4,
    "precision": 0.667
   },
   {
-   "threshold": 0.09079,
-   "shown": 4,
-   "right": 2,
-   "precision": 0.5
-  },
-  {
-   "threshold": 0.08866,
-   "shown": 5,
-   "right": 3,
-   "precision": 0.6
-  },
-  {
-   "threshold": 0.07756,
-   "shown": 6,
-   "right": 3,
-   "precision": 0.5
-  },
-  {
-   "threshold": 0.07205,
+   "threshold": 0.09373,
    "shown": 7,
    "right": 4,
    "precision": 0.571
   },
   {
-   "threshold": 0.05002,
+   "threshold": 0.07986,
    "shown": 8,
    "right": 4,
    "precision": 0.5
   },
   {
-   "threshold": 0.03775,
+   "threshold": 0.06999,
    "shown": 9,
-   "right": 4,
-   "precision": 0.444
+   "right": 5,
+   "precision": 0.556
   },
   {
-   "threshold": 0.03757,
+   "threshold": 0.06567,
    "shown": 10,
-   "right": 4,
-   "precision": 0.4
+   "right": 5,
+   "precision": 0.5
   },
   {
-   "threshold": 0.02429,
+   "threshold": 0.06019,
    "shown": 11,
-   "right": 4,
-   "precision": 0.364
+   "right": 5,
+   "precision": 0.455
   },
   {
-   "threshold": 0.02308,
+   "threshold": 0.04956,
    "shown": 12,
    "right": 5,
    "precision": 0.417
   },
   {
-   "threshold": 0.02176,
+   "threshold": 0.04818,
    "shown": 13,
    "right": 5,
    "precision": 0.385
   },
   {
-   "threshold": 0.00969,
+   "threshold": 0.04271,
    "shown": 14,
-   "right": 5,
-   "precision": 0.357
+   "right": 6,
+   "precision": 0.429
   },
   {
-   "threshold": 0.00683,
+   "threshold": 0.04267,
    "shown": 15,
-   "right": 5,
+   "right": 6,
+   "precision": 0.4
+  },
+  {
+   "threshold": 0.03626,
+   "shown": 16,
+   "right": 7,
+   "precision": 0.438
+  },
+  {
+   "threshold": 0.02894,
+   "shown": 17,
+   "right": 7,
+   "precision": 0.412
+  },
+  {
+   "threshold": 0.0255,
+   "shown": 18,
+   "right": 7,
+   "precision": 0.389
+  },
+  {
+   "threshold": 0.02369,
+   "shown": 19,
+   "right": 8,
+   "precision": 0.421
+  },
+  {
+   "threshold": 0.0231,
+   "shown": 20,
+   "right": 8,
+   "precision": 0.4
+  },
+  {
+   "threshold": 0.0228,
+   "shown": 21,
+   "right": 8,
+   "precision": 0.381
+  },
+  {
+   "threshold": 0.02171,
+   "shown": 22,
+   "right": 8,
+   "precision": 0.364
+  },
+  {
+   "threshold": 0.01446,
+   "shown": 23,
+   "right": 8,
+   "precision": 0.348
+  },
+  {
+   "threshold": 0.01245,
+   "shown": 24,
+   "right": 8,
    "precision": 0.333
   },
   {
-   "threshold": 0.0039,
-   "shown": 16,
-   "right": 5,
+   "threshold": 0.01129,
+   "shown": 25,
+   "right": 8,
+   "precision": 0.32
+  },
+  {
+   "threshold": 0.01127,
+   "shown": 26,
+   "right": 8,
+   "precision": 0.308
+  },
+  {
+   "threshold": 0.00834,
+   "shown": 27,
+   "right": 9,
+   "precision": 0.333
+  },
+  {
+   "threshold": 0.00456,
+   "shown": 28,
+   "right": 9,
+   "precision": 0.321
+  },
+  {
+   "threshold": 0.00112,
+   "shown": 29,
+   "right": 9,
+   "precision": 0.31
+  },
+  {
+   "threshold": 0.00041,
+   "shown": 30,
+   "right": 9,
+   "precision": 0.3
+  },
+  {
+   "threshold": 0.00017,
+   "shown": 31,
+   "right": 9,
+   "precision": 0.29
+  },
+  {
+   "threshold": 0.00017,
+   "shown": 32,
+   "right": 10,
    "precision": 0.312
   },
   {
-   "threshold": 0.00306,
-   "shown": 17,
-   "right": 5,
+   "threshold": 8e-05,
+   "shown": 33,
+   "right": 10,
+   "precision": 0.303
+  },
+  {
+   "threshold": 6e-05,
+   "shown": 34,
+   "right": 10,
    "precision": 0.294
   },
   {
-   "threshold": 0.00134,
-   "shown": 18,
-   "right": 5,
-   "precision": 0.278
+   "threshold": 2e-05,
+   "shown": 35,
+   "right": 10,
+   "precision": 0.286
   },
   {
-   "threshold": 0.00029,
-   "shown": 19,
-   "right": 5,
-   "precision": 0.263
-  },
-  {
-   "threshold": 0.00028,
-   "shown": 20,
-   "right": 5,
-   "precision": 0.25
-  },
-  {
-   "threshold": 0.0002,
-   "shown": 21,
-   "right": 5,
-   "precision": 0.238
+   "threshold": 2e-05,
+   "shown": 36,
+   "right": 11,
+   "precision": 0.306
   },
   {
    "threshold": 1e-05,
+   "shown": 37,
+   "right": 11,
+   "precision": 0.297
+  },
+  {
+   "threshold": 0.0,
+   "shown": 38,
+   "right": 11,
+   "precision": 0.289
+  },
+  {
+   "threshold": 0.0,
+   "shown": 39,
+   "right": 11,
+   "precision": 0.282
+  },
+  {
+   "threshold": 0.0,
+   "shown": 40,
+   "right": 11,
+   "precision": 0.275
+  }
+ ],
+ "test_curve": [
+  {
+   "threshold": 0.14213,
+   "shown": 1,
+   "right": 0,
+   "precision": 0.0
+  },
+  {
+   "threshold": 0.11793,
+   "shown": 2,
+   "right": 1,
+   "precision": 0.5
+  },
+  {
+   "threshold": 0.10439,
+   "shown": 3,
+   "right": 1,
+   "precision": 0.333
+  },
+  {
+   "threshold": 0.09594,
+   "shown": 4,
+   "right": 2,
+   "precision": 0.5
+  },
+  {
+   "threshold": 0.09247,
+   "shown": 5,
+   "right": 3,
+   "precision": 0.6
+  },
+  {
+   "threshold": 0.08366,
+   "shown": 6,
+   "right": 4,
+   "precision": 0.667
+  },
+  {
+   "threshold": 0.08059,
+   "shown": 7,
+   "right": 4,
+   "precision": 0.571
+  },
+  {
+   "threshold": 0.05365,
+   "shown": 8,
+   "right": 4,
+   "precision": 0.5
+  },
+  {
+   "threshold": 0.05229,
+   "shown": 9,
+   "right": 4,
+   "precision": 0.444
+  },
+  {
+   "threshold": 0.04345,
+   "shown": 10,
+   "right": 5,
+   "precision": 0.5
+  },
+  {
+   "threshold": 0.0415,
+   "shown": 11,
+   "right": 6,
+   "precision": 0.545
+  },
+  {
+   "threshold": 0.04092,
+   "shown": 12,
+   "right": 6,
+   "precision": 0.5
+  },
+  {
+   "threshold": 0.03799,
+   "shown": 13,
+   "right": 6,
+   "precision": 0.462
+  },
+  {
+   "threshold": 0.03183,
+   "shown": 14,
+   "right": 6,
+   "precision": 0.429
+  },
+  {
+   "threshold": 0.0302,
+   "shown": 15,
+   "right": 6,
+   "precision": 0.4
+  },
+  {
+   "threshold": 0.02022,
+   "shown": 16,
+   "right": 6,
+   "precision": 0.375
+  },
+  {
+   "threshold": 0.00994,
+   "shown": 17,
+   "right": 6,
+   "precision": 0.353
+  },
+  {
+   "threshold": 0.00498,
+   "shown": 18,
+   "right": 6,
+   "precision": 0.333
+  },
+  {
+   "threshold": 0.00226,
+   "shown": 19,
+   "right": 7,
+   "precision": 0.368
+  },
+  {
+   "threshold": 0.0003,
+   "shown": 20,
+   "right": 7,
+   "precision": 0.35
+  },
+  {
+   "threshold": 7e-05,
+   "shown": 21,
+   "right": 7,
+   "precision": 0.333
+  },
+  {
+   "threshold": 2e-05,
    "shown": 22,
-   "right": 5,
-   "precision": 0.227
+   "right": 7,
+   "precision": 0.318
   },
   {
-   "threshold": 0.0,
+   "threshold": 2e-05,
    "shown": 23,
-   "right": 5,
-   "precision": 0.217
+   "right": 7,
+   "precision": 0.304
   },
   {
-   "threshold": 0.0,
+   "threshold": 1e-05,
    "shown": 24,
-   "right": 5,
-   "precision": 0.208
+   "right": 7,
+   "precision": 0.292
   },
   {
    "threshold": 0.0,
    "shown": 25,
-   "right": 5,
-   "precision": 0.2
+   "right": 7,
+   "precision": 0.28
   },
   {
    "threshold": 0.0,
    "shown": 26,
-   "right": 5,
-   "precision": 0.192
+   "right": 7,
+   "precision": 0.269
   },
   {
    "threshold": 0.0,
    "shown": 27,
-   "right": 5,
-   "precision": 0.185
+   "right": 7,
+   "precision": 0.259
   }
- ],
- "note": "precision 1.0 on train is reached at 0.17387 by 2 courses only (< MIN_SHOWN 3): threshold 1.1, nothing shown"
+ ]
 }

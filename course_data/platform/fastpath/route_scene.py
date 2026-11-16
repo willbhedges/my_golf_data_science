@@ -33,10 +33,37 @@ def _mods():
 MAX_GREENS_PER_HOLE, MAX_TEES_PER_HOLE, MAX_CAND = 2.0, 3.0, 60     # the joint solver's bitmask holds 63
 
 
-def candidates(fc, scene, p_green=P_GREEN, p_tee=P_TEE, n_holes=18):
+SPLIT_TEES = os.environ.get("ROUTE_SPLIT_TEES", "1") == "1"     # v2 default (route_bench train: all-right 8 -> 11)
+SPLIT_MIN_YD, SPLIT_GAP_YD = 25.0, 6.0
+
+
+def split_complex(pts, min_len=None, min_gap=None):
+    """a tee complex whose boxes may belong to two holes (boxes touching, so the detector merged them): split at the
+    largest gap between consecutive boxes along its long axis when it spans >= SPLIT_MIN_YD and that gap is >=
+    SPLIT_GAP_YD. -> [] or [boxes a, boxes b] (the routing keeps the whole complex as well)"""
+    min_len = SPLIT_MIN_YD if min_len is None else min_len
+    min_gap = SPLIT_GAP_YD if min_gap is None else min_gap
+    P = np.asarray(pts, float).reshape(-1, 2)
+    if len(P) < 2:
+        return []
+    c = P - P.mean(0)
+    w, v = np.linalg.eigh(c.T @ c)
+    s = c @ v[:, 1]
+    o = np.argsort(s)
+    if s[o[-1]] - s[o[0]] < min_len:
+        return []
+    gaps = np.diff(s[o])
+    j = int(np.argmax(gaps))
+    if gaps[j] < min_gap:
+        return []
+    return [[tuple(P[i]) for i in o[:j + 1]], [tuple(P[i]) for i in o[j + 1:]]]
+
+
+def candidates(fc, scene, p_green=P_GREEN, p_tee=P_TEE, n_holes=18, split_tees=None):
     C, F, M, S = _mods()
     from shapely.geometry import Polygon
     TR = C.TR
+    split_tees = SPLIT_TEES if split_tees is None else split_tees
     feats = (fc or {}).get("features", [])
     osm_g = [f for f in feats if (f.get("properties") or {}).get("golf") == "green"
              and (f.get("properties") or {}).get("inside_course") is not False]
@@ -113,6 +140,15 @@ def candidates(fc, scene, p_green=P_GREEN, p_tee=P_TEE, n_holes=18):
             a = math.radians(float(t["axis_deg"]))
             ax = (math.sin(a), math.cos(a))
         co["T"].append(dict(c=c, pts=bp, id="scene:" + t["id"], ax=ax or _axis(bp), p=0.9, src="scene"))
+    if split_tees:                                   # complexes that may serve two holes: their two halves as well
+        n0 = len(co["T"])
+        for k in range(n0):
+            tt = co["T"][k]
+            if tt["src"] != "scene" or len(co["T"]) >= MAX_CAND:
+                continue
+            for half, bp2 in zip("ab", split_complex(tt["pts"])):
+                co["T"].append(dict(c=tuple(np.mean(bp2, 0)), pts=bp2, id=tt["id"] + "/" + half, ax=_axis(bp2),
+                                    p=0.9, src="scene"))
     if not co["T"]:
         raise ValueError("no tees (OSM or detected)")
     co["T"] = co["T"][:MAX_CAND]
@@ -233,6 +269,8 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
         tee_box = pp.pop("tee_box", "far")
         mg = [0.0] * len(sol["seq"]) if nomg else S2.margins(sol, None)
         virt = S2.place_virtual(sol)
+        if pp.get("refine") and d.get("_maps") is not None:        # virtual ends onto P(green) / P(tee) / fairway ends
+            virt = S2.refine_virtual(sol, virt, d["_maps"], pp.get("refine_params"))
         pr2 = sol["pr"]
         holes = [(t, g) for k, t, g in sol["holes"]]
     else:
@@ -288,7 +326,7 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
         if g >= 0:
             used.append(co["Gid"][g])
         if t >= 0:
-            used.append(co["T"][t]["id"])
+            used.append(co["T"][t]["id"].split("/")[0])
         if "scene" in src.values() or "virtual" in src.values():
             det.append(str(i + 1))
         feats.append({"type": "Feature", "geometry": {"type": "LineString", "coordinates": line},
@@ -390,7 +428,7 @@ def needs_perception(fc, n_holes):
     return lines < 3 and (green < 0.8 * n_holes or tee < 0.8 * n_holes)
 
 
-V2_PARAMS = dict(c_vt=3.0, c_vg=4.0, tee_box="geom", w_x=3.0)     # route_bench tune on train (v2 scores)
+V2_PARAMS = dict(c_vt=3.0, c_vg=4.0, tee_box="geom", w_x=3.0, w_s=0.75, refine=1)   # route_bench tune on train (v2 scores)
 
 
 def route_v2(fc, scene, card, n_holes, P, hag=None, params=None):

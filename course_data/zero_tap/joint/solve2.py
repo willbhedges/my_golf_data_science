@@ -30,7 +30,8 @@ BIG = 1e6
 DEF2 = dict(S1.DEF, K=18, beam=3000, tee_reuse=1, c_vt=4.0, c_vg=5.0, c_miss=9.0, c_vv=2.0,
             ring_lo=0.82, ring_hi=1.03, v_base=0.4, v0=25.0, v1=45.0, v_max=9.0, start_v=2.5,
             card_tol=0.12, ph_card=0.002, reuse_cost=1.5, lag_iters=60, lag_step=1.0, w_tree=0.0,
-            n_bear=24, r_virt=0.95, w_cov=3.0, cov_min=0.35, par3_yd=250.0, w_ob=4.0, w_onob=3.0, w_obr=4.0, w_covl=0.0)
+            n_bear=24, r_virt=0.95, w_cov=3.0, cov_min=0.35, par3_yd=250.0, w_ob=4.0, w_onob=3.0, w_obr=4.0, w_covl=0.0,
+            w_pr=0.0, set_corr=0.0)
 
 REAL, VT, VG, MISS = 0, 1, 2, 3
 
@@ -49,6 +50,20 @@ def _corridor():
         spec.loader.exec_module(m)
         sys.modules["joint_corridor"] = m
     return m
+
+
+def consistent_sets(Y, min_corr=0.5):
+    """drop tee sets whose hole-by-hole yardages do not follow the card's other sets (correlation with their median
+    < min_corr): a set listed in another order (derryfield_nh's web card holds one) fits wrong holes at every
+    position, and the card cost takes the best set per position"""
+    if Y is None or len(Y) < 3 or not min_corr:
+        return Y
+    keep = []
+    for k in range(len(Y)):
+        med = np.median(np.delete(Y, k, axis=0), axis=0)
+        c = np.corrcoef(Y[k], med)[0, 1] if np.std(Y[k]) > 0 and np.std(med) > 0 else 1.0
+        keep.append(c >= min_corr)
+    return Y[np.asarray(keep)] if any(keep) else Y
 
 
 def ring_gap(D, y, lo, hi):
@@ -73,7 +88,7 @@ class Problem2:
         self.loop = 9 if N % 9 == 0 else N
         ng, nt = len(co["G"]), len(co["T"])
         self.ng, self.nt = ng, nt
-        self.Y = S1.card_sets(card, N)
+        self.Y = consistent_sets(S1.card_sets(card, N), P.get("set_corr", 0.0))
         ph = {(int(t), int(g)): float(p) for (t, g), p in zip(d["hp"], sc["ph"])}
         self.ph = ph
         # real candidates: per green its K best tees, anything decent, and (with a card) any pair whose play length
@@ -102,7 +117,13 @@ class Problem2:
         self.cg = np.array([g for k, t, g in cand])
         one = np.uint64(1)
         self.gbit = np.array([one << np.uint64(g) if g >= 0 else np.uint64(0) for k, t, g in cand], np.uint64)
-        self.tbit = np.array([one << np.uint64(t) if t >= 0 else np.uint64(0) for k, t, g in cand], np.uint64)
+        tb = [one << np.uint64(t) for t in range(nt)]
+        ids = [str(tt.get("id")) for tt in co["T"]]
+        pos = {v: j for j, v in enumerate(ids)}
+        for j, v in enumerate(ids):                  # a split complex's halves (route_scene.split_complex): the whole
+            if "/" in v and v.rsplit("/", 1)[0] in pos:   # complex clashes with each half, the halves not with each other
+                tb[pos[v.rsplit("/", 1)[0]]] |= one << np.uint64(j)
+        self.tbit = np.array([tb[t] if t >= 0 else np.uint64(0) for k, t, g in cand], np.uint64)
         self.reuse = float(P["reuse_cost"]) if P.get("tee_reuse") else None   # a complex may serve 2+ holes, at a cost
         Gp = np.clip(co["Gp"], 0.03, 0.97)
         Tp = np.clip(np.array([t["p"] for t in co["T"]]), 0.03, 0.97) if nt else np.zeros(0)
@@ -118,6 +139,12 @@ class Problem2:
                 base[c] = P["c_vg"] - P["w_dt"] * lt[t]
             else:
                 base[c] = P["c_miss"]
+        pp = sc.get("pp")                                              # route_learn practice-green model
+        if P["w_pr"] and pp is not None and len(pp) == ng:
+            cost_pr = -np.log(np.clip(1.0 - np.asarray(pp, float), 0.02, 1.0))
+            for c, (k, t, g) in enumerate(cand):
+                if g >= 0:
+                    base[c] += P["w_pr"] * cost_pr[g]
         self.rast = _corridor().Raster(co)
         Tc0 = geo["Tc"]
         if self.real:
@@ -602,3 +629,110 @@ def place_virtual(sol):
             w = pr.wpar(np.hypot(*(S - np.asarray(nxt)).T)) if nxt is not None else 0.0
             out[i] = dict(green=tuple(S[int(np.argmin(c + w))]))
     return out
+
+
+REFINE = dict(g_thr=0.3, g_lo=0.70, g_hi=1.08, g_mid=0.93, t_thr=0.3, t_lo=0.80, t_hi=1.10, t_mid=0.97, w_dist=3.0,
+              w_fair=0.3, sep_used=18.0, fend_ext=15.0, fend_lo=0.65, fend_hi=1.02, tstart_back=25.0, vt=False)
+# vt False: virtual tees stay on the card ring (route_bench train: moving them onto P(tee) / fairway starts lost 4
+# holes and won 1; the tee tolerance is loose, the ring spot is at the card's distance)
+
+
+def refine_virtual(sol, virt, M, params=None):
+    """Move the virtual ends place_virtual put on the card ring onto image evidence (route_learn.Maps M bound to the
+    course projection, with its P(green) / P(tee) channels): a virtual green goes to the strongest P(green) spot at
+    card distance from its tee (>= g_thr), else to the end of a fairway centreline at card distance (pushed
+    fend_ext yd beyond it); a virtual tee to the strongest P(tee) spot at card distance from its green, else to the
+    far end of a fairway pointing at the green (tstart_back yd behind it). Spots within sep_used yd of a green /
+    tee the routing uses elsewhere are skipped. -> {pos: dict(tee=..) | dict(green=..)} (copy, kind 'anchor' noted)"""
+    P = dict(REFINE, **(params or {}))
+    pr = sol["pr"]
+    if M is None or pr.Y is None:
+        return virt
+    co, geo = pr.d["co"], pr.d["geo"]
+    G, Tc = np.asarray(co["G"], float), np.asarray(geo["Tc"], float)
+    y = pr.ygeom()
+    seq = [pr.cand[c] for c in sol["seq"]]
+    usedG = np.array([G[g] for k, t, g in seq if g >= 0]).reshape(-1, 2)
+    usedT = np.array([Tc[t] for k, t, g in seq if t >= 0]).reshape(-1, 2)
+    ends = []
+    for f in co.get("fair") or []:
+        cl = np.asarray(f.get("cl") if f.get("cl") is not None else [], float).reshape(-1, 2)
+        if len(cl) >= 2 and np.hypot(*(cl[-1] - cl[0])) > 40:
+            ends.append((cl[0], cl[-1]))
+    ang = np.radians(np.arange(0, 360, 4.0))
+    U = np.c_[np.cos(ang), np.sin(ang)]
+    out = dict(virt)
+
+    def evidence(o, yi, which, lo, hi, mid, thr, used):
+        rs = np.arange(lo * yi, hi * yi + 1e-6, 4.0)
+        S = o[None, None, :] + rs[:, None, None] * U[None, :, :]       # [R, A, 2]
+        if getattr(M, which, None) is None:
+            return None
+        pv = M.sample(S, which)
+        sc = pv - P["w_dist"] * np.maximum(0.0, np.abs(rs / yi - mid) - 0.06)[:, None]
+        if which == "green":
+            fr = _line_mean(M, np.broadcast_to(o, S.shape), S, "fair")
+            sc = sc + P["w_fair"] * fr
+        if len(used):
+            dd = np.min(np.hypot(S[..., None, 0] - used[:, 0], S[..., None, 1] - used[:, 1]), -1)
+            sc = np.where(dd < P["sep_used"], -9.0, sc)
+            pv = np.where(dd < P["sep_used"], 0.0, pv)
+        j = np.unravel_index(int(np.argmax(np.where(pv >= thr, sc, -9.0))), sc.shape)
+        if pv[j] < thr:
+            return None
+        c = S[j]
+        # weighted centroid of the blob around the best spot
+        off = np.stack(np.meshgrid(np.arange(-12, 13, 3.0), np.arange(-12, 13, 3.0)), -1).reshape(-1, 2)
+        Q = c + off
+        w = M.sample(Q, which)
+        w = np.where(w >= 0.6 * pv[j], w, 0.0)
+        return tuple((Q * w[:, None]).sum(0) / max(w.sum(), 1e-6)) if w.sum() > 0 else tuple(c)
+
+    for i, (k, t, g) in enumerate(seq):
+        v = virt.get(i) or {}
+        yi = float(y[i])
+        if k == VG and "green" in v:
+            o = Tc[t]
+            q = evidence(o, yi, "green", P["g_lo"], P["g_hi"], P["g_mid"], P["g_thr"], usedG)
+            if q is None and ends:
+                best = None
+                for a, b in ends:
+                    for s0, s1 in ((a, b), (b, a)):           # s1: the end away from the tee
+                        D = float(np.hypot(*(s1 - o)))
+                        if np.hypot(*(s0 - o)) < D and P["fend_lo"] * yi <= D <= P["fend_hi"] * yi:
+                            u = (s1 - s0) / max(np.hypot(*(s1 - s0)), 1.0)
+                            e = s1 + P["fend_ext"] * u
+                            if len(usedG) and np.min(np.hypot(*(usedG - e).T)) < P["sep_used"]:
+                                continue
+                            sc = abs(D / yi - 0.9)
+                            if best is None or sc < best[0]:
+                                best = (sc, tuple(e))
+                q = best[1] if best else None
+            if q is not None:
+                out[i] = dict(green=q, anchor=True)
+        elif k == VT and "tee" in v and P["vt"]:
+            o = G[g]
+            q = evidence(o, yi, "tee", P["t_lo"], P["t_hi"], P["t_mid"], P["t_thr"], usedT)
+            if q is None and ends and yi >= 250:
+                best = None
+                for a, b in ends:
+                    for s0, s1 in ((a, b), (b, a)):           # s0: the end away from the green
+                        D0, D1 = float(np.hypot(*(s0 - o))), float(np.hypot(*(s1 - o)))
+                        if D0 > D1 and D1 < 0.45 * yi and 0.45 * yi <= D0 <= 0.95 * yi:
+                            u = (s0 - s1) / max(np.hypot(*(s0 - s1)), 1.0)
+                            e = s0 + P["tstart_back"] * u
+                            if len(usedT) and np.min(np.hypot(*(usedT - e).T)) < P["sep_used"]:
+                                continue
+                            sc = abs(float(np.hypot(*(e - o))) / yi - 0.95)
+                            if best is None or sc < best[0]:
+                                best = (sc, tuple(e))
+                q = best[1] if best else None
+            if q is not None:
+                out[i] = dict(tee=q, anchor=True)
+    return out
+
+
+def _line_mean(M, A, B, which, ns=12):
+    s = np.linspace(0.15, 0.85, ns)
+    Pt = A[..., None, :] + (B - A)[..., None, :] * s[:, None]
+    return M.sample(Pt, which).mean(-1)
