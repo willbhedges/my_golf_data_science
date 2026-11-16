@@ -428,7 +428,8 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
         t = lap("classify", t)
         fill_seg(st, P, model)
         objm = object_models(model)
-    sc, D = perceive(st, paths=paths, T=T, models=objm, keep=course_mask(st, KEEP_PAD_M) & ~neg)
+    sc, D = perceive(st, paths=paths, T=T, models=objm,
+                     keep=course_mask(st, float(os.environ.get("FASTSCENE_KEEP_PAD", KEEP_PAD_M))) & ~neg)
     T["total"] = round(time.time() - t0, 2)
     sc["fastscene"] = dict(model=os.path.basename(os.path.dirname(model["path"])), seconds=T,
                            pixel_model=model.get("meta", {}).get("id"))
@@ -507,7 +508,7 @@ def _opt(model, key, env, default):
     return (model.get("meta") or {}).get(key, default)
 
 
-WATER_DEFAULT = "rule"      # FASTSCENE_WATER: "rule" (perception's NIR rule) or "unet[:p[:nir_p]]" (perc_objects)
+WATER_DEFAULT = "unet"      # FASTSCENE_WATER: "rule" (perception's NIR rule) or "unet[:p[:nir_p]]" (perc_objects)
 KEEP_PAD_M = 25.0           # detections (incl. DEM pads, which perception finds on the whole grid) are kept only
                             # inside the course outline + this, and never on an OSM building / road
 
@@ -651,6 +652,10 @@ def _perceive(st, paths, T, models, keep):
         PO.install_water(DT, *a)
     elif getattr(DT, "_water_rule", None):
         DT.water = DT._water_rule
+    gs = os.environ.get("FASTSCENE_GREEN_SPLIT")
+    if gs is not None or getattr(DT, "_green_split", None):
+        a = [float(x) for x in (gs or "0").split(":")]
+        PO.install_green_split(DT, *a)
     o2 = objects2_dir()
     if o2:                                       # second-stage object models on our U-Net's candidates (perc_objects)
         PO.install(DT)

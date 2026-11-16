@@ -140,7 +140,12 @@ if __name__ == "__main__":
         if a.max:
             es = es[:a.max]
         for e in es:
-            for v in a.variant.split("+"):
+            vs = a.variant.split("+")
+            if "yall" in vs:                     # every extra NAIP year fetched for this course (heldout.py years)
+                yd = os.path.join(e["dir"], "years")
+                ys = sorted(os.listdir(yd)) if os.path.isdir(yd) else []
+                vs = [v for v in vs if v != "yall"] + [f"y{y}" for y in ys]
+            for v in vs:
                 try:
                     print(e["slug"], v, compute_probs(e, v), flush=True)
                 except Exception as ex:                              # noqa: BLE001

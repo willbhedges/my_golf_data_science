@@ -173,12 +173,26 @@ WATER_NIR_P = 0.25          # ... or the NIR-dark rule's pixel where the U-Net g
 WATER_MIN_M2 = 150
 
 
-def install_water(DT, p=None, nir_p=None):
+WATER_NIR_RATIO = 9.0       # a component is kept when its mean NIR <= this x the course's median NIR (open water is
+                            # NIR-dark; the U-Net's bright false ponds are not)
+
+
+WATER_SEEDED = 1            # 1: a U-Net water component is kept only when it holds NIR-rule pixels (seed fraction
+                            # >= this x 0.01); the rule's own components are always kept
+
+
+WATER_VETO = 0.05           # seeded mode: a rule component whose mean U-Net water probability is below this is dropped
+
+
+def install_water(DT, p=None, nir_p=None, nir_ratio=None, seeded=None, veto=None):
     """detect.water from our U-Net's water class (its validation IoU 0.79; perception's rule was written for the
     ariadgolf model, whose water class was unusable): pixels with p_water >= WATER_P, plus the NIR-dark rule's
     pixels where p_water >= WATER_NIR_P (pond edges), opened once, components >= WATER_MIN_M2. Idempotent."""
     p = WATER_P if p is None else p
     nir_p = WATER_NIR_P if nir_p is None else nir_p
+    nir_ratio = WATER_NIR_RATIO if nir_ratio is None else nir_ratio
+    seeded = WATER_SEEDED if seeded is None else seeded
+    veto = WATER_VETO if veto is None else veto
     w0 = getattr(DT, "_water_rule", None) or DT.water
     DT._water_rule = w0
     import geo
@@ -190,12 +204,32 @@ def install_water(DT, p=None, nir_p=None):
         from model import nir_water
         pw = st.seg("water")
         m = pw >= p
-        if nir_p < 1:
+        rule = None
+        if nir_p < 1 or seeded:
             rule, _ = nir_water(st.a["naip"])
+        if nir_p < 1:
             m |= rule & (pw >= nir_p)
         m = ndi.binary_opening(m, iterations=1)
         m = ndi.binary_fill_holes(m)
-        lab, n, s = DT._components(st, m, WATER_MIN_M2 / st.res ** 2, dict(pw=pw))
+        if seeded:
+            ru = w0(st, L)[1] > 0                # the rule detector's own water (its shadow filter included)
+            if veto > 0:
+                lr, nr = ndi.label(ru, structure=np.ones((3, 3)))
+                if nr:
+                    mp = np.asarray(ndi.mean(pw, lr, np.arange(1, nr + 1)))
+                    ru = np.r_[False, mp >= veto][lr]
+            lab0, n0 = ndi.label(m, structure=np.ones((3, 3)))
+            if n0:
+                fr = np.asarray(ndi.mean(ru.astype(np.float32), lab0, np.arange(1, n0 + 1)))
+                ok = np.r_[False, fr >= seeded * 0.01]
+                m = ok[lab0]
+            m |= ru
+        nir = st.a["naip"][3].astype(np.float32)
+        med = float(np.median(nir[st.valid()])) if st.valid().any() else 128.0
+        lab, n, s = DT._components(st, m, WATER_MIN_M2 / st.res ** 2, dict(pw=pw, nir=nir))
+        bad = [i + 1 for i in range(n) if s["nir"][i] > nir_ratio * med]
+        if bad:
+            lab, n, s = DT._components(st, (lab > 0) & ~np.isin(lab, bad), 1, dict(pw=pw, nir=nir))
         ax, ln, wd, comp = geo.shape_stats(lab, n, st.res) if n else ([], [], [], [])
         rings = geo.rings_from_labels(st, lab, simplify_m=1.0)
         out = []
@@ -206,6 +240,72 @@ def install_water(DT, p=None, nir_p=None):
                             kind="stream" if (wd[i] < 15 and ln[i] > 4 * wd[i]) else "pond"))
         return out, lab
     DT.water = water
+
+
+GREEN_SPLIT_M2 = 0           # > 0: green blobs larger than this are split at distance-transform saddles (two greens,
+GREEN_SPLIT_MIN_M2 = 150     # or a green and a practice / approach blob, that touch) into parts >= GREEN_SPLIT_MIN_M2
+
+
+def split_blobs(mask, res, big_m2, min_m2, h_m=2.0):
+    """watershed split of the components of `mask` larger than big_m2 on the distance transform, markers = its
+    h-maxima (h_m metres: a neck at least h_m narrower than both lobes); parts < min_m2 are merged back."""
+    from skimage.segmentation import watershed
+    from skimage.morphology import h_maxima
+    lab, n = ndi.label(mask, structure=np.ones((3, 3)))
+    if not n:
+        return mask
+    sizes = np.bincount(lab.ravel()) * res * res
+    out = mask.copy()
+    for i, sl in enumerate(ndi.find_objects(lab), start=1):
+        if sl is None or sizes[i] <= big_m2:
+            continue
+        sl = tuple(slice(max(s.start - 2, 0), s.stop + 2) for s in sl)
+        m = lab[sl] == i
+        d = ndi.distance_transform_edt(m) * res
+        pk, k = ndi.label(h_maxima(d, h_m) & m)
+        if k < 2:
+            continue
+        ws = watershed(-d, pk, mask=m, watershed_line=True)
+        part = np.bincount(ws.ravel()) * res * res
+        if (part[1:] >= min_m2).sum() < 2:
+            continue
+        line = m & ndi.binary_dilation(ws == 0, structure=np.ones((3, 3)))   # cut for 8-connected labelling too
+        out[sl] &= ~line
+    return out
+
+
+def install_green_split(DT, big_m2=None, min_m2=None, h_m=1.0):
+    big = GREEN_SPLIT_M2 if big_m2 is None else big_m2
+    mn = GREEN_SPLIT_MIN_M2 if min_m2 is None else min_m2
+    if getattr(DT, "_green_split", None) == (big, mn, h_m):
+        return
+    first = getattr(DT, "_green_split", None) is None
+    DT._green_split = (big, mn, h_m)
+    real = getattr(DT, "_ndi_real", None) or DT.ndi
+    DT._ndi_real = real
+
+    class _NDI:                      # detect.greens: binary_fill_holes(binary_opening(p >= GREEN_P)) -> split
+        def __getattr__(self, k):
+            return getattr(real, k)
+
+        @staticmethod
+        def binary_fill_holes(m, *a, **kw):
+            out = real.binary_fill_holes(m, *a, **kw)
+            if getattr(DT, "_in_greens", False) and DT._green_split[0] > 0:
+                out = split_blobs(out, DT._res, *DT._green_split)
+            return out
+    DT.ndi = _NDI()
+    if not first:
+        return
+    g0 = DT.greens
+
+    def greens(st, L, models=None):
+        DT._in_greens, DT._res = True, st.res
+        try:
+            return g0(st, L, models)
+        finally:
+            DT._in_greens = False
+    DT.greens = greens
 
 
 def load(d=MODEL_DIR):

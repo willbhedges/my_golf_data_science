@@ -173,7 +173,9 @@ def fetch_years(e, k=2, min_year=2012):
         if not os.path.exists(os.path.join(o, "naip_nir.tif")):
             os.makedirs(o, exist_ok=True)
             try:
-                fim.fetch_naip(tuple(padded), o, 0.6, year=str(y["year"]))
+                im = fim.fetch_naip(tuple(padded), o, 0.6, year=str(y["year"]))
+                json.dump(dict(imagery=im), open(os.path.join(o, "georef.json"), "w"), indent=1)
+                to_06(o)
             except Exception as ex:                                  # noqa: BLE001
                 print(e["slug"], y["year"], "failed", repr(ex)[:200])
             for junk in ("naip_rgb_lo.jpg", "naip_nir_lo.jpg"):
