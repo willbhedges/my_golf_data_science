@@ -1,0 +1,34 @@
+{
+ "bands": [
+  "red",
+  "green",
+  "blue",
+  "near_infrared"
+ ],
+ "input_dtype": "uint8",
+ "do_rescale": false,
+ "do_normalize": true,
+ "image_mean": [
+  104.189,
+  120.921,
+  88.543,
+  150.327
+ ],
+ "image_std": [
+  38.54,
+  33.773,
+  27.558,
+  44.709
+ ],
+ "tile_size": 512,
+ "ground_sample_distance_m": 0.6,
+ "id2label": {
+  "0": "background",
+  "1": "green",
+  "2": "tee",
+  "3": "fairway",
+  "4": "bunker",
+  "5": "water"
+ },
+ "licence": "ours (course_data/segment/train); labels OpenStreetMap contributors ODbL 1.0; imagery USDA NAIP; encoder init torchvision ImageNet ResNet weights (BSD-3)"
+}
