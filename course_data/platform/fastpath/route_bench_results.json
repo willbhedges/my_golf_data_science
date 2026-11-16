@@ -1,0 +1,5255 @@
+{
+"doc": "route_bench.py results, 2026-11-16. fast = fastscene scenes of detector 2ef0018e4 + cached U-Net probs d0 (validation set simulated unmapped); oracle = OSM objects with the spec noise (15 % greens / 30 % tee complexes dropped, false greens / tees, 20 % fairways dropped); clean = OSM objects without noise. Router v0 = zero_tap/joint solve.py (model_osm), v1 = solve2.py (model_scene, V1_PARAMS). Scoring routing.score; courses without a web card are included and routed with no card (hole_acc counts a course without a result as 0 holes right).",
+"runs": {
+"F_v0_train": {
+"summary": {
+"courses": 51,
+"errors": 1,
+"hole_acc": 0.4449,
+"hole_acc_routed": 0.4537,
+"all_right": "0/51",
+"card_err_med": 12.5,
+"card_err_p90": 73.0,
+"sec_mean": 4.05,
+"detector": "2ef0018e4_d0",
+"split": "train",
+"router": "v0",
+"scene": "fast"
+},
+"courses": [
+{
+"slug": "wild_ridge_wi",
+"card": false,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 0.5837150025590141,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "sky_mountain_ut",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 1.6105584179694041,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "black_stone_creek_wi",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "urbana_il",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.34949123806773486,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "billy_caldwell_il",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 2.95913595999059,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elk_river_mn",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 0.6022060423067472,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "willowhill_il",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 3.0927391134020397,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "dwan_mn",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 0.6026790615281641,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "el_dorado_park_ca",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 1.8346192582868355,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "toscana_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.0461254511669154,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "turner_hill_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 2.682229281454376,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "metamora_fields_il",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "hatherly_ma",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 1.9970371548562298,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "hidden_greens_north_wi",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 0.7104456298842621,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "walpole_ma",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.6967220478321963,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "fairways_woodside_wi",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "white_mountain_wy",
+"card": false,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.9292785026466417,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "hideout_ut",
+"card": true,
+"acc": 0.412,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "wellesley_ma",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 3.0382843539091624,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "oneka_ridge_mn",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 2.0090208755112657,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wynstone_il",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.7203187414794598,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "rock_river_hills_wi",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 2.8813135969338077,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "village_green_mn",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.185674840529245,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "edgewood_park_il",
+"card": true,
+"acc": 0.611,
+"all_right": false,
+"err": null,
+"min_margin": 1.127496517161923,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "big_foot_wi",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 1.0867486855056967,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "bloomington_il",
+"card": true,
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "brae_loch_il",
+"card": true,
+"acc": 0.647,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "whaling_city_ma",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "kernwood_ma",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.13505780299911407,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "crestwood_ma",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 8.413704846210901,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "concord_ma",
+"card": true,
+"acc": 0.176,
+"all_right": false,
+"err": null,
+"min_margin": 2.2197930804125754,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "waukewan_nh",
+"card": true,
+"acc": 0.059,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+4
+]
+},
+{
+"slug": "falmouth_ma",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 0.6790766896183236,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wentworth_nh",
+"card": true,
+"acc": 0.125,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+3
+]
+},
+{
+"slug": "derryfield_nh",
+"card": true,
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"min_margin": 0.1337509949963369,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "lakeside_ky",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.8145211849844465,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wedgewood_golfer_s_ms",
+"card": false,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 4.689141417395778,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "paintsville_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+14
+]
+},
+{
+"slug": "boots_randolph_ky",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+4
+]
+},
+{
+"slug": "landing_ga",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 1.7788431456412326,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "sun_valley_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+11
+]
+},
+{
+"slug": "browns_mill_ga",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 1.8729145894934227,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "great_southern_ms",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "canyon_lake_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "westchester_ca",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+7
+]
+},
+{
+"slug": "huntington_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+5
+]
+},
+{
+"slug": "upland_hills_ca",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+1,
+0,
+3
+]
+},
+{
+"slug": "rancho_del_sol_ca",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.5160781885212273,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "del_rio_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.06919345673446808,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ridge_ca",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.42628951440274676,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "sun_hills_ut",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+}
+]
+},
+"F_v1_train": {
+"summary": {
+"courses": 51,
+"errors": 1,
+"hole_acc": 0.5199,
+"hole_acc_routed": 0.5301,
+"all_right": "2/51",
+"card_err_med": 9.4,
+"card_err_p90": 58.3,
+"sec_mean": 4.93,
+"detector": "2ef0018e4_d0",
+"split": "train",
+"router": "v1",
+"scene": "fast"
+},
+"courses": [
+{
+"slug": "wild_ridge_wi",
+"card": false,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.07497886386702968,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "sky_mountain_ut",
+"card": true,
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"min_margin": 0.7487247829378916,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "black_stone_creek_wi",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.8786751478740218,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "urbana_il",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.7059672761299112,
+"virt": [
+3,
+2,
+0
+]
+},
+{
+"slug": "billy_caldwell_il",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 1.1764817552347964,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elk_river_mn",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.17570945858754072,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "willowhill_il",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.5347734169393945,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "dwan_mn",
+"card": true,
+"acc": 0.611,
+"all_right": false,
+"err": null,
+"min_margin": 0.4464282980350731,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "el_dorado_park_ca",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 1.1773059113124447,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "toscana_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.6222346929901974,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "turner_hill_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 0.9430167575923321,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "metamora_fields_il",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 0.15239327933259972,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "hatherly_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 0.23337685538122344,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "hidden_greens_north_wi",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 1.0654982295898918,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "walpole_ma",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 2.3894676017688994,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "fairways_woodside_wi",
+"card": true,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 0.08361274482135883,
+"virt": [
+0,
+4,
+0
+]
+},
+{
+"slug": "white_mountain_wy",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.22456176471680345,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "hideout_ut",
+"card": true,
+"acc": 0.824,
+"all_right": false,
+"err": null,
+"min_margin": 0.7110963944585968,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "wellesley_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 1.6828076598660218,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "oneka_ridge_mn",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.8114485838186405,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wynstone_il",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 0.4782578529712822,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "rock_river_hills_wi",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 3.1347015544671493,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "village_green_mn",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 1.6275807796042443,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "edgewood_park_il",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.367911472382346,
+"virt": [
+1,
+3,
+0
+]
+},
+{
+"slug": "big_foot_wi",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 0.36469863370616196,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "bloomington_il",
+"card": true,
+"acc": 0.611,
+"all_right": false,
+"err": null,
+"min_margin": 0.19446100127165522,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "brae_loch_il",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 0.3192188420719191,
+"virt": [
+2,
+1,
+0
+]
+},
+{
+"slug": "whaling_city_ma",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 1.3885203756060278,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "kernwood_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 0.17865082089185336,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "crestwood_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 0.9909679732666348,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "concord_ma",
+"card": true,
+"acc": 0.824,
+"all_right": false,
+"err": null,
+"min_margin": 1.1048943345898863,
+"virt": [
+2,
+1,
+0
+]
+},
+{
+"slug": "waukewan_nh",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.18148863158838857,
+"virt": [
+4,
+4,
+0
+]
+},
+{
+"slug": "falmouth_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.9669156691400964,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wentworth_nh",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.5910485187386432,
+"virt": [
+0,
+3,
+0
+]
+},
+{
+"slug": "derryfield_nh",
+"card": true,
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"min_margin": 0.5619425067903734,
+"virt": [
+0,
+3,
+0
+]
+},
+{
+"slug": "lakeside_ky",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 0.701958757675758,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wedgewood_golfer_s_ms",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.3459342344858207,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "paintsville_ky",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 3.3810012612275315,
+"virt": [
+0,
+14,
+0
+]
+},
+{
+"slug": "boots_randolph_ky",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.04950178599546007,
+"virt": [
+0,
+0,
+4
+]
+},
+{
+"slug": "landing_ga",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.26189020326845913,
+"virt": [
+3,
+0,
+0
+]
+},
+{
+"slug": "sun_valley_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 4.427544935797929,
+"virt": [
+0,
+11,
+0
+]
+},
+{
+"slug": "browns_mill_ga",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 1.0283396696635165,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "great_southern_ms",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "canyon_lake_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.4234224914951525,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "westchester_ca",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.29791110723934544,
+"virt": [
+0,
+7,
+0
+]
+},
+{
+"slug": "huntington_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+7
+]
+},
+{
+"slug": "upland_hills_ca",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.3905211576847518,
+"virt": [
+2,
+2,
+0
+]
+},
+{
+"slug": "rancho_del_sol_ca",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.02134219958544037,
+"virt": [
+1,
+0,
+0
+]
+},
+{
+"slug": "del_rio_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.3062263969300614,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ridge_ca",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.38001325207586945,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "sun_hills_ut",
+"card": true,
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"min_margin": 1.3367605818403803,
+"virt": [
+0,
+1,
+0
+]
+}
+]
+},
+"F_v0_test": {
+"summary": {
+"courses": 31,
+"errors": 2,
+"hole_acc": 0.4592,
+"hole_acc_routed": 0.4929,
+"all_right": "1/31",
+"card_err_med": 12.4,
+"card_err_p90": 65.3,
+"sec_mean": 4.5,
+"detector": "2ef0018e4_d0",
+"split": "test",
+"router": "v0",
+"scene": "fast"
+},
+"courses": [
+{
+"slug": "carillon_il",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.7763468940890776,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ozaukee_wi",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 2.0089803289753085,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "skokie_il",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.8564068502156452,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "westhaven_wi",
+"card": true,
+"acc": 0.647,
+"all_right": false,
+"err": null,
+"min_margin": 2.3905842666387542,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "chaska_wi",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 1.9557283870543642,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "cinder_ridge_il",
+"card": true,
+"acc": 0.867,
+"all_right": false,
+"err": null,
+"min_margin": 2.063283491707722,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "somerby_mn",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 1.8289522292493388,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "riverwood_national_mn",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 2.130538405765826,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ocean_edge_resort_ma",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+4
+]
+},
+{
+"slug": "falmouth_me",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.2950155213728536,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "jato_highlands_me",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "green_harbor_ma",
+"card": true,
+"acc": 0.353,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+6
+]
+},
+{
+"slug": "willowbend_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.0661281646060772,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elmcrest_ma",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "william_j_devine_ma",
+"card": true,
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"min_margin": 3.231751479097813,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "woods_hole_ma",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.652924402154639,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "bartram_trail_ga",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "smoke_rise_ga",
+"card": true,
+"acc": 0.611,
+"all_right": false,
+"err": null,
+"min_margin": 0.0006185381321053285,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "towne_lake_hills_ga",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+2,
+0,
+4
+]
+},
+{
+"slug": "kingwood_ga",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+10
+]
+},
+{
+"slug": "wildwood_ky",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "arrowhead_pointe_ga",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 3.784329624439799,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "crossings_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+16
+]
+},
+{
+"slug": "course_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "bonneville_ut",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "lake_tahoe_ca",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "los_amigos_ca",
+"card": true,
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "lakeside_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.0183500329175263,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "empire_ranch_ca",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "south_hills_ca",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+11
+]
+},
+{
+"slug": "visalia_ca",
+"card": true,
+"acc": 0.75,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+}
+]
+},
+"F_v1_test": {
+"summary": {
+"courses": 31,
+"errors": 2,
+"hole_acc": 0.4972,
+"hole_acc_routed": 0.5336,
+"all_right": "1/31",
+"card_err_med": 9.8,
+"card_err_p90": 65.4,
+"sec_mean": 7.56,
+"detector": "2ef0018e4_d0",
+"split": "test",
+"router": "v1",
+"scene": "fast"
+},
+"courses": [
+{
+"slug": "carillon_il",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.03941954739944542,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ozaukee_wi",
+"card": true,
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"min_margin": 1.4710115372944301,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "skokie_il",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.11466122483191299,
+"virt": [
+3,
+4,
+0
+]
+},
+{
+"slug": "westhaven_wi",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 0.20451370746659592,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "chaska_wi",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 2.1760179941485944,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "cinder_ridge_il",
+"card": true,
+"acc": 0.8,
+"all_right": false,
+"err": null,
+"min_margin": 1.8046898882939217,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "somerby_mn",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 1.5060598537230874,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "riverwood_national_mn",
+"card": true,
+"acc": 0.765,
+"all_right": false,
+"err": null,
+"min_margin": 0.45884400221383714,
+"virt": [
+1,
+0,
+0
+]
+},
+{
+"slug": "ocean_edge_resort_ma",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+5,
+0
+]
+},
+{
+"slug": "falmouth_me",
+"card": true,
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"min_margin": 0.5575989008435798,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "jato_highlands_me",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "green_harbor_ma",
+"card": true,
+"acc": 0.235,
+"all_right": false,
+"err": null,
+"min_margin": 0.4513842673547419,
+"virt": [
+1,
+6,
+0
+]
+},
+{
+"slug": "willowbend_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.6908682149439898,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elmcrest_ma",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "william_j_devine_ma",
+"card": true,
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"min_margin": 0.301222628915891,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "woods_hole_ma",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.6316979432954017,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "bartram_trail_ga",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 0.4764932197865548,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "smoke_rise_ga",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.12679622293498483,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "towne_lake_hills_ga",
+"card": true,
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"min_margin": 0.41462853705958835,
+"virt": [
+1,
+4,
+0
+]
+},
+{
+"slug": "kingwood_ga",
+"card": true,
+"acc": 0.176,
+"all_right": false,
+"err": null,
+"min_margin": 0.21428016555829288,
+"virt": [
+0,
+10,
+0
+]
+},
+{
+"slug": "wildwood_ky",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 3.5437727375901247,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "arrowhead_pointe_ga",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 2.634441822873839,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "crossings_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.3539582918388078,
+"virt": [
+0,
+16,
+0
+]
+},
+{
+"slug": "course_ca",
+"card": false,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.23369385736641135,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "bonneville_ut",
+"card": true,
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"min_margin": 1.8205387371648456,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "lake_tahoe_ca",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.21416057218281637,
+"virt": [
+2,
+1,
+0
+]
+},
+{
+"slug": "los_amigos_ca",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 1.1532389402918,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "lakeside_ca",
+"card": false,
+"acc": 0.118,
+"all_right": false,
+"err": null,
+"min_margin": 0.08534325234308326,
+"virt": [
+0,
+0,
+4
+]
+},
+{
+"slug": "empire_ranch_ca",
+"card": true,
+"acc": 0.824,
+"all_right": false,
+"err": null,
+"min_margin": 2.162451970764849,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "south_hills_ca",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.07528004400800015,
+"virt": [
+0,
+11,
+0
+]
+},
+{
+"slug": "visalia_ca",
+"card": true,
+"acc": 0.438,
+"all_right": false,
+"err": null,
+"min_margin": 1.6200276921358991,
+"virt": [
+0,
+2,
+0
+]
+}
+]
+},
+"O_v0_train": {
+"summary": {
+"courses": 51,
+"errors": 2,
+"hole_acc": 0.1498,
+"hole_acc_routed": 0.1562,
+"all_right": "0/51",
+"card_err_med": 18.1,
+"card_err_p90": 90.3,
+"sec_mean": 5.57,
+"detector": null,
+"split": "train",
+"router": "v0",
+"scene": "oracle"
+},
+"courses": [
+{
+"slug": "wild_ridge_wi",
+"card": false,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.1870283080917723,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "sky_mountain_ut",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.3975255162225828,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "black_stone_creek_wi",
+"card": false,
+"acc": 0.118,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "urbana_il",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.36546112718006896,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "billy_caldwell_il",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.5537066686253018,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elk_river_mn",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.7787059132249752,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "willowhill_il",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.22283461833000828,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "dwan_mn",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 2.419512120134904,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "el_dorado_park_ca",
+"card": true,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 0.4757261734877858,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "toscana_ca",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.4644767676059267,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "turner_hill_ma",
+"card": true,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 0.5270921459688314,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "metamora_fields_il",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 1.6771669560062659,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "hatherly_ma",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.10153905585317524,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "hidden_greens_north_wi",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "walpole_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "fairways_woodside_wi",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+1,
+0,
+4
+]
+},
+{
+"slug": "white_mountain_wy",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+1,
+0,
+2
+]
+},
+{
+"slug": "hideout_ut",
+"card": true,
+"acc": 0.059,
+"all_right": false,
+"err": null,
+"min_margin": 7.640862180716814,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wellesley_ma",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.06722204035897406,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "oneka_ridge_mn",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.7763568394002505e-15,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wynstone_il",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 3.2396554190642357,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "rock_river_hills_wi",
+"card": true,
+"acc": 0.412,
+"all_right": false,
+"err": null,
+"min_margin": 0.12156403651898273,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "village_green_mn",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.2002607577214306,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "edgewood_park_il",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 4.533809071520099,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "big_foot_wi",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 1.7693557865227305,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "bloomington_il",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 5.918128860827653,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "brae_loch_il",
+"card": true,
+"acc": 0.059,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "whaling_city_ma",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.8835950090183244,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "kernwood_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "crestwood_ma",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.04975968182857571,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "concord_ma",
+"card": true,
+"acc": 0.529,
+"all_right": false,
+"err": null,
+"min_margin": 0.8094970270295576,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "waukewan_nh",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+3
+]
+},
+{
+"slug": "falmouth_ma",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.049257333968586,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wentworth_nh",
+"card": true,
+"acc": 0.125,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+1,
+0,
+2
+]
+},
+{
+"slug": "derryfield_nh",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "lakeside_ky",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+5
+]
+},
+{
+"slug": "wedgewood_golfer_s_ms",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 2.019935015892477,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "paintsville_ky",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 2.074233628034767,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "boots_randolph_ky",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "landing_ga",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "sun_valley_ky",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "browns_mill_ga",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "great_southern_ms",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "canyon_lake_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.1648165605639882,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "westchester_ca",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.709547306944077,
+"virt": [
+2,
+0,
+2
+]
+},
+{
+"slug": "huntington_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 6.627703427103162,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "upland_hills_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.801912633956614,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "rancho_del_sol_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "del_rio_ca",
+"card": false,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 2.220446049250313e-16,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ridge_ca",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.485161258826448,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "sun_hills_ut",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no tees (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+}
+]
+},
+"O_v1_train": {
+"summary": {
+"courses": 51,
+"errors": 2,
+"hole_acc": 0.1964,
+"hole_acc_routed": 0.2047,
+"all_right": "0/51",
+"card_err_med": 11.4,
+"card_err_p90": 54.9,
+"sec_mean": 8.81,
+"detector": null,
+"split": "train",
+"router": "v1",
+"scene": "oracle"
+},
+"courses": [
+{
+"slug": "wild_ridge_wi",
+"card": false,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.48067018539263984,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "sky_mountain_ut",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.9665498419949508,
+"virt": [
+0,
+4,
+0
+]
+},
+{
+"slug": "black_stone_creek_wi",
+"card": false,
+"acc": 0.118,
+"all_right": false,
+"err": null,
+"min_margin": 0.029331707078448233,
+"virt": [
+0,
+0,
+4
+]
+},
+{
+"slug": "urbana_il",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 1.1098572767448864,
+"virt": [
+2,
+2,
+0
+]
+},
+{
+"slug": "billy_caldwell_il",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.20301214557254532,
+"virt": [
+5,
+0,
+0
+]
+},
+{
+"slug": "elk_river_mn",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.515652947637907,
+"virt": [
+1,
+4,
+0
+]
+},
+{
+"slug": "willowhill_il",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 1.4336373186431275,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "dwan_mn",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 1.7142417836538275,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "el_dorado_park_ca",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.8823636762082216,
+"virt": [
+2,
+0,
+0
+]
+},
+{
+"slug": "toscana_ca",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 1.0144410391960719,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "turner_hill_ma",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.3935940838953229,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "metamora_fields_il",
+"card": true,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "hatherly_ma",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 2.5838416049358983,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "hidden_greens_north_wi",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.8126806191247908,
+"virt": [
+2,
+4,
+0
+]
+},
+{
+"slug": "walpole_ma",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 1.0405750762044765,
+"virt": [
+2,
+2,
+0
+]
+},
+{
+"slug": "fairways_woodside_wi",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.25059920531848867,
+"virt": [
+1,
+5,
+0
+]
+},
+{
+"slug": "white_mountain_wy",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.5780372911594789,
+"virt": [
+0,
+0,
+5
+]
+},
+{
+"slug": "hideout_ut",
+"card": true,
+"acc": 0.176,
+"all_right": false,
+"err": null,
+"min_margin": 3.211995711763139,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "wellesley_ma",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 1.582564391047768,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "oneka_ridge_mn",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.599366961616889,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "wynstone_il",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 2.782937019179016,
+"virt": [
+4,
+2,
+0
+]
+},
+{
+"slug": "rock_river_hills_wi",
+"card": true,
+"acc": 0.647,
+"all_right": false,
+"err": null,
+"min_margin": 0.4665724736547503,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "village_green_mn",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.9264675242947398,
+"virt": [
+2,
+1,
+0
+]
+},
+{
+"slug": "edgewood_park_il",
+"card": true,
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"min_margin": 0.1851788592904562,
+"virt": [
+2,
+3,
+0
+]
+},
+{
+"slug": "big_foot_wi",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.9865973078825263,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "bloomington_il",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.9452990517256232,
+"virt": [
+2,
+3,
+0
+]
+},
+{
+"slug": "brae_loch_il",
+"card": true,
+"acc": 0.412,
+"all_right": false,
+"err": null,
+"min_margin": 1.4171650212642728,
+"virt": [
+2,
+3,
+0
+]
+},
+{
+"slug": "whaling_city_ma",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.6332025073327971,
+"virt": [
+5,
+1,
+0
+]
+},
+{
+"slug": "kernwood_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.2522940343369369,
+"virt": [
+4,
+2,
+0
+]
+},
+{
+"slug": "crestwood_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0911820502623506,
+"virt": [
+2,
+1,
+0
+]
+},
+{
+"slug": "concord_ma",
+"card": true,
+"acc": 0.529,
+"all_right": false,
+"err": null,
+"min_margin": 6.5108086821918185,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "waukewan_nh",
+"card": true,
+"acc": 0.235,
+"all_right": false,
+"err": null,
+"min_margin": 0.8989891866471211,
+"virt": [
+1,
+3,
+0
+]
+},
+{
+"slug": "falmouth_ma",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.1671069599286028,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "wentworth_nh",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.17290939793668203,
+"virt": [
+2,
+3,
+0
+]
+},
+{
+"slug": "derryfield_nh",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 3.3066221322574503,
+"virt": [
+2,
+2,
+0
+]
+},
+{
+"slug": "lakeside_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.7847137215803697,
+"virt": [
+0,
+6,
+0
+]
+},
+{
+"slug": "wedgewood_golfer_s_ms",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.17204448742245404,
+"virt": [
+0,
+0,
+3
+]
+},
+{
+"slug": "paintsville_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.8361411630262823,
+"virt": [
+3,
+1,
+0
+]
+},
+{
+"slug": "boots_randolph_ky",
+"card": false,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 1.2703908489941504,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "landing_ga",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "sun_valley_ky",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.7367360655865269,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "browns_mill_ga",
+"card": true,
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"min_margin": 0.43031298682726593,
+"virt": [
+3,
+3,
+0
+]
+},
+{
+"slug": "great_southern_ms",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.04878143418259384,
+"virt": [
+2,
+2,
+0
+]
+},
+{
+"slug": "canyon_lake_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.9595755315728134,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "westchester_ca",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.17800395542220215,
+"virt": [
+6,
+1,
+0
+]
+},
+{
+"slug": "huntington_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.41264305911089494,
+"virt": [
+0,
+0,
+3
+]
+},
+{
+"slug": "upland_hills_ca",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.9219467456086701,
+"virt": [
+2,
+2,
+0
+]
+},
+{
+"slug": "rancho_del_sol_ca",
+"card": true,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 2.476156754236081,
+"virt": [
+0,
+5,
+0
+]
+},
+{
+"slug": "del_rio_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.16892454428084935,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ridge_ca",
+"card": true,
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+1,
+0,
+0
+]
+},
+{
+"slug": "sun_hills_ut",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no tees (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+}
+]
+},
+"O_v0_test": {
+"summary": {
+"courses": 31,
+"errors": 2,
+"hole_acc": 0.1594,
+"hole_acc_routed": 0.1707,
+"all_right": "0/31",
+"card_err_med": 19.7,
+"card_err_p90": 102.2,
+"sec_mean": 3.9,
+"detector": null,
+"split": "test",
+"router": "v0",
+"scene": "oracle"
+},
+"courses": [
+{
+"slug": "carillon_il",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "ozaukee_wi",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.3429183484399312,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "skokie_il",
+"card": true,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 1.0006988679696782,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "westhaven_wi",
+"card": true,
+"acc": 0.235,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "chaska_wi",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "cinder_ridge_il",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.5600251899768729,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "somerby_mn",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.5189361038495797,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "riverwood_national_mn",
+"card": true,
+"acc": 0.059,
+"all_right": false,
+"err": null,
+"min_margin": 1.1637151084314716,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ocean_edge_resort_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.2865665726280024,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "falmouth_me",
+"card": true,
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"min_margin": 3.3258913884839814,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "jato_highlands_me",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "green_harbor_ma",
+"card": true,
+"acc": 0.059,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "willowbend_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.6291776291178905,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elmcrest_ma",
+"card": true,
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"min_margin": 2.6792190190124803,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "william_j_devine_ma",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.8882646589017771,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "woods_hole_ma",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.025683277919917202,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "bartram_trail_ga",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no tees (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "smoke_rise_ga",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 1.3458901495206277,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "towne_lake_hills_ga",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "kingwood_ga",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.7114260351548434,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wildwood_ky",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 0.1872146199220417,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "arrowhead_pointe_ga",
+"card": true,
+"acc": 0.647,
+"all_right": false,
+"err": null,
+"min_margin": 1.9656832099353707,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "crossings_ky",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.24601502750735804,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "course_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 3.9525184104050943,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "bonneville_ut",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "lake_tahoe_ca",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "los_amigos_ca",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+3
+]
+},
+{
+"slug": "lakeside_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "empire_ranch_ca",
+"card": true,
+"acc": 0.118,
+"all_right": false,
+"err": null,
+"min_margin": 2.6940702215648944,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "south_hills_ca",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "visalia_ca",
+"card": true,
+"acc": 0.312,
+"all_right": false,
+"err": null,
+"min_margin": 1.642316860090713,
+"virt": [
+1,
+0,
+1
+]
+}
+]
+},
+"O_v1_test": {
+"summary": {
+"courses": 31,
+"errors": 2,
+"hole_acc": 0.2182,
+"hole_acc_routed": 0.2337,
+"all_right": "0/31",
+"card_err_med": 14.5,
+"card_err_p90": 66.3,
+"sec_mean": 8.68,
+"detector": null,
+"split": "test",
+"router": "v1",
+"scene": "oracle"
+},
+"courses": [
+{
+"slug": "carillon_il",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.8197333311953834,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "ozaukee_wi",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 3.719504547662212,
+"virt": [
+0,
+2,
+0
+]
+},
+{
+"slug": "skokie_il",
+"card": true,
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"min_margin": 0.9671421136580065,
+"virt": [
+3,
+1,
+0
+]
+},
+{
+"slug": "westhaven_wi",
+"card": true,
+"acc": 0.294,
+"all_right": false,
+"err": null,
+"min_margin": 0.36443653123254016,
+"virt": [
+2,
+4,
+0
+]
+},
+{
+"slug": "chaska_wi",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "cinder_ridge_il",
+"card": true,
+"acc": 0.133,
+"all_right": false,
+"err": null,
+"min_margin": 0.23953466019104797,
+"virt": [
+2,
+4,
+0
+]
+},
+{
+"slug": "somerby_mn",
+"card": true,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.06692023973410066,
+"virt": [
+2,
+0,
+0
+]
+},
+{
+"slug": "riverwood_national_mn",
+"card": true,
+"acc": 0.176,
+"all_right": false,
+"err": null,
+"min_margin": 1.0394912798956046,
+"virt": [
+1,
+3,
+0
+]
+},
+{
+"slug": "ocean_edge_resort_ma",
+"card": true,
+"acc": 0.444,
+"all_right": false,
+"err": null,
+"min_margin": 0.2563870217304771,
+"virt": [
+1,
+3,
+0
+]
+},
+{
+"slug": "falmouth_me",
+"card": true,
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"min_margin": 2.1679922328491728,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "jato_highlands_me",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.7176994527295406,
+"virt": [
+3,
+2,
+0
+]
+},
+{
+"slug": "green_harbor_ma",
+"card": true,
+"acc": 0.059,
+"all_right": false,
+"err": null,
+"min_margin": 0.21495159184014945,
+"virt": [
+5,
+3,
+0
+]
+},
+{
+"slug": "willowbend_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.09562184150001052,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "elmcrest_ma",
+"card": true,
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"min_margin": 1.4081521687009513,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "william_j_devine_ma",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.060961130182359824,
+"virt": [
+1,
+2,
+0
+]
+},
+{
+"slug": "woods_hole_ma",
+"card": true,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 1.254719985117731,
+"virt": [
+8,
+1,
+0
+]
+},
+{
+"slug": "bartram_trail_ga",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no tees (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "smoke_rise_ga",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 1.4135190289534947,
+"virt": [
+2,
+0,
+0
+]
+},
+{
+"slug": "towne_lake_hills_ga",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 1.026352498581716,
+"virt": [
+1,
+3,
+0
+]
+},
+{
+"slug": "kingwood_ga",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.0088602620540463,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "wildwood_ky",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+1,
+0,
+0
+]
+},
+{
+"slug": "arrowhead_pointe_ga",
+"card": true,
+"acc": 0.706,
+"all_right": false,
+"err": null,
+"min_margin": 1.297526470833544,
+"virt": [
+2,
+0,
+0
+]
+},
+{
+"slug": "crossings_ky",
+"card": true,
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"min_margin": 1.0182033575671419,
+"virt": [
+0,
+3,
+0
+]
+},
+{
+"slug": "course_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.12203758409334498,
+"virt": [
+0,
+0,
+5
+]
+},
+{
+"slug": "bonneville_ut",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 0.4852145039724469,
+"virt": [
+1,
+4,
+0
+]
+},
+{
+"slug": "lake_tahoe_ca",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+3,
+3,
+0
+]
+},
+{
+"slug": "los_amigos_ca",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.5708980626669895,
+"virt": [
+2,
+5,
+0
+]
+},
+{
+"slug": "lakeside_ca",
+"card": false,
+"acc": 0.176,
+"all_right": false,
+"err": null,
+"min_margin": 0.036086916604244124,
+"virt": [
+0,
+0,
+5
+]
+},
+{
+"slug": "empire_ranch_ca",
+"card": true,
+"acc": 0.588,
+"all_right": false,
+"err": null,
+"min_margin": 0.01669588482811335,
+"virt": [
+2,
+2,
+0
+]
+},
+{
+"slug": "south_hills_ca",
+"card": true,
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"min_margin": 0.45212971016275283,
+"virt": [
+2,
+3,
+0
+]
+},
+{
+"slug": "visalia_ca",
+"card": true,
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"min_margin": 0.17389671933031892,
+"virt": [
+5,
+0,
+0
+]
+}
+]
+},
+"C_v0_test": {
+"summary": {
+"courses": 31,
+"errors": 2,
+"hole_acc": 0.704,
+"hole_acc_routed": 0.7541,
+"all_right": "5/31",
+"card_err_med": 8.9,
+"card_err_p90": 54.1,
+"sec_mean": 3.33,
+"detector": null,
+"split": "test",
+"router": "v0",
+"scene": "oracle"
+},
+"courses": [
+{
+"slug": "carillon_il",
+"card": false,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.0,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "ozaukee_wi",
+"card": true,
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"min_margin": 2.7602592087261897,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "skokie_il",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.7043705441860624,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "westhaven_wi",
+"card": true,
+"acc": 0.824,
+"all_right": false,
+"err": null,
+"min_margin": 2.9345882862078625,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "chaska_wi",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "cinder_ridge_il",
+"card": true,
+"acc": 0.8,
+"all_right": false,
+"err": null,
+"min_margin": 0.9836248179130287,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "somerby_mn",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 3.082519268126539,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "riverwood_national_mn",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 5.517705423572288,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ocean_edge_resort_ma",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 0.5414551774403762,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "falmouth_me",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 1.8436472411679716,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "jato_highlands_me",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 1.4088687117163303,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "green_harbor_ma",
+"card": true,
+"acc": 0.765,
+"all_right": false,
+"err": null,
+"min_margin": 0.48520326790211854,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "willowbend_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.12350342608159082,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elmcrest_ma",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 5.48065138619787,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "william_j_devine_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 1.899230565509825,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "woods_hole_ma",
+"card": true,
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"min_margin": 1.0662460584226787,
+"virt": [
+1,
+0,
+1
+]
+},
+{
+"slug": "bartram_trail_ga",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no tees (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "smoke_rise_ga",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.6946819917544182,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "towne_lake_hills_ga",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 4.084655077254595,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "kingwood_ga",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 14.14097843585568,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "wildwood_ky",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 1.759934151109391,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "arrowhead_pointe_ga",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 13.149596938100629,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "crossings_ky",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 1.1659039616070785,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "course_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 1.2008006183704514,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "bonneville_ut",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 3.530852702823424,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "lake_tahoe_ca",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 1.42657154111145,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "los_amigos_ca",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 1.6215213849331533,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "lakeside_ca",
+"card": false,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.46613145526899835,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "empire_ranch_ca",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 3.5192673177224947,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "south_hills_ca",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 4.065758233594558,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "visalia_ca",
+"card": true,
+"acc": 0.75,
+"all_right": false,
+"err": null,
+"min_margin": 1.7104670367866674,
+"virt": [
+0,
+0,
+0
+]
+}
+]
+},
+"C_v1_test": {
+"summary": {
+"courses": 31,
+"errors": 2,
+"hole_acc": 0.7002,
+"hole_acc_routed": 0.75,
+"all_right": "5/31",
+"card_err_med": 8.1,
+"card_err_p90": 48.7,
+"sec_mean": 5.71,
+"detector": null,
+"split": "test",
+"router": "v1",
+"scene": "oracle"
+},
+"courses": [
+{
+"slug": "carillon_il",
+"card": false,
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"min_margin": 0.12916679052824165,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "ozaukee_wi",
+"card": true,
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"min_margin": 0.18975145549164196,
+"virt": [
+3,
+2,
+0
+]
+},
+{
+"slug": "skokie_il",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.498737107337746,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "westhaven_wi",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 0.11595791915097564,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "chaska_wi",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no greens (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "cinder_ridge_il",
+"card": true,
+"acc": 0.8,
+"all_right": false,
+"err": null,
+"min_margin": 0.42577551812405545,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "somerby_mn",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.4352330081777751,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "riverwood_national_mn",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 1.4994881707757273,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "ocean_edge_resort_ma",
+"card": true,
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"min_margin": 0.1792016597272479,
+"virt": [
+1,
+0,
+0
+]
+},
+{
+"slug": "falmouth_me",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.42618892904457084,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "jato_highlands_me",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 0.03847441063394541,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "green_harbor_ma",
+"card": true,
+"acc": 0.588,
+"all_right": false,
+"err": null,
+"min_margin": 0.25970013710266215,
+"virt": [
+1,
+1,
+0
+]
+},
+{
+"slug": "willowbend_ma",
+"card": true,
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"min_margin": 0.6926230358106764,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "elmcrest_ma",
+"card": true,
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"min_margin": 2.177149137592778,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "william_j_devine_ma",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 1.9405827820627053,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "woods_hole_ma",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 0.0005675127707758243,
+"virt": [
+7,
+2,
+0
+]
+},
+{
+"slug": "bartram_trail_ga",
+"card": true,
+"acc": null,
+"all_right": null,
+"err": "ValueError('no tees (OSM or detected)')",
+"min_margin": null,
+"virt": [
+null,
+null,
+null
+]
+},
+{
+"slug": "smoke_rise_ga",
+"card": true,
+"acc": 0.333,
+"all_right": false,
+"err": null,
+"min_margin": 0.4889927131229541,
+"virt": [
+1,
+0,
+0
+]
+},
+{
+"slug": "towne_lake_hills_ga",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 0.534573002979144,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "kingwood_ga",
+"card": true,
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"min_margin": 0.8918663281528652,
+"virt": [
+2,
+0,
+0
+]
+},
+{
+"slug": "wildwood_ky",
+"card": true,
+"acc": 0.611,
+"all_right": false,
+"err": null,
+"min_margin": 0.6472561191970385,
+"virt": [
+1,
+0,
+0
+]
+},
+{
+"slug": "arrowhead_pointe_ga",
+"card": true,
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"min_margin": 3.994317924931366,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "crossings_ky",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 1.40733439044255,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "course_ca",
+"card": false,
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"min_margin": 0.06992862884624529,
+"virt": [
+0,
+0,
+1
+]
+},
+{
+"slug": "bonneville_ut",
+"card": true,
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"min_margin": 0.09266539478736036,
+"virt": [
+0,
+1,
+0
+]
+},
+{
+"slug": "lake_tahoe_ca",
+"card": true,
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"min_margin": 0.35834946798173206,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "los_amigos_ca",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 1.942010166890796,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "lakeside_ca",
+"card": false,
+"acc": 0.118,
+"all_right": false,
+"err": null,
+"min_margin": 0.16483693314610193,
+"virt": [
+0,
+0,
+2
+]
+},
+{
+"slug": "empire_ranch_ca",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 1.3285791580920616,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "south_hills_ca",
+"card": true,
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"min_margin": 2.103867471584252,
+"virt": [
+0,
+0,
+0
+]
+},
+{
+"slug": "visalia_ca",
+"card": true,
+"acc": 0.938,
+"all_right": false,
+"err": null,
+"min_margin": 0.20837932457758512,
+"virt": [
+0,
+0,
+0
+]
+}
+]
+}
+}
+}

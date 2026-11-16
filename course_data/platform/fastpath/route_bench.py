@@ -415,6 +415,8 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
     if cf:
         out["card_set"], out["card_resid"] = cf[0], {str(k): round(v, 1) for k, v in cf[2].items()}
     out["route"] = {k: v for k, v in r.items() if not k.startswith("_")}
+    out["lines"] = {f["properties"]["ref"]: dict(co=f["geometry"]["coordinates"], tee=f["properties"].get("tee_src"),
+                                                 green=f["properties"].get("green_src")) for f in feats}
     out["gate_v0"] = gate_v0(r, feats, x)
     return out
 
@@ -450,7 +452,9 @@ def summarise(rs, gate_key="gate_v0"):
     allr = [r for r in ok if r["score"]["all_correct"]]
     res = [abs(v) for r in ok for v in (r.get("card_resid") or {}).values()]
     shown = [r for r in ok if (r.get(gate_key) or {}).get("show")]
+    Hok = sum(r["n_true"] for r in ok)
     return dict(courses=len(rs), errors=len(rs) - len(ok), hole_acc=round(right / max(H, 1), 4),
+                hole_acc_routed=round(right / max(Hok, 1), 4),
                 all_right=f"{len(allr)}/{len(rs)}", all_right_frac=round(len(allr) / max(len(rs), 1), 4),
                 card_err_med=round(float(np.median(res)), 1) if res else None,
                 card_err_p90=round(float(np.percentile(res, 90)), 1) if res else None,
@@ -487,6 +491,81 @@ def cmd_eval(a):
         json.dump(dict(summary=S, courses=rs), open(a.out, "w"), indent=0, default=float)
 
 
+def render(slug, res, out, scene=None):
+    """NAIP of the course (detection side's package) with the scene's greens (magenta) / tee boxes (cyan), the hidden
+    OSM hole lines (white, number at the tee) and the routed lines (green = right, red = wrong; dashed end = virtual)."""
+    import cv2
+    import fastscene as FS
+    sys.path.insert(0, GEN)
+    import routing as R
+    d = os.path.join(HELDOUT, slug)
+    st = FS.grid_stack(d)
+    img = np.transpose(st.a["naip"][:3], (1, 2, 0))[:, :, ::-1].copy()
+    img = cv2.convertScaleAbs(img, alpha=1.15, beta=5)
+
+    def px(ll):
+        ll = np.asarray(ll, float).reshape(-1, 2)
+        r, c = st.ll_to_rc(ll[:, 0], ll[:, 1])
+        return np.round(np.c_[c, r]).astype(np.int32)
+    for g in (scene or {}).get("greens") or []:
+        if g.get("polygon") and len(g["polygon"]) >= 3:
+            cv2.polylines(img, [px(g["polygon"]).reshape(-1, 1, 2)], True, (255, 0, 255), 2)
+    for t in (scene or {}).get("tee_complexes") or []:
+        for b in t.get("boxes") or []:
+            if b.get("polygon") and len(b["polygon"]) >= 3:
+                cv2.polylines(img, [px(b["polygon"]).reshape(-1, 1, 2)], True, (255, 255, 0), 1)
+    fc, _, _ = course_files(slug)
+    truth = R.truth_from_fc(fc)
+    for ref, t in truth.items():
+        q = px(t["line"])
+        cv2.polylines(img, [q.reshape(-1, 1, 2)], False, (255, 255, 255), 1, cv2.LINE_AA)
+        cv2.putText(img, ref, tuple(int(v) for v in q[0] + [-14, 14]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+    for ref, ln in (res.get("lines") or {}).items():
+        q = px(ln["co"])
+        col = (0, 220, 0) if (res.get("hole_ok") or {}).get(ref) else (0, 0, 255)
+        cv2.polylines(img, [q.reshape(-1, 1, 2)], False, col, 2, cv2.LINE_AA)
+        for end, k in ((q[0], "tee"), (q[-1], "green")):
+            cv2.circle(img, tuple(int(v) for v in end), 5 if ln.get(k) == "virtual" else 3, col, 1 if ln.get(k) == "virtual" else -1)
+        cv2.putText(img, ref, tuple(int(v) for v in q[0] + [6, -6]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 3)
+        cv2.putText(img, ref, tuple(int(v) for v in q[0] + [6, -6]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, col, 1)
+    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
+    cv2.imwrite(out, img, [cv2.IMWRITE_JPEG_QUALITY, 82])
+    return out
+
+
+def gate_rows(rs):
+    """per-course rows for route_gate.fit / curve from eval results (v1 with margins)"""
+    out = []
+    for r in rs:
+        if "score" not in r or not r.get("has_card"):
+            continue
+        hf = (r.get("route") or {}).get("hole_features") or []
+        ok = [bool(r["hole_ok"].get(h["ref"], False)) for h in hf]
+        hard = bool((r.get("route") or {}).get("n_miss")) or len(hf) < r["n"]
+        out.append(dict(slug=r["slug"], hole_features=hf, hole_ok=ok, all_right=bool(r["score"]["all_correct"]),
+                        hard_block=hard))
+    return out
+
+
+def cmd_gate(a):
+    """fit route_gate on the train eval file, threshold for precision 1.0 there; curves on train and test"""
+    import route_gate as RG
+    tr = gate_rows(json.load(open(a.train))["courses"])
+    te = gate_rows(json.load(open(a.test))["courses"]) if a.test else []
+    w = RG.fit(tr)
+    ct, ce = RG.curve(tr, w), RG.curve(te, w)
+    thr = RG.pick_threshold(ct, len(tr))
+    def at(cur, t):
+        s = [r for r in cur if r["threshold"] >= t]
+        return s[-1] if s else dict(shown=0, right=0, precision=None)
+    res = dict(w=w, feats=RG.FEATS, threshold=thr, fitted_on=a.train, train_courses=len(tr), test_courses=len(te),
+               train_at_threshold=at(ct, thr), test_at_threshold=at(ce, thr), train_curve=ct[:40], test_curve=ce[:40])
+    log(json.dumps({k: v for k, v in res.items() if not k.endswith("curve")}))
+    if a.write:
+        json.dump(res, open(RG.PARAMS, "w"), indent=1)
+    return res
+
+
 def _job_p(a):
     os.environ["ROUTER_PARAMS"] = json.dumps(a[-1])
     return run_one(*a[:-1])
@@ -495,7 +574,8 @@ def _job_p(a):
 TUNE_GRID = dict(c_vt=[-1.0, 0.5, 2.0, 4.0], c_vg=[-1.0, 0.5, 2.0, 5.0], c_miss=[3.0, 6.0, 9.0], w_c=[0.5, 1.0, 2.0],
                  card_s=[5.0, 9.0, 15.0], w_w=[0.5, 1.0, 2.0], w_h=[0.5, 1.0, 1.5], v1=[25.0, 45.0, 80.0],
                  v_base=[0.0, 0.4, 1.0], w_cov=[0.0, 3.0, 6.0], reuse_cost=[0.5, 1.5, 4.0], w_obr=[0.0, 4.0, 10.0],
-                 w_s=[0.5, 1.0, 2.0], walk_miss=[1.0, 3.0, 5.0])
+                 w_s=[0.5, 1.0, 2.0], walk_miss=[1.0, 3.0, 5.0], w_tree=[0.0, 1.0], w_x=[0.75, 1.5, 3.0],
+                 w_dg=[0.0, 0.5, 1.0])
 
 
 def cmd_tune(a):
@@ -507,7 +587,7 @@ def cmd_tune(a):
     ver = a.ver or (scene_version() if a.scene == "fast" else None)
     cur = json.loads(a.start or "{}")
     cur.setdefault("no_margins", 1)
-    cur.setdefault("beam", 800)
+    cur.setdefault("beam", a.beam)
     pool = Pool(a.procs)
 
     def score(pp):
@@ -555,6 +635,10 @@ if __name__ == "__main__":
     ap.add_argument("--card-only", action="store_true")
     ap.add_argument("--prep", action="store_true", help="cache / reuse the prepared solver inputs")
     ap.add_argument("--start", default="")
+    ap.add_argument("--train", default="")
+    ap.add_argument("--beam", type=int, default=1500)
+    ap.add_argument("--test", default="")
+    ap.add_argument("--write", action="store_true")
     ap.add_argument("--probs-only", action="store_true", help="scenes: only courses whose U-Net probabilities are cached")
     ap.add_argument("--rounds", type=int, default=2)
     ap.add_argument("--out", default="")
@@ -566,3 +650,11 @@ if __name__ == "__main__":
         cmd_eval(a)
     elif a.cmd == "tune":
         cmd_tune(a)
+    elif a.cmd == "gate":
+        cmd_gate(a)
+    elif a.cmd == "render":                      # render --out RESULTS.json --slugs a,b  (eval --out file)
+        R0 = {r["slug"]: r for r in json.load(open(a.out))["courses"]}
+        for sl in a.slugs.split(","):
+            ver = a.ver or scene_version()
+            p = render(sl, R0[sl], os.path.join(VAL, "render", sl + ".jpg"), rd(scene_path(sl, ver)))
+            log(p)

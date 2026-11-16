@@ -298,25 +298,40 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                            f"(< {route_joint.MIN_MARGIN}; {routed.get('n_virtual', 0)} holes without a tee or green): "
                            "the numbering is not certain")
     confirm = []
+    draft = []
     if scene_routed is not None:
-        import route_joint
-        pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
-        if scene_routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or scene_routed.get("n_virtual") \
-                or len(scene_routed.get("margins") or []) < scene_routed.get("n_holes", 0):
-            blocked.append(f"hole lines routed on imagery detections with min margin {scene_routed.get('min_margin', 0):.1f} "
-                           f"(< {route_joint.MIN_MARGIN}; {scene_routed.get('n_virtual', 0)} holes without a tee or green): "
-                           "the routing is not certain")
-        confirm = [f"hole {r}: green or tee from the imagery detector, confirm it" for r in scene_routed.get("detected_holes") or []]
-        if len(confirm) > MAX_CONFIRMS:     # the blind-loop rule: more than 3 holes to check is not a usable page
-            blocked.append(f"{len(confirm)} holes rest on imagery detections (more than {MAX_CONFIRMS}): shown only after "
-                           "the golfer confirms them (confirm_scene.json)")
         import route_scene
-        pc.write_json(os.path.join(pkg_dir, "confirm_scene.json"), route_scene.confirm_questions(package, scene_routed))
-    pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked, confirm=confirm))
+        pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
+        if scene_routed.get("version") == "v1":
+            # calibrated show / block (route_gate.py): shown only when P(every hole numbered right) clears the
+            # threshold fitted on the routing bench; otherwise a draft, not shown, with the reason. No golfer questions.
+            import route_gate
+            g = route_gate.decide(scene_routed)
+            scene_routed["gate"] = g
+            pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
+            draft = [f"holes routed on imagery detections: {r}" for r in g["reasons"]]
+        else:
+            import route_joint
+            if scene_routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or scene_routed.get("n_virtual") \
+                    or len(scene_routed.get("margins") or []) < scene_routed.get("n_holes", 0):
+                blocked.append(f"hole lines routed on imagery detections with min margin {scene_routed.get('min_margin', 0):.1f} "
+                               f"(< {route_joint.MIN_MARGIN}; {scene_routed.get('n_virtual', 0)} holes without a tee or green): "
+                               "the routing is not certain")
+            confirm = [f"hole {r}: green or tee from the imagery detector, confirm it" for r in scene_routed.get("detected_holes") or []]
+            if len(confirm) > MAX_CONFIRMS:     # the blind-loop rule: more than 3 holes to check is not a usable page
+                blocked.append(f"{len(confirm)} holes rest on imagery detections (more than {MAX_CONFIRMS}): shown only after "
+                               "the golfer confirms them (confirm_scene.json)")
+            pc.write_json(os.path.join(pkg_dir, "confirm_scene.json"), route_scene.confirm_questions(package, scene_routed))
+    pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked, confirm=confirm, draft=draft))
     T["total"] = round(time.time() - t_all, 2)
     T["stages"] = package.get("stages")
     pc.write_json(os.path.join(pkg_dir, "timing.json"), T)
+    if draft and not blocked and r.returncode == 0:
+        return dict(status="draft", stage="gate", why="draft (not shown): " + "; ".join(draft)[:400], slug=slug,
+                    holes=len(package["holes"]), timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
     if blocked and r.returncode == 0:
+        if draft:
+            blocked = draft + blocked
         return dict(status="blocked", stage="gate", why="; ".join(blocked)[:400], slug=slug, holes=len(package["holes"]),
                     timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
     if confirm and r.returncode == 0:

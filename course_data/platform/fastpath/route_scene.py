@@ -127,6 +127,9 @@ def candidates(fc, scene, p_green=P_GREEN, p_tee=P_TEE, n_holes=18):
         fair.append(dict(poly=q, cl=C.centreline(q)))
     co["fair"] = fair
     co["obst"] = obstacles(fc, scene, pj, C)
+    co["trees"] = [C._xy(pj, t["centroid"]) + (math.sqrt(max(float(t.get("area_m2") or 0.0), 1.0) / math.pi) / 0.9144,)
+                   for t in (scene or {}).get("trees") or [] if t.get("centroid") and float(t.get("p", 1.0)) >= 0.5
+                   and float(t.get("area_m2") or 0.0) >= 20.0]
     sp = [C._xy(pj, p["centroid"]) + (float(p.get("area_m2") or 0),) for p in (scene or {}).get("parking") or []]
     C._pick_club(co, park + sp, club)
     co = C._finish(co)
@@ -176,7 +179,8 @@ def _axis(pts):
     return (float(v[0, 1]), float(v[1, 1])) if w[1] > 15 ** 2 else None
 
 
-V1_PARAMS = dict(K=18, beam=3000, tee_reuse=1)
+V1_PARAMS = dict(K=18, beam=3000, tee_reuse=1, tee_box="long", c_vt=2.0, c_vg=2.0)   # c_vt / c_vg: route_bench tune (train)
+ROUTER = os.environ.get("ROUTE_SCENE_VERSION", "v1")      # fast.py's unmapped routing (v0: the previous solver)
 SCENE_MODEL = os.path.join(RJ.J, "model_scene.pkl")    # evidence models fitted on detection-like candidates (fit_scene.py)
 _SM = {}
 
@@ -223,8 +227,10 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
         sol = S2.solve(d, card, pp, None)
         if not sol["seq"]:
             return dict(features=[], min_margin=0.0, why="no routing found", **info)
+        tee_box = pp.pop("tee_box", "far")
         mg = [0.0] * len(sol["seq"]) if nomg else S2.margins(sol, None)
         virt = S2.place_virtual(sol)
+        pr2 = sol["pr"]
         holes = [(t, g) for k, t, g in sol["holes"]]
     else:
         sol = S.solve(d, card, dict(RJ.PARAMS, **(params or {})), None)
@@ -236,6 +242,10 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
     pars = (card or {}).get("par") or []
     feats, nv, det, used = [], 0, [], []
     n_vt = n_vg = n_miss = 0
+    hole_f = []                                     # per-hole confidence features (v1): the gate's calibration input
+    yk = None
+    if version == "v1" and pr2.Y is not None:
+        yk = pr2.ygeom()
     for i, (t, g) in enumerate(holes):
         v = virt.get(i) or {}
         if (t < 0 and "tee" not in v) or (g < 0 and "green" not in v):
@@ -246,6 +256,10 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
             tc = co["T"][t]
             gq = co["G"][g] if g >= 0 else np.asarray(v["green"])
             far = int(np.argmax(np.hypot(*(np.asarray(tc["pts"]) - gq).T)))
+            if version == "v1" and tee_box != "far" and g >= 0 and pr2.Y is not None and len(tc["pts"]) > 1 \
+                    and geo["Pbox"][t][g] is not None:
+                yk = pr2.Y[0] if tee_box == "long" else pr2.ygeom()     # the box whose play length fits the card
+                far = int(np.argmin(np.abs(np.asarray(geo["Pbox"][t][g]) - yk[i])))
             tq = tc["pts"][far]
         else:
             tq = np.asarray(v["tee"])
@@ -270,12 +284,21 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
                       "properties": {"golf": "hole", "ref": str(i + 1), "par": str(par), "src": "joint:scene",
                                      "green_src": src["green"], "tee_src": src["tee"],
                                      "margin": round(float(mg[i]), 2)}})
+        if version == "v1":
+            Lp = float(np.sum(np.hypot(*np.diff(np.asarray(path, float), axis=0).T)))
+            c = sol["seq"][i]
+            hole_f.append(dict(ref=str(i + 1), margin=round(float(mg[i]), 3), kind=int(pr2.typ[c]),
+                               card_rel=round(abs(Lp - float(yk[i])) / max(float(yk[i]), 1.0), 4) if yk is not None else None,
+                               ob=round(float(pr2.ob_real[c]), 3) if c < pr2.real else None,
+                               ph=round(float(pr2.ph.get((t, g), 0.0)), 4) if (t >= 0 and g >= 0) else None,
+                               cross=int(sum(pr2.X[c, c2] for c2 in sol["seq"] if c2 < pr2.real)) if c < pr2.real else 0))
     if version != "v1":
         n_vt = sum(1 for t, g in holes if t < 0 and g >= 0)
     return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
                 n_virtual=nv if version != "v1" else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
                 n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]), version=version,
-                cost=float(sol["cost"]), detected_holes=det, _used=used, **info)
+                cost=float(sol["cost"]), detected_holes=det, _used=used, hole_features=hole_f,
+                has_card=bool(S.card_sets(card, int(n_holes)) is not None), **info)
 
 
 def scene_features(scene, kinds=("green", "tee", "fairway", "bunker", "water"), used=None):
@@ -338,7 +361,7 @@ def run(pkg_dir, fc, card, n_holes, log=None):
     T["scene"] = info["seconds"]
     t1 = time.time()
     co, ci = candidates(fc, scene, n_holes=n_holes)
-    r = route(fc, scene, card, n_holes, co=co)
+    r = route(fc, scene, card, n_holes, co=co, version=ROUTER)
     r.update(ci)
     T["route"] = round(time.time() - t1, 2)
     used = set(r.pop("_used", []))

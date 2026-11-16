@@ -39,11 +39,11 @@ def one(c):
             r = r2
     d = os.path.join(fast.pc.PACKAGES, c["slug"])
     sheet = os.path.join(fast.CACHE, "contact", f"{c['order']:02d}_{c['slug']}.jpg")
-    if r.get("status") in ("ok", "blocked", "confirm") and os.path.exists(os.path.join(d, "imagery", "naip_rgb.tif")):
+    if r.get("status") in ("ok", "blocked", "confirm", "draft") and os.path.exists(os.path.join(d, "imagery", "naip_rgb.tif")):
         subprocess.run([sys.executable, SHEETS, "--course-dir", d, "--img", os.path.join(d, "imagery"), "--contact", sheet],
                        capture_output=True)
         r["sheet"] = sheet
-    pkg = json.load(open(os.path.join(d, "package.json"))) if os.path.exists(os.path.join(d, "package.json")) and r.get("status") in ("ok", "blocked", "confirm") else {}
+    pkg = json.load(open(os.path.join(d, "package.json"))) if os.path.exists(os.path.join(d, "package.json")) and r.get("status") in ("ok", "blocked", "confirm", "draft") else {}
     st = pkg.get("stages") or {}
     print(f"{c['order']} {c['tier']} {c['name']} ({c['city']}, {c['state']}): {r.get('status')} {r.get('stage') or ''} "
           f"{r.get('wall')} s | holes {r.get('holes')} | {r.get('why') or ''}")
