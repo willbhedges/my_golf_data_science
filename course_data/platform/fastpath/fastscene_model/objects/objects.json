@@ -1,0 +1,72 @@
+{
+ "green": {
+  "features": [
+   "area",
+   "bunker_near",
+   "compact",
+   "d_building",
+   "d_clubhouse",
+   "d_green",
+   "d_parking",
+   "d_tee",
+   "elong",
+   "fair_mean",
+   "hag",
+   "n_green_150",
+   "n_tee_80_600",
+   "n_tee_lt60",
+   "ndvi",
+   "p_max",
+   "p_mean",
+   "raised",
+   "slope",
+   "tophat"
+  ],
+  "n_train": 1869,
+  "n_test": 0,
+  "thr": null,
+  "train_courses": 47
+ },
+ "tee_box": {
+  "features": [
+   "area",
+   "compact",
+   "elong",
+   "fair_mean",
+   "green_mean",
+   "hag",
+   "length",
+   "ndvi",
+   "p_max",
+   "p_mean",
+   "pad_frac",
+   "seg_frac",
+   "slope",
+   "tophat",
+   "width"
+  ],
+  "n_train": 14370,
+  "n_test": 0,
+  "thr": 0.2,
+  "train_courses": 47
+ },
+ "tee_complex": {
+  "features": [
+   "area",
+   "d_green",
+   "elong",
+   "has_pad",
+   "has_seg",
+   "length",
+   "max_box_p",
+   "mean_seg",
+   "n_boxes",
+   "n_greens_80_600",
+   "n_greens_lt60"
+  ],
+  "n_train": 5418,
+  "n_test": 0,
+  "thr": 0.2,
+  "train_courses": 47
+ }
+}

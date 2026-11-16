@@ -19,8 +19,8 @@ import numpy as np
 
 import route_joint as RJ
 
-P_GREEN = 0.5
-P_TEE = 0.4
+P_GREEN = 0.35
+P_TEE = 0.3
 MERGE_YD = 25.0
 FAIRWAY_MIN_M2 = 1500.0
 

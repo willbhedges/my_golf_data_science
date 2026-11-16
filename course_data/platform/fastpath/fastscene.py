@@ -33,6 +33,7 @@ PERC = os.path.join(CD, "perception")
 MODEL_DIR = os.path.join(HERE, "fastscene_model")
 CLASSES = ("background", "green", "tee", "fairway", "bunker", "water")
 SEG_ORDER = ("green", "tee", "fairway", "bunker", "water")          # perception stack.SEG
+GREEN_P = 0.5               # green candidate threshold on the seg layer (perception detect.GREEN_P)
 PAD_M = 40.0                   # the classifier runs inside the course outline + this
 
 
@@ -489,6 +490,7 @@ def perceive(st, paths=False, T=None, models=None, keep=None):
     import scene as SC
     T = T if T is not None else {}
     t = time.time()
+    DT.GREEN_P = float(os.environ.get("FASTSCENE_GREEN_P", GREEN_P))
     if models is None:
         models, _ = PV.load_models()
         models = {k: v for k, v in models.items() if k not in ("path_px",)}

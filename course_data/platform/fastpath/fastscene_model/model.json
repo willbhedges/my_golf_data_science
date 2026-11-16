@@ -199,5 +199,31 @@
   "relief6": 1993795.0,
   "relief15": 1453696.0,
   "relief40": 1014907.0
+ },
+ "prior_scale": [
+  1,
+  1,
+  1,
+  1,
+  0.054,
+  0.26
+ ],
+ "smooth_m": 0.0,
+ "object_models": true,
+ "calibration": "chosen on 8 validation courses (tr_coral_canyon_ut tr_course_id tr_grandview_az tr_hawks_ridge_ga tr_heritage_ga tr_ledgend_mn tr_royal_oaks_pa tr_tpc_sawgrass_fl) with a pixel model that excluded them: bunker / water prior shift = (class frequency / training weight)^0.5 (pixel IoU bunker 0.17 -> 0.57, water 0.80 -> 0.87); no smoothing; object models = objects/ (green / tee box / tee complex, sklearn HistGB on out-of-fold candidates of 39 package courses + the 8 validation courses)",
+ "validation": {
+  "greens_hole": [
+   0.769,
+   0.621
+  ],
+  "tee_complexes": [
+   0.671,
+   0.536
+  ],
+  "fairways": [
+   0.73,
+   0.636
+  ],
+  "note": "precision, recall; 8 validation courses; perception/evaluate.py"
  }
 }
