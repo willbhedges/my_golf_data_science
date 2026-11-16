@@ -40,6 +40,40 @@ def quadkeys(ll_bbox, z=9):
     return out
 
 
+_K = []
+
+
+def _kernels():
+    """fastc/imaging/fastimg.py when its kernel builds, else None"""
+    if not _K:
+        d = os.path.join(os.path.dirname(HERE), "fastc", "imaging")
+        if d not in sys.path:
+            sys.path.insert(0, d)
+        try:
+            import fastimg
+            _K.append(fastimg if fastimg.available() else None)
+        except Exception:                                            # noqa: BLE001
+            _K.append(None)
+    return _K[0]
+
+
+def _merge(arr, tmp):
+    """arr takes tmp's finite values where it has none (C: fastc/imaging fi_chm_merge; numpy below, equal)"""
+    k = _kernels()
+    if k is not None:
+        return k.chm_merge(arr, tmp)
+    f = np.isnan(arr) & np.isfinite(tmp)
+    arr[f] = tmp[f]
+
+
+def _quantize(arr):
+    """uint8 metres, 255 = no data (C: fi_chm_quantize; numpy below, equal)"""
+    k = _kernels()
+    if k is not None:
+        return k.chm_quantize(arr)
+    return np.where(np.isfinite(arr), np.clip(np.round(arr), 0, 254), 255).astype(np.uint8)
+
+
 def fetch(bbox_wsen, out_dir, margin_m=160.0):
     import rasterio
     from rasterio.crs import CRS
@@ -68,9 +102,8 @@ def fetch(bbox_wsen, out_dir, margin_m=160.0):
                 tmp = np.full((H, W), np.nan, np.float32)
                 reproject(rasterio.band(src, 1), tmp, src_nodata=src.nodata, dst_nodata=np.nan, dst_transform=tr,
                           dst_crs=crs, resampling=Resampling.bilinear)
-            f = np.isnan(arr) & np.isfinite(tmp)
-            arr[f] = tmp[f]
-    q = np.where(np.isfinite(arr), np.clip(np.round(arr), 0, 254), 255).astype(np.uint8)
+            _merge(arr, tmp)
+    q = _quantize(arr)
     with rasterio.open(path, "w", driver="GTiff", height=H, width=W, count=1, dtype="uint8", crs=crs, transform=tr,
                        nodata=255, compress="deflate") as dst:
         dst.write(q, 1)

@@ -19,6 +19,11 @@ CD = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, os.path.join(CD, "imagery"))
 import fetch_imagery as fi  # noqa: E402
 import naip_years as NY  # noqa: E402
+sys.path.insert(0, os.path.join(os.path.dirname(HERE), "fastc", "imaging"))
+try:
+    import fastimg                      # C kernels (paste, year metrics); each falls back to its numpy reference
+except Exception:                                                    # noqa: BLE001
+    fastimg = None
 
 GDAL_ENV = dict(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif",
                 GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE="TRUE", GDAL_HTTP_MAX_RETRY="2")
@@ -168,9 +173,18 @@ def read_year_ovr(its, bbox_snwe, res=SCORE_RES):
         parts = list(ex.map(one, its))
     out = np.zeros((parts[0].shape[0], H, W), np.uint8)
     for dst in parts:                   # in item order: a later item's valid pixels win, as naip_years.read_year
-        nb = dst.shape[0]
-        out[:nb] = np.where(dst > 0, dst, out[:nb])
+        _paste(out, dst, 0, 0, "last")
     return out, crs, tr
+
+
+def _paste(dst, src, r0, c0, mode):
+    """fastimg.paste (C) or its numpy reference: 'first' = rasterio.merge(method='first', nodata=0) per element,
+    'last' = np.where(src > 0, src, dst)"""
+    if fastimg is not None:
+        return fastimg.paste(dst, src, r0, c0, mode)
+    cur = dst[:src.shape[0], r0:r0 + src.shape[1], c0:c0 + src.shape[2]]
+    m = (cur == 0) & (src != 0) if mode == "first" else src > 0
+    cur[m] = src[m]
 
 
 def read_window(items, bounds, res):
@@ -210,9 +224,7 @@ def read_window(items, bounds, res):
     nb = max(p[1].shape[0] for p in parts)
     arr = np.zeros((nb, H, W), np.uint8)
     for _, a, (r, c) in parts:
-        cur = arr[:a.shape[0], r:r + a.shape[1], c:c + a.shape[2]]
-        m = (cur == 0) & (a != 0)
-        cur[m] = a[m]
+        _paste(arr, a, r, c, "first")
     return arr, rasterio.transform.from_origin(x0, y1, res, res), crs
 
 
@@ -307,7 +319,7 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None, prefetc
             if isinstance(got, Exception):
                 return y["year"], got
             try:
-                return y["year"], NY._score_array(*got, polys, {})
+                return y["year"], (fastimg.score_array if fastimg is not None else NY._score_array)(*got, polys, {})
             except Exception as ex:                                  # noqa: BLE001
                 return y["year"], ex
         scores = dict(pool.map(sc, years))
