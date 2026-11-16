@@ -24,6 +24,7 @@ try:
     import fastimg                      # C kernels (paste, year metrics); each falls back to its numpy reference
 except Exception:                                                    # noqa: BLE001
     fastimg = None
+import tilecache  # noqa: E402  (the shared block cache of the remote COG reads)
 
 GDAL_ENV = dict(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif",
                 GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", VSI_CACHE="TRUE", GDAL_HTTP_MAX_RETRY="2")
@@ -121,6 +122,37 @@ def list_years(bbox_snwe, prefetch=None):
     return years
 
 
+def _warp_cached(key, opener, m, dst_tr, dst_crs, dst_shape, src_nodata, resampling, dst_nodata=0, dtype=np.uint8,
+                 bands=None):
+    """reproject(dataset -> dst grid) with the source pixels from tilecache: the source window under the dst grid
+    (+ PAD px) is read through the cache, then warped from memory. Equal to warping from the dataset itself
+    (test_fastpath / the session checks: Yorba Linda NAIP overview + Meta canopy, bit-identical)."""
+    from affine import Affine
+    from rasterio.crs import CRS
+    from rasterio.warp import reproject, transform_bounds
+    from rasterio.windows import from_bounds
+    PAD = 4
+    T, scrs = Affine(*m["transform"]), CRS.from_wkt(m["crs"])
+    sh, sw = m["shape"]
+    nb, H, W = dst_shape
+    x0, y1 = dst_tr.c, dst_tr.f
+    x1, y0 = x0 + dst_tr.a * W, y1 + dst_tr.e * H
+    b = transform_bounds(dst_crs, scrs, x0, y0, x1, y1, densify_pts=21) if scrs != dst_crs else (x0, y0, x1, y1)
+    win = from_bounds(*b, transform=T)
+    r0 = max(int(math.floor(win.row_off)) - PAD, 0)
+    c0 = max(int(math.floor(win.col_off)) - PAD, 0)
+    r1 = min(int(math.ceil(win.row_off + win.height)) + PAD, sh)
+    c1 = min(int(math.ceil(win.col_off + win.width)) + PAD, sw)
+    dst = np.full(dst_shape, dst_nodata, dtype)
+    if r1 <= r0 or c1 <= c0:
+        return dst
+    a, _ = tilecache.read(key, opener, (r0, c0, r1 - r0, c1 - c0), m)
+    a = a[bands] if bands is not None else a[:nb]
+    reproject(a, dst, src_transform=T * Affine.translation(c0, r0), src_crs=scrs, src_nodata=src_nodata,
+              dst_transform=dst_tr, dst_crs=dst_crs, dst_nodata=dst_nodata, resampling=resampling)
+    return dst
+
+
 def _item_grid(it):
     """(crs, pixel size) of a NAIP item from its STAC record (proj:code / proj:epsg, proj:transform): no file open
     (a first byte from the blob host is 0.4-0.9 s). None when the record lacks them."""
@@ -156,19 +188,19 @@ def read_year_ovr(its, bbox_snwe, res=SCORE_RES):
     env = rasterio.env.getenv() if rasterio.env.hasenv() else {}
 
     def one(it):                        # the items at once (each open is a 0.4-0.9 s round trip)
+        href = it.assets["image"].href
         with rasterio.Env(**env):
-            try:
-                src = rasterio.open(it.assets["image"].href, **({} if lvl < 0 else dict(overview_level=lvl)))
-            except rasterio.errors.RasterioIOError:
-                if lvl < 0:
-                    raise
-                src = rasterio.open(it.assets["image"].href)         # no such overview: the warp reads full resolution
-            with src:
-                nb = min(src.count, 4)
-                dst = np.zeros((nb, H, W), np.uint8)
-                reproject(rasterio.band(src, list(range(1, nb + 1))), dst, src_nodata=0, dst_transform=tr, dst_crs=crs,
-                          dst_nodata=0, resampling=Resampling.average)
-                return dst
+            for lv in ((lvl, -1) if lvl >= 0 else (-1,)):
+                kw = {} if lv < 0 else dict(overview_level=lv)
+                key = f"naip/{it.id}/" + ("full" if lv < 0 else f"ovr{lv}")
+                try:
+                    m = tilecache.meta(key, lambda: rasterio.open(href, **kw))
+                    break
+                except rasterio.errors.RasterioIOError:
+                    if lv < 0:
+                        raise                # (no such overview: the warp reads full resolution)
+            return _warp_cached(key, lambda: rasterio.open(href, **kw), m, tr, crs, (min(m["count"], 4), H, W),
+                                0, Resampling.average)
     with ThreadPoolExecutor(len(its)) as ex:
         parts = list(ex.map(one, its))
     out = np.zeros((parts[0].shape[0], H, W), np.uint8)
@@ -190,7 +222,8 @@ def _paste(dst, src, r0, c0, mode):
 def read_window(items, bounds, res):
     """the year's mosaic over bounds (x0, y0, x1, y1) in the items' CRS at their own pixel size: each item opened
     once, one read of the block-aligned window (all bands; GDAL_NUM_THREADS fetches and inflates the tiles in
-    parallel, each tile once), pasted like rasterio.merge(method='first', nodata=0). Bit-identical to the strip read
+    parallel, each tile once; blocks already in tilecache are not read), pasted like rasterio.merge(method='first',
+    nodata=0). Bit-identical to the strip read
     (_read_strips) on Yorba Linda 2018: 35 MB / 3.0 s instead of 99 MB / 3.9 s (the strips re-read tiles at their
     seams). None when an item's grid is not aligned to the output grid (then _read_strips resamples, as before)."""
     import rasterio
@@ -199,22 +232,26 @@ def read_window(items, bounds, res):
     W, H = int(round((x1 - x0) / res)), int(round((y1 - y0) / res))
 
     def one(it):
+        from affine import Affine
+        from rasterio.crs import CRS
+        href = it.assets["image"].href
         with rasterio.Env(**dict(GDAL_ENV, GDAL_NUM_THREADS="ALL_CPUS")):
-            with rasterio.open(it.assets["image"].href) as src:
-                T = src.transform
-                fc, fr = (x0 - T.c) / res, (T.f - y1) / res
-                if abs(abs(T.a) - res) > 1e-9 or abs(fc - round(fc)) > 1e-6 or abs(fr - round(fr)) > 1e-6 or T.b or T.d:
-                    return None
-                c0, r0 = int(round(fc)), int(round(fr))
-                ca, ra = max(c0, 0), max(r0, 0)
-                cb, rb = min(c0 + W, src.width), min(r0 + H, src.height)
-                if cb <= ca or rb <= ra:
-                    return src.crs, None, None
-                bh, bw = src.block_shapes[0]
-                CA, RA = ca // bw * bw, ra // bh * bh
-                CB, RB = min(-(-cb // bw) * bw, src.width), min(-(-rb // bh) * bh, src.height)
-                a = src.read(window=Window(CA, RA, CB - CA, RB - RA))
-                return src.crs, a[:, ra - RA:rb - RA, ca - CA:cb - CA], (ra - r0, ca - c0)
+            key = f"naip/{it.id}/full"
+            m = tilecache.meta(key, lambda: rasterio.open(href))
+            T, crs = Affine(*m["transform"]), CRS.from_wkt(m["crs"])
+            (sh, sw) = m["shape"]
+            fc, fr = (x0 - T.c) / res, (T.f - y1) / res
+            if abs(abs(T.a) - res) > 1e-9 or abs(fc - round(fc)) > 1e-6 or abs(fr - round(fr)) > 1e-6 or T.b or T.d:
+                return None
+            c0, r0 = int(round(fc)), int(round(fr))
+            ca, ra = max(c0, 0), max(r0, 0)
+            cb, rb = min(c0 + W, sw), min(r0 + H, sh)
+            if cb <= ca or rb <= ra:
+                return crs, None, None
+            # the 512 blocks the window touches: cached ones from disk, the rest in one GDAL read (GDAL_NUM_THREADS
+            # fetches and inflates those tiles in parallel, each once)
+            a, _ = tilecache.read(key, lambda: rasterio.open(href), (ra, ca, rb - ra, cb - ca), m)
+            return crs, a, (ra - r0, ca - c0)
     with ThreadPoolExecutor(len(items)) as ex:
         parts = list(ex.map(one, items))
     if any(p is None for p in parts):
@@ -366,6 +403,34 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None, prefetc
                 files=files, format=kind, lo=lo, sizes_mb=sizes, license="Public domain (USDA FSA)")
 
 
+def fetch_dem_cached(padded, out_dir, epsg):
+    """fetch_imagery.fetch_dem (3DEP exportImage at 1 m) with its answer kept in the shared cache, keyed by the exact
+    request (box, CRS): a re-run under another slug copies dem.tif instead of downloading it"""
+    import hashlib
+    import shutil
+    key = json.dumps(dict(bbox=[round(v, 9) for v in padded], epsg=epsg, res=1.0, v=1), sort_keys=True)
+    d = os.path.join(tilecache.root(), "dem", hashlib.sha1(key.encode()).hexdigest()[:20])
+    try:
+        with open(os.path.join(d, "meta.json")) as fh:
+            meta = json.load(fh)
+        shutil.copyfile(os.path.join(d, "dem.tif"), os.path.join(out_dir, "dem.tif"))
+        os.utime(os.path.join(d, "dem.tif"))          # last use, for tilecache.prune
+        return meta
+    except (OSError, ValueError):
+        pass
+    meta = fi.fetch_dem(padded, out_dir, epsg)
+    if tilecache.enabled() and meta.get("file") == "dem.tif" and "tnm_errors" not in meta:   # the 1 m TNM answer only
+        try:
+            os.makedirs(d, exist_ok=True)
+            shutil.copyfile(os.path.join(out_dir, "dem.tif"), os.path.join(d, "dem.tif.tmp"))
+            os.replace(os.path.join(d, "dem.tif.tmp"), os.path.join(d, "dem.tif"))
+            with open(os.path.join(d, "meta.json"), "w") as fh:
+                json.dump(meta, fh)
+        except OSError:
+            pass
+    return meta
+
+
 def fetch(bbox_wsen, out_dir, osm_fc=None, year="auto", margin=100.0, label=None, quiet=True, prefetch=None):
     """bbox_wsen: the course bbox [W, S, E, N] (course.json); osm_fc: the OSM FeatureCollection, or a Future of it
     (needed only for the year scoring, after the NAIP listing); prefetch: stac_prefetch's result or Future.
@@ -388,7 +453,7 @@ def fetch(bbox_wsen, out_dir, osm_fc=None, year="auto", margin=100.0, label=None
     def dem():
         t0 = time.time()
         try:
-            return fi.fetch_dem(padded, out_dir, epsg0)
+            return fetch_dem_cached(padded, out_dir, epsg0)
         finally:
             T["dem"] = round(time.time() - t0, 2)
 

@@ -74,11 +74,34 @@ def _quantize(arr):
     return np.where(np.isfinite(arr), np.clip(np.round(arr), 0, 254), 255).astype(np.uint8)
 
 
+def _warp_tile(qk, url, tr, crs, shape):
+    """one quadkey tile bilinear onto the course grid (float32, NaN outside): its source window through the shared
+    block cache (fastpath/tilecache.py; the tiles are 65536 x 1 strips, ~7 KB a row, so a course costs ~20 MB and a
+    neighbour or a re-run under another slug reads the rows it shares from disk). Equal to warping from the tile
+    itself (Yorba Linda: bit-identical chm_meta.tif)."""
+    import rasterio
+    from rasterio.enums import Resampling
+    from rasterio.warp import reproject
+    try:
+        import fast_imagery as fim
+        import tilecache
+        key = f"metachm/v1/{qk}"
+        m = tilecache.meta(key, lambda: rasterio.open(url))
+        return fim._warp_cached(key, lambda: rasterio.open(url), m, tr, crs, (1,) + tuple(shape), m["nodata"],
+                                Resampling.bilinear, dst_nodata=np.nan, dtype=np.float32)[0]
+    except ImportError:
+        pass
+    tmp = np.full(shape, np.nan, np.float32)
+    with rasterio.open(url) as src:
+        reproject(rasterio.band(src, 1), tmp, src_nodata=src.nodata, dst_nodata=np.nan, dst_transform=tr,
+                  dst_crs=crs, resampling=Resampling.bilinear)
+    return tmp
+
+
 def fetch(bbox_wsen, out_dir, margin_m=160.0):
     import rasterio
     from rasterio.crs import CRS
-    from rasterio.enums import Resampling
-    from rasterio.warp import reproject, transform_bounds
+    from rasterio.warp import transform_bounds
     t0 = time.time()
     path = os.path.join(out_dir, "chm_meta.tif")
     if os.path.exists(path):
@@ -98,10 +121,8 @@ def fetch(bbox_wsen, out_dir, margin_m=160.0):
     with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", AWS_NO_SIGN_REQUEST="YES", VSI_CACHE="TRUE",
                       GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif"):
         for qk in quadkeys((w, s, e, n)):
-            with rasterio.open("/vsicurl/" + META_CHM.format(qk=qk)) as src:
-                tmp = np.full((H, W), np.nan, np.float32)
-                reproject(rasterio.band(src, 1), tmp, src_nodata=src.nodata, dst_nodata=np.nan, dst_transform=tr,
-                          dst_crs=crs, resampling=Resampling.bilinear)
+            url = "/vsicurl/" + META_CHM.format(qk=qk)
+            tmp = _warp_tile(qk, url, tr, crs, (H, W))
             _merge(arr, tmp)
     q = _quantize(arr)
     with rasterio.open(path, "w", driver="GTiff", height=H, width=W, count=1, dtype="uint8", crs=crs, transform=tr,
