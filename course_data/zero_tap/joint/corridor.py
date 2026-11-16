@@ -49,6 +49,12 @@ class Raster:
                           [f["poly"] for f in co.get("fair") or []], cell)
         self.obst = _fill(np.zeros((self.H, self.W), np.uint8), self.x0, self.y0, co.get("obst") or [], cell)
         self.has_fair = bool(self.fair.any())
+        import cv2
+        self.tree = np.zeros((self.H, self.W), np.uint8)       # tree crowns (x, y, radius yd): a hole is not played
+        for x, y, r in co.get("trees") or []:                   # through a stand of trees
+            cv2.circle(self.tree, (int(round((x - self.x0) / cell)), int(round((y - self.y0) / cell))),
+                       max(1, int(round(r / cell))), 1, -1)
+        self.has_tree = bool(self.tree.any())
 
     def frac(self, P0, P1, mask, lo=0.08, hi=0.92, ns=NS):
         P0 = np.asarray(P0, float)

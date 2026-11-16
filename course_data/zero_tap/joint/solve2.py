@@ -29,7 +29,7 @@ import solve as S1
 BIG = 1e6
 DEF2 = dict(S1.DEF, K=18, beam=3000, tee_reuse=1, c_vt=4.0, c_vg=5.0, c_miss=9.0, c_vv=2.0,
             ring_lo=0.82, ring_hi=1.03, v_base=0.4, v0=25.0, v1=45.0, v_max=9.0, start_v=2.5,
-            card_tol=0.12, ph_card=0.002, reuse_cost=1.5, lag_iters=60, lag_step=1.0,
+            card_tol=0.12, ph_card=0.002, reuse_cost=1.5, lag_iters=60, lag_step=1.0, w_tree=0.0,
             n_bear=24, r_virt=0.95, w_cov=3.0, cov_min=0.35, par3_yd=250.0, w_ob=4.0, w_onob=3.0, w_obr=4.0)
 
 REAL, VT, VG, MISS = 0, 1, 2, 3
@@ -110,6 +110,8 @@ class Problem2:
             rg = np.array([g for k, t, g in cand[:self.real]])
             self.ob_real = self.rast.frac(Tc0[rt], co["G"][rg], self.rast.obst)
             base[:self.real] += P["w_obr"] * self.ob_real
+            self.tree_real = self.rast.frac(Tc0[rt], co["G"][rg], self.rast.tree, 0.15, 0.85)
+            base[:self.real] += P["w_tree"] * self.tree_real
         self.base = base
         self._spots = {}
         # geometry
@@ -201,7 +203,8 @@ class Problem2:
         need = np.where(np.asarray(y) >= P["par3_yd"], P["cov_min"], 0.0)[None, :, None]
 
         def cost(A, S):                                                # A [n, 1, 1, 2] object, S [n, N, B, 2] spot
-            c = P["w_ob"] * R.frac(S, A, R.obst) + P["w_onob"] * R.at(S, R.obst)
+            c = P["w_ob"] * R.frac(S, A, R.obst) + P["w_onob"] * R.at(S, R.obst) + \
+                P["w_tree"] * R.frac(S, A, R.tree, 0.15, 0.85)
             if R.has_fair:
                 c = c + P["w_cov"] * np.maximum(0.0, need - R.frac(S, A, R.fair))
             return c
@@ -380,6 +383,16 @@ def lagrange(pr, iters=None, fix=None, forbid=None):
     return best[1]
 
 
+def topk(v, k):
+    """indices of the k smallest values of v, ties broken by index (deterministic; the C port selects the same set)"""
+    if k >= len(v):
+        return np.arange(len(v))
+    thr = v[np.argpartition(v, k - 1)[k - 1]]
+    lo = np.nonzero(v < thr)[0]
+    eq = np.nonzero(v == thr)[0]
+    return np.concatenate([lo, eq[:k - len(lo)]])
+
+
 def beam2(pr, fix=None, forbid=None, beam_w=None, keep=1, price=None):
     """Beam over positions, state (greens used, tees used, last end). States are ranked by cost + price of the
     options used (Lagrange prices from `lagrange`: what taking a green now costs the rest of the course), and
@@ -389,6 +402,9 @@ def beam2(pr, fix=None, forbid=None, beam_w=None, keep=1, price=None):
     B = beam_w or P["beam"]
     N, C = pr.N, len(pr.cand)
     cc, Tm, st, en = tables(pr)
+    fr = _fastroute()
+    if fr is not None:
+        return _beam_c(fr, pr, B, keep, price, cc, Tm, st, en, fix, forbid)
     gm = np.zeros(1, np.uint64)
     tm = np.zeros(1, np.uint64)
     last = np.zeros(1, np.int64)
@@ -418,8 +434,7 @@ def beam2(pr, fix=None, forbid=None, beam_w=None, keep=1, price=None):
         add = np.where(bad, BIG * 10, add)
         tru = (true[:, None] + add).ravel()
         flat = (rank[:, None] + add + pz[None, :]).ravel()
-        k = min(len(flat), B * 4)
-        idx = np.argpartition(flat, k - 1)[:k] if k < len(flat) else np.arange(len(flat))
+        idx = topk(flat, min(len(flat), B * 4))
         idx = idx[tru[idx] < BIG]
         if not len(idx):
             return []
@@ -445,6 +460,44 @@ def beam2(pr, fix=None, forbid=None, beam_w=None, keep=1, price=None):
             k = int(par[k])
         out.append((float(score[j]), seq[::-1]))
     return out
+
+
+_FR = []
+
+
+def _fastroute():
+    """the C beam (platform/fastc/routing) unless GOLF_FASTC=0 or it cannot be built"""
+    import os
+    import sys
+    if not _FR:
+        d = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "platform",
+                         "fastc", "routing")
+        if d not in sys.path:
+            sys.path.insert(0, d)
+        try:
+            import fastroute
+            _FR.append(fastroute if fastroute.lib() is not None else None)
+        except Exception:                                            # noqa: BLE001
+            _FR.append(None)
+    if _FR[0] is None or os.environ.get("GOLF_FASTC", "1") == "0":
+        return None
+    return _FR[0]
+
+
+def _beam_c(fr, pr, B, keep, price, cc, Tm, st, en, fix, forbid):
+    N, C, E = pr.N, len(pr.cand), pr.E
+    step = np.stack([pr.base + cc[i] + _mask(pr, i, fix, forbid) for i in range(N)])
+    T = np.zeros((N, E, C))
+    for i in range(1, N):
+        T[i] = Tm[i]
+    S = np.zeros((N, C))
+    for i, v in st.items():
+        S[i] = v
+    En = np.zeros((N, E))
+    for i, v in en.items():
+        En[i] = v
+    return fr.beam(N, C, E, B, pr.loop, step, T, S, En, pr.gbit, pr.tbit, pr.endi, pr.X, price, pr.reuse,
+                   pr.P["w_x"], keep)
 
 
 def search(pr, fix=None, forbid=None, beam_w=None):
