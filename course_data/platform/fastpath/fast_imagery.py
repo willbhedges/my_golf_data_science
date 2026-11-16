@@ -431,6 +431,81 @@ def fetch_dem_cached(padded, out_dir, epsg):
     return meta
 
 
+def to_06(img_dir, res=0.6):
+    """0.3 m NAIP -> 0.6 m (area average, what fastscene.unet_probs feeds the U-Net anyway; grid_stack averages to
+    1 m): a quarter of the disk. Rewritten in place (JPEG COGs as fast_imagery writes them); georef.json notes it."""
+    import rasterio
+    from rasterio.enums import Resampling
+    from rasterio.transform import Affine
+    from rasterio.warp import reproject
+    gp = os.path.join(img_dir, "georef.json")
+    if not os.path.exists(gp):
+        return False
+    g = json.load(open(gp))
+    im = g.get("imagery") or {}
+    if not im or im.get("resolution_m", 1.0) > 0.5:
+        return False
+    for name, q in (("naip_rgb.tif", 90), ("naip_nir.tif", 92)):
+        p = os.path.join(img_dir, name)
+        if not os.path.exists(p):
+            continue
+        with rasterio.open(p) as s:
+            a, tr, crs = s.read(), s.transform, s.crs
+        f = res / abs(tr.a)
+        H6, W6 = int(round(a.shape[1] / f)), int(round(a.shape[2] / f))
+        tr6 = tr * Affine.scale(a.shape[2] / W6, a.shape[1] / H6)
+        o = np.zeros((a.shape[0], H6, W6), np.float32)
+        for k in range(a.shape[0]):
+            reproject(a[k].astype(np.float32), o[k], src_transform=tr, src_crs=crs, dst_transform=tr6, dst_crs=crs,
+                      resampling=Resampling.average)
+        write_cog(p, np.clip(np.round(o), 0, 255).astype(np.uint8), crs, tr6, q)
+    im.update(resolution_m_fetched=im["resolution_m"], resolution_m=res, note="averaged to 0.6 m by fast_imagery.to_06")
+    json.dump(g, open(gp, "w"), indent=1)
+    return True
+
+
+YEARS_K = 2                 # extra NAIP years for the perception U-Net's multi-year fusion (fastscene.unet_probs_years)
+
+
+def fetch_years(img_dir, k=YEARS_K, min_year=2012, out_root=None):
+    """the k newest NAIP years other than the package's own (coverage > 0.9, from min_year), each written at 0.6 m
+    (to_06) under out_root (default <img_dir>/years)/<year>/naip_rgb.tif, naip_nir.tif, georef.json. Different
+    flights / seasons separate greens from fairways differently; the U-Net probabilities are averaged over them.
+    Years already there are not fetched again. -> [years present]"""
+    g = json.load(open(os.path.join(img_dir, "georef.json")))
+    have = (g.get("imagery") or {}).get("year")
+    padded = g["padded_bbox_wgs84_snwe"]
+    yd = out_root or os.path.join(img_dir, "years")
+    done = sorted(int(x) for x in os.listdir(yd) if os.path.exists(os.path.join(yd, x, "georef.json"))) \
+        if os.path.isdir(yd) else []
+    if len(done) >= k:
+        return done
+    ys = [y for y in list_years(tuple(padded)) if y["coverage"] > 0.9 and y["year"] != have and y["year"] >= min_year]
+    out = []
+    for y in reversed(ys):
+        if len(out) >= k:
+            break
+        o = os.path.join(yd, str(y["year"]))
+        if not os.path.exists(os.path.join(o, "georef.json")):
+            os.makedirs(o, exist_ok=True)
+            try:
+                im = fetch_naip(tuple(padded), o, 0.6, year=str(y["year"]))
+                for junk in ("naip_rgb_lo.jpg", "naip_nir_lo.jpg"):
+                    if os.path.exists(os.path.join(o, junk)):
+                        os.remove(os.path.join(o, junk))
+                if "nir" not in im.get("files", {}):
+                    raise RuntimeError("no NIR band")
+                json.dump(dict(imagery=im), open(os.path.join(o, "georef.tmp.json"), "w"), indent=1)
+                os.replace(os.path.join(o, "georef.tmp.json"), os.path.join(o, "georef.json"))
+                to_06(o)
+            except Exception:                                        # noqa: BLE001
+                import shutil
+                shutil.rmtree(o, ignore_errors=True)
+                continue
+        out.append(y["year"])
+    return sorted(set(out) | set(done))
+
+
 def fetch(bbox_wsen, out_dir, osm_fc=None, year="auto", margin=100.0, label=None, quiet=True, prefetch=None):
     """bbox_wsen: the course bbox [W, S, E, N] (course.json); osm_fc: the OSM FeatureCollection, or a Future of it
     (needed only for the year scoring, after the NAIP listing); prefetch: stac_prefetch's result or Future.

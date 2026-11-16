@@ -368,7 +368,8 @@ def _xy(rows, feats):
 def fit(rows_dir, out=MODEL_DIR, exclude=(), drop=()):
     import glob
     from sklearn.ensemble import HistGradientBoostingClassifier
-    tabs = [json.load(open(p)) for p in sorted(glob.glob(os.path.join(rows_dir, "*.json")))]
+    dirs = [rows_dir] if isinstance(rows_dir, str) else list(rows_dir)
+    tabs = [json.load(open(p)) for d in dirs for p in sorted(glob.glob(os.path.join(d, "*.json")))]
     tabs = [t for t in tabs if t["meta"]["slug"] not in exclude]
     os.makedirs(out, exist_ok=True)
     info = dict(rows_dir=rows_dir, courses=[t["meta"]["slug"] for t in tabs], models={})
@@ -404,15 +405,32 @@ def fit(rows_dir, out=MODEL_DIR, exclude=(), drop=()):
     return info
 
 
+def crossfit(out, train_dirs, val_dir, k=2):
+    """final model on train + all of VAL (out/final) and k fold models on train + VAL minus fold j (out/fold<j>);
+    out/foldmap.json maps every VAL course to the fold model that never saw it (FASTSCENE_OBJECTS2=<foldmap>)"""
+    import glob
+    vs = sorted(os.path.basename(p)[:-5] for p in glob.glob(os.path.join(val_dir, "*.json")))
+    fm = {"*": os.path.join(out, "final")}
+    fit(list(train_dirs) + [val_dir], os.path.join(out, "final"))
+    for j in range(k):
+        held = [s for i, s in enumerate(vs) if i % k == j]
+        fit(list(train_dirs) + [val_dir], os.path.join(out, f"fold{j}"), exclude=held)
+        fm.update({s: os.path.join(out, f"fold{j}") for s in held})
+    json.dump(fm, open(os.path.join(out, "foldmap.json"), "w"), indent=1)
+    return fm
+
+
 if __name__ == "__main__":
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["rows", "fit"])
+    ap.add_argument("cmd", choices=["rows", "fit", "crossfit"])
     ap.add_argument("which", nargs="?", default="train")
     ap.add_argument("combo", nargs="?", default="d0")
     ap.add_argument("--out", default=MODEL_DIR)
     a = ap.parse_args()
     if a.cmd == "rows":
         collect(a.which, a.combo)
+    elif a.cmd == "crossfit":
+        crossfit(a.out, [os.path.join(ROWS, f"train_{a.combo}")], os.path.join(ROWS, f"val_{a.combo}"))
     else:
         fit(os.path.join(ROWS, f"{a.which}_{a.combo}"), a.out)

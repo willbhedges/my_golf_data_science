@@ -42,6 +42,8 @@ def variant_opts(v):
             o["augs"] = [int(part[1:])]
         elif part.startswith("y"):
             o["year"] = int(part[1:])
+        elif part.startswith("t"):             # t384x352: U-Net tile 384 px, stride 352
+            o["tile"], o["stride"] = (int(x) for x in part[1:].split("x"))
     return o
 
 
@@ -63,7 +65,8 @@ def compute_probs(e, v):
         if not os.path.exists(naip[0]):
             return "no year " + str(o["year"])
     t = time.time()
-    P = FS.unet_probs(e["dir"], st, FS.unet_weights(), keep, augs=o.get("augs"), naip=naip)
+    P = FS.unet_probs(e["dir"], st, FS.unet_weights(), keep, augs=o.get("augs"), naip=naip, tile=o.get("tile"),
+                      stride=o.get("stride"))
     dt = time.time() - t
     os.makedirs(os.path.dirname(p), exist_ok=True)
     q = np.clip(np.round(P * 255), 0, 255).astype(np.uint8)
@@ -74,7 +77,12 @@ def compute_probs(e, v):
 
 def load_combo(slug, combo):
     ps = []
-    for v in combo.split("+"):
+    vs = combo.split("+")
+    if "yall" in vs:                             # every cached extra-year variant of this course
+        d = os.path.join(PROBS, slug)
+        ys = sorted(f[:-4] for f in os.listdir(d) if f.startswith("y") and "_" not in f) if os.path.isdir(d) else []
+        vs = [v for v in vs if v != "yall"] + ys
+    for v in vs:
         p = probs_path(slug, v)
         if not os.path.exists(p):
             if v.startswith("y"):           # a year this course does not have: skip that view

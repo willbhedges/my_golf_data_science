@@ -49,6 +49,19 @@ Per-class precision / recall, object level:
 | baseline | VAL 30 | 0.894 / 0.924 | 0.857 / 0.855 | 0.953 / 0.868 | 0.838 / 0.916 | 0.791 / 0.398 |
 | + water from the U-Net (seeded by the NIR rule, U-Net veto on rule blobs) | VAL 30 | = | = | = | = | 0.931 / 0.516 |
 | + water from the U-Net | TEST 40 | = | = | = | = | **0.649 / 0.498** |
+| VAL re-based on all 51 VAL courses (water as above) | VAL 51 | 0.918 / 0.862 | 0.822 / 0.782 | 0.936 / 0.799 | 0.854 / 0.893 | 0.839 / 0.538 |
+| + second-stage object models, cross-fitted (2 VAL folds) | VAL 51 | 0.918 / 0.894 | 0.823 / 0.823 | = | = | = |
+| + second-stage object models (final: TRAIN + VAL) | TEST 40 | **0.916 / 0.831** | **0.818 / 0.806** | = | = | = |
+| tried, not kept: green blob split at distance-transform necks (700 m2) | VAL 51 | 0.917 / 0.863 | = | = | = | = |
+| tried, not kept: detections kept within 40 m of the outline (not 25) | VAL 51 | = | 0.819 / 0.783 | 0.934 / 0.799 | = | 0.825 / 0.547 |
+
+Second-stage object models (`perc_objects.py`, `fastscene_model/objects_unet/`, default; `FASTSCENE_OBJECTS2=0`
+restores perception's models): green / tee box / tee complex HistGradientBoosting models trained on OUR U-Net's
+candidates (perception's were trained on the ariadgolf model's) of TRAIN (35) + VAL (51), labels from OSM through
+perception/evaluate.py. Extra candidate features: the five U-Net classes inside the candidate and in a 3-25 m ring
+(fairway / bunker around a green), NIR / green-band std inside, NDVI / brightness / NIR contrast with the ring,
+canopy max inside and tree fraction in the ring, DEM plane-fit residual, plane slope, relief against the ring,
+distance to the nearest fairway centreline end. Used only when the scene comes from the U-Net.
 
 Water (perc_objects.install_water, default `FASTSCENE_WATER=unet`): pixels with U-Net p_water >= 0.5 (or NIR-rule
 pixels with p_water >= 0.25), opened, holes filled; a U-Net component is kept only if it holds pixels of the

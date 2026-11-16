@@ -410,17 +410,19 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
         raise FileNotFoundError("no fastscene pixel model (train_pixel.py)")
     t = time.time()
     st = grid_stack(pkg_dir, labels=labels)
+    st.meta["package"] = os.path.basename(os.path.normpath(pkg_dir))
     t = lap("grid", t)
     mask = course_mask(st)
     neg = osm_negative_mask(st, pkg_dir)
     uw = unet_weights()
     if P is not None or uw:                      # the segment U-Net (perception's own input), when its weights exist
         if P is None:
-            P = unet_probs(pkg_dir, st, uw, mask & ~neg)
+            P = unet_probs_years(pkg_dir, st, uw, mask & ~neg, T=T)
         t = lap("unet", t)
         for i, c in enumerate(SEG_ORDER):
             st.a["seg"][i] = np.clip(np.round(P[CLASSES.index(c)] * 255), 0, 255).astype(np.uint8)
         objm = None                              # perception/models: trained on U-Net candidates
+        st.meta["seg_source"] = "unet"
     else:
         F = features(st, impl)
         t = lap("features", t)
@@ -499,6 +501,40 @@ def unet_probs(pkg_dir, st, weights, keep, augs=None, naip=None, tile=None, stri
         reproject(P6[k], out[k], src_transform=tr, src_crs=crs, dst_transform=Affine(*g["transform"][:6]),
                   dst_crs=g["crs"], resampling=Resampling.average)
     return out
+
+
+YEARS_DEFAULT = 0           # FASTSCENE_YEARS: extra NAIP years averaged into the U-Net probabilities
+
+
+def unet_probs_years(pkg_dir, st, weights, keep, k=None, T=None):
+    """unet_probs on the package's NAIP and on k other NAIP years (fast_imagery.fetch_years: fetched once, cached
+    in imagery/years/), probabilities averaged. A year whose fetch fails is skipped."""
+    k = int(os.environ.get("FASTSCENE_YEARS", YEARS_DEFAULT)) if k is None else k
+    P = unet_probs(pkg_dir, st, weights, keep)
+    if k <= 0:
+        return P
+    t = time.time()
+    img = os.path.join(pkg_dir, "imagery")
+    try:
+        sys.path.insert(0, HERE)
+        import fast_imagery as fim
+        ys = fim.fetch_years(img, k)
+    except Exception:                                                # noqa: BLE001
+        ys = []
+    if T is not None:
+        T["years_fetch"] = round(time.time() - t, 2)
+    n = 1
+    for y in ys[-k:]:
+        d = os.path.join(img, "years", str(y))
+        try:
+            P += unet_probs(pkg_dir, st, weights, keep, naip=(os.path.join(d, "naip_rgb.tif"),
+                                                              os.path.join(d, "naip_nir.tif")))
+            n += 1
+        except Exception:                                            # noqa: BLE001
+            continue
+    if T is not None:
+        T["unet_years"] = [int(y) for y in ys[-k:]]
+    return P / n
 
 
 def _opt(model, key, env, default):
@@ -583,9 +619,11 @@ def fill_seg(st, P, model):
 
 
 def objects2_dir():
-    """FASTSCENE_OBJECTS2: unset / '' -> off; 'features' -> the extra candidate features only (row collection);
-    a directory -> its green / tee_box / tee_complex models (perc_objects.py) replace perception's"""
-    v = os.environ.get("FASTSCENE_OBJECTS2", "")
+    """FASTSCENE_OBJECTS2: unset -> fastscene_model/objects_unet (our second-stage models, perc_objects.py) when it
+    exists; '0' -> off (perception's models); 'features' -> the extra candidate features only (row collection);
+    a directory -> its green / tee_box / tee_complex models; a .json -> {package: dir} (cross-fitted folds)"""
+    d = os.path.join(MODEL_DIR, "objects_unet")
+    v = os.environ.get("FASTSCENE_OBJECTS2", d if os.path.isdir(d) else "")
     return v if v and v != "0" else None
 
 
@@ -644,7 +682,7 @@ def _perceive(st, paths, T, models, keep):
     if models is None:
         models, _ = PV.load_models()
         models = {k: v for k, v in models.items() if k not in ("path_px",)}
-    wm = os.environ.get("FASTSCENE_WATER", WATER_DEFAULT if st.a["seg"][SEG_ORDER.index("water")].any() else "rule")
+    wm = os.environ.get("FASTSCENE_WATER", WATER_DEFAULT if st.meta.get("seg_source") == "unet" else "rule")
     sys.path.insert(0, HERE)
     import perc_objects as PO
     if wm.startswith("unet"):                    # water from the U-Net's water class (perc_objects.install_water)
@@ -656,7 +694,10 @@ def _perceive(st, paths, T, models, keep):
     if gs is not None or getattr(DT, "_green_split", None):
         a = [float(x) for x in (gs or "0").split(":")]
         PO.install_green_split(DT, *a)
-    o2 = objects2_dir()
+    o2 = objects2_dir() if st.meta.get("seg_source") == "unet" else None
+    if o2 and o2.endswith(".json"):              # {slug: models dir, "*": default}: cross-fitted folds (perc_objects)
+        fm = json.load(open(o2))
+        o2 = fm.get(st.meta.get("package") or "", fm.get("*", "features"))
     if o2:                                       # second-stage object models on our U-Net's candidates (perc_objects)
         PO.install(DT)
         if o2 != "features":

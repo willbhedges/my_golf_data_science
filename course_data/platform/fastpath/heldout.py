@@ -83,39 +83,9 @@ def course_dict(e):
 
 
 def to_06(img_dir, res=0.6):
-    """0.3 m NAIP -> 0.6 m (area average, what fastscene.unet_probs feeds the U-Net anyway; grid_stack averages to
-    1 m): a quarter of the disk. Rewritten in place (JPEG COGs as fast_imagery writes them); georef.json notes it."""
-    import numpy as np
-    import rasterio
-    from rasterio.enums import Resampling
-    from rasterio.transform import Affine
-    from rasterio.warp import reproject
     sys.path.insert(0, HERE)
     import fast_imagery as fim
-    gp = os.path.join(img_dir, "georef.json")
-    if not os.path.exists(gp):
-        return False
-    g = json.load(open(gp))
-    im = g.get("imagery") or {}
-    if not im or im.get("resolution_m", 1.0) > 0.5:
-        return False
-    for name, q in (("naip_rgb.tif", 90), ("naip_nir.tif", 92)):
-        p = os.path.join(img_dir, name)
-        if not os.path.exists(p):
-            continue
-        with rasterio.open(p) as s:
-            a, tr, crs = s.read(), s.transform, s.crs
-        f = res / abs(tr.a)
-        H6, W6 = int(round(a.shape[1] / f)), int(round(a.shape[2] / f))
-        tr6 = tr * Affine.scale(a.shape[2] / W6, a.shape[1] / H6)
-        o = np.zeros((a.shape[0], H6, W6), np.float32)
-        for k in range(a.shape[0]):
-            reproject(a[k].astype(np.float32), o[k], src_transform=tr, src_crs=crs, dst_transform=tr6, dst_crs=crs,
-                      resampling=Resampling.average)
-        fim.write_cog(p, np.clip(np.round(o), 0, 255).astype(np.uint8), crs, tr6, q)
-    im.update(resolution_m_fetched=im["resolution_m"], resolution_m=res, note="averaged to 0.6 m by heldout.to_06")
-    json.dump(g, open(gp, "w"), indent=1)
-    return True
+    return fim.to_06(img_dir, res)
 
 
 def fetch_one(e, log=print):
@@ -151,42 +121,10 @@ def fetch_one(e, log=print):
 
 
 def fetch_years(e, k=2, min_year=2012):
-    """the k newest other NAIP years (coverage > 0.9, 4 bands) besides the package's own -> years/<year>/naip_*.tif
-    (multi-year fusion: different seasons separate greens from fairways differently). -> [years written]"""
+    """the k newest other NAIP years -> <package>/years/<year>/ (fast_imagery.fetch_years)"""
     sys.path.insert(0, HERE)
     import fast_imagery as fim
-    d = e["dir"]
-    g = json.load(open(os.path.join(d, "imagery", "georef.json")))
-    have = g.get("imagery", {}).get("year")
-    padded = g["padded_bbox_wgs84_snwe"]
-    yd = os.path.join(d, "years")
-    done = sorted(int(x) for x in os.listdir(yd)) if os.path.isdir(yd) else []
-    if len(done) >= k:
-        return done
-    ys = fim.list_years(tuple(padded))
-    ys = [y for y in ys if y["coverage"] > 0.9 and y["year"] != have and y["year"] >= min_year]
-    out = []
-    for y in reversed(ys):
-        if len(out) >= k:
-            break
-        o = os.path.join(yd, str(y["year"]))
-        if not os.path.exists(os.path.join(o, "naip_nir.tif")):
-            os.makedirs(o, exist_ok=True)
-            try:
-                im = fim.fetch_naip(tuple(padded), o, 0.6, year=str(y["year"]))
-                json.dump(dict(imagery=im), open(os.path.join(o, "georef.json"), "w"), indent=1)
-                to_06(o)
-            except Exception as ex:                                  # noqa: BLE001
-                print(e["slug"], y["year"], "failed", repr(ex)[:200])
-            for junk in ("naip_rgb_lo.jpg", "naip_nir_lo.jpg"):
-                if os.path.exists(os.path.join(o, junk)):
-                    os.remove(os.path.join(o, junk))
-        if os.path.exists(os.path.join(o, "naip_nir.tif")):
-            out.append(y["year"])
-        else:
-            import shutil
-            shutil.rmtree(o, ignore_errors=True)
-    return out
+    return fim.fetch_years(os.path.join(e["dir"], "imagery"), k, min_year, out_root=os.path.join(e["dir"], "years"))
 
 
 def ok(e):
