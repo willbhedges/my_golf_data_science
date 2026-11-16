@@ -516,3 +516,32 @@ int fp_conv3x3(const float *x, long C, long H, long W, const float *w, const flo
     }
     return 0;
 }
+
+/* ---- fast-path strategy solve (fastpath/solve.py): tee_strategy.simulate's roll-out on the lie raster ---- */
+/* Per ball, exactly the vectorised loop of mozingo/tee_strategy.simulate with solve.raster_lie_at as lie_at:
+ * while the ball has roll left and is not in a hazard: step = min(roll, 2), pts += heading * (step * ppy),
+ * roll -= step, new lie from the raster (cell = round-half-even((p - lo) * scale), off the raster = label 0),
+ * fairway -> rough keeps ROUGH_ROLL of the remaining roll. pts (n, 2) and lie (n) are updated in place. */
+int fp_roll(double *pts, const double *heading, double *roll, int32_t *lie, long n, double ppy,
+            const uint8_t *lab, long LH, long LW, double lo0, double lo1, double scale,
+            const uint8_t *hazard, int fairway, int rough, double rough_roll) {
+    #pragma omp parallel for schedule(static)
+    for (long i = 0; i < n; i++) {
+        double x = pts[2 * i], y = pts[2 * i + 1], r = roll[i];
+        int l = lie[i];
+        const double hx = heading[2 * i], hy = heading[2 * i + 1];
+        while (r > 0 && !hazard[l]) {
+            double step = r < 2.0 ? r : 2.0;
+            double sp = step * ppy;
+            x += hx * sp;
+            y += hy * sp;
+            r -= step;
+            long c = (long)nearbyint((x - lo0) * scale), rr = (long)nearbyint((y - lo1) * scale);
+            int nl = (c >= 0 && rr >= 0 && c < LW && rr < LH) ? lab[rr * LW + c] : 0;
+            if (nl == rough && l == fairway) r *= rough_roll;
+            l = nl;
+        }
+        pts[2 * i] = x; pts[2 * i + 1] = y; roll[i] = r; lie[i] = l;
+    }
+    return 0;
+}

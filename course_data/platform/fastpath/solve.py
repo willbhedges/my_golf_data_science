@@ -68,6 +68,10 @@ def solve(pkg_path, tee_set=None, n=2000, workers=4, raster=True):
     t1 = time.time()
     import decide
     use_raster() if raster else EB.use_fast_lie_at()
+    c_roll = False
+    if raster:
+        import solve_c
+        c_roll = solve_c.install()                 # the roll-out loop in C (identical arrays, test_solve_c.py)
     res = decide.run(dict(holes), "quick", workers=workers, log=lambda *a: None, n=n) if holes else {}
     out = {}
     for k, v in res.items():
@@ -78,7 +82,8 @@ def solve(pkg_path, tee_set=None, n=2000, workers=4, raster=True):
                            length=holes[k].get("length"), par=holes[k].get("par"),
                            evs={c: round(r["ev"], 4) for c, r in v["clubs"].items()},
                            aims={c: round(r["aim"], 1) for c, r in v["clubs"].items()})
-    return dict(set=S, n=n, holes=out, seconds=dict(load=round(t1 - t0, 2), solve=round(time.time() - t1, 2)))
+    return dict(set=S, n=n, holes=out, seconds=dict(load=round(t1 - t0, 2), solve=round(time.time() - t1, 2)),
+                c_roll=c_roll)
 
 
 if __name__ == "__main__":

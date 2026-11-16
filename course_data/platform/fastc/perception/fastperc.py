@@ -56,6 +56,8 @@ def lib():
     L.fp_maxpool3s2.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P]
     L.fp_up2.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P]
     L.fp_conv3x3.argtypes = [P, ctypes.c_long, ctypes.c_long, ctypes.c_long, P, P, ctypes.c_long, ctypes.c_int, P]
+    L.fp_roll.argtypes = [P, P, P, P, ctypes.c_long, ctypes.c_double, P, ctypes.c_long, ctypes.c_long, ctypes.c_double,
+                          ctypes.c_double, ctypes.c_double, P, ctypes.c_int, ctypes.c_int, ctypes.c_double]
     L.fp_grey_disk.argtypes = [P, P, ctypes.c_long, ctypes.c_long, ctypes.c_int, ctypes.c_int]
     _L[0] = L
     return L
