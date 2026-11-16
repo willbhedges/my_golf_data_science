@@ -433,6 +433,7 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     return sc, dict(seconds=T, stack=st, D=D, P=P)
 
 
+UNET_GSD_M = 0.6
 UNET_DEFAULT = os.path.join(CD, "segment", "models", "golfseg_own", "model.safetensors")   # ours (README there)
 
 
@@ -463,6 +464,17 @@ def unet_probs(pkg_dir, st, weights, keep):
     with rasterio.open(src["nir"]) as d:
         nir = d.read(1)
     img = np.concatenate([rgb[:3], nir[None]], 0).astype(np.uint8)
+    res = abs(tr.a)
+    if abs(res - UNET_GSD_M) > 0.05:             # newer NAIP is 0.3 m in some states: the U-Net was trained at 0.6 m
+        from rasterio.transform import Affine as _A
+        f = UNET_GSD_M / res
+        H6, W6 = int(round(img.shape[1] / f)), int(round(img.shape[2] / f))
+        tr6 = tr * _A.scale(img.shape[2] / W6, img.shape[1] / H6)
+        im6 = np.zeros((4, H6, W6), np.float32)
+        for k in range(4):
+            reproject(img[k].astype(np.float32), im6[k], src_transform=tr, src_crs=crs, dst_transform=tr6, dst_crs=crs,
+                      resampling=Resampling.average)
+        img, tr = np.clip(np.round(im6), 0, 255).astype(np.uint8), tr6
     # the keep mask (stack grid) onto the NAIP grid (nearest), dilated by a tile margin implicitly by the tiling
     k6 = np.zeros(img.shape[1:], np.float32)
     g = st.meta["grid"]
@@ -491,7 +503,8 @@ KEEP_PAD_M = 25.0           # detections (incl. DEM pads, which perception finds
 
 
 def osm_negative_mask(st, pkg_dir):
-    """OSM buildings (+2 m) and roads (4-6 m wide) on the grid: not golf, whatever the pixels look like. These are
+    """OSM buildings, sports pitches / playgrounds / pools / tracks, car parks and schools (+2 m) and roads (4-6 m
+    wide) on the grid: not golf, whatever the pixels look like. These are
     non-golf OSM features, available for every course (the golf features themselves are never read here)."""
     import cv2
     m = np.zeros((st.H, st.W), np.uint8)
@@ -505,7 +518,8 @@ def osm_negative_mask(st, pkg_dir):
         pr, g = f.get("properties") or {}, f.get("geometry") or {}
         if pr.get("golf") or pr.get("origin") == "fastscene":
             continue
-        if pr.get("building") and g.get("type") in ("Polygon", "MultiPolygon"):
+        if (pr.get("building") or pr.get("leisure") in ("pitch", "playground", "swimming_pool", "track")
+                or pr.get("amenity") in ("parking", "school")) and g.get("type") in ("Polygon", "MultiPolygon"):
             polys = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
             for poly in polys:
                 if poly:
