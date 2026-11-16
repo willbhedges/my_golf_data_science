@@ -258,7 +258,7 @@ def test_unet_fast_fp32_close_to_numpy():
 def test_unet_amx_bf16_close_to_float32():
     """unet_amx (bf16 weights / activations, float32 sums) against the float32 pass. Not exact; the bounds hold
     with margin on the real model (seen: mean |dp| 6e-4, max |dp| 0.04, argmax 99.9 %); the accuracy gate is the
-    held-out detection benchmark (NOTES_PERCEPTION.md). Random weights: the layout and padding paths."""
+    held-out detection benchmark (README.md). Random weights: the layout and padding paths."""
     import unet
     import unet_amx
     if not unet_amx.available():

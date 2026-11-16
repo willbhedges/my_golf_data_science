@@ -8,7 +8,7 @@
 
 Not bit-exact: weights and activations are rounded to bf16 (8-bit mantissa) between layers; the sums are float32.
 test_fastperc.py bounds the difference to the float32 pass (logits and softmax probabilities); the held-out
-detection benchmark (fastpath/perc_bench.py) is the accuracy gate (NOTES_PERCEPTION.md). FASTPERC_AMX=0 turns it
+detection benchmark (fastpath/perc_bench.py) is the accuracy gate (README.md here). FASTPERC_AMX=0 turns it
 off (GOLF_FASTC=0 too, in fastscene).
 """
 from __future__ import annotations

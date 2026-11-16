@@ -1,5 +1,5 @@
 """perc_bench.py with the U-Net probabilities cached under a separate root, for the accuracy gate of U-Net speed
-changes (fastc/perception/unet_amx.py, unet_fast.py; NOTES_PERCEPTION.md "U-Net speed").
+changes (fastc/perception/unet_amx.py, unet_fast.py; fastc/perception/README.md "U-Net speed").
 
     python3 perc_bench_speed.py ROOT probs test d0+yall [--stride 384] [--impl amx|fp32|ref] [slug ...]
     python3 perc_bench_speed.py ROOT eval  test d0+yall --tag T [slug ...]
@@ -38,7 +38,8 @@ if __name__ == "__main__":
         _up = FS.unet_probs
 
         def unet_probs(*args, **kw):
-            kw.setdefault("stride", a.stride)
+            if kw.get("stride") is None:              # perc_bench passes stride=None explicitly
+                kw["stride"] = a.stride
             return _up(*args, **kw)
         FS.unet_probs = unet_probs
     if a.cmd == "probs":

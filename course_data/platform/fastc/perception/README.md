@@ -50,3 +50,45 @@ from Actions run 38987845450 by `.github/workflows/import_golfseg_own.yml`). Inp
   alone, a 1152 x 65536 im2col for 32 outputs, took a third of a tile). It is replaced by `amx.c` / `conv32.c` above.
 * Not kept: running the extra NAIP years only on tiles where the first year is uncertain. On the TEST 40 d0
   probabilities only 3-7 % of tiles have no pixel below max p 0.9 / 0.8, so it would save almost nothing.
+
+## U-Net speed: accuracy gate and timings
+
+Gate: perception detection on the TEST 40 (`fastpath/perc_bench_speed.py`, the package year + every cached extra
+NAIP year, scored by `perc_bench.evaluate`). The extra-year GeoTIFFs had been deleted to save disk and were fetched
+again with `fastpath/heldout_refetch_years.py` (deleted again afterwards, `--clean`). P / R:
+
+| pass, tile stride | hole greens | tee complexes | fairways | bunkers | water |
+|---|---|---|---|---|---|
+| float32 (OpenBLAS), 384: the cached reference of feae37f33 (re-scored today: same) | 0.928 / 0.891 | 0.848 / 0.832 | 0.876 / 0.838 | 0.928 / 0.878 | 0.637 / 0.502 |
+| **AMX bf16, 384** | 0.929 / 0.891 | 0.848 / 0.834 | 0.875 / 0.838 | 0.927 / 0.878 | 0.637 / 0.502 |
+| float32 (`conv32.c`, == OpenBLAS within 1/255), 448 = production since feae37f33 | 0.925 / 0.887 | 0.845 / 0.830 | 0.883 / 0.832 | 0.926 / 0.874 | 0.639 / 0.505 |
+| **AMX bf16, 448** (production now) | 0.925 / 0.887 | 0.847 / 0.834 | 0.882 / 0.833 | 0.926 / 0.874 | 0.636 / 0.505 |
+
+bf16 against float32 at the same stride moves no class by more than 0.4 points. The 384 -> 448 stride change of
+feae37f33 (chosen on VAL, where it was equal) costs up to 0.4 points on TEST (green R, bunker R); that is not new.
+
+Per tile (512 px, real weights), median of repeated runs, box shared with a routing job (load 4-6 on 4 CPUs):
+
+| pass | 4 threads | 1 thread (taskset) |
+|---|---|---|
+| unet.py + C primitives + OpenBLAS (before) | 0.76 s (lightly loaded), 2.2-2.3 s at load 4-5 | 1.58 s |
+| `conv32.c` float32 | 0.37-0.44 s at load 4-5 | 0.68 s |
+| `amx.c` bf16 | 0.08-0.11 s | 0.13 s |
+
+Whole scene build (`fastscene.build`, FASTSCENE_YEARS=2: 3 NAIP years), median of 3 runs (old path: 2-3), load 4-6:
+
+| course (tiles a year) | stage | before (`FASTPERC_IMPL=c`) | float32 (`fp32`) | AMX (default here) |
+|---|---|---|---|---|
+| Remsen (15) | U-Net | 102.0 s | 21.4 s | 8.9 s |
+| | total | 105.8 s | 26.4 s | 12.9 s |
+| Kittansett (28, 21 hole greens) | U-Net | 139.3 s | 36.1 s | 16.0 s |
+| | total | 154.9 s | 51.7 s | 30.7 s (perceive 13.4 s) |
+
+The scene summaries are identical across the three passes. With AMX the U-Net stage is ~0.08 s a tile plus
+~1.5 s a year of I/O and reprojection onto the stack grid (`rasterio.reproject`, 6 classes, average); the rest of
+the build is perceive (2.3 s Remsen, 13.4 s Kittansett) and the grid (1.4 s). `GOLF_FASTC=0` (numpy reference)
+gives the same summary in 128 s on Remsen.
+
+Tried, not kept: softmax + window blend of each tile in C (no measurable gain over numpy, ~1 % of a tile); one
+reprojection for all years on the same NAIP grid (the years' grids differ by a pixel or a half-pixel shift on most
+courses); extra years only on uncertain tiles (3-7 % of tiles qualify, above).
