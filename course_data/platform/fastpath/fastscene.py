@@ -458,6 +458,34 @@ def unet_weights():
 _NET = {}
 
 
+def unet_net(weights):
+    """the forward pass. FASTPERC_IMPL=auto (default): AMX bf16 (fastc/perception/unet_amx.py) when the CPU and
+    kernel allow it, else the float32 implicit-GEMM C pass (unet_fast.py), else unet.py with the C primitives;
+    amx / fp32 / c / ref force one (ref = unet.py's numpy + OpenBLAS reference). GOLF_FASTC=0 -> ref."""
+    sys.path.insert(0, os.path.join(PLAT, "fastc", "perception"))
+    import unet
+    want = os.environ.get("FASTPERC_IMPL", "auto")
+    if os.environ.get("GOLF_FASTC", "1") == "0":
+        want = "ref"
+    net = unet.UNet(unet.load_safetensors(weights), impl="py" if want == "ref" else "c")
+    if want in ("auto", "amx"):
+        import unet_amx
+        if unet_amx.available():
+            return unet_amx.AmxUNet(net)
+        if want == "amx":
+            raise RuntimeError("FASTPERC_IMPL=amx: no usable AMX here")
+    if want in ("auto", "fp32"):
+        try:
+            import unet_fast
+            if unet_fast.available():
+                return unet_fast.FastUNet(net)
+        except ImportError:
+            pass
+        if want == "fp32":
+            raise RuntimeError("FASTPERC_IMPL=fp32: the C pass did not build")
+    return net
+
+
 def unet_probs(pkg_dir, st, weights, keep, augs=None, naip=None, tile=None, stride=None):
     """U-Net class probabilities on the stack grid: NAIP 0.6 m in its own CRS (as segment/model.py runs it), tiles
     touching the course outline only, area-averaged onto the 1 m grid. -> (6, H, W) float32. augs: dihedral TTA
@@ -467,9 +495,10 @@ def unet_probs(pkg_dir, st, weights, keep, augs=None, naip=None, tile=None, stri
     from rasterio.warp import reproject
     sys.path.insert(0, os.path.join(PLAT, "fastc", "perception"))
     import unet
-    net = _NET.get(weights)
+    key = (weights, os.environ.get("FASTPERC_IMPL", "auto"), os.environ.get("GOLF_FASTC", "1"))
+    net = _NET.get(key)
     if net is None:
-        net = _NET[weights] = unet.UNet(unet.load_safetensors(weights), impl="c")
+        net = _NET[key] = unet_net(weights)
     src = find_inputs(pkg_dir)
     if naip:
         src = dict(src, rgb=naip[0], nir=naip[1])

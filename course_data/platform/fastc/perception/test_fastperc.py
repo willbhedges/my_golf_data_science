@@ -206,3 +206,92 @@ def test_dist_to_rings_exact():
     os.environ.pop("GOLF_FASTC")
     out = fastperc.dist_to_rings(pts, rings)
     assert np.array_equal(np.asarray(ref, float), out)
+
+
+def _real_tiles():
+    """two 512 px NAIP tiles of a cached package, normalised (None when the cache or the weights are missing)"""
+    import unet
+    wpath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(HERE))), "segment", "models", "golfseg_own",
+                         "model.safetensors")
+    pk = os.path.join(FP, "cache", "packages", "b20_remsen", "imagery")
+    if not (os.path.exists(wpath) and os.path.exists(os.path.join(pk, "naip_rgb.tif"))):
+        return None, None
+    import rasterio
+    with rasterio.open(os.path.join(pk, "naip_rgb.tif")) as d:
+        rgb = d.read(window=((0, 768), (0, 1024)))
+    with rasterio.open(os.path.join(pk, "naip_nir.tif")) as d:
+        nir = d.read(1, window=((0, 768), (0, 1024)))
+    img = np.concatenate([rgb[:3], nir[None]], 0).astype(np.float32)
+    m = np.asarray(unet.MEAN, np.float32)[:, None, None]
+    s = np.asarray(unet.STD, np.float32)[:, None, None]
+    x = (img - m) / s
+    return unet.UNet(unet.load_safetensors(wpath), "c"), [x[:, :512, :512], x[:, 256:768, 512:1024]]
+
+
+def _softmax(z):
+    e = np.exp(z - z.max(0))
+    return e / e.sum(0)
+
+
+def test_unet_fast_fp32_close_to_numpy():
+    """unet_fast (float32 implicit GEMM, FMA, (tap, c) order) == unet.py within float32 rounding: random weights on a
+    small input and, when cached, the real weights on NAIP tiles"""
+    import unet
+    import unet_fast
+    if not unet_fast.available():
+        pytest.skip("conv32.c did not build: " + str(unet_fast._L[1]))
+    W = unet.random_weights(3)
+    x = np.random.default_rng(1).normal(size=(4, 64, 96)).astype(np.float32)
+    ref = unet.UNet(W, "py")
+    a, b = ref(x), unet_fast.FastUNet(ref)(x)
+    assert b.shape == (6, 64, 96) and np.abs(a - b).max() <= 1e-4 * np.abs(a).max()
+    net, tiles = _real_tiles()
+    if net is None:
+        return
+    fast = unet_fast.FastUNet(net)
+    for t in tiles:
+        z0, z1 = net(t), fast(t)
+        assert np.abs(z0 - z1).max() <= 1e-4 * np.abs(z0).max()
+        assert np.abs(_softmax(z0) - _softmax(z1)).max() <= 1e-4
+
+
+def test_unet_amx_bf16_close_to_float32():
+    """unet_amx (bf16 weights / activations, float32 sums) against the float32 pass. Not exact; the bounds hold
+    with margin on the real model (seen: mean |dp| 6e-4, max |dp| 0.04, argmax 99.9 %); the accuracy gate is the
+    held-out detection benchmark (NOTES_PERCEPTION.md). Random weights: the layout and padding paths."""
+    import unet
+    import unet_amx
+    if not unet_amx.available():
+        pytest.skip("no usable AMX: " + str(unet_amx._L[1]))
+    ref = unet.UNet(unet.random_weights(3), "c")
+    x = np.random.default_rng(1).normal(size=(4, 64, 512)).astype(np.float32)
+    z0, z1 = ref(x), unet_amx.AmxUNet(ref)(x)
+    assert z1.shape == (6, 64, 512) and (z0.argmax(0) == z1.argmax(0)).mean() > 0.97
+    assert np.abs(_softmax(z0) - _softmax(z1)).mean() < 0.01
+    y = np.random.default_rng(2).normal(size=(4, 64, 96)).astype(np.float32)    # unsupported width: float32 pass
+    assert np.array_equal(unet_amx.AmxUNet(ref)(y), ref(y))
+    net, tiles = _real_tiles()
+    if net is None:
+        return
+    amx = unet_amx.AmxUNet(net)
+    for t in tiles:
+        z0, z1 = net(t), amx(t)
+        p0, p1 = _softmax(z0), _softmax(z1)
+        assert np.abs(p0 - p1).mean() < 2e-3 and np.abs(p0 - p1).max() < 0.15
+        assert (z0.argmax(0) == z1.argmax(0)).mean() > 0.995
+
+
+def test_unet_net_selection(monkeypatch):
+    """fastscene.unet_net: GOLF_FASTC=0 -> unet.py's numpy pass; FASTPERC_IMPL=fp32 -> unet_fast"""
+    import unet
+    import unet_fast
+    wpath = FS.UNET_DEFAULT
+    if not os.path.exists(wpath):
+        pytest.skip("no U-Net weights")
+    monkeypatch.setenv("GOLF_FASTC", "0")
+    n = FS.unet_net(wpath)
+    assert isinstance(n, unet.UNet) and n.impl == "py"
+    monkeypatch.setenv("GOLF_FASTC", "1")
+    monkeypatch.setenv("FASTPERC_IMPL", "fp32")
+    if unet_fast.available():
+        assert isinstance(FS.unet_net(wpath), unet_fast.FastUNet)

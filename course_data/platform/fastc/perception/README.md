@@ -16,6 +16,8 @@ stay as they are. They are already native code or wait on the network, so C woul
 | `fp_comp_stats` | perception `geo.comp_stats` (per-label NaN-safe means) | every perception detector | bit-exact | 0.72 -> 0.006 s per call |
 | `fp_label8` | `scipy.ndimage.label` (3 x 3) | not wired in (scipy is faster) | exact | 0.008 vs 0.021 s |
 | `fp_im2col`, `fp_bias_act`, `fp_maxpool3s2`, `fp_up2`, `fp_conv3x3` | numpy primitives of the U-Net forward pass (`unet.py`) | `fastscene.unet_probs` | bit-exact without the direct convs; with them within 6e-7 relative (argmax identical) | 512 px tile 1.16 -> 0.52 s |
+| `fa_conv`, `fa_stem_patch`, `fa_maxpool`, `fa_upcat` (`amx.c`) | the whole U-Net forward pass on Intel AMX: bf16 tiles, float32 sums, NHWC, implicit GEMM (no im2col), bias / residual / ReLU fused | `fastscene.unet_net` when the CPU has AMX | not exact (bf16): mean \|dp\| 6e-4, argmax 99.9 % on NAIP tiles; held-out 40 within 0.5 points | 512 px tile 0.76 -> 0.08-0.10 s (4 threads), 1.58 -> 0.13 s (1 thread) |
+| `fc_conv`, `fc_maxpool`, `fc_upcat` (`conv32.c`) | the same pass in float32 (GCC vector extensions: AVX-512 / AVX2 / NEON), register-blocked implicit GEMM, fused epilogue | `fastscene.unet_net` without AMX | within 1e-4 x max \|logit\| (FMA, other sum order); cached probabilities differ by at most 1/255 | 512 px tile 1.58 -> 0.68 s (1 thread) |
 | `fp_roll` | the roll-out loop of `mozingo/tee_strategy.simulate` on the lie raster | `fastpath/solve.py` through `solve_c.py` | identical arrays (every hole x club x 3 aims of 2 courses); decision.json identical on 3 courses | solve 4.4-4.9 -> 1.1-1.5 s |
 | `fp_dist_to_rings` | `structure/scene.py _dist_to_rings` | the structure solver's scene (package build) | exact | small on the courses measured |
 
@@ -25,6 +27,12 @@ The U-Net step was 62 s until `OMP_WAIT_POLICY=PASSIVE`: libgomp's spinning thre
 cores.
 
 ## unet.py: the segment U-Net without torch
+
+`fastscene.unet_net` picks the pass at run time (`FASTPERC_IMPL=auto`): `unet_amx.AmxUNet` when /proc/cpuinfo has
+amx_tile / amx_bf16 / avx512_bf16, `amx.c` compiles, the kernel grants the tile state (`arch_prctl(ARCH_REQ_XCOMP_PERM,
+XTILEDATA)`) and a 32-term self-check product is right; else `unet_fast.FastUNet` (`conv32.c`); else `unet.py` with
+the C primitives. `FASTPERC_IMPL=amx|fp32|c|ref` forces one (`ref`: numpy + OpenBLAS), `GOLF_FASTC=0` means `ref`.
+The AMX pass needs the tile width to be a multiple of 512 (production: 512) and falls back to float32 otherwise.
 
 smp `Unet` / ResNet-34 / 4 bands / 6 classes, read from a safetensors file. BatchNorm is folded into the
 convolutions; each convolution is an im2col plus one SGEMM, except the high-resolution few-channel decoder layers,
@@ -38,5 +46,7 @@ from Actions run 38987845450 by `.github/workflows/import_golfseg_own.yml`). Inp
   (Down River 23 s package build; Yorba Linda 24 s when one hole is left for it). Its states are numpy arrays with
   argpartition / unique tie order, so a C port that keeps the results identical needs the same tie-breaking.
 * `structure/solver.route_dp`: about 4 s on the same courses.
-* The U-Net GEMMs are OpenBLAS. 40 tiles x 63 GFLOP run at about 80 GFLOP/s effective against a 313 GFLOP/s SGEMM
-  peak on this box. The rest is im2col memory traffic and small matrices.
+* U-Net (fixed): the OpenBLAS + im2col pass ran 40 tiles x 63 GFLOP at about 80 GFLOP/s effective (decoder.blocks.3.1
+  alone, a 1152 x 65536 im2col for 32 outputs, took a third of a tile). It is replaced by `amx.c` / `conv32.c` above.
+* Not kept: running the extra NAIP years only on tiles where the first year is uncertain. On the TEST 40 d0
+  probabilities only 3-7 % of tiles have no pixel below max p 0.9 / 0.8, so it would save almost nothing.
