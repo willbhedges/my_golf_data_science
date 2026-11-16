@@ -43,6 +43,22 @@ GREEN_CLEAR_YD = 25.0
 MATCH_YD = 10.0
 
 
+def grey_opening_disk(zs, r, disk):
+    """ndi.grey_opening(zs, footprint=disk): the C kernel (platform/fastc/perception, identical result, ~5x
+    faster) unless GOLF_FASTC=0 or it cannot be built; scipy otherwise."""
+    if os.environ.get("GOLF_FASTC", "1") != "0":
+        try:
+            p = os.path.join(CD, "platform", "fastc", "perception")
+            if p not in sys.path:
+                sys.path.append(p)
+            import fastperc
+            return fastperc.grey_opening_disk(zs, r)
+        except Exception:                                        # noqa: BLE001
+            pass
+    from scipy import ndimage as ndi
+    return ndi.grey_opening(zs, footprint=disk)
+
+
 def pad_mask(z, res_m=1.0):
     """(pad pixels, slope %, top-hat m) for a DEM array (metres, square pixels of res_m)."""
     from scipy import ndimage as ndi
@@ -53,7 +69,7 @@ def pad_mask(z, res_m=1.0):
     r = max(1, int(round(TOPHAT_RADIUS_M / res_m)))
     yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
     disk = (xx ** 2 + yy ** 2) <= r * r
-    tophat = zs - ndi.grey_opening(zs, footprint=disk)
+    tophat = zs - grey_opening_disk(zs, r, disk)
     m = (slope < FLAT_PCT) & (tophat > TOPHAT_MIN_M) & np.isfinite(z)
     m = ndi.binary_opening(m, iterations=1)
     return m, slope, tophat

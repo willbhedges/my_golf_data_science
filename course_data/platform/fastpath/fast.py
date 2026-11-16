@@ -187,6 +187,33 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
         T["route_joint"] = round(time.time() - t, 2)
         return {k: v for k, v in r.items() if k != "features"}
 
+    def route_perception():
+        """OSM has too little to route (tiers C / D): the fast-path perception scene (fastscene.py: NAIP + DEM +
+        canopy pixel classifier -> perception detectors) adds greens / tee boxes / fairways, the joint solver routes
+        OSM + detections (route_scene.py) -> golf=hole ways + the detected objects as an osm_supplement"""
+        nonlocal fc, summ
+        import package as pk
+        import route_scene
+        card, _ = pk.pick_scorecard(req, raw, fc)
+        n = len(next(iter(card["tee_sets"].values()))["yards"]) if card and card.get("tee_sets") else (row.get("holes") or 18)
+        if not imagery or os.environ.get("FASTPATH_PERCEPTION", "1") == "0" or not route_scene.needs_perception(fc, n):
+            return None
+        t = time.time()
+        try:
+            r, sup, ts = route_scene.run(pkg_dir, fc, card, n)
+        except Exception as e:                                       # noqa: BLE001
+            T["perception"] = f"failed: {type(e).__name__}: {e}"[:200]
+            return None
+        T["perception"] = ts
+        if r.get("n_holes") and any((f.get("properties") or {}).get("golf") == "hole" for f in sup):
+            p = os.path.join(raw, "scene_holes.geojson")
+            pc.write_json(p, {"type": "FeatureCollection", "features": sup})
+            req["osm_supplement"] = p
+            pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
+            fc, summ = osm_api.features(course, raw, CACHE, req)
+        T["route_scene"] = round(time.time() - t, 2)
+        return r
+
     def trees():
         t = time.time()
         if canopy_trees:
@@ -221,8 +248,11 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                           "(wait_card() then build again, or a later run, reads the cached answer)")
     lap("fetch (card || imagery)", t0)
     routed = None
+    scene_routed = None
     if not tc.is_alive():
         routed = route_no_lines()
+        if routed is None:
+            scene_routed = route_perception()
     t0 = time.time()
     import package as pk
     try:
@@ -263,7 +293,17 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             blocked.append(f"hole lines routed by the joint solver with min margin {routed.get('min_margin', 0):.1f} "
                            f"(< {route_joint.MIN_MARGIN}; {routed.get('n_virtual', 0)} holes without a tee or green): "
                            "the numbering is not certain")
-    pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked))
+    confirm = []
+    if scene_routed is not None:
+        import route_joint
+        pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
+        if scene_routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or scene_routed.get("n_virtual") \
+                or len(scene_routed.get("margins") or []) < scene_routed.get("n_holes", 0):
+            blocked.append(f"hole lines routed on imagery detections with min margin {scene_routed.get('min_margin', 0):.1f} "
+                           f"(< {route_joint.MIN_MARGIN}; {scene_routed.get('n_virtual', 0)} holes without a tee or green): "
+                           "the routing is not certain")
+        confirm = [f"hole {r}: green or tee from the imagery detector, confirm it" for r in scene_routed.get("detected_holes") or []]
+    pc.write_json(os.path.join(pkg_dir, "gate.json"), dict(blocked=blocked, confirm=confirm))
     T["total"] = round(time.time() - t_all, 2)
     T["stages"] = package.get("stages")
     pc.write_json(os.path.join(pkg_dir, "timing.json"), T)
@@ -271,7 +311,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
         return dict(status="blocked", stage="gate", why="; ".join(blocked)[:400], slug=slug, holes=len(package["holes"]),
                     timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
     return dict(status="ok" if r.returncode == 0 else "failed", stage=None if r.returncode == 0 else "solve", slug=slug,
-                holes=len(package["holes"]), timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
+                holes=len(package["holes"]), confirm=len(confirm), timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
 
 
 if __name__ == "__main__":
