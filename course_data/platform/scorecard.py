@@ -548,17 +548,25 @@ def golfify_slugs(name, town=None):
     return seen
 
 
+_SEARCH_DOWN = set()
+
+
 def ddg_urls(query, host):
     """Result URLs on `host` from DuckDuckGo's HTML endpoint and Bing (best effort; may be rate-limited)."""
     s = _session()
     hrefs = []
     for url in ("https://html.duckduckgo.com/html/?q=" + quote_plus(query),
                 "https://www.bing.com/search?q=" + quote_plus(query)):
+        host_ = urlparse(url).netloc
+        if host_ in _SEARCH_DOWN:                         # refused the connection earlier in this process
+            continue
         try:
             r = s.get(url, timeout=30)
             hrefs += re.findall(r'href="([^"]+)"', r.text)
         except Exception as e:                            # noqa: BLE001
             pc.log("search failed", url, e)
+            if isinstance(e, OSError):                    # requests errors (reset, timeout) are OSErrors
+                _SEARCH_DOWN.add(host_)               # a blocked engine (proxy reset: 10 s a call): not asked again
     out = []
     for h in hrefs:
         h = html.unescape(h)

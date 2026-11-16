@@ -27,29 +27,98 @@ SCORE_YEARS = 4
 SCORE_RES = 2.4          # metres for the year-scoring reads (naip_years' own is 1.2: 4x the pixels, same ranking signal)
 
 
+def _item_grid(it):
+    """(crs, pixel size) of a NAIP item from its STAC record (proj:code / proj:epsg, proj:transform): no file open
+    (a first byte from the blob host is 0.4-0.9 s). None when the record lacks them."""
+    from rasterio.crs import CRS
+    p = it.properties
+    code = p.get("proj:code") or (p.get("proj:epsg") and f"EPSG:{p['proj:epsg']}")
+    t = p.get("proj:transform")
+    if not code or not t:
+        return None
+    return CRS.from_string(code), abs(float(t[0]))
+
+
 def read_year_ovr(its, bbox_snwe, res=SCORE_RES):
     """naip_years.read_year (the year's mosaic over the box at `res` m, Resampling.average) read from the COG
     overview whose pixel is closest to `res` without being coarser (0.6 m NAIP: the 4x level is exactly 2.4 m), all
-    bands in one warp. GDAL's warp never uses overviews by itself: the full-resolution read was 4 years x ~40 MB,
-    this is ~3 MB a year (Yorba Linda: 155 -> 13 MB, 14.8 -> 3.2 s; scores within 0.002, same year)."""
+    bands in one warp, each item opened once. GDAL's warp never uses overviews by itself: the full-resolution read
+    was 4 years x ~40 MB, this is ~3 MB a year (Yorba Linda: 155 -> 13 MB, 14.8 -> 3.2 s; scores within 0.002,
+    same year; 16 cached courses: same year, scores within 0.03)."""
     import rasterio
     from rasterio.enums import Resampling
     from rasterio.warp import reproject, transform_bounds
     s, w, n, e = bbox_snwe
-    with rasterio.open(its[0].assets["image"].href) as s0:
-        crs, nb, sres, ovs = s0.crs, min(s0.count, 4), abs(s0.transform.a), s0.overviews(1)
+    g = _item_grid(its[0])
+    if g is None:
+        with rasterio.open(its[0].assets["image"].href) as s0:
+            g = s0.crs, abs(s0.transform.a)
+    crs, sres = g
     x0, y0, x1, y1 = transform_bounds("EPSG:4326", crs, w, s, e, n, densify_pts=21)
     W, H = int(math.ceil((x1 - x0) / res)), int(math.ceil((y1 - y0) / res))
     tr = rasterio.transform.from_origin(x0, y1, res, res)
-    lvl = sum(1 for k in ovs if sres * k <= res * 1.001) - 1     # overview index (-1: full resolution)
-    out = np.zeros((nb, H, W), np.uint8)
+    # NAIP overviews are the factors 2, 4, 8, ...: level i is factor 2 ** (i + 1); -1 is full resolution
+    lvl = int(math.floor(math.log2(res / sres * 1.001))) - 1 if res > sres else -1
+    out = None
     for it in its:
-        with rasterio.open(it.assets["image"].href, **({} if lvl < 0 else dict(overview_level=lvl))) as src:
+        try:
+            src = rasterio.open(it.assets["image"].href, **({} if lvl < 0 else dict(overview_level=lvl)))
+        except rasterio.errors.RasterioIOError:
+            if lvl < 0:
+                raise
+            src = rasterio.open(it.assets["image"].href)             # no such overview: the warp reads full resolution
+        with src:
+            nb = min(src.count, 4)
+            if out is None:
+                out = np.zeros((nb, H, W), np.uint8)
             dst = np.zeros((nb, H, W), np.uint8)
             reproject(rasterio.band(src, list(range(1, nb + 1))), dst, src_nodata=0, dst_transform=tr, dst_crs=crs,
                       dst_nodata=0, resampling=Resampling.average)
-            out = np.where(dst > 0, dst, out)
+            out[:nb] = np.where(dst > 0, dst, out[:nb])
     return out, crs, tr
+
+
+def read_window(items, bounds, res):
+    """the year's mosaic over bounds (x0, y0, x1, y1) in the items' CRS at their own pixel size: each item opened
+    once, one read of the block-aligned window (all bands; GDAL_NUM_THREADS fetches and inflates the tiles in
+    parallel, each tile once), pasted like rasterio.merge(method='first', nodata=0). Bit-identical to the strip read
+    (_read_strips) on Yorba Linda 2018: 35 MB / 3.0 s instead of 99 MB / 3.9 s (the strips re-read tiles at their
+    seams). None when an item's grid is not aligned to the output grid (then _read_strips resamples, as before)."""
+    import rasterio
+    from rasterio.windows import Window
+    x0, y0, x1, y1 = bounds
+    W, H = int(round((x1 - x0) / res)), int(round((y1 - y0) / res))
+
+    def one(it):
+        with rasterio.Env(**dict(GDAL_ENV, GDAL_NUM_THREADS="ALL_CPUS")):
+            with rasterio.open(it.assets["image"].href) as src:
+                T = src.transform
+                fc, fr = (x0 - T.c) / res, (T.f - y1) / res
+                if abs(abs(T.a) - res) > 1e-9 or abs(fc - round(fc)) > 1e-6 or abs(fr - round(fr)) > 1e-6 or T.b or T.d:
+                    return None
+                c0, r0 = int(round(fc)), int(round(fr))
+                ca, ra = max(c0, 0), max(r0, 0)
+                cb, rb = min(c0 + W, src.width), min(r0 + H, src.height)
+                if cb <= ca or rb <= ra:
+                    return src.crs, None, None
+                bh, bw = src.block_shapes[0]
+                CA, RA = ca // bw * bw, ra // bh * bh
+                CB, RB = min(-(-cb // bw) * bw, src.width), min(-(-rb // bh) * bh, src.height)
+                a = src.read(window=Window(CA, RA, CB - CA, RB - RA))
+                return src.crs, a[:, ra - RA:rb - RA, ca - CA:cb - CA], (ra - r0, ca - c0)
+    with ThreadPoolExecutor(len(items)) as ex:
+        parts = list(ex.map(one, items))
+    if any(p is None for p in parts):
+        return None
+    crs = parts[0][0]
+    parts = [p for p in parts if p[0] == crs and p[1] is not None]   # the first item's CRS only (as _read_strips)
+    nb = max(p[1].shape[0] for p in parts)
+    arr = np.zeros((nb, H, W), np.uint8)
+    for _, a, (r, c) in parts:
+        cur = arr[:a.shape[0], r:r + a.shape[1], c:c + a.shape[2]]
+        m = (cur == 0) & (a != 0)
+        cur[m] = a[m]
+    return arr, rasterio.transform.from_origin(x0, y1, res, res), crs
 
 
 def _read_strips(items, bounds, res):
@@ -85,6 +154,10 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
     if not years:
         raise RuntimeError("no NAIP items intersect the bbox")
     T["naip_list"] = round(time.time() - t0, 2)
+    if hasattr(osm, "result"):          # a Future: the listing ran while the OSM features were still on their way
+        t1 = time.time()
+        osm = osm.result()
+        T["naip_wait_osm"] = round(time.time() - t1, 2)
     t0 = time.time()
     scores = {}
     polys = NY.turf_polygons(osm) if (year == "auto" and osm) else None
@@ -113,13 +186,17 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
     T["naip_year_scoring"] = round(time.time() - t0, 2)
     t0 = time.time()
     yr, its = row["year"], row["items"]
-    with rasterio.Env(**GDAL_ENV):
-        with rasterio.open(its[0].assets["image"].href) as s0:
-            crs, res = s0.crs, abs(s0.transform.a)
+    g = _item_grid(its[0])
+    if g is None:
+        with rasterio.Env(**GDAL_ENV):
+            with rasterio.open(its[0].assets["image"].href) as s0:
+                g = s0.crs, abs(s0.transform.a)
+    crs, res = g
     b = transform_bounds("EPSG:4326", crs, w, s, e, n, densify_pts=21)
     x0, y0 = math.floor(b[0] / res) * res, math.floor(b[1] / res) * res
     x1, y1 = math.ceil(b[2] / res) * res, math.ceil(b[3] / res) * res
-    arr, tr, crs = _read_strips(its, (x0, y0, x1, y1), res)
+    got = read_window(its, (x0, y0, x1, y1), res)
+    arr, tr, crs = got if got is not None else _read_strips(its, (x0, y0, x1, y1), res)
     T["naip_read"] = round(time.time() - t0, 2)
     t0 = time.time()
     nb = arr.shape[0]
@@ -139,7 +216,8 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
 
 
 def fetch(bbox_wsen, out_dir, osm_fc=None, year="auto", margin=100.0, label=None, quiet=True):
-    """bbox_wsen: the course bbox [W, S, E, N] (course.json). -> (georef dict, timings)"""
+    """bbox_wsen: the course bbox [W, S, E, N] (course.json); osm_fc: the OSM FeatureCollection, or a Future of it
+    (needed only for the year scoring, after the NAIP listing). -> (georef dict, timings)"""
     if quiet:
         fi.log = lambda *a: None
     os.makedirs(out_dir, exist_ok=True)

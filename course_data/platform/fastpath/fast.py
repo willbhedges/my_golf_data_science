@@ -30,7 +30,8 @@ import osm_api  # noqa: E402
 
 _ROWS = None
 LATE = {}                # the card search thread of the last build (two-phase: wait_card() then build again)
-CARD_BUDGET_S = 15.0
+CARD_BUDGET_S = 15.0     # the longest the build waits for the card search, from the start of the fetch
+CARD_GRACE_S = 1.0       # ... and at most this long after the imagery / canopy fetches are done
 
 
 def norm(s):
@@ -132,22 +133,21 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                allow_substitute=True, builder="fastpath", town=row.get("city"), osm=row["osm"],
                near=f"{row['lat']:.5f},{row['lon']:.5f}", **(extra or {}))
     pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
-    t0 = time.time()
-    fc, summ = osm_api.features(course, raw, CACHE, req)
-    lap("osm", t0)
     import fetch_package as fp
+    from concurrent.futures import Future
+    osm_future = Future()          # the year scoring needs the OSM turf; the NAIP listing, DEM and canopy only the bbox
 
     def cards():
         t = time.time()
         if not os.path.exists(os.path.join(raw, "scorecard_web.json")):
-            fp.fetch_scorecards(req, course, summ, raw)
+            fp.fetch_scorecards(req, course, summ, raw, parallel=True)
         T["card"] = round(time.time() - t, 2)
 
     def img():
         t = time.time()
         if imagery and not os.path.exists(os.path.join(pkg_dir, "imagery", "georef.json")):
             import fast_imagery as fim
-            _, ti = fim.fetch(course["bbox"], os.path.join(pkg_dir, "imagery"), fc, year, label=course["name"])
+            _, ti = fim.fetch(course["bbox"], os.path.join(pkg_dir, "imagery"), osm_future, year, label=course["name"])
             T.update(ti)
         T["imagery"] = round(time.time() - t, 2)
     def route_no_lines():
@@ -187,18 +187,30 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             import canopy
             canopy.fetch(course["bbox"], os.path.join(pkg_dir, "canopy"))
         T["canopy"] = round(time.time() - t, 2)
+    # the fetch DAG: imagery (NAIP listing || DEM, then year scoring once OSM is in) || canopy || OSM features, then the
+    # card search (it needs the OSM hole lengths). The build waits for the card only while the other fetches run, plus
+    # CARD_GRACE_S, and never past CARD_BUDGET_S from the start of the fetch; a late card is picked up by wait_card()
     t0 = time.time()
     import threading
-    tc = threading.Thread(target=cards, daemon=True)     # the card search never holds the build: CARD_BUDGET_S
-    tc.start()
-    LATE["card"] = tc
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(2) as ex:
         fs = [ex.submit(img), ex.submit(trees)]
+        t = time.time()
+        try:
+            fc, summ = osm_api.features(course, raw, CACHE, req)
+        except BaseException as e:
+            osm_future.set_exception(e)
+            raise
+        osm_future.set_result(fc)
+        lap("osm", t)
+        tc = threading.Thread(target=cards, daemon=True)
+        tc.start()
+        LATE["card"] = tc
         for f in fs:
             f.result()
-    tc.join(max(0.0, CARD_BUDGET_S - (time.time() - t0)))
+    tc.join(max(0.0, min(CARD_GRACE_S, CARD_BUDGET_S - (time.time() - t0))))
     if tc.is_alive():
-        T["card_late"] = f"still searching after {CARD_BUDGET_S} s: built without it (a later run reads the cached answer)"
+        T["card_late"] = (f"still searching {round(time.time() - t0, 1)} s into the fetch: built without it "
+                          "(wait_card() then build again, or a later run, reads the cached answer)")
     lap("fetch (card || imagery)", t0)
     routed = None
     if not tc.is_alive():
@@ -263,4 +275,10 @@ if __name__ == "__main__":
     ap.add_argument("--no-trees", action="store_true")
     ap.add_argument("--year", default="auto")
     a = ap.parse_args()
-    print(json.dumps(build(a.query, a.slug, a.n, not a.no_imagery, year=a.year, canopy_trees=not a.no_trees), indent=1))
+    print(json.dumps(build(a.query, a.slug, a.n, not a.no_imagery, year=a.year, canopy_trees=not a.no_trees), indent=1),
+          flush=True)
+    if LATE.get("card") is not None and LATE["card"].is_alive():
+        t = time.time()
+        done = wait_card(90)            # let the late card land in the cache, so the next run is built with it
+        print(f"late card search {'finished' if done else 'still running'} {time.time() - t:.1f} s after the answer"
+              + (" (cached: run again to build with it)" if done else ""), file=sys.stderr)

@@ -96,11 +96,14 @@ def fetch_osm(course, raw, drop_holes=False, supplement=None):
     return fc, summ
 
 
-def fetch_scorecards(req, course, summ, raw):
+def fetch_scorecards(req, course, summ, raw, parallel=False):
+    """parallel: the four sources (four hosts, each keeping its own courtesy interval) run at once; the result is
+    assembled in the same order, so the output is the serial one (the fast path: about the slowest source's time)."""
     out = dict(fetched_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), tried=[], cards=[])
     rawdir = os.path.join(raw, "scorecard")
     lengths = {str(h["ref"]): h["length_yd"] for h in summ.get("holes", []) if h.get("length_yd")}
     n = len(lengths) or None
+    sources = []
     for label, fn in (("golfify", lambda: scm.fetch_golfify(course["name"], course["state"], course.get("town"), rawdir,
                                                             course.get("center"))),
                       ("allsquare", lambda: scm.fetch_allsquare(course["name"], course["state"], course.get("town"), rawdir,
@@ -111,11 +114,21 @@ def fetch_scorecards(req, course, summ, raw):
                                                                     rawdir, course_id=req.get("opengolfapi_id")))):
         if label == "opengolfapi" and not req.get("opengolfapi", True):
             continue
+        sources.append((label, fn))
+
+    def run(fn, label):
         try:
-            card, info = fn()
+            return fn()
         except Exception as e:                                # noqa: BLE001
-            card, info = None, f"{label} crashed: {e!r}"[:300]
             traceback.print_exc()
+            return None, f"{label} crashed: {e!r}"[:300]
+    if parallel:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(len(sources) or 1) as ex:
+            res = list(ex.map(lambda lf: run(lf[1], lf[0]), sources))
+    else:
+        res = [run(fn, label) for label, fn in sources]
+    for (label, _), (card, info) in zip(sources, res):
         if card and not scm.plausible(card, n, lengths) and not (label == "opengolfapi" and req.get("opengolfapi_id")):
             info, card = f"{label}: card at {info} rejected (hole count / lengths don't fit OSM)", None
         out["tried"].append(dict(source=label, ok=bool(card), info=info))
