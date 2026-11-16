@@ -7,6 +7,9 @@
 Stages (timed; timing.json): resolve (national index + OSM API) > OSM features (OSM API bbox) > scorecards ||
 imagery (NAIP + 3DEP) > package build (platform/package.py build_package, unchanged) > solve (solve.py).
 """
+import os as _os
+_os.environ.setdefault("OMP_WAIT_POLICY", "PASSIVE")   # before any OpenMP runtime loads (lightgbm, sklearn,
+# fastc): spinning OpenMP threads otherwise steal the cores OpenBLAS needs in the U-Net (31 s -> 62 s on Yorba Linda)
 import argparse
 import gzip
 import json

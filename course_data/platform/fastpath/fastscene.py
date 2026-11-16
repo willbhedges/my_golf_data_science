@@ -18,6 +18,9 @@ Kernels: features() and the tree-ensemble predict have C versions (course_data/p
 """
 from __future__ import annotations
 
+import os as _os
+_os.environ.setdefault("OMP_WAIT_POLICY", "PASSIVE")   # before any OpenMP runtime loads (lightgbm, sklearn,
+# fastc): spinning OpenMP threads otherwise steal the cores OpenBLAS needs in the U-Net (31 s -> 62 s on Yorba Linda)
 import json
 import math
 import os
@@ -407,8 +410,6 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     t = time.time()
     st = grid_stack(pkg_dir, labels=labels)
     t = lap("grid", t)
-    F = features(st, impl)
-    t = lap("features", t)
     mask = course_mask(st)
     neg = osm_negative_mask(st, pkg_dir)
     uw = unet_weights()
@@ -419,6 +420,8 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
             st.a["seg"][i] = np.clip(np.round(P[CLASSES.index(c)] * 255), 0, 255).astype(np.uint8)
         objm = None                              # perception/models: trained on U-Net candidates
     else:
+        F = features(st, impl)
+        t = lap("features", t)
         P = predict(model, F, mask & ~neg, impl)
         t = lap("classify", t)
         fill_seg(st, P, model)
