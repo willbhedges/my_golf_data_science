@@ -281,7 +281,7 @@ def write_cog(path, arr, crs, transform, jpeg_quality):
                            transform=transform, tiled=True, blockxsize=512, blockysize=512) as dst:
             dst.write(arr)
         rcopy(mem, path + ".tmp.tif", driver="COG", BLOCKSIZE=512, COMPRESS="JPEG", QUALITY=jpeg_quality,
-              OVERVIEW_RESAMPLING="AVERAGE", NUM_THREADS="ALL_CPUS")
+              OVERVIEW_RESAMPLING="AVERAGE", OVERVIEW_COUNT=4, NUM_THREADS="ALL_CPUS")   # 2, 4, 8, 16 as before
         os.replace(path + ".tmp.tif", path)
     except Exception:                                                # noqa: BLE001
         return fi.write_cog(path, arr, crs, transform, jpeg_quality=jpeg_quality)
