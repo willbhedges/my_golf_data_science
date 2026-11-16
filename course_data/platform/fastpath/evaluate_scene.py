@@ -21,10 +21,11 @@ import fastscene as FS  # noqa: E402
 KEYS = ("greens_hole", "greens_any", "tee_complexes", "tee_boxes", "fairways", "bunkers", "water")
 
 
-def score_course(pkg_dir, model=None, impl="py", paths=False):
+def score_course(pkg_dir, model=None, impl="py", paths=False, P=None, keep_D=False):
+    """P: precomputed U-Net probabilities (perc_bench.py caches them); keep_D: also return the detections"""
     import train_pixel as TP
     fc = json.load(open(os.path.join(pkg_dir, "raw", "osm.geojson")))
-    sc, info = FS.build(pkg_dir, model, out=False, impl=impl, paths=paths, labels=fc)
+    sc, info = FS.build(pkg_dir, model, out=False, impl=impl, paths=paths, labels=fc, P=P)
     st, D, P = info["stack"], info["D"], info["P"]
     lab = FS.label_raster(st, fc)
     mask = FS.course_mask(st)
@@ -39,6 +40,8 @@ def score_course(pkg_dir, model=None, impl="py", paths=False):
         out[k] = {kk: v.get(kk) for kk in ("precision", "recall", "tp_pred", "n_pred", "tp_true", "n_true", "eligible")
                   if kk in v}
     out["mapped_holes"] = ev.get("mapped_holes")
+    if keep_D:
+        out["_D"], out["_st"], out["_T"] = D, st, T
     return out
 
 

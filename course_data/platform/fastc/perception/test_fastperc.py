@@ -162,6 +162,20 @@ def test_unet_tiles_and_safetensors(tmp_path):
     assert P.shape == (6, 300, 520) and np.allclose(P.sum(0), 1.0, atol=1e-4)
 
 
+def test_unet_dihedral_tta():
+    """dihedral() round-trips all 8 symmetries; augs=[0] is the plain prediction (bit-identical); an 8-view TTA of a
+    symmetric image is a probability field"""
+    import unet
+    a = np.random.default_rng(1).random((3, 5, 7))
+    for d in range(8):
+        assert np.array_equal(unet.dihedral(unet.dihedral(a, d), d, inverse=True), a)
+    net = unet.UNet(unet.random_weights(5), "c")
+    img = np.random.default_rng(2).integers(0, 255, (4, 200, 260), dtype=np.uint8)
+    assert np.array_equal(unet.predict_raster(net, img), unet.predict_raster(net, img, augs=[0]))
+    P = unet.predict_raster(net, img, augs=[0, 1, 4, 6])
+    assert P.shape == (6, 200, 260) and np.allclose(P.sum(0), 1.0, atol=1e-4)
+
+
 def test_conv3x3_direct_close_to_gemm():
     rng = np.random.default_rng(6)
     x = rng.normal(size=(20, 70, 90)).astype(np.float32)

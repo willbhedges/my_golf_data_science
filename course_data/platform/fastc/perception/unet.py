@@ -218,9 +218,25 @@ def _starts(size, tile=TILE, stride=STRIDE):
     return s + [size - tile]
 
 
-def predict_raster(net, img, keep=None, tta=False, mean=MEAN, std=STD):
+def dihedral(a, d, inverse=False):
+    """one of the 8 symmetries of the square on the last two axes: rot90 by d % 4, then a left-right flip if d >= 4
+    (inverse=True undoes it)"""
+    k, f = d % 4, d >= 4
+    if not inverse:
+        a = np.rot90(a, k, axes=(-2, -1))
+        return np.flip(a, -1) if f else a
+    if f:
+        a = np.flip(a, -1)
+    return np.rot90(a, -k, axes=(-2, -1))
+
+
+def predict_raster(net, img, keep=None, tta=False, mean=MEAN, std=STD, augs=None, tile=TILE, stride=STRIDE):
     """img (4, H, W) uint8 R,G,B,NIR at 0.6 m -> (6, H, W) float32 probabilities (segment/model.predict_raster
-    without torch). keep (H, W) bool: tiles with no kept pixel are skipped (the course outline)."""
+    without torch). keep (H, W) bool: tiles with no kept pixel are skipped (the course outline). augs: test-time
+    augmentation, a list of dihedral() codes 0..7 whose probabilities are averaged (tta=True: identity + the two
+    flips, as segment/model.py)."""
+    if augs is not None or tile != TILE or stride != STRIDE:
+        return _predict_aug(net, img, keep, mean, std, list(augs or [0]), tile, stride)
     _, H, W = img.shape
     valid = img.any(axis=0)
     ph, pw = max(0, TILE - H), max(0, TILE - W)
@@ -247,6 +263,37 @@ def predict_raster(net, img, keep=None, tta=False, mean=MEAN, std=STD):
                 ps.append(p if flip is None else np.flip(p, flip))
             acc[:, r:r + TILE, c:c + TILE] += np.mean(ps, 0) * win
             wsum[r:r + TILE, c:c + TILE] += win
+    out = acc / np.maximum(wsum, 1e-6)
+    out = out[:, :H, :W]
+    out[:, ~valid] = 0.0
+    return out
+
+
+def _predict_aug(net, img, keep, mean, std, augs, tile, stride):
+    _, H, W = img.shape
+    valid = img.any(axis=0)
+    ph, pw = max(0, tile - H), max(0, tile - W)
+    x = np.pad(img, ((0, 0), (0, ph), (0, pw)), mode="reflect") if (ph or pw) else img
+    kp = None if keep is None else np.pad(keep, ((0, ph), (0, pw)))
+    Hp, Wp = x.shape[1:]
+    m = np.asarray(mean, np.float32)[:, None, None]
+    s = np.asarray(std, np.float32)[:, None, None]
+    acc = np.zeros((len(CLASSES), Hp, Wp), np.float32)
+    wsum = np.zeros((Hp, Wp), np.float32)
+    win = _window(tile)
+    for r in _starts(Hp, tile, stride):
+        for c in _starts(Wp, tile, stride):
+            t = x[:, r:r + tile, c:c + tile]
+            if not t.any() or (kp is not None and not kp[r:r + tile, c:c + tile].any()):
+                continue
+            xt = (t.astype(np.float32) - m) / s
+            p = np.zeros((len(CLASSES), tile, tile), np.float32)
+            for d in augs:
+                z = net(np.ascontiguousarray(dihedral(xt, d)))
+                z = np.exp(z - z.max(0, keepdims=True))
+                p += dihedral(z / z.sum(0, keepdims=True), d, inverse=True)
+            acc[:, r:r + tile, c:c + tile] += (p / len(augs)) * win
+            wsum[r:r + tile, c:c + tile] += win
     out = acc / np.maximum(wsum, 1e-6)
     out = out[:, :H, :W]
     out[:, ~valid] = 0.0

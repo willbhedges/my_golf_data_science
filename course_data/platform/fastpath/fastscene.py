@@ -394,10 +394,11 @@ def _predict(model, F, mask, impl="auto", cascade=False):
 
 
 # ----------------------------------------------------------------------------- scene
-def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, labels=None):
+def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, labels=None, P=None):
     """pkg_dir (fast-path package: imagery/, canopy/, raw/course.json) -> (course_scene/1, info). Writes
     pkg_dir/scene.json (and scene.geojson). paths=False skips the cart-path graph (25-70 s in the perception code;
-    the joint router's walk model does not need it)."""
+    the joint router's walk model does not need it). P: precomputed (6, H, W) U-Net probabilities on the stack grid
+    (unet_probs; the detection benchmark caches them)."""
     t0 = time.time()
     T = {}
 
@@ -413,8 +414,9 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     mask = course_mask(st)
     neg = osm_negative_mask(st, pkg_dir)
     uw = unet_weights()
-    if uw:                                       # the segment U-Net (perception's own input), when its weights exist
-        P = unet_probs(pkg_dir, st, uw, mask & ~neg)
+    if P is not None or uw:                      # the segment U-Net (perception's own input), when its weights exist
+        if P is None:
+            P = unet_probs(pkg_dir, st, uw, mask & ~neg)
         t = lap("unet", t)
         for i, c in enumerate(SEG_ORDER):
             st.a["seg"][i] = np.clip(np.round(P[CLASSES.index(c)] * 255), 0, 255).astype(np.uint8)
@@ -450,9 +452,10 @@ def unet_weights():
 _NET = {}
 
 
-def unet_probs(pkg_dir, st, weights, keep):
+def unet_probs(pkg_dir, st, weights, keep, augs=None, naip=None, tile=None, stride=None):
     """U-Net class probabilities on the stack grid: NAIP 0.6 m in its own CRS (as segment/model.py runs it), tiles
-    touching the course outline only, area-averaged onto the 1 m grid. -> (6, H, W) float32."""
+    touching the course outline only, area-averaged onto the 1 m grid. -> (6, H, W) float32. augs: dihedral TTA
+    codes (unet.predict_raster); naip: (rgb.tif, nir.tif) of another NAIP year in place of the package's."""
     import rasterio
     from rasterio.enums import Resampling
     from rasterio.warp import reproject
@@ -462,6 +465,8 @@ def unet_probs(pkg_dir, st, weights, keep):
     if net is None:
         net = _NET[weights] = unet.UNet(unet.load_safetensors(weights), impl="c")
     src = find_inputs(pkg_dir)
+    if naip:
+        src = dict(src, rgb=naip[0], nir=naip[1])
     with rasterio.open(src["rgb"]) as d:
         rgb, tr, crs = d.read(), d.transform, d.crs
     with rasterio.open(src["nir"]) as d:
@@ -486,7 +491,8 @@ def unet_probs(pkg_dir, st, weights, keep):
               dst_crs=crs, resampling=Resampling.nearest)
     pre = os.path.join(os.path.dirname(weights), "preprocessor_config.json")
     norm = json.load(open(pre)) if os.path.exists(pre) else dict(image_mean=unet.MEAN, image_std=unet.STD)
-    P6 = unet.predict_raster(net, img, keep=k6 > 0.5, mean=norm["image_mean"], std=norm["image_std"])
+    kw = {k: v for k, v in dict(augs=augs, tile=tile, stride=stride).items() if v is not None}
+    P6 = unet.predict_raster(net, img, keep=k6 > 0.5, mean=norm["image_mean"], std=norm["image_std"], **kw)
     out = np.zeros((len(CLASSES), st.H, st.W), np.float32)
     for k in range(len(CLASSES)):
         reproject(P6[k], out[k], src_transform=tr, src_crs=crs, dst_transform=Affine(*g["transform"][:6]),
@@ -501,6 +507,7 @@ def _opt(model, key, env, default):
     return (model.get("meta") or {}).get(key, default)
 
 
+WATER_DEFAULT = "rule"      # FASTSCENE_WATER: "rule" (perception's NIR rule) or "unet[:p[:nir_p]]" (perc_objects)
 KEEP_PAD_M = 25.0           # detections (incl. DEM pads, which perception finds on the whole grid) are kept only
                             # inside the course outline + this, and never on an OSM building / road
 
@@ -574,6 +581,13 @@ def fill_seg(st, P, model):
         st.a["seg"][i] = np.clip(np.round(p * 255), 0, 255).astype(np.uint8)
 
 
+def objects2_dir():
+    """FASTSCENE_OBJECTS2: unset / '' -> off; 'features' -> the extra candidate features only (row collection);
+    a directory -> its green / tee_box / tee_complex models (perc_objects.py) replace perception's"""
+    v = os.environ.get("FASTSCENE_OBJECTS2", "")
+    return v if v and v != "0" else None
+
+
 def _keep(D, keep, st):
     """drop detections whose centre is outside `keep` (bool grid)"""
     def ok(o):
@@ -629,6 +643,19 @@ def _perceive(st, paths, T, models, keep):
     if models is None:
         models, _ = PV.load_models()
         models = {k: v for k, v in models.items() if k not in ("path_px",)}
+    wm = os.environ.get("FASTSCENE_WATER", WATER_DEFAULT if st.a["seg"][SEG_ORDER.index("water")].any() else "rule")
+    sys.path.insert(0, HERE)
+    import perc_objects as PO
+    if wm.startswith("unet"):                    # water from the U-Net's water class (perc_objects.install_water)
+        a = [float(x) for x in wm.split(":")[1:]]
+        PO.install_water(DT, *a)
+    elif getattr(DT, "_water_rule", None):
+        DT.water = DT._water_rule
+    o2 = objects2_dir()
+    if o2:                                       # second-stage object models on our U-Net's candidates (perc_objects)
+        PO.install(DT)
+        if o2 != "features":
+            models = dict(models, **PO.load(o2))
     if not paths:
         saved = PT.build_graph
         PT.build_graph = lambda L, m=None: (nx.Graph(), np.zeros((st.H, st.W), np.float32),
