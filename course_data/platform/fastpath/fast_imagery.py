@@ -27,6 +27,31 @@ SCORE_YEARS = 4
 SCORE_RES = 2.4          # metres for the year-scoring reads (naip_years' own is 1.2: 4x the pixels, same ranking signal)
 
 
+def read_year_ovr(its, bbox_snwe, res=SCORE_RES):
+    """naip_years.read_year (the year's mosaic over the box at `res` m, Resampling.average) read from the COG
+    overview whose pixel is closest to `res` without being coarser (0.6 m NAIP: the 4x level is exactly 2.4 m), all
+    bands in one warp. GDAL's warp never uses overviews by itself: the full-resolution read was 4 years x ~40 MB,
+    this is ~3 MB a year (Yorba Linda: 155 -> 13 MB, 14.8 -> 3.2 s; scores within 0.002, same year)."""
+    import rasterio
+    from rasterio.enums import Resampling
+    from rasterio.warp import reproject, transform_bounds
+    s, w, n, e = bbox_snwe
+    with rasterio.open(its[0].assets["image"].href) as s0:
+        crs, nb, sres, ovs = s0.crs, min(s0.count, 4), abs(s0.transform.a), s0.overviews(1)
+    x0, y0, x1, y1 = transform_bounds("EPSG:4326", crs, w, s, e, n, densify_pts=21)
+    W, H = int(math.ceil((x1 - x0) / res)), int(math.ceil((y1 - y0) / res))
+    tr = rasterio.transform.from_origin(x0, y1, res, res)
+    lvl = sum(1 for k in ovs if sres * k <= res * 1.001) - 1     # overview index (-1: full resolution)
+    out = np.zeros((nb, H, W), np.uint8)
+    for it in its:
+        with rasterio.open(it.assets["image"].href, **({} if lvl < 0 else dict(overview_level=lvl))) as src:
+            dst = np.zeros((nb, H, W), np.uint8)
+            reproject(rasterio.band(src, list(range(1, nb + 1))), dst, src_nodata=0, dst_transform=tr, dst_crs=crs,
+                      dst_nodata=0, resampling=Resampling.average)
+            out = np.where(dst > 0, dst, out)
+    return out, crs, tr
+
+
 def _read_strips(items, bounds, res):
     """the year's mosaic over bounds (x0, y0, x1, y1) in the items' CRS: horizontal strips read by threads"""
     import rasterio
@@ -72,7 +97,7 @@ def fetch_naip(bbox, out_dir, lo_res=0.6, year="auto", osm=None, T=None):
         def sc(y):
             try:
                 with rasterio.Env(**GDAL_ENV):
-                    arr, crs, tr = NY.read_year(y["items"], bbox, res=SCORE_RES)
+                    arr, crs, tr = read_year_ovr(y["items"], bbox)
                 return y["year"], NY._score_array(arr, crs, tr, polys, {})
             except Exception as ex:                                  # noqa: BLE001
                 return y["year"], ex
