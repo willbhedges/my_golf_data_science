@@ -106,3 +106,65 @@ def test_gate_hard_blocks():
     assert RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0), p)["show"]
     assert not RG.decide(dict(n_holes=9, hole_features=hf[:8], n_miss=1), p)["show"]
     assert not RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0), dict(p, threshold=1.1))["show"]
+
+
+def test_gate_card_order_conflict():
+    import route_gate as RG
+    a = dict(tee_sets=dict(B=dict(yards=[400, 175, 340, 260, 515, 335, 460, 165, 455])))
+    rot = dict(tee_sets=dict(B=dict(yards=[460, 165, 455, 400, 175, 340, 260, 515, 335])))
+    near = dict(tee_sets=dict(W=dict(yards=[390, 170, 330, 250, 505, 330, 450, 160, 445])))
+    assert RG.card_order_conflict(a, [a, rot], 9)
+    assert not RG.card_order_conflict(a, [a, near], 9)
+    hf = [dict(ref=str(i + 1), margin=9.0, kind=0, card_rel=0.02, ob=0.0, ph=0.8, cross=0) for i in range(9)]
+    p = dict(w=[5.0] + [0.0] * len(RG.FEATS), threshold=0.5)
+    assert not RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0, card_conflict=True), p)["show"]
+
+
+def _grid_scene():
+    return dict(grid=dict(crs="EPSG:32616", transform=[1.0, 0, 332000.0, 0, -1.0, 4483000.0], width=400, height=300),
+                greens=[])
+
+
+def test_augment_scene_adds_map_greens():
+    import numpy as np
+    import route_learn as RL
+    sc = _grid_scene()
+    P = np.zeros((6, 300, 400), np.uint8)
+    P[1, 100:120, 100:125] = 230                   # a 500 m2 green blob
+    P[1, 10:13, 10:13] = 255                       # too small
+    s2, n = RL.augment_scene(sc, P)
+    assert n == 1 and s2["greens"][0]["kind"] == "map" and 450 <= s2["greens"][0]["area_m2"] <= 520
+    s3, n3 = RL.augment_scene(s2 | dict(greens=[dict(s2["greens"][0], kind="hole", p_hole=0.9)]), P)
+    assert n3 == 0                                 # already a candidate there
+
+
+def test_maps_sampling_follows_the_grid():
+    import numpy as np
+    import route_learn as RL
+    from routing import Proj
+    from pyproj import Transformer
+    sc = _grid_scene()
+    P = np.zeros((6, 300, 400), np.uint8)
+    P[3, :, 200:] = 255                            # fairway on the east half
+    M = RL.corridor_maps(P, sc["grid"])
+    lon, lat = Transformer.from_crs("EPSG:32616", "EPSG:4326", always_xy=True).transform(332200.0, 4482850.0)
+    M.bind(Proj(lon, lat))
+    v = M.sample(np.array([[-40.0, 0.0], [40.0, 0.0]]), "fair")
+    assert v[0] < 0.1 and v[1] > 0.9
+
+
+def test_route_v2_smoke():
+    """v2 on the synthetic chain with flat maps: routes every hole (learned scores when the model file exists)"""
+    import numpy as np
+    from pyproj import Transformer
+    sc, yards, truth = _chain(9)
+    tr = Transformer.from_crs("EPSG:4326", "EPSG:32616", always_xy=True)
+    xs, ys = tr.transform([p[0] for t in truth for p in t], [p[1] for t in truth for p in t])
+    x0, y1 = int(min(xs)) - 300, int(max(ys)) + 300
+    W, H = int(max(xs)) + 300 - x0, y1 - (int(min(ys)) - 300)
+    sc["grid"] = dict(crs="EPSG:32616", transform=[1.0, 0, float(x0), 0, -1.0, float(y1)], width=W, height=H)
+    P = np.zeros((6, H, W), np.uint8)
+    card = dict(par=[4, 4, 3, 5, 4, 4, 3, 4, 4], tee_sets=dict(Blue=dict(yards=yards)))
+    r, ci, s2 = RS.route_v2({"features": []}, sc, card, 9, P, params=dict(beam=500))
+    assert len(r["features"]) == 9 and ci["greens_map"] == 0
+    assert all(h.get("pw") is None or 0 <= h["pw"] <= 1 for h in r["hole_features"])

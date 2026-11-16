@@ -302,7 +302,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     if scene_routed is not None:
         import route_scene
         pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
-        if scene_routed.get("version") == "v1":
+        if scene_routed.get("version") in ("v1", "v2"):
             # calibrated show / block (route_gate.py): shown only when P(every hole numbered right) clears the
             # threshold fitted on the routing bench; otherwise a draft, not shown, with the reason. No golfer questions.
             import route_gate

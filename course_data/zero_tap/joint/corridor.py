@@ -48,6 +48,12 @@ class Raster:
         self.fair = _fill(np.zeros((self.H, self.W), np.uint8), self.x0, self.y0,
                           [f["poly"] for f in co.get("fair") or []], cell)
         self.obst = _fill(np.zeros((self.H, self.W), np.uint8), self.x0, self.y0, co.get("obst") or [], cell)
+        M = co.get("maps")                                      # pixel maps (route_learn.Maps, bound): P(fairway)
+        if M is not None:
+            xs = self.x0 + (np.arange(self.W) + 0.5) * cell
+            ys = self.y0 + (np.arange(self.H) + 0.5) * cell
+            X, Y = np.meshgrid(xs, ys)
+            self.fair = (M.sample(np.stack([X, Y], -1), "fair") >= 0.5).astype(np.uint8)
         self.has_fair = bool(self.fair.any())
         import cv2
         self.tree = np.zeros((self.H, self.W), np.uint8)       # tree crowns (x, y, radius yd): a hole is not played

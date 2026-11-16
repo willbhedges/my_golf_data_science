@@ -30,9 +30,25 @@ BIG = 1e6
 DEF2 = dict(S1.DEF, K=18, beam=3000, tee_reuse=1, c_vt=4.0, c_vg=5.0, c_miss=9.0, c_vv=2.0,
             ring_lo=0.82, ring_hi=1.03, v_base=0.4, v0=25.0, v1=45.0, v_max=9.0, start_v=2.5,
             card_tol=0.12, ph_card=0.002, reuse_cost=1.5, lag_iters=60, lag_step=1.0, w_tree=0.0,
-            n_bear=24, r_virt=0.95, w_cov=3.0, cov_min=0.35, par3_yd=250.0, w_ob=4.0, w_onob=3.0, w_obr=4.0)
+            n_bear=24, r_virt=0.95, w_cov=3.0, cov_min=0.35, par3_yd=250.0, w_ob=4.0, w_onob=3.0, w_obr=4.0, w_covl=0.0)
 
 REAL, VT, VG, MISS = 0, 1, 2, 3
+
+
+def _corridor():
+    """this directory's corridor.py, loaded by path: course_data/truth/ has a corridor.py too, and whichever directory
+    is first on sys.path (a tier A build puts truth/ there) would win a plain import"""
+    import importlib.util
+    import os
+    import sys
+    m = sys.modules.get("joint_corridor")
+    if m is None:
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "corridor.py")
+        spec = importlib.util.spec_from_file_location("joint_corridor", p)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        sys.modules["joint_corridor"] = m
+    return m
 
 
 def ring_gap(D, y, lo, hi):
@@ -102,8 +118,7 @@ class Problem2:
                 base[c] = P["c_vg"] - P["w_dt"] * lt[t]
             else:
                 base[c] = P["c_miss"]
-        import corridor as CR
-        self.rast = CR.Raster(co)
+        self.rast = _corridor().Raster(co)
         Tc0 = geo["Tc"]
         if self.real:
             rt = np.array([t for k, t, g in cand[:self.real]])
@@ -206,7 +221,8 @@ class Problem2:
             c = P["w_ob"] * R.frac(S, A, R.obst) + P["w_onob"] * R.at(S, R.obst) + \
                 P["w_tree"] * R.frac(S, A, R.tree, 0.15, 0.85)
             if R.has_fair:
-                c = c + P["w_cov"] * np.maximum(0.0, need - R.frac(S, A, R.fair))
+                fr = R.frac(S, A, R.fair)
+                c = c + P["w_cov"] * np.maximum(0.0, need - fr) + P["w_covl"] * (need > 0) * (1.0 - fr)
             return c
         G = self.d["co"]["G"]
         Tc = self.d["geo"]["Tc"]

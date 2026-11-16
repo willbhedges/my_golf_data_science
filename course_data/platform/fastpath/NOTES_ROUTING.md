@@ -63,3 +63,47 @@ Requests to the detection side: the routing errors that remain on real scenes ar
 complex or green is missing or merged with a neighbour's (one complex serving two holes), and practice greens
 next to the clubhouse taken as hole 9 / 18 greens (kind "practice" is rarely set). Splitting tee complexes per
 hole axis and flagging practice greens would help routing most.
+
+## State 2026-11-16 (later): router v2 (learned scores on real candidates + map greens), ROUTE_SCENE_VERSION=v2
+
+What v2 adds (route_scene.route_v2, used by route_scene.run when ROUTE_SCENE_VERSION=v2 and fastscene.build returns
+the 6-class U-Net P; otherwise v1 as before):
+* `route_learn.py`: the hole (tee complex -> green), walk (green -> next tee) and loop start / end models are
+  refitted on the routing bench's REAL fastscene candidates of the validation-train courses (labels from the hidden
+  OSM hole ways), out-of-fold by state for train. New features are read from per-pixel maps on the scene grid:
+  U-Net P(fairway) / P(turf) / P(water) / P(bunker) and Meta canopy >= 3 m (trees), along each tee -> green line (fairway
+  mean / gaps / tree runs / parallel corridors / one-bend dogleg corridor), around greens and tees, plus detector p /
+  area / map flag. Pair AUC 0.933 -> 0.970; correct tee ranked first for 77 % -> 87 % of greens; loop start / end
+  AUC 0.44 / 0.46 (the model_scene.pkl ones are worse than chance on real scenes) -> 0.75 / 0.78. Model file
+  `route_learn_model.pkl` (all-train fit), applied with `route_learn.rescore`.
+* `route_learn.augment_scene`: greens the U-Net P(green) map holds as a solid blob (P >= 0.5, 120-2500 m2) but the
+  scene left out are added as candidates (kind "map"); 50 of the 72 train greens the scene missed have P(green) >
+  0.8 within 15 m.
+* V2_PARAMS (route_bench tune on train): c_vt 3, c_vg 4 (virtual ends cost more), w_x 3 (crossings), tee box by the
+  median card set.
+* gate: per-hole features + learned ph / pw logits, green / tee detector p, map-green flag; a hard block when the web
+  cards disagree on the hole order (route_gate.card_order_conflict: canyon_lake_ca, whose card sources list the same
+  holes in a different order). Refitted on v2 train (route_gate.json). Threshold still 1.1: no threshold reaches
+  precision 1.0 on train (the top-scored course, billy_caldwell_il, is 8 / 9 right: its 9th green is undetected and the
+  router takes a green 38 yd away). On test the ranking is better than v1 (3 of the 4 top courses are all-right) but the
+  top one is wrong, so nothing is shown.
+
+Bench (web-card courses, holes right / courses with every hole right; detector 2ef0018e4_d0):
+
+| split | v1 | v2 |
+|---|---|---|
+| train (43, out-of-fold scores) | 61.2 % / 2 | 72.4 % / 7 |
+| test (28, all-train fit) | 53.4 % / 1 | 64.6 % / 4 |
+
+Tried and dropped (train): fairway map as the virtual-spot corridor raster and a linear fairway-cover term for
+virtual spots (-0.8 to -2.5 pts); a fairway-scored tee box choice inside merged complexes (no change); walk features
+from the learned ph (-3 pts); higher hole-model weight (w_h 1.5-3: virtual ends win, -2 to -6 pts).
+
+Where the remaining train errors are (v2): about half are sequence errors (the true green is routed at another
+number), then greens the detector and the map both miss, then tees placed 40-120 yd from the OSM line's start (merged
+tee complexes, card back tees vs OSM lines drawn from a middle tee).
+
+Reproduce: `route_bench.py eval --scene fast --router v2 --prep --card-only --ver 2ef0018e4_d0` with
+`ROUTE_BENCH_SC=cache/val/sc3/cv` (train) / `cache/val/sc3/test` (test); the overrides come from
+`ROUTE_LEARN_KINDS=h,w,s,e route_learn.py table|cv|fit --out cache/val/sc3` (tables need the v2 prep pickles that
+an eval with --router v2 --prep writes first). Pixel maps cached at cache/val/maps (85 MB).

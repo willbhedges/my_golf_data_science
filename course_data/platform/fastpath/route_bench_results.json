@@ -1,5 +1,5 @@
 {
-"doc": "route_bench.py results, 2026-11-16. fast = fastscene scenes of detector 2ef0018e4 + cached U-Net probs d0 (validation set simulated unmapped); oracle = OSM objects with the spec noise (15 % greens / 30 % tee complexes dropped, false greens / tees, 20 % fairways dropped); clean = OSM objects without noise. Router v0 = zero_tap/joint solve.py (model_osm), v1 = solve2.py (model_scene, V1_PARAMS). Scoring routing.score; courses without a web card are included and routed with no card (hole_acc counts a course without a result as 0 holes right).",
+"doc": "route_bench.py results, 2026-11-16. fast = fastscene scenes of detector 2ef0018e4 + cached U-Net probs d0 (validation set simulated unmapped); oracle = OSM objects with the spec noise (15 % greens / 30 % tee complexes dropped, false greens / tees, 20 % fairways dropped); clean = OSM objects without noise. Router v0 = zero_tap/joint solve.py (model_osm), v1 = solve2.py (model_scene, V1_PARAMS). Scoring routing.score; courses without a web card are included and routed with no card (hole_acc counts a course without a result as 0 holes right). F_v2_*: router v2 (route_learn scores: train out-of-fold, test all-train fit; map greens; V2_PARAMS), web-card courses only.",
 "runs": {
 "F_v0_train": {
 "summary": {
@@ -5248,6 +5248,777 @@ null
 0,
 0
 ]
+}
+]
+},
+"F_v2_train": {
+"summary": {
+"courses": 43,
+"errors": 1,
+"hole_acc": 0.7242,
+"hole_acc_routed": 0.7411,
+"all_right": "7/43",
+"all_right_frac": 0.1628,
+"card_err_med": 6.9,
+"card_err_p90": 39.5,
+"card_within_15pct": null,
+"shown": 0,
+"shown_right": 0,
+"gate_precision": null,
+"coverage": 0.0,
+"sec_mean": 3.04,
+"scene": "fast",
+"router": "v2",
+"split": "train",
+"seeds": 1,
+"detector": "2ef0018e4_d0",
+"wall": 72.9
+},
+"courses": [
+{
+"slug": "sky_mountain_ut",
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "urbana_il",
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "billy_caldwell_il",
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "elk_river_mn",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "willowhill_il",
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "dwan_mn",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "el_dorado_park_ca",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "toscana_ca",
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "turner_hill_ma",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "metamora_fields_il",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "hatherly_ma",
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "hidden_greens_north_wi",
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "walpole_ma",
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "fairways_woodside_wi",
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "hideout_ut",
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "wellesley_ma",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "wynstone_il",
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "rock_river_hills_wi",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "village_green_mn",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "edgewood_park_il",
+"acc": 0.611,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "big_foot_wi",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "bloomington_il",
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "brae_loch_il",
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "whaling_city_ma",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "kernwood_ma",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "crestwood_ma",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "concord_ma",
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "waukewan_nh",
+"acc": 0.176,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "falmouth_ma",
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "wentworth_nh",
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "derryfield_nh",
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "lakeside_ky",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "paintsville_ky",
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "landing_ga",
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "sun_valley_ky",
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "browns_mill_ga",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "great_southern_ms",
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"card_conflict": null
+},
+{
+"slug": "canyon_lake_ca",
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"card_conflict": true
+},
+{
+"slug": "westchester_ca",
+"acc": 0.167,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "upland_hills_ca",
+"acc": 0.667,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "rancho_del_sol_ca",
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "ridge_ca",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "sun_hills_ut",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+}
+]
+},
+"F_v2_test": {
+"summary": {
+"courses": 28,
+"errors": 2,
+"hole_acc": 0.646,
+"hole_acc_routed": 0.698,
+"all_right": "4/28",
+"all_right_frac": 0.1429,
+"card_err_med": 6.5,
+"card_err_p90": 38.8,
+"card_within_15pct": null,
+"shown": 0,
+"shown_right": 0,
+"gate_precision": null,
+"coverage": 0.0,
+"sec_mean": 2.92,
+"scene": "fast",
+"router": "v2",
+"split": "test",
+"seeds": 1,
+"detector": "2ef0018e4_d0",
+"wall": 47.4
+},
+"courses": [
+{
+"slug": "ozaukee_wi",
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "skokie_il",
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "westhaven_wi",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "chaska_wi",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "cinder_ridge_il",
+"acc": 0.8,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "somerby_mn",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "riverwood_national_mn",
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "ocean_edge_resort_ma",
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "falmouth_me",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "jato_highlands_me",
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"card_conflict": null
+},
+{
+"slug": "green_harbor_ma",
+"acc": 0.235,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "willowbend_ma",
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "elmcrest_ma",
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"card_conflict": null
+},
+{
+"slug": "william_j_devine_ma",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "woods_hole_ma",
+"acc": 0.611,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "bartram_trail_ga",
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "smoke_rise_ga",
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "towne_lake_hills_ga",
+"acc": 0.056,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "kingwood_ga",
+"acc": 0.118,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "wildwood_ky",
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "arrowhead_pointe_ga",
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "crossings_ky",
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "bonneville_ut",
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "lake_tahoe_ca",
+"acc": 0.833,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "los_amigos_ca",
+"acc": 0.889,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "empire_ranch_ca",
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "south_hills_ca",
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "visalia_ca",
+"acc": 0.812,
+"all_right": false,
+"err": null,
+"card_conflict": false
+}
+]
+},
+"F_v1_test_rerun": {
+"summary": {
+"courses": 28,
+"errors": 2,
+"hole_acc": 0.5342,
+"hole_acc_routed": 0.5772,
+"all_right": "1/28",
+"all_right_frac": 0.0357,
+"card_err_med": 9.8,
+"card_err_p90": 65.4,
+"card_within_15pct": null,
+"shown": 0,
+"shown_right": 0,
+"gate_precision": null,
+"coverage": 0.0,
+"sec_mean": 2.65,
+"scene": "fast",
+"router": "v1",
+"split": "test",
+"seeds": 1,
+"detector": "2ef0018e4_d0",
+"wall": 40.0
+},
+"courses": [
+{
+"slug": "ozaukee_wi",
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "skokie_il",
+"acc": 0.556,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "westhaven_wi",
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "chaska_wi",
+"acc": 1.0,
+"all_right": true,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "cinder_ridge_il",
+"acc": 0.8,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "somerby_mn",
+"acc": 0.944,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "riverwood_national_mn",
+"acc": 0.765,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "ocean_edge_resort_ma",
+"acc": 0.111,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "falmouth_me",
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "jato_highlands_me",
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"card_conflict": null
+},
+{
+"slug": "green_harbor_ma",
+"acc": 0.235,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "willowbend_ma",
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "elmcrest_ma",
+"acc": null,
+"all_right": null,
+"err": "prepare failed",
+"card_conflict": null
+},
+{
+"slug": "william_j_devine_ma",
+"acc": 0.5,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "woods_hole_ma",
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "bartram_trail_ga",
+"acc": 0.941,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "smoke_rise_ga",
+"acc": 0.278,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "towne_lake_hills_ga",
+"acc": 0.389,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "kingwood_ga",
+"acc": 0.176,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "wildwood_ky",
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "arrowhead_pointe_ga",
+"acc": 0.882,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "crossings_ky",
+"acc": 0.0,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "bonneville_ut",
+"acc": 0.722,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "lake_tahoe_ca",
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "los_amigos_ca",
+"acc": 0.778,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "empire_ranch_ca",
+"acc": 0.824,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "south_hills_ca",
+"acc": 0.222,
+"all_right": false,
+"err": null,
+"card_conflict": false
+},
+{
+"slug": "visalia_ca",
+"acc": 0.438,
+"all_right": false,
+"err": null,
+"card_conflict": false
 }
 ]
 }

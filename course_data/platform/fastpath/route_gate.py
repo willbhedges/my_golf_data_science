@@ -24,7 +24,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PARAMS = os.path.join(HERE, "route_gate.json")
-FEATS = ["margin_c", "margin_lo", "card_rel", "card_bad", "virtual", "ob", "ph_lo", "cross"]
+FEATS = ["margin_c", "margin_lo", "card_rel", "card_bad", "virtual", "ob", "ph_lo", "cross", "ph_l", "pw_l", "pw_none", "g_l", "g_map", "t_l"]
 MARGIN_CAP = 12.0
 
 
@@ -33,8 +33,43 @@ def hole_x(h):
     cr = h.get("card_rel")
     cr = 0.3 if cr is None else min(float(cr), 0.6)
     ph = h.get("ph")
+    pw = h.get("pw")
     return [m / MARGIN_CAP, float(m < 2.0), cr, float(cr > 0.15), float(h.get("kind", 0) != 0),
-            float(h.get("ob") or 0.0), float(ph is None or ph < 0.1), float(h.get("cross") or 0)]
+            float(h.get("ob") or 0.0), float(ph is None or ph < 0.1), float(h.get("cross") or 0),
+            _logit(ph) / 4.0, _logit(pw) / 4.0, float(pw is None), _logit(h.get("gp")) / 4.0, float(h.get("gmap") or 0),
+            _logit(h.get("tp")) / 4.0]
+
+
+def _logit(p):
+    if p is None:
+        return 0.0
+    p = min(max(float(p), 0.01), 0.99)
+    return math.log(p / (1 - p))
+
+
+def _sets(card, n):
+    out = []
+    for s in ((card or {}).get("tee_sets") or {}).values():
+        y = s.get("yards") or []
+        if len(y) >= n and all(v for v in y[:n]):
+            out.append(np.asarray(y[:n], float))
+    return out
+
+
+def card_order_conflict(card, others, n, order_yd=25.0, same_yd=15.0):
+    """True when another web card holds the same holes (sorted yardages within same_yd, median) in a different order
+    (hole by hole off by more than order_yd, median): the sources disagree on the numbering, so the card cannot
+    number the routed holes. others: card dicts (tee_sets)."""
+    a = _sets(card, n)
+    for o in others or []:
+        b = _sets(o, n)
+        if not a or not b or o is card:
+            continue
+        idm = min(float(np.median(np.abs(x - y))) for x in a for y in b)
+        srt = min(float(np.median(np.abs(np.sort(x) - np.sort(y)))) for x in a for y in b)
+        if idm > order_yd and srt < same_yd:
+            return True
+    return False
 
 
 def load(path=PARAMS):
@@ -48,7 +83,7 @@ def p_all(routed, params=None):
     if params is None or not hf:
         return None, []
     w = np.asarray(params["w"], float)
-    X = np.array([hole_x(h) for h in hf], float)
+    X = np.array([hole_x(h) for h in hf], float)[:, :len(w) - 1]          # a gate fitted on fewer features
     z = X @ w[1:] + w[0]
     p = 1.0 / (1.0 + np.exp(-z))
     return float(np.prod(p)), [round(float(v), 4) for v in p]
@@ -63,6 +98,8 @@ def decide(routed, params=None):
         reasons.append("no routing")
     if routed.get("has_card") is False:
         reasons.append("no scorecard yardages: the hole order is a guess without them")
+    if routed.get("card_conflict"):
+        reasons.append("the web scorecards disagree on the hole order: the card cannot number the holes")
     if routed.get("n_miss"):
         reasons.append(f"{routed['n_miss']} holes with neither tee nor green found")
     if len(routed.get("hole_features") or []) < n:

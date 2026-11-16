@@ -180,7 +180,8 @@ def _axis(pts):
 
 
 V1_PARAMS = dict(K=18, beam=3000, tee_reuse=1, tee_box="long", c_vt=2.0, c_vg=2.0)   # c_vt / c_vg: route_bench tune (train)
-ROUTER = os.environ.get("ROUTE_SCENE_VERSION", "v1")      # fast.py's unmapped routing (v0: the previous solver)
+V1_LIKE = ("v1", "v2")         # v2: v1's solver + map-recovered greens and learned hole / walk scores (route_learn.py)
+ROUTER = os.environ.get("ROUTE_SCENE_VERSION", "v2")      # fast.py's unmapped routing (v1 / v0: the previous solvers)
 SCENE_MODEL = os.path.join(RJ.J, "model_scene.pkl")    # evidence models fitted on detection-like candidates (fit_scene.py)
 _SM = {}
 
@@ -188,7 +189,7 @@ _SM = {}
 def _models(version, params):
     """v0: model_osm.pkl (as before); v1: model_scene.pkl when present (params 'model': 'osm' keeps model_osm)"""
     import pickle
-    path = RJ.MODEL if version != "v1" or (params or {}).get("model") == "osm" or not os.path.exists(SCENE_MODEL) \
+    path = RJ.MODEL if version not in V1_LIKE or (params or {}).get("model") == "osm" or not os.path.exists(SCENE_MODEL) \
         else SCENE_MODEL
     if path not in _SM:
         _SM[path] = pickle.load(open(path, "rb"))
@@ -220,9 +221,11 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
     d, info = prepared or prepare(fc, scene, card, n_holes, co, version, params)
     params.pop("model", None)
     co, geo = d["co"], d["geo"]
-    if version == "v1":
+    if version in V1_LIKE:
         import solve2 as S2
-        pp = dict(V1_PARAMS, **(params or {}))
+        pp = dict(V1_PARAMS)
+        pp.update(V2_PARAMS if version == "v2" else {})
+        pp.update(params or {})
         nomg = pp.pop("no_margins", False)
         sol = S2.solve(d, card, pp, None)
         if not sol["seq"]:
@@ -244,7 +247,7 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
     n_vt = n_vg = n_miss = 0
     hole_f = []                                     # per-hole confidence features (v1): the gate's calibration input
     yk = None
-    if version == "v1" and pr2.Y is not None:
+    if version in V1_LIKE and pr2.Y is not None:
         yk = pr2.ygeom()
     for i, (t, g) in enumerate(holes):
         v = virt.get(i) or {}
@@ -256,10 +259,18 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
             tc = co["T"][t]
             gq = co["G"][g] if g >= 0 else np.asarray(v["green"])
             far = int(np.argmax(np.hypot(*(np.asarray(tc["pts"]) - gq).T)))
-            if version == "v1" and tee_box != "far" and g >= 0 and pr2.Y is not None and len(tc["pts"]) > 1 \
+            if version in V1_LIKE and tee_box != "far" and g >= 0 and pr2.Y is not None and len(tc["pts"]) > 1 \
                     and geo["Pbox"][t][g] is not None:
                 yk = pr2.Y[0] if tee_box == "long" else pr2.ygeom()     # the box whose play length fits the card
                 far = int(np.argmin(np.abs(np.asarray(geo["Pbox"][t][g]) - yk[i])))
+                if d.get("_maps") is not None and pp.get("box_fair", 0) > 0:
+                    # a complex holding two holes' boxes: the box whose line to the green runs down a fairway
+                    import route_learn as RL
+                    pts = np.asarray(tc["pts"], float)
+                    fr = RL.line_stats(d["_maps"], pts, np.broadcast_to(np.asarray(gq, float), pts.shape),
+                                       0.15, 0.85, 25)["fr_mean"]
+                    cr = np.abs(np.asarray(geo["Pbox"][t][g]) - yk[i]) / max(float(yk[i]), 1.0)
+                    far = int(np.argmin(pp.get("box_card", 2.0) * cr + pp["box_fair"] * (1.0 - fr)))
             tq = tc["pts"][far]
         else:
             tq = np.asarray(v["tee"])
@@ -284,21 +295,51 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
                       "properties": {"golf": "hole", "ref": str(i + 1), "par": str(par), "src": "joint:scene",
                                      "green_src": src["green"], "tee_src": src["tee"],
                                      "margin": round(float(mg[i]), 2)}})
-        if version == "v1":
+        if version in V1_LIKE:
             Lp = float(np.sum(np.hypot(*np.diff(np.asarray(path, float), axis=0).T)))
             c = sol["seq"][i]
             hole_f.append(dict(ref=str(i + 1), margin=round(float(mg[i]), 3), kind=int(pr2.typ[c]),
                                card_rel=round(abs(Lp - float(yk[i])) / max(float(yk[i]), 1.0), 4) if yk is not None else None,
                                ob=round(float(pr2.ob_real[c]), 3) if c < pr2.real else None,
                                ph=round(float(pr2.ph.get((t, g), 0.0)), 4) if (t >= 0 and g >= 0) else None,
-                               cross=int(sum(pr2.X[c, c2] for c2 in sol["seq"] if c2 < pr2.real)) if c < pr2.real else 0))
-    if version != "v1":
+                               cross=int(sum(pr2.X[c, c2] for c2 in sol["seq"] if c2 < pr2.real)) if c < pr2.real else 0,
+                               pw=_walk_p(d, holes, i, pr2.loop), **_obj_f(d, t, g)))
+    if version not in V1_LIKE:
         n_vt = sum(1 for t, g in holes if t < 0 and g >= 0)
     return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
-                n_virtual=nv if version != "v1" else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
+                n_virtual=nv if version not in V1_LIKE else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
                 n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]), version=version,
                 cost=float(sol["cost"]), detected_holes=det, _used=used, hole_features=hole_f,
                 has_card=bool(S.card_sets(card, int(n_holes)) is not None), **info)
+
+
+def _obj_f(d, t, g):
+    """detector attributes of the hole's green / tee complex (route_learn.obj_attrs, v2): p, green from the map"""
+    ga, ta = d.get("_gattr"), d.get("_tattr")
+    out = {}
+    if ga is not None and g >= 0:
+        out.update(gp=_r(ga[g][0]), garea=_r(ga[g][1]), gmap=int(ga[g][2] > 0))
+    if ta is not None and t >= 0:
+        out.update(tp=_r(ta[t][0]), tbox=int(ta[t][1]))
+    return out
+
+
+def _r(v):
+    v = float(v)
+    return None if v != v else round(v, 3)
+
+
+def _walk_p(d, holes, i, loop):
+    """walk-model probability of the walk into hole i (previous green -> this tee), None at a loop start or when
+    either end is virtual"""
+    if i % loop == 0 or i == 0:
+        return None
+    gp, t = holes[i - 1][1], holes[i][0]
+    if gp < 0 or t < 0:
+        return None
+    if "_pw" not in d:
+        d["_pw"] = {(int(a), int(b)): float(p) for (a, b), p in zip(d["wp"], d["sc"]["pw"])}
+    return round(d["_pw"].get((int(gp), int(t)), 0.0), 4)
 
 
 def scene_features(scene, kinds=("green", "tee", "fairway", "bunker", "water"), used=None):
@@ -349,6 +390,27 @@ def needs_perception(fc, n_holes):
     return lines < 3 and (green < 0.8 * n_holes or tee < 0.8 * n_holes)
 
 
+V2_PARAMS = dict(c_vt=3.0, c_vg=4.0, tee_box="geom", w_x=3.0)     # route_bench tune on train (v2 scores)
+
+
+def route_v2(fc, scene, card, n_holes, P, hag=None, params=None):
+    """v2: greens the U-Net P(green) map holds but the scene dropped are added (route_learn.augment_scene), hole /
+    walk scores from route_learn's models (real-candidate fit, fairway / turf / tree features along each line),
+    solve2 with V2_PARAMS. -> (route result, candidate info, the augmented scene)"""
+    import route_learn as RL
+    scene, n_aug = RL.augment_scene(scene, P)
+    co, ci = candidates(fc, scene, n_holes=n_holes)
+    d, _ = prepare(fc, scene, card, n_holes, co=co, version="v2")
+    M = RL.corridor_maps(P, scene["grid"], hag=hag).bind(co["pj"])
+    learned = RL.rescore(d, scene, M, card, n_holes)
+    if learned and (params or {}).get("map_fair", V2_PARAMS.get("map_fair")):
+        d["co"]["maps"] = M
+    r = route(fc, scene, card, n_holes, version="v2" if learned else "v1",
+              params=dict(V2_PARAMS, **(params or {})) if learned else params, prepared=(d, {}))
+    ci = dict(ci, greens_map=n_aug, learned_scores=learned)
+    return r, ci, scene
+
+
 def run(pkg_dir, fc, card, n_holes, log=None):
     """Build the fast-path scene (fastscene.build -> pkg_dir/scene.json), route OSM + detections jointly.
     -> (route result without features, supplement features [golf=hole lines + the detected greens / tee boxes the
@@ -360,9 +422,21 @@ def run(pkg_dir, fc, card, n_holes, log=None):
     scene, info = FS.build(pkg_dir)
     T["scene"] = info["seconds"]
     t1 = time.time()
-    co, ci = candidates(fc, scene, n_holes=n_holes)
-    r = route(fc, scene, card, n_holes, co=co, version=ROUTER)
+    P = info.get("P")
+    if ROUTER == "v2" and P is not None and np.shape(P)[0] == 6:
+        r, ci, scene = route_v2(fc, scene, card, n_holes, P, getattr(info.get("stack"), "a", {}).get("hag"))
+    else:
+        co, ci = candidates(fc, scene, n_holes=n_holes)
+        r = route(fc, scene, card, n_holes, co=co, version="v1" if ROUTER == "v2" else ROUTER)
     r.update(ci)
+    try:                                         # web cards that disagree on the hole order (route_gate blocks)
+        import json as _json
+        import route_gate
+        web = _json.load(open(os.path.join(pkg_dir, "raw", "scorecard_web.json")))
+        r["card_conflict"] = route_gate.card_order_conflict(card, [c["card"] for c in web.get("cards", [])
+                                                                   if c.get("card")], int(n_holes))
+    except Exception:                                                # noqa: BLE001
+        r["card_conflict"] = False
     T["route"] = round(time.time() - t1, 2)
     used = set(r.pop("_used", []))
     have = {(f.get("properties") or {}).get("golf") for f in (fc or {}).get("features", [])

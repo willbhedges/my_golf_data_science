@@ -87,6 +87,23 @@ HELDOUT = os.path.join(os.environ.get("FASTPATH_CACHE") or os.path.join(HERE, "c
 PROBS = os.environ.get("ROUTE_BENCH_PROBS", "d0")      # the detection side's cached U-Net probabilities (perc_bench.py)
 
 
+def bench_probs(slug, combo=None):
+    """the cached U-Net probabilities of a course as uint8 [6, H, W]: one variant ('d0'), or the mean of several
+    ('d0+yall': d0 and every cached extra NAIP year y<year>.npz, as perc_bench.load_combo; a course without extra
+    years gives d0). None when missing."""
+    combo = combo or PROBS
+    d = os.path.join(HELDOUT, "probs", slug)
+    vs = combo.split("+")
+    if "yall" in vs:
+        ys = sorted(f[:-4] for f in os.listdir(d) if f.startswith("y") and "_" not in f) if os.path.isdir(d) else []
+        vs = [v for v in vs if v != "yall"] + ys
+    ps = [np.load(os.path.join(d, v + ".npz"))["p"].astype(np.float32) for v in vs
+          if os.path.exists(os.path.join(d, v + ".npz"))]
+    if not ps or not os.path.exists(os.path.join(d, vs[0] + ".npz")):
+        return None
+    return np.clip(np.round(np.mean(ps, 0)), 0, 255).astype(np.uint8)
+
+
 def scene_path(slug, ver=None):
     return os.path.join(VAL, "scenes", ver or scene_version(), slug + ".json")
 
@@ -108,9 +125,9 @@ def build_scene(slug, ver=None):
         raise FileNotFoundError("no heldout package for " + slug + " (heldout.py fetch)")
     import fastscene as FS
     P, T = None, {}
-    pp = os.path.join(HELDOUT, "probs", slug, PROBS + ".npz")
-    if os.path.exists(pp):
-        P = np.load(pp)["p"].astype(np.float32) / 255.0
+    P = bench_probs(slug)
+    if P is not None:
+        P = P.astype(np.float32) / 255.0
         T["probs"] = "cached " + PROBS
     t = time.time()
     sc, info = FS.build(d, out=False, P=P) if P is not None else FS.build(d, out=False)
@@ -292,7 +309,7 @@ def oracle_scene(fc, seed=0, noise=None):
 
 
 # ----------------------------------------------------------------------------- one course
-def load_course(c, scene_kind, seed=0, ver=None):
+def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
     import platform_common  # noqa: F401
     sys.path.insert(0, GEN)
     import routing as R
@@ -312,6 +329,10 @@ def load_course(c, scene_kind, seed=0, ver=None):
     elif scene_kind == "fast":
         p = scene_path(c["slug"], ver)
         scene = rd(p)
+        Pb = bench_probs(c["slug"], (ver or scene_version()).split("_", 1)[1]) if router == "v2" else None
+        if router == "v2" and scene is not None and Pb is not None:
+            import route_learn as RL                     # greens the U-Net map holds but the scene left out
+            scene, _ = RL.augment_scene(scene, Pb)
     elif scene_kind == "perc":
         m = {r["slug"]: r for r in rd(os.path.join(CD, "zero_tap", "benchmark.json"))["courses"]}
         f = (m.get(c["slug"]) or {}).get("files", {}).get("scene")
@@ -376,7 +397,7 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
         RS._mods()                                   # the pickled Course holds truth.Proj (zero_tap on the path)
         x, pd = pickle.load(open(pp, "rb"))
     if x is None:
-        x = load_course(c, scene_kind, seed, ver)
+        x = load_course(c, scene_kind, seed, ver, router)
         if prep and x["scene"] is not None:
             import route_scene as RS
             try:
@@ -386,6 +407,22 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
             os.makedirs(os.path.dirname(pp), exist_ok=True)
             x = dict(x, fc=None, scene=x["scene"] and {}) if pd is not None else x
             pickle.dump((x, pd), open(pp, "wb"))
+    sc_dir = os.environ.get("ROUTE_BENCH_SC")                  # route_learn.py score overrides (ph / pw ...)
+    if sc_dir and pd is not None and os.path.exists(os.path.join(sc_dir, x["slug"] + ".pkl")):
+        pd = (dict(pd[0], sc=dict(pd[0]["sc"], **pickle.load(open(os.path.join(sc_dir, x["slug"] + ".pkl"), "rb")))),
+              pd[1])
+    if router == "v2" and pd is not None and pd[0].get("_maps") is None:
+        import route_learn as RL                         # the pixel maps (fairway / turf / trees) for v2's tee choice
+        sc0 = rd(scene_path(x["slug"], ver))
+        if sc0 is not None:
+            pv = (ver or scene_version()).split("_", 1)[1]
+            pd = (dict(pd[0], _maps=RL.bench_maps(x["slug"], sc0, pv).bind(pd[0]["co"]["pj"])), pd[1])
+            Pb = bench_probs(x["slug"], pv)
+            if Pb is not None:                           # detector p / map flag of each candidate (the gate reads them)
+                sca, _ = RL.augment_scene(sc0, Pb)
+                pd[0]["_gattr"], pd[0]["_tattr"] = RL.obj_attrs(pd[0], sca, pd[0]["_maps"])
+            if json.loads(os.environ.get("ROUTER_PARAMS") or "{}").get("map_fair"):
+                pd[0]["co"] = dict(pd[0]["co"], maps=pd[0]["_maps"])
     out = dict(slug=x["slug"], split=x["split"], n=x["n"], n_true=len(x["truth"]), has_card=x["card"] is not None)
     if x["scene"] is None:
         out.update(error="no scene")
@@ -406,6 +443,10 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
         out.update(error=repr(e)[:300], seconds=round(time.time() - t, 2))
         return out
     out["seconds"] = round(time.time() - t, 2)
+    _, _, scj = course_files(x["slug"])
+    import route_gate as RG
+    out["card_conflict"] = bool(scj and x["card"] and RG.card_order_conflict(
+        x["card"], [c["card"] for c in scj.get("cards") or [] if c.get("card")], int(x["n"])))
     feats = r.pop("features", [])
     r.pop("_used", None)
     sc = R.score(to_res(feats), x["truth"])
@@ -541,7 +582,7 @@ def gate_rows(rs):
             continue
         hf = (r.get("route") or {}).get("hole_features") or []
         ok = [bool(r["hole_ok"].get(h["ref"], False)) for h in hf]
-        hard = bool((r.get("route") or {}).get("n_miss")) or len(hf) < r["n"]
+        hard = bool((r.get("route") or {}).get("n_miss")) or len(hf) < r["n"] or bool(r.get("card_conflict"))
         out.append(dict(slug=r["slug"], hole_features=hf, hole_ok=ok, all_right=bool(r["score"]["all_correct"]),
                         hard_block=hard))
     return out
@@ -605,9 +646,10 @@ def cmd_tune(a):
             out.write(line + "\n")
             out.flush()
     rec(cur, best, S)
+    grid = json.loads(a.grid) if a.grid else TUNE_GRID
     for rnd in range(a.rounds):
         improved = False
-        for k, vals in TUNE_GRID.items():
+        for k, vals in grid.items():
             for v in vals:
                 if cur.get(k) == v:
                     continue
@@ -641,6 +683,7 @@ if __name__ == "__main__":
     ap.add_argument("--write", action="store_true")
     ap.add_argument("--probs-only", action="store_true", help="scenes: only courses whose U-Net probabilities are cached")
     ap.add_argument("--rounds", type=int, default=2)
+    ap.add_argument("--grid", default="", help="tune: json {param: [values]} instead of TUNE_GRID")
     ap.add_argument("--out", default="")
     ap.add_argument("-v", "--verbose", action="store_true")
     a = ap.parse_args()
