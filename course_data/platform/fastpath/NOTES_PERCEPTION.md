@@ -55,6 +55,36 @@ Per-class precision / recall, object level:
 | tried, not kept: green blob split at distance-transform necks (700 m2) | VAL 51 | 0.917 / 0.863 | = | = | = | = |
 | tried, not kept: detections kept within 40 m of the outline (not 25) | VAL 51 | = | 0.819 / 0.783 | 0.934 / 0.799 | = | 0.825 / 0.547 |
 
+| seg thresholds for our U-Net: fairway 0.5 -> 0.3, bunker 0.5 -> 0.4 (VAL: fairways 0.936 / 0.799 -> 0.916 / 0.838) | TEST 40 | 0.915 / 0.832 | 0.818 / 0.806 | 0.871 / 0.807 | 0.839 / 0.835 | 0.649 / 0.498 |
+| + **multi-year NAIP fusion** (U-Net probabilities averaged over the package year + 2 other NAIP years) | TEST 40 | **0.928 / 0.891** | **0.848 / 0.832** | **0.876 / 0.838** | **0.928 / 0.878** | **0.637 / 0.502** |
+| tried, not kept: 3-view TTA (identity, flip, rot90) on 12 VAL courses | VAL 12 | 0.925 / 0.925 (d0 0.925 / 0.934) | 0.890 / 0.815 (0.870 / 0.820) | 0.972 / 0.898 (0.958 / 0.889) | 0.820 / 0.909 (0.813 / 0.904) | = |
+| multi-year on the same 12 VAL courses | VAL 12 | 0.943 / 0.951 | 0.914 / 0.815 | 0.971 / 0.877 | 0.892 / 0.951 | 0.889 / 0.473 |
+| tile stride 448 instead of 384 (speed), 12 VAL courses | VAL 12 | 0.934 / 0.934 | 0.877 / 0.815 | 0.966 / 0.881 | 0.814 / 0.903 | 0.909 / 0.462 |
+| tried, not kept: tile 384 / stride 352 | VAL 12 | 0.921 / 0.925 | 0.858 / 0.820 | 0.953 / 0.885 | 0.818 / 0.903 | 0.907 / 0.451 |
+
+Totals TEST 40, before -> now (P / R): hole greens 0.911 / 0.790 -> 0.928 / 0.891; tee complexes 0.811 / 0.758 ->
+0.848 / 0.832; tee boxes 0.756 / 0.681 -> 0.827 / 0.739; fairways 0.916 / 0.757 -> 0.876 / 0.838; bunkers
+0.844 / 0.831 -> 0.928 / 0.878; water 0.442 / 0.350 -> 0.637 / 0.502.
+
+**Detector version for routing: the commit that adds this line, probs variant `d0+yall`** (perc_bench: the package
+year + every cached extra year; on TEST computed with stride 384, production uses 448, equal on VAL). Single-year
+equivalent: `d0` (same commit).
+
+Multi-year (default, `FASTSCENE_YEARS=2`; 0 = one year): fastscene.build fetches the 2 newest other NAIP years
+(coverage > 0.9, >= 2012) once through `fast_imagery.fetch_years` into `imagery/years/<year>/` at 0.6 m (3-8 MB a
+year) and averages the U-Net probabilities. Cost: 3 U-Net passes instead of 1 (stride 448 takes back ~30 %), plus
+the year fetch (10-30 s, cached). Different flights / seasons separate greens from fairways differently; the gain
+is largest on bunkers and tees (precision) and greens (recall).
+
+For routing (NOTES_ROUTING.md asks), measured on TEST 40 with d0+yall:
+* tee complexes serving two hole starts (a p >= 0.5 complex within 30 m of >= 2 OSM starts): 29 of 963 complexes,
+  63 of 737 starts. Changing the box -> complex clustering (merge 70 -> 40 / 0 m, gap 10 -> 6 m) does not change
+  it on VAL (43 / 42 / 42 / 43 merged): those boxes touch, so splitting needs the hole axis (routing side), not the
+  clustering. Not fixed.
+* practice greens: 77 OSM practice greens; 15 detected and called practice, 15 called hole (false hole greens),
+  the rest not detected as greens or "uncertain". The green model has a practice class (98 practice rows in
+  training); more practice examples would be the lever. Not fixed beyond that.
+
 Second-stage object models (`perc_objects.py`, `fastscene_model/objects_unet/`, default; `FASTSCENE_OBJECTS2=0`
 restores perception's models): green / tee box / tee complex HistGradientBoosting models trained on OUR U-Net's
 candidates (perception's were trained on the ariadgolf model's) of TRAIN (35) + VAL (51), labels from OSM through

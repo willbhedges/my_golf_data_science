@@ -37,6 +37,9 @@ MODEL_DIR = os.path.join(HERE, "fastscene_model")
 CLASSES = ("background", "green", "tee", "fairway", "bunker", "water")
 SEG_ORDER = ("green", "tee", "fairway", "bunker", "water")          # perception stack.SEG
 GREEN_P = 0.5               # green candidate threshold on the seg layer (perception detect.GREEN_P)
+FAIRWAY_P, BUNKER_P, TEE_P = 0.3, 0.4, 0.4      # seg thresholds for detect (perception's: 0.5 / 0.5 / 0.4; chosen on
+                                                # VAL 51 for our U-Net: fairway F1 0.862 -> 0.875; FASTSCENE_* to sweep)
+COMPLEX_GAP_M, COMPLEX_MERGE_M = 10.0, 70.0     # tee boxes -> complexes (perception detect's)
 PAD_M = 40.0                   # the classifier runs inside the course outline + this
 
 
@@ -503,7 +506,7 @@ def unet_probs(pkg_dir, st, weights, keep, augs=None, naip=None, tile=None, stri
     return out
 
 
-YEARS_DEFAULT = 0           # FASTSCENE_YEARS: extra NAIP years averaged into the U-Net probabilities
+YEARS_DEFAULT = 2           # FASTSCENE_YEARS: extra NAIP years averaged into the U-Net probabilities
 
 
 def unet_probs_years(pkg_dir, st, weights, keep, k=None, T=None):
@@ -679,6 +682,11 @@ def _perceive(st, paths, T, models, keep):
     T = T if T is not None else {}
     t = time.time()
     DT.GREEN_P = float(os.environ.get("FASTSCENE_GREEN_P", GREEN_P))
+    DT.FAIRWAY_P = float(os.environ.get("FASTSCENE_FAIRWAY_P", FAIRWAY_P))
+    DT.BUNKER_P = float(os.environ.get("FASTSCENE_BUNKER_P", BUNKER_P))
+    DT.TEE_P = float(os.environ.get("FASTSCENE_TEE_P", TEE_P))
+    DT.COMPLEX_GAP_M = float(os.environ.get("FASTSCENE_COMPLEX_GAP", COMPLEX_GAP_M))
+    DT.COMPLEX_MERGE_M = float(os.environ.get("FASTSCENE_COMPLEX_MERGE", COMPLEX_MERGE_M))
     if models is None:
         models, _ = PV.load_models()
         models = {k: v for k, v in models.items() if k not in ("path_px",)}

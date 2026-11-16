@@ -25,7 +25,7 @@ import numpy as np
 CLASSES = ["background", "green", "tee", "fairway", "bunker", "water"]
 MEAN = [108.314, 118.389, 97.68, 158.925]
 STD = [42.693, 38.205, 33.022, 51.632]
-TILE, STRIDE = 512, 384
+TILE, STRIDE = 512, 448                  # stride 448 (was 384): ~30 % fewer pixels, same VAL scores (NOTES_PERCEPTION.md)
 BLOCKS = (3, 4, 6, 3)                      # resnet34 BasicBlocks per stage
 WIDTH = (64, 128, 256, 512)
 DECODER = (256, 128, 64, 32, 16)

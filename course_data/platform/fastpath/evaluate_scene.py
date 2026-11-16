@@ -37,12 +37,27 @@ def score_course(pkg_dir, model=None, impl="py", paths=False, P=None, keep_D=Fal
         ev = EV.evaluate(st, None, D, T)
     for k in KEYS:
         v = ev.get(k) or {}
-        out[k] = {kk: v.get(kk) for kk in ("precision", "recall", "tp_pred", "n_pred", "tp_true", "n_true", "eligible")
-                  if kk in v}
+        out[k] = {kk: vv for kk, vv in v.items() if isinstance(vv, (int, float, bool)) or vv is None}
     out["mapped_holes"] = ev.get("mapped_holes")
+    out["tee_merge"] = tee_merge(D, T)
     if keep_D:
         out["_D"], out["_st"], out["_T"] = D, st, T
     return out
+
+
+def tee_merge(D, T, r=30.0):
+    """complexes (p >= 0.5) within r of two or more OSM hole starts: one detected complex serving two holes (what
+    routing cannot split). -> dict(n_complex, merged, starts_in_merged)"""
+    starts = [np.asarray(h["start"], float) for h in T.holes]
+    cx = [c for c in D.get("complexes") or [] if c["p"] >= 0.5]
+    merged = sm = 0
+    for c in cx:
+        pts = np.array([b["xy"] for b in c["boxes"]], float)
+        k = sum(1 for s in starts if np.hypot(*(pts - s).T).min() <= r)
+        if k >= 2:
+            merged += 1
+            sm += k
+    return dict(n_complex=len(cx), merged=merged, starts_in_merged=sm, n_starts=len(starts))
 
 
 def pooled(res, key):
