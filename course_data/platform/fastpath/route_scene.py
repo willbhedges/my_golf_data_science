@@ -14,6 +14,7 @@ hole whose green or tee came from the detector carries a confirm flag.
 from __future__ import annotations
 
 import math
+import os
 
 import numpy as np
 
@@ -125,6 +126,7 @@ def candidates(fc, scene, p_green=P_GREEN, p_tee=P_TEE, n_holes=18):
             continue
         fair.append(dict(poly=q, cl=C.centreline(q)))
     co["fair"] = fair
+    co["obst"] = obstacles(fc, scene, pj, C)
     sp = [C._xy(pj, p["centroid"]) + (float(p.get("area_m2") or 0),) for p in (scene or {}).get("parking") or []]
     C._pick_club(co, park + sp, club)
     co = C._finish(co)
@@ -132,6 +134,38 @@ def candidates(fc, scene, p_green=P_GREEN, p_tee=P_TEE, n_holes=18):
                 tees_osm=sum(t["src"] == "osm" for t in co["T"]), tees_scene=sum(t["src"] == "scene" for t in co["T"]),
                 fairways_osm=osm_fair, fairways_scene=len(fair) - osm_fair)
     return co, info
+
+
+ROADS = ("motorway", "trunk", "primary", "secondary", "tertiary", "unclassified", "residential", "living_street",
+         "motorway_link", "trunk_link", "primary_link", "secondary_link", "tertiary_link")
+
+
+def obstacles(fc, scene, pj, C):
+    """Polygons (local yd) a hole is not played over: OSM buildings, car parks and public roads (buffered 5 yd) from
+    the non-golf OSM features, and the scene's detected buildings / car parks (p >= 0.5)."""
+    from shapely.geometry import LineString
+    out = []
+    for f in (fc or {}).get("features", []):
+        p, g = f.get("properties") or {}, f.get("geometry") or {}
+        if p.get("golf") or p.get("origin") == "fastscene":
+            continue
+        if (p.get("building") or p.get("amenity") == "parking") and g.get("type") in ("Polygon", "MultiPolygon"):
+            for r in C.TR._outer(g):
+                q = C._poly(pj, r)
+                if q is not None and q.area > 20:
+                    out.append(q)
+        elif p.get("highway") in ROADS and g.get("type") == "LineString" and len(g["coordinates"]) >= 2:
+            try:
+                out.append(LineString([C._xy(pj, c) for c in g["coordinates"]]).buffer(5.0))
+            except Exception:                                        # noqa: BLE001
+                pass
+    for key in ("buildings", "parking"):
+        for o in (scene or {}).get(key) or []:
+            if o.get("polygon") and len(o["polygon"]) >= 3 and float(o.get("p", 1.0)) >= 0.5:
+                q = C._poly(pj, o["polygon"])
+                if q is not None:
+                    out.append(q)
+    return out
 
 
 def _axis(pts):
@@ -142,11 +176,25 @@ def _axis(pts):
     return (float(v[0, 1]), float(v[1, 1])) if w[1] > 15 ** 2 else None
 
 
-def route(fc, scene, card, n_holes, co=None):
+V1_PARAMS = dict(K=18, beam=3000, tee_reuse=1)
+SCENE_MODEL = os.path.join(RJ.J, "model_scene.pkl")    # evidence models fitted on detection-like candidates (fit_scene.py)
+_SM = {}
+
+
+def _models(version, params):
+    """v0: model_osm.pkl (as before); v1: model_scene.pkl when present (params 'model': 'osm' keeps model_osm)"""
     import pickle
+    path = RJ.MODEL if version != "v1" or (params or {}).get("model") == "osm" or not os.path.exists(SCENE_MODEL) \
+        else SCENE_MODEL
+    if path not in _SM:
+        _SM[path] = pickle.load(open(path, "rb"))
+    return _SM[path]
+
+
+def prepare(fc, scene, card, n_holes, co=None, version="v0", params=None):
+    """candidates + geometry + features + evidence-model scores -> (d, info): the solver's input (cacheable)"""
     C, F, M, S = _mods()
-    if RJ._MS[0] is None:
-        RJ._MS[0] = pickle.load(open(RJ.MODEL, "rb"))
+    ms = _models(version, params)
     if co is None:
         co, info = candidates(fc, scene, n_holes=n_holes)
     else:
@@ -155,34 +203,79 @@ def route(fc, scene, card, n_holes, co=None):
     hp, hx = F.hole_features(co, geo)
     wp, wx, W = F.walk_features(co, geo)
     d = dict(row=dict(slug="x"), co=co, geo=geo, hp=hp, hx=hx, wp=wp, wx=wx, W=W, card=card, kind=int(n_holes))
-    d["sc"] = M.predict(RJ._MS[0], d)
-    sol = S.solve(d, card, RJ.PARAMS, None)
-    if not sol["seq"]:
-        return dict(features=[], min_margin=0.0, why="no routing found", **info)
-    mg = S.margins(sol, None)
+    d["sc"] = M.predict(ms, d)
+    return d, info
+
+
+def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared=None):
+    """version v0: zero_tap/joint solve.py (missing tee / hole = free placeholder); v1: solve2.py (the card places
+    missing tees / greens; virtual ends are written as hole-line ends with tee_src / green_src 'virtual').
+    prepared: prepare()'s (d, info) to skip the candidate / feature stage."""
+    C, F, M, S = _mods()
+    params = dict(params or {})
+    d, info = prepared or prepare(fc, scene, card, n_holes, co, version, params)
+    params.pop("model", None)
+    co, geo = d["co"], d["geo"]
+    if version == "v1":
+        import solve2 as S2
+        pp = dict(V1_PARAMS, **(params or {}))
+        nomg = pp.pop("no_margins", False)
+        sol = S2.solve(d, card, pp, None)
+        if not sol["seq"]:
+            return dict(features=[], min_margin=0.0, why="no routing found", **info)
+        mg = [0.0] * len(sol["seq"]) if nomg else S2.margins(sol, None)
+        virt = S2.place_virtual(sol)
+        holes = [(t, g) for k, t, g in sol["holes"]]
+    else:
+        sol = S.solve(d, card, dict(RJ.PARAMS, **(params or {})), None)
+        if not sol["seq"]:
+            return dict(features=[], min_margin=0.0, why="no routing found", **info)
+        mg = S.margins(sol, None)
+        virt = {}
+        holes = sol["holes"]
     pars = (card or {}).get("par") or []
     feats, nv, det, used = [], 0, [], []
-    for i, (t, g) in enumerate(sol["holes"]):
-        if t < 0 or g < 0:
+    n_vt = n_vg = n_miss = 0
+    for i, (t, g) in enumerate(holes):
+        v = virt.get(i) or {}
+        if (t < 0 and "tee" not in v) or (g < 0 and "green" not in v):
             nv += 1
+            n_miss += 1
             continue
-        tc = co["T"][t]
-        far = int(np.argmax(np.hypot(*(np.asarray(tc["pts"]) - np.asarray(co["G"][g])).T)))
-        path = RJ._line(F, co, tc["pts"][far], co["G"][g])
-        line = [[round(v, 7) for v in co["pj"].inv(*q)] for q in path]
-        L = float(geo["P"][t, g])
+        if t >= 0:
+            tc = co["T"][t]
+            gq = co["G"][g] if g >= 0 else np.asarray(v["green"])
+            far = int(np.argmax(np.hypot(*(np.asarray(tc["pts"]) - gq).T)))
+            tq = tc["pts"][far]
+        else:
+            tq = np.asarray(v["tee"])
+            n_vt += 1
+        if g >= 0:
+            gq = co["G"][g]
+        else:
+            gq = np.asarray(v["green"])
+            n_vg += 1
+        path = RJ._line(F, co, tq, gq)
+        line = [[round(x, 7) for x in co["pj"].inv(*q)] for q in path]
+        L = float(geo["P"][t, g]) if (t >= 0 and g >= 0) else float(np.hypot(*(np.asarray(tq) - np.asarray(gq))))
         par = pars[i % len(pars)] if pars else (3 if L < 245 else 4 if L < 470 else 5)
-        src = dict(green=co["Gsrc"][g], tee=tc["src"])
-        used += [co["Gid"][g], tc["id"]]
-        if "scene" in src.values():
+        src = dict(green=co["Gsrc"][g] if g >= 0 else "virtual", tee=co["T"][t]["src"] if t >= 0 else "virtual")
+        if g >= 0:
+            used.append(co["Gid"][g])
+        if t >= 0:
+            used.append(co["T"][t]["id"])
+        if "scene" in src.values() or "virtual" in src.values():
             det.append(str(i + 1))
         feats.append({"type": "Feature", "geometry": {"type": "LineString", "coordinates": line},
                       "properties": {"golf": "hole", "ref": str(i + 1), "par": str(par), "src": "joint:scene",
                                      "green_src": src["green"], "tee_src": src["tee"],
                                      "margin": round(float(mg[i]), 2)}})
+    if version != "v1":
+        n_vt = sum(1 for t, g in holes if t < 0 and g >= 0)
     return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
-                n_virtual=nv, n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]),
-                detected_holes=det, _used=used, **info)
+                n_virtual=nv if version != "v1" else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
+                n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]), version=version,
+                cost=float(sol["cost"]), detected_holes=det, _used=used, **info)
 
 
 def scene_features(scene, kinds=("green", "tee", "fairway", "bunker", "water"), used=None):

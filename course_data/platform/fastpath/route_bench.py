@@ -1,0 +1,568 @@
+"""Routing bench for unmapped courses: the validation set simulated as unmapped (every OSM golf feature hidden), routed
+on a detected scene + the web card, scored against the hidden OSM hole ways, and the show / block gate measured.
+
+  python3 route_bench.py scenes --split test [--limit N]     fetch NAIP / DEM / canopy for the validation courses
+                                                             and build the fastscene scene (cached per detector version)
+  python3 route_bench.py eval --scene fast|oracle|perc --split train|test [--router v0|v1] [--out f.json]
+  python3 route_bench.py gate --split train ...              precision / coverage curve of the gate
+
+Scenes:
+  fast    fastscene.build on the course's NAIP + 3DEP DEM + Meta canopy, OSM golf features hidden from it (its
+          negative mask reads only non-golf OSM). Cached at cache/val/scenes/<detector version>/<slug>.json, the
+          imagery at cache/val/<slug>/ (shared with the detection side: NOTES_ROUTING.md).
+  oracle  the OSM truth objects as detections with realistic noise (seeded): 15 % of hole greens and 30 % of tee
+          complexes dropped, false greens / tees added, polygons jittered. Separates routing from detection errors.
+  perc    the slow pipeline's perception scene (zero_tap bench files), for reference.
+
+Scoring: routing.score (green within 20 yd of the true line's end, tee within 40 yd of its first 60 %, same number),
+the validation-set convention of PIPELINE.md. Card: the web card only (courses without one are reported apart).
+Tune on train only; test is read for reporting.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import os
+import subprocess
+import sys
+import time
+
+import numpy as np
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+PLAT = os.path.dirname(HERE)
+CD = os.path.dirname(PLAT)
+ROOT = os.path.dirname(CD)
+GEN = os.path.join(CD, "generalize")
+VAL = os.path.join(os.environ.get("FASTPATH_CACHE") or os.path.join(HERE, "cache"), "val")
+sys.path[:0] = [HERE, PLAT]
+
+
+def log(*a):
+    print(*a, flush=True)
+
+
+# ----------------------------------------------------------------------------- courses
+def courses(split=None):
+    v = json.load(open(os.path.join(GEN, "validation_set.json")))["courses"]
+    return [c for c in v if split in (None, "all") or c["split"] == split]
+
+
+def rd(p):
+    import gzip
+    if not os.path.exists(p):
+        return None
+    with (gzip.open if p.endswith(".gz") else open)(p, "rt") as fh:
+        return json.load(fh)
+
+
+def course_files(slug):
+    d = os.path.join(GEN, "courses", slug)
+    return rd(os.path.join(d, "osm_golf.geojson")), rd(os.path.join(d, "course.json")) or {}, \
+        rd(os.path.join(d, "scorecard.json"))
+
+
+def strip_golf(fc):
+    return dict(fc, features=[f for f in fc.get("features", []) if not (f.get("properties") or {}).get("golf")])
+
+
+# ----------------------------------------------------------------------------- detector version + scene cache
+DET_PATHS = ["course_data/platform/fastpath/fastscene.py", "course_data/platform/fastpath/fastscene_model",
+             "course_data/platform/fastc/perception", "course_data/perception", "course_data/segment/models"]
+
+
+def detector_version():
+    """The last commit touching the detector's files (+ '-dirty' and a hash of the diff when they have local edits)."""
+    h = subprocess.run(["git", "log", "-1", "--format=%h", "--"] + DET_PATHS, cwd=ROOT, capture_output=True,
+                       text=True).stdout.strip() or "nogit"
+    diff = subprocess.run(["git", "diff", "HEAD", "--"] + DET_PATHS, cwd=ROOT, capture_output=True, text=True).stdout
+    if diff:
+        h += "-dirty" + hashlib.sha1(diff.encode()).hexdigest()[:6]
+    return h
+
+
+HELDOUT = os.path.join(os.environ.get("FASTPATH_CACHE") or os.path.join(HERE, "cache"), "heldout")
+PROBS = os.environ.get("ROUTE_BENCH_PROBS", "d0")      # the detection side's cached U-Net probabilities (perc_bench.py)
+
+
+def scene_path(slug, ver=None):
+    return os.path.join(VAL, "scenes", ver or scene_version(), slug + ".json")
+
+
+def scene_version():
+    return detector_version() + "_" + PROBS
+
+
+def build_scene(slug, ver=None):
+    """The fastscene scene of a validation course from the detection side's simulated-unmapped package
+    (cache/heldout/<slug>: NAIP / DEM / canopy + OSM, golf features never read by the detector) and its cached U-Net
+    probabilities (cache/heldout/probs/<slug>/<PROBS>.npz) when present; nothing is written into their folders."""
+    ver = ver or scene_version()
+    p = scene_path(slug, ver)
+    if os.path.exists(p):
+        return rd(p), dict(cached=True)
+    d = os.path.join(HELDOUT, slug)
+    if not os.path.exists(os.path.join(d, "imagery", "naip_rgb.tif")):
+        raise FileNotFoundError("no heldout package for " + slug + " (heldout.py fetch)")
+    import fastscene as FS
+    P, T = None, {}
+    pp = os.path.join(HELDOUT, "probs", slug, PROBS + ".npz")
+    if os.path.exists(pp):
+        P = np.load(pp)["p"].astype(np.float32) / 255.0
+        T["probs"] = "cached " + PROBS
+    t = time.time()
+    sc, info = FS.build(d, out=False, P=P) if P is not None else FS.build(d, out=False)
+    T["scene"] = round(time.time() - t, 1)
+    sc["route_bench"] = dict(version=ver, probs=T.get("probs", "computed"))
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    json.dump(sc, open(p + ".tmp", "w"), separators=(",", ":"))
+    os.replace(p + ".tmp", p)
+    return sc, T
+
+
+def cmd_scenes(a):
+    ver = a.ver or scene_version()
+    log("detector version", ver)
+    cs = courses(a.split)
+    if a.slugs:
+        cs = [c for c in cs if c["slug"] in a.slugs.split(",")]
+    done = 0
+    for c in cs[:a.limit or None]:
+        if os.path.exists(scene_path(c["slug"], ver)):
+            continue
+        if a.probs_only and not os.path.exists(os.path.join(HELDOUT, "probs", c["slug"], PROBS + ".npz")):
+            continue
+        t = time.time()
+        try:
+            sc, T = build_scene(c["slug"], ver)
+            log(c["slug"], c["split"], "ok", round(time.time() - t, 1), "s", T,
+                "greens", len(sc.get("greens") or []), "tees", len(sc.get("tee_complexes") or []))
+        except Exception as e:                                       # noqa: BLE001
+            log(c["slug"], "FAIL", repr(e)[:300])
+        done += 1
+    log("done", done)
+
+
+# ----------------------------------------------------------------------------- oracle scene
+def _ring_of(geom):
+    t, c = geom["type"], geom["coordinates"]
+    if t == "Polygon":
+        return [c[0]]
+    if t == "MultiPolygon":
+        return [q[0] for q in c]
+    return []
+
+
+def _centroid(ring):
+    a = np.asarray(ring, float)
+    return [float(a[:, 0].mean()), float(a[:, 1].mean())]
+
+
+def _area_m2(ring):
+    a = np.asarray(ring, float)
+    k = math.cos(math.radians(a[:, 1].mean()))
+    x, y = a[:, 0] * k * 111320.0, a[:, 1] * 111320.0
+    return float(abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1))) / 2)
+
+
+def _jit(ll, rng, m):
+    k = math.cos(math.radians(ll[1]))
+    return [ll[0] + rng.normal(0, m) / (111320.0 * k), ll[1] + rng.normal(0, m) / 111320.0]
+
+
+def _shift_ring(ring, dx, dy):
+    return [[q[0] + dx, q[1] + dy] for q in ring]
+
+
+ORACLE = dict(drop_green=0.15, drop_tee=0.30, drop_fair=0.2, false_green=0.12, false_tee=0.25, jitter_m=3.0)
+ORACLE.update(json.loads(os.environ.get("ORACLE_NOISE") or "{}"))      # e.g. '{"drop_tee": 0}' for ablations
+
+
+def oracle_scene(fc, seed=0, noise=None):
+    """OSM truth objects as a course_scene/1-shaped scene with detection noise. Greens: every OSM golf=green (practice
+    greens included: real false candidates), 15 % dropped; tee complexes: OSM tee boxes grouped within 25 m, 30 % of
+    complexes dropped; false greens / tees: fairway-interior and rough spots; fairways 20 % dropped."""
+    N = dict(ORACLE, **(noise or {}))
+    rng = np.random.default_rng(seed)
+    feats = fc.get("features", [])
+    out = dict(schema="course_scene/1", mode="oracle", greens=[], tee_complexes=[], fairways=[], parking=[],
+               clubhouse={}, oracle=N)
+    gi = 0
+    fair_rings = []
+    for f in feats:
+        p = f.get("properties") or {}
+        if p.get("golf") == "fairway":
+            for r in _ring_of(f["geometry"]):
+                if len(r) >= 4:
+                    fair_rings.append(r)
+    for f in feats:
+        p = f.get("properties") or {}
+        if p.get("golf") != "green" or p.get("inside_course") is False:
+            continue
+        for r in _ring_of(f["geometry"]):
+            if len(r) < 4 or rng.random() < N["drop_green"]:
+                continue
+            j = _jit(_centroid(r), rng, N["jitter_m"])
+            c0 = _centroid(r)
+            gi += 1
+            out["greens"].append(dict(id="g%d" % gi, p=float(rng.uniform(0.6, 1.0)), p_hole=float(rng.uniform(0.5, 0.97)),
+                                      centroid=j, area_m2=_area_m2(r),
+                                      polygon=_shift_ring(r, j[0] - c0[0], j[1] - c0[1])))
+    # tee boxes -> complexes (single link 25 m between centroids)
+    boxes = []
+    for f in feats:
+        p = f.get("properties") or {}
+        if p.get("golf") != "tee" or p.get("inside_course") is False:
+            continue
+        if f["geometry"]["type"] == "Point":
+            c = f["geometry"]["coordinates"]
+            boxes.append((list(c[:2]), None))
+        for r in _ring_of(f["geometry"]):
+            if len(r) >= 4:
+                boxes.append((_centroid(r), r))
+    par = list(range(len(boxes)))
+
+    def find(i):
+        while par[i] != i:
+            par[i] = par[par[i]]
+            i = par[i]
+        return i
+
+    from shapely.geometry import Point, Polygon
+    lat0 = float(np.mean([b[0][1] for b in boxes])) if boxes else 0.0
+    kx = math.cos(math.radians(lat0)) * 111320.0
+
+    def shp(b):
+        c, r = b
+        if r:
+            q = Polygon([((v[0] - c[0]) * kx, (v[1] - c[1]) * 111320.0) for v in r]).buffer(0)
+            from shapely.affinity import translate
+            return translate(q, c[0] * kx, c[1] * 111320.0)
+        return Point(c[0] * kx, c[1] * 111320.0).buffer(3.0)
+    sh = [shp(b) for b in boxes]
+    for i in range(len(boxes)):                  # edge to edge 28 yd, as cands.from_osm groups OSM tee boxes
+        for j in range(i + 1, len(boxes)):
+            if sh[i].distance(sh[j]) <= 28 * 0.9144:
+                par[find(i)] = find(j)
+    grp = {}
+    for i in range(len(boxes)):
+        grp.setdefault(find(i), []).append(i)
+    ti = 0
+    for mem in grp.values():
+        if rng.random() < N["drop_tee"]:
+            continue
+        ti += 1
+        bx = []
+        for k, i in enumerate(mem):
+            c, r = boxes[i]
+            j = _jit(c, rng, N["jitter_m"])
+            bx.append(dict(id="t%d.%d" % (ti, k + 1), p=0.8, centroid=j,
+                           polygon=_shift_ring(r, j[0] - c[0], j[1] - c[1]) if r else None))
+        cc = _centroid([b["centroid"] for b in bx])
+        out["tee_complexes"].append(dict(id="t%d" % ti, p=float(rng.uniform(0.5, 0.95)), p_range_tee=0.0, centroid=cc,
+                                         boxes=bx, virtual=False))
+    for r in fair_rings:
+        if rng.random() < N["drop_fair"]:
+            continue
+        out["fairways"].append(dict(id="f%d" % (len(out["fairways"]) + 1), p=0.9, polygon=r, centroid=_centroid(r),
+                                    area_m2=_area_m2(r)))
+    # false candidates: green-like blobs inside fairways / at fairway ends, tee-like boxes in the rough beside them
+    n_hole = max(1, len(out["greens"]))
+    for k in range(int(round(N["false_green"] * n_hole))):
+        if not fair_rings:
+            break
+        r = fair_rings[int(rng.integers(len(fair_rings)))]
+        a = np.asarray(r, float)
+        c = list(a[int(rng.integers(len(a)))] * 0.6 + a.mean(0) * 0.4)
+        out["greens"].append(dict(id="gf%d" % k, p=float(rng.uniform(0.4, 0.8)), p_hole=float(rng.uniform(0.36, 0.75)),
+                                  centroid=c, area_m2=float(rng.uniform(250, 600)), polygon=None, false=True))
+    n_t = max(1, len(out["tee_complexes"]))
+    for k in range(int(round(N["false_tee"] * n_t))):
+        if not fair_rings:
+            break
+        r = fair_rings[int(rng.integers(len(fair_rings)))]
+        a = np.asarray(r, float)
+        c = _jit(list(a[int(rng.integers(len(a)))]), rng, 25.0)
+        out["tee_complexes"].append(dict(id="tf%d" % k, p=float(rng.uniform(0.3, 0.7)), p_range_tee=0.0, centroid=c,
+                                         boxes=[dict(id="tf%d.1" % k, p=0.5, centroid=c, polygon=None)], virtual=False,
+                                         false=True))
+    return out
+
+
+# ----------------------------------------------------------------------------- one course
+def load_course(c, scene_kind, seed=0, ver=None):
+    import platform_common  # noqa: F401
+    sys.path.insert(0, GEN)
+    import routing as R
+    fc, course, scj = course_files(c["slug"])
+    truth = {k: v for k, v in R.truth_from_fc(fc).items() if int(k) <= 18}
+    card = None
+    if scj and scj.get("cards"):
+        ch = scj.get("chosen")
+        card = next((x for x in scj["cards"] if x["source"] == ch), scj["cards"][0])["card"]
+    n_card = None
+    if card and card.get("tee_sets"):
+        n_card = max(len(s.get("yards") or []) for s in card["tee_sets"].values())
+    kind = 18 if max(int(k) for k in truth) > 9 else 9
+    n = n_card if n_card in (9, 18) else kind
+    if scene_kind == "oracle":
+        scene = oracle_scene(fc, seed=seed + sum(map(ord, c["slug"])))
+    elif scene_kind == "fast":
+        p = scene_path(c["slug"], ver)
+        scene = rd(p)
+    elif scene_kind == "perc":
+        m = {r["slug"]: r for r in rd(os.path.join(CD, "zero_tap", "benchmark.json"))["courses"]}
+        f = (m.get(c["slug"]) or {}).get("files", {}).get("scene")
+        scene = rd(os.path.join(ROOT, f)) if f else None
+    else:
+        raise ValueError(scene_kind)
+    return dict(slug=c["slug"], split=c["split"], fc=strip_golf(fc), course=course, card=card, n=n, truth=truth,
+                scene=scene)
+
+
+def to_res(feats):
+    """golf=hole features -> routing.score's result shape."""
+    holes = {}
+    for f in feats:
+        p, co = f["properties"], f["geometry"]["coordinates"]
+        t, g = co[0], co[-1]
+        k = math.cos(math.radians(g[1]))
+        L = math.hypot((t[0] - g[0]) * k, t[1] - g[1]) * 111320.0 / 0.9144
+        holes[str(p["ref"])] = dict(tee_ll=tuple(t), green_ll=tuple(g), straight_yd=L, status="ok")
+    return dict(holes=holes)
+
+
+def line_len_yd(co):
+    a = np.asarray(co, float)
+    k = math.cos(math.radians(a[:, 1].mean()))
+    return float(np.hypot(np.diff(a[:, 0]) * k, np.diff(a[:, 1])).sum() * 111320.0 / 0.9144)
+
+
+def card_fit(feats, card, n):
+    """Per hole |routed play length - card yards| for the course's best-fitting tee set (median residual)."""
+    if not card or not card.get("tee_sets") or not feats:
+        return None
+    L = {int(f["properties"]["ref"]): line_len_yd(f["geometry"]["coordinates"]) for f in feats}
+    best = None
+    for nm, s in card["tee_sets"].items():
+        y = s.get("yards") or []
+        if len(y) < n and y and n % len(y) == 0:
+            y = list(y) * (n // len(y))
+        r = [abs(L[i] - y[i - 1]) for i in L if i - 1 < len(y) and y[i - 1]]
+        if r and (best is None or np.median(r) < np.median(best[1])):
+            best = (nm, r, {i: L[i] - y[i - 1] for i in L if i - 1 < len(y) and y[i - 1]})
+    return best
+
+
+PREP = os.environ.get("ROUTE_BENCH_PREP") or os.path.join(VAL, "prep")
+
+
+def prep_path(slug, scene_kind, seed, router, ver=None):
+    tag = scene_kind + ("_" + (ver or scene_version()) if scene_kind == "fast" else "")
+    return os.path.join(PREP, tag, router, "%s_%d.pkl" % (slug, seed))
+
+
+def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
+    """route one course and score it. prep=True: cache prepare()'s output (candidates, features, model scores) per
+    (course, scene, seed, router) on disk and reuse it (parameter tuning re-solves only)."""
+    import pickle
+    import routing as R
+    pp = prep_path(c["slug"], scene_kind, seed, router, ver)
+    x = pd = None
+    if prep and os.path.exists(pp):
+        import route_scene as RS
+        RS._mods()                                   # the pickled Course holds truth.Proj (zero_tap on the path)
+        x, pd = pickle.load(open(pp, "rb"))
+    if x is None:
+        x = load_course(c, scene_kind, seed, ver)
+        if prep and x["scene"] is not None:
+            import route_scene as RS
+            try:
+                pd = RS.prepare(x["fc"], x["scene"], x["card"], x["n"], version=router)
+            except Exception:                                        # noqa: BLE001
+                pd = None
+            os.makedirs(os.path.dirname(pp), exist_ok=True)
+            x = dict(x, fc=None, scene=x["scene"] and {}) if pd is not None else x
+            pickle.dump((x, pd), open(pp, "wb"))
+    out = dict(slug=x["slug"], split=x["split"], n=x["n"], n_true=len(x["truth"]), has_card=x["card"] is not None)
+    if x["scene"] is None:
+        out.update(error="no scene")
+        return out
+    if prep and pd is None:
+        out.update(error="prepare failed")
+        return out
+    t = time.time()
+    try:
+        if router == "v0":
+            import route_scene as RS
+            r = RS.route(x["fc"], x["scene"], x["card"], x["n"], prepared=pd)
+        else:
+            import route_scene as RS
+            r = RS.route(x["fc"], x["scene"], x["card"], x["n"], version=router,
+                         params=json.loads(os.environ.get("ROUTER_PARAMS") or "{}"), prepared=pd)
+    except Exception as e:                                           # noqa: BLE001
+        out.update(error=repr(e)[:300], seconds=round(time.time() - t, 2))
+        return out
+    out["seconds"] = round(time.time() - t, 2)
+    feats = r.pop("features", [])
+    r.pop("_used", None)
+    sc = R.score(to_res(feats), x["truth"])
+    out["score"] = {k: v for k, v in sc.items() if k != "per_hole"}
+    out["hole_ok"] = {k: e["hole_ok"] for k, e in sc["per_hole"].items()}
+    cf = card_fit(feats, x["card"], x["n"])
+    if cf:
+        out["card_set"], out["card_resid"] = cf[0], {str(k): round(v, 1) for k, v in cf[2].items()}
+    out["route"] = {k: v for k, v in r.items() if not k.startswith("_")}
+    out["gate_v0"] = gate_v0(r, feats, x)
+    return out
+
+
+def gate_v0(r, feats, x):
+    """The fast.py gate as of 2aea53af7 (without the package-build gates, approximated from the lines): min margin >= 4,
+    no virtual hole, every hole routed, <= 3 holes resting on detections, no shared green, card misfit < 3 holes."""
+    why = []
+    if r.get("min_margin", 0.0) < 4.0 or r.get("n_virtual") or len(r.get("margins") or []) < r.get("n_holes", 0):
+        why.append("margin/virtual")
+    if len(r.get("detected_holes") or []) > 3:
+        why.append("detected>3")
+    g = [f["geometry"]["coordinates"][-1] for f in feats]
+    for i in range(len(g)):
+        for j in range(i + 1, len(g)):
+            k = math.cos(math.radians(g[i][1]))
+            if math.hypot((g[i][0] - g[j][0]) * k, g[i][1] - g[j][1]) * 111320.0 / 0.9144 <= 15.0:
+                why.append("shared green")
+    cf = card_fit(feats, x["card"], x["n"])
+    if cf and sum(abs(v) > 25 for v in cf[2].values()) >= 3:
+        why.append("card misfit")
+    return dict(show=not why, why=sorted(set(why)))
+
+
+def _job(a):
+    return run_one(*a)
+
+
+def summarise(rs, gate_key="gate_v0"):
+    ok = [r for r in rs if "score" in r]
+    H = sum(r["n_true"] for r in rs)
+    right = sum(sum(r["hole_ok"].values()) for r in ok)
+    allr = [r for r in ok if r["score"]["all_correct"]]
+    res = [abs(v) for r in ok for v in (r.get("card_resid") or {}).values()]
+    shown = [r for r in ok if (r.get(gate_key) or {}).get("show")]
+    return dict(courses=len(rs), errors=len(rs) - len(ok), hole_acc=round(right / max(H, 1), 4),
+                all_right=f"{len(allr)}/{len(rs)}", all_right_frac=round(len(allr) / max(len(rs), 1), 4),
+                card_err_med=round(float(np.median(res)), 1) if res else None,
+                card_err_p90=round(float(np.percentile(res, 90)), 1) if res else None,
+                card_within_15pct=None,
+                shown=len(shown), shown_right=sum(r["score"]["all_correct"] for r in shown),
+                gate_precision=round(sum(r["score"]["all_correct"] for r in shown) / len(shown), 3) if shown else None,
+                coverage=round(len(shown) / max(len(rs), 1), 3),
+                sec_mean=round(float(np.mean([r.get("seconds", 0) for r in rs])), 2))
+
+
+def cmd_eval(a):
+    cs = courses(a.split)
+    if a.slugs:
+        cs = [c for c in cs if c["slug"] in a.slugs.split(",")]
+    if a.card_only:
+        cs = [c for c in cs if c.get("card")]
+    ver = a.ver or (scene_version() if a.scene == "fast" else None)
+    jobs = [(c, a.scene, a.router, s, ver, a.prep) for s in range(a.seeds) for c in cs]
+    t = time.time()
+    if a.procs > 1:
+        from multiprocessing import Pool
+        with Pool(a.procs) as pool:
+            rs = pool.map(_job, jobs, chunksize=1)
+    else:
+        rs = [_job(j) for j in jobs]
+    S = summarise(rs)
+    S.update(scene=a.scene, router=a.router, split=a.split, seeds=a.seeds, detector=ver, wall=round(time.time() - t, 1))
+    log(json.dumps(S))
+    if a.verbose:
+        for r in rs:
+            log(r["slug"], r.get("error") or "", (r.get("score") or {}).get("hole_number_acc"),
+                (r.get("route") or {}).get("min_margin"), (r.get("gate_v0") or {}).get("why"))
+    if a.out:
+        json.dump(dict(summary=S, courses=rs), open(a.out, "w"), indent=0, default=float)
+
+
+def _job_p(a):
+    os.environ["ROUTER_PARAMS"] = json.dumps(a[-1])
+    return run_one(*a[:-1])
+
+
+TUNE_GRID = dict(c_vt=[-1.0, 0.5, 2.0, 4.0], c_vg=[-1.0, 0.5, 2.0, 5.0], c_miss=[3.0, 6.0, 9.0], w_c=[0.5, 1.0, 2.0],
+                 card_s=[5.0, 9.0, 15.0], w_w=[0.5, 1.0, 2.0], w_h=[0.5, 1.0, 1.5], v1=[25.0, 45.0, 80.0],
+                 v_base=[0.0, 0.4, 1.0], w_cov=[0.0, 3.0, 6.0], reuse_cost=[0.5, 1.5, 4.0], w_obr=[0.0, 4.0, 10.0],
+                 w_s=[0.5, 1.0, 2.0], walk_miss=[1.0, 3.0, 5.0])
+
+
+def cmd_tune(a):
+    """coordinate descent on the train split (hole accuracy + share of courses with every hole right), one parameter
+    at a time over TUNE_GRID, prepared inputs cached; writes the path to --out (json lines)."""
+    from multiprocessing import Pool
+    cs = [c for c in courses(a.split) if c.get("card")]
+    assert a.split != "test", "never tune on test"
+    ver = a.ver or (scene_version() if a.scene == "fast" else None)
+    cur = json.loads(a.start or "{}")
+    cur.setdefault("no_margins", 1)
+    cur.setdefault("beam", 800)
+    pool = Pool(a.procs)
+
+    def score(pp):
+        jobs = [(c, a.scene, a.router, s, ver, True, pp) for s in range(a.seeds) for c in cs]
+        rs = pool.map(_job_p, jobs, chunksize=1)
+        S = summarise(rs)
+        return S["hole_acc"] + S["all_right_frac"], S
+    best, S = score(cur)
+    out = open(a.out, "a") if a.out else None
+
+    def rec(pp, v, S):
+        line = json.dumps(dict(params=pp, obj=round(v, 4), hole_acc=S["hole_acc"], all_right=S["all_right"]))
+        log(line)
+        if out:
+            out.write(line + "\n")
+            out.flush()
+    rec(cur, best, S)
+    for rnd in range(a.rounds):
+        improved = False
+        for k, vals in TUNE_GRID.items():
+            for v in vals:
+                if cur.get(k) == v:
+                    continue
+                pp = dict(cur, **{k: v})
+                val, S = score(pp)
+                rec(pp, val, S)
+                if val > best + 1e-4:
+                    best, cur, improved = val, pp, True
+        if not improved:
+            break
+    log("BEST", json.dumps(cur), best)
+
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("cmd")
+    ap.add_argument("--split", default="test")
+    ap.add_argument("--slugs", default="")
+    ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--scene", default="oracle")
+    ap.add_argument("--router", default="v0")
+    ap.add_argument("--seeds", type=int, default=1)
+    ap.add_argument("--procs", type=int, default=2)
+    ap.add_argument("--ver", default="")
+    ap.add_argument("--card-only", action="store_true")
+    ap.add_argument("--prep", action="store_true", help="cache / reuse the prepared solver inputs")
+    ap.add_argument("--start", default="")
+    ap.add_argument("--probs-only", action="store_true", help="scenes: only courses whose U-Net probabilities are cached")
+    ap.add_argument("--rounds", type=int, default=2)
+    ap.add_argument("--out", default="")
+    ap.add_argument("-v", "--verbose", action="store_true")
+    a = ap.parse_args()
+    if a.cmd == "scenes":
+        cmd_scenes(a)
+    elif a.cmd == "eval":
+        cmd_eval(a)
+    elif a.cmd == "tune":
+        cmd_tune(a)
