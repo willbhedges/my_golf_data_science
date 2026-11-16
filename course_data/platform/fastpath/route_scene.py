@@ -260,3 +260,23 @@ def run(pkg_dir, fc, card, n_holes, log=None):
         f["properties"]["origin"] = "fastscene"
     T["total"] = round(time.time() - t, 2)
     return {k: v for k, v in r.items() if k != "features"}, sup, T
+
+
+def confirm_questions(package, routed):
+    """golf_confirm_scene/1: one question per hole whose tee or green came from the detector, the least certain
+    first (the joint solver's per-hole min-marginal): "is this hole N's tee / green?" with the points to show. A
+    "no" goes back to the router as an exclusion (not wired yet: the app's tap flow uses confirm.json's session)."""
+    mg = routed.get("margins") or []
+    det = set(routed.get("detected_holes") or [])
+    qs = []
+    for ref, h in (package.get("holes") or {}).items():
+        if str(ref) not in det:
+            continue
+        i = int(ref) - 1
+        qs.append(dict(hole=str(ref), margin=mg[i] if 0 <= i < len(mg) else None, tee_ll=h.get("tee_ll"),
+                       green_ll=h.get("green_ll"), par=h.get("par"), card_yards=h.get("length"),
+                       measured_yards=h.get("measured_length"),
+                       ask=f"Is this hole {ref}: tee here, green there ({h.get('length')} yds on the card)?"))
+    qs.sort(key=lambda q: (q["margin"] is None, q["margin"] if q["margin"] is not None else 0))
+    return dict(schema="golf_confirm_scene/1", min_margin=routed.get("min_margin"), questions=qs,
+                note="greens / tees from the fast-path perception scene (fastscene.py); OSM objects need no question")

@@ -1,0 +1,1362 @@
+{
+ "courses": {
+  "b20_crow_canyon": {
+   "pixel": {
+    "green": {
+     "iou": 0.93,
+     "prec": 0.974,
+     "rec": 0.954,
+     "true_px": 3508
+    },
+    "tee": {
+     "iou": 0.285,
+     "prec": 0.345,
+     "rec": 0.621,
+     "true_px": 1688
+    },
+    "fairway": {
+     "iou": 0.899,
+     "prec": 0.927,
+     "rec": 0.967,
+     "true_px": 54554
+    },
+    "bunker": {
+     "iou": 0.765,
+     "prec": 0.781,
+     "rec": 0.973,
+     "true_px": 1326
+    },
+    "water": {
+     "iou": 0.939,
+     "prec": 0.944,
+     "rec": 0.994,
+     "true_px": 8926
+    }
+   },
+   "seconds": {
+    "grid": 1.1,
+    "features": 2.72,
+    "unet": 51.81,
+    "perceive": 4.09,
+    "perceive_parts": {
+     "greens": 0.5,
+     "tees": 1.5,
+     "fairways": 0.3,
+     "bunkers_water_trees": 0.5,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 1.3,
+     "total": 4.0
+    },
+    "scene": 0.1,
+    "total": 60.85
+   },
+   "summary": {
+    "greens_hole": 18,
+    "greens_practice": 0,
+    "greens_uncertain": 0,
+    "tee_complexes": 15,
+    "fairways": 15,
+    "bunkers": 57,
+    "water": 5,
+    "tree_stands": 173,
+    "trees": 937,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 143,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": false
+   },
+   "greens_hole": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "tp_pred": 18,
+    "n_pred": 18,
+    "tp_true": 18,
+    "n_true": 18,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 1.0,
+    "recall": 0.9474,
+    "tp_pred": 18,
+    "n_pred": 18,
+    "tp_true": 18,
+    "n_true": 19,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 1.0,
+    "recall": 0.8333,
+    "tp_pred": 15,
+    "n_pred": 15,
+    "tp_true": 15,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.871,
+    "recall": 0.6957,
+    "tp_pred": 27,
+    "n_pred": 31,
+    "tp_true": 32,
+    "n_true": 46,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 1.0,
+    "recall": 0.625,
+    "tp_pred": 15,
+    "n_pred": 15,
+    "tp_true": 15,
+    "n_true": 24,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.9123,
+    "recall": 0.9815,
+    "tp_pred": 52,
+    "n_pred": 57,
+    "tp_true": 53,
+    "n_true": 54,
+    "eligible": true
+   },
+   "water": {
+    "precision": 1.0,
+    "recall": 0.8,
+    "tp_pred": 5,
+    "n_pred": 5,
+    "tp_true": 4,
+    "n_true": 5,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  },
+  "b20_chevy_chase": {
+   "pixel": {
+    "green": {
+     "iou": 0.723,
+     "prec": 0.726,
+     "rec": 0.995,
+     "true_px": 4052
+    },
+    "tee": {
+     "iou": 0.558,
+     "prec": 0.581,
+     "rec": 0.935,
+     "true_px": 3583
+    },
+    "fairway": {
+     "iou": 0.978,
+     "prec": 0.994,
+     "rec": 0.984,
+     "true_px": 96984
+    },
+    "bunker": {
+     "iou": 0.899,
+     "prec": 0.899,
+     "rec": 1.0,
+     "true_px": 373
+    },
+    "water": {
+     "iou": 0.887,
+     "prec": 0.899,
+     "rec": 0.986,
+     "true_px": 36009
+    }
+   },
+   "seconds": {
+    "grid": 0.55,
+    "features": 1.25,
+    "unet": 46.83,
+    "perceive": 2.27,
+    "perceive_parts": {
+     "greens": 0.3,
+     "tees": 1.0,
+     "fairways": 0.2,
+     "bunkers_water_trees": 0.3,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 0.5,
+     "total": 2.2
+    },
+    "scene": 0.82,
+    "total": 51.76
+   },
+   "summary": {
+    "greens_hole": 20,
+    "greens_practice": 0,
+    "greens_uncertain": 0,
+    "tee_complexes": 29,
+    "fairways": 19,
+    "bunkers": 50,
+    "water": 23,
+    "tree_stands": 89,
+    "trees": 353,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 49,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": false
+   },
+   "greens_hole": {
+    "precision": 0.9,
+    "recall": 1.0,
+    "tp_pred": 18,
+    "n_pred": 20,
+    "tp_true": 18,
+    "n_true": 18,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 0.9,
+    "recall": 0.9474,
+    "tp_pred": 18,
+    "n_pred": 20,
+    "tp_true": 18,
+    "n_true": 19,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.8621,
+    "recall": 1.0,
+    "tp_pred": 25,
+    "n_pred": 29,
+    "tp_true": 18,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.8281,
+    "recall": 0.8788,
+    "tp_pred": 53,
+    "n_pred": 64,
+    "tp_true": 58,
+    "n_true": 66,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 1.0,
+    "recall": 0.9048,
+    "tp_pred": 19,
+    "n_pred": 19,
+    "tp_true": 19,
+    "n_true": 21,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.98,
+    "recall": 1.0,
+    "tp_pred": 49,
+    "n_pred": 50,
+    "tp_true": 51,
+    "n_true": 51,
+    "eligible": true
+   },
+   "water": {
+    "precision": 0.6087,
+    "recall": 0.5625,
+    "tp_pred": 14,
+    "n_pred": 23,
+    "tp_true": 9,
+    "n_true": 16,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  },
+  "b20_cedar_glen": {
+   "pixel": {
+    "green": {
+     "iou": 0.841,
+     "prec": 0.963,
+     "rec": 0.869,
+     "true_px": 1956
+    },
+    "tee": {
+     "iou": 0.115,
+     "prec": 0.234,
+     "rec": 0.184,
+     "true_px": 964
+    },
+    "fairway": {
+     "iou": 0.815,
+     "prec": 0.836,
+     "rec": 0.971,
+     "true_px": 32621
+    },
+    "bunker": {
+     "iou": 0.474,
+     "prec": 0.48,
+     "rec": 0.973,
+     "true_px": 74
+    },
+    "water": {
+     "iou": 0.1,
+     "prec": 0.104,
+     "rec": 0.687,
+     "true_px": 1342
+    }
+   },
+   "seconds": {
+    "grid": 0.39,
+    "features": 0.72,
+    "unet": 48.73,
+    "perceive": 1.49,
+    "perceive_parts": {
+     "greens": 0.2,
+     "tees": 0.6,
+     "fairways": 0.1,
+     "bunkers_water_trees": 0.2,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 0.4,
+     "total": 1.5
+    },
+    "scene": 0.03,
+    "total": 51.41
+   },
+   "summary": {
+    "greens_hole": 7,
+    "greens_practice": 0,
+    "greens_uncertain": 2,
+    "tee_complexes": 5,
+    "fairways": 8,
+    "bunkers": 7,
+    "water": 10,
+    "tree_stands": 14,
+    "trees": 36,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 258,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": true
+   },
+   "greens_hole": {
+    "precision": 1.0,
+    "recall": 0.7778,
+    "tp_pred": 7,
+    "n_pred": 7,
+    "tp_true": 7,
+    "n_true": 9,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 1.0,
+    "recall": 0.7,
+    "tp_pred": 7,
+    "n_pred": 7,
+    "tp_true": 7,
+    "n_true": 10,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.4,
+    "recall": 0.1111,
+    "tp_pred": 2,
+    "n_pred": 5,
+    "tp_true": 1,
+    "n_true": 9,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.5,
+    "recall": 0.1111,
+    "tp_pred": 3,
+    "n_pred": 6,
+    "tp_true": 2,
+    "n_true": 18,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "tp_pred": 8,
+    "n_pred": 8,
+    "tp_true": 8,
+    "n_true": 8,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.8571,
+    "recall": 0.8889,
+    "tp_pred": 6,
+    "n_pred": 7,
+    "tp_true": 8,
+    "n_true": 9,
+    "eligible": false
+   },
+   "water": {
+    "precision": 0.1,
+    "recall": 0.3333,
+    "tp_pred": 1,
+    "n_pred": 10,
+    "tp_true": 1,
+    "n_true": 3,
+    "eligible": true
+   },
+   "mapped_holes": 9
+  },
+  "b20_kittansett": {
+   "pixel": {
+    "green": {
+     "iou": 0.779,
+     "prec": 0.806,
+     "rec": 0.958,
+     "true_px": 5346
+    },
+    "tee": {
+     "iou": 0.064,
+     "prec": 0.066,
+     "rec": 0.667,
+     "true_px": 591
+    },
+    "fairway": {
+     "iou": 0.898,
+     "prec": 0.932,
+     "rec": 0.961,
+     "true_px": 77372
+    },
+    "bunker": {
+     "iou": 0.488,
+     "prec": 0.754,
+     "rec": 0.581,
+     "true_px": 4124
+    },
+    "water": {
+     "iou": 0.156,
+     "prec": 0.158,
+     "rec": 0.942,
+     "true_px": 13180
+    }
+   },
+   "seconds": {
+    "grid": 1.24,
+    "features": 3.49,
+    "unet": 62.48,
+    "perceive": 9.28,
+    "perceive_parts": {
+     "greens": 0.7,
+     "tees": 2.0,
+     "fairways": 0.3,
+     "bunkers_water_trees": 4.8,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 1.5,
+     "total": 9.2
+    },
+    "scene": 0.71,
+    "total": 77.29
+   },
+   "summary": {
+    "greens_hole": 19,
+    "greens_practice": 0,
+    "greens_uncertain": 4,
+    "tee_complexes": 35,
+    "fairways": 25,
+    "bunkers": 85,
+    "water": 4,
+    "tree_stands": 23,
+    "trees": 102,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 36,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": false
+   },
+   "greens_hole": {
+    "precision": 0.9474,
+    "recall": 1.0,
+    "tp_pred": 18,
+    "n_pred": 19,
+    "tp_true": 18,
+    "n_true": 18,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 1.0,
+    "recall": 0.8261,
+    "tp_pred": 19,
+    "n_pred": 19,
+    "tp_true": 19,
+    "n_true": 23,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.7714,
+    "recall": 0.8333,
+    "tp_pred": 27,
+    "n_pred": 35,
+    "tp_true": 15,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.8,
+    "recall": 0.7969,
+    "tp_pred": 48,
+    "n_pred": 60,
+    "tp_true": 51,
+    "n_true": 64,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 0.96,
+    "recall": 0.8438,
+    "tp_pred": 24,
+    "n_pred": 25,
+    "tp_true": 27,
+    "n_true": 32,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.9176,
+    "recall": 0.9012,
+    "tp_pred": 78,
+    "n_pred": 85,
+    "tp_true": 73,
+    "n_true": 81,
+    "eligible": true
+   },
+   "water": {
+    "precision": 1.0,
+    "recall": 0.6,
+    "tp_pred": 3,
+    "n_pred": 3,
+    "tp_true": 3,
+    "n_true": 5,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  },
+  "b20_zintel_creek": {
+   "pixel": {
+    "green": {
+     "iou": 0.45,
+     "prec": 0.961,
+     "rec": 0.458,
+     "true_px": 4253
+    },
+    "tee": {
+     "iou": 0.119,
+     "prec": 0.165,
+     "rec": 0.299,
+     "true_px": 2126
+    },
+    "fairway": {
+     "iou": 0.793,
+     "prec": 0.84,
+     "rec": 0.935,
+     "true_px": 41598
+    },
+    "bunker": {
+     "iou": 0.587,
+     "prec": 0.763,
+     "rec": 0.718,
+     "true_px": 987
+    },
+    "water": {
+     "iou": 0.682,
+     "prec": 0.917,
+     "rec": 0.727,
+     "true_px": 3000
+    }
+   },
+   "seconds": {
+    "grid": 0.43,
+    "features": 0.87,
+    "unet": 44.09,
+    "perceive": 1.74,
+    "perceive_parts": {
+     "greens": 0.2,
+     "tees": 0.7,
+     "fairways": 0.1,
+     "bunkers_water_trees": 0.2,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 0.5,
+     "total": 1.7
+    },
+    "scene": 0.03,
+    "total": 47.21
+   },
+   "summary": {
+    "greens_hole": 6,
+    "greens_practice": 0,
+    "greens_uncertain": 3,
+    "tee_complexes": 12,
+    "fairways": 15,
+    "bunkers": 25,
+    "water": 3,
+    "tree_stands": 67,
+    "trees": 250,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 10,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": false
+   },
+   "greens_hole": {
+    "precision": 1.0,
+    "recall": 0.3333,
+    "tp_pred": 6,
+    "n_pred": 6,
+    "tp_true": 6,
+    "n_true": 18,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 1.0,
+    "recall": 0.2857,
+    "tp_pred": 6,
+    "n_pred": 6,
+    "tp_true": 6,
+    "n_true": 21,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.75,
+    "recall": 0.4444,
+    "tp_pred": 9,
+    "n_pred": 12,
+    "tp_true": 8,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.4231,
+    "recall": 0.3529,
+    "tp_pred": 11,
+    "n_pred": 26,
+    "tp_true": 12,
+    "n_true": 34,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 0.8667,
+    "recall": 0.6364,
+    "tp_pred": 13,
+    "n_pred": 15,
+    "tp_true": 14,
+    "n_true": 22,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.8,
+    "recall": 0.5588,
+    "tp_pred": 20,
+    "n_pred": 25,
+    "tp_true": 19,
+    "n_true": 34,
+    "eligible": true
+   },
+   "water": {
+    "precision": 0.6667,
+    "recall": 0.0,
+    "tp_pred": 2,
+    "n_pred": 3,
+    "tp_true": 0,
+    "n_true": 2,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  },
+  "b20_at_cedar_creek": {
+   "pixel": {
+    "green": {
+     "iou": 0.767,
+     "prec": 0.77,
+     "rec": 0.995,
+     "true_px": 4274
+    },
+    "tee": {
+     "iou": 0.557,
+     "prec": 0.575,
+     "rec": 0.946,
+     "true_px": 6122
+    },
+    "fairway": {
+     "iou": 0.835,
+     "prec": 0.941,
+     "rec": 0.881,
+     "true_px": 89749
+    },
+    "bunker": {
+     "iou": 0.733,
+     "prec": 0.818,
+     "rec": 0.875,
+     "true_px": 2775
+    },
+    "water": {
+     "iou": 0.776,
+     "prec": 0.799,
+     "rec": 0.965,
+     "true_px": 28599
+    }
+   },
+   "seconds": {
+    "grid": 1.25,
+    "features": 3.84,
+    "unet": 135.3,
+    "perceive": 5.0,
+    "perceive_parts": {
+     "greens": 0.6,
+     "tees": 1.9,
+     "fairways": 0.3,
+     "bunkers_water_trees": 0.7,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 1.5,
+     "total": 5.0
+    },
+    "scene": 0.07,
+    "total": 145.54
+   },
+   "summary": {
+    "greens_hole": 19,
+    "greens_practice": 0,
+    "greens_uncertain": 1,
+    "tee_complexes": 28,
+    "fairways": 19,
+    "bunkers": 40,
+    "water": 18,
+    "tree_stands": 121,
+    "trees": 601,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 395,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": true
+   },
+   "greens_hole": {
+    "precision": 0.8947,
+    "recall": 1.0,
+    "tp_pred": 17,
+    "n_pred": 19,
+    "tp_true": 17,
+    "n_true": 17,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 0.9474,
+    "recall": 1.0,
+    "tp_pred": 18,
+    "n_pred": 19,
+    "tp_true": 18,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.9286,
+    "recall": 0.8333,
+    "tp_pred": 26,
+    "n_pred": 28,
+    "tp_true": 15,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.8864,
+    "recall": 0.7091,
+    "tp_pred": 39,
+    "n_pred": 44,
+    "tp_true": 39,
+    "n_true": 55,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 0.9474,
+    "recall": 1.0,
+    "tp_pred": 18,
+    "n_pred": 19,
+    "tp_true": 19,
+    "n_true": 19,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.85,
+    "recall": 0.9474,
+    "tp_pred": 34,
+    "n_pred": 40,
+    "tp_true": 36,
+    "n_true": 38,
+    "eligible": true
+   },
+   "water": {
+    "precision": 0.3889,
+    "recall": 0.6667,
+    "tp_pred": 7,
+    "n_pred": 18,
+    "tp_true": 6,
+    "n_true": 9,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  },
+  "b20_falls_village": {
+   "pixel": {
+    "green": {
+     "iou": 0.827,
+     "prec": 0.827,
+     "rec": 1.0,
+     "true_px": 4695
+    },
+    "tee": {
+     "iou": 0.136,
+     "prec": 0.139,
+     "rec": 0.846,
+     "true_px": 2657
+    },
+    "fairway": {
+     "iou": 0.447,
+     "prec": 0.542,
+     "rec": 0.718,
+     "true_px": 79995
+    },
+    "bunker": {
+     "iou": 0.199,
+     "prec": 0.204,
+     "rec": 0.896,
+     "true_px": 690
+    },
+    "water": {
+     "iou": 0.767,
+     "prec": 0.825,
+     "rec": 0.917,
+     "true_px": 24137
+    }
+   },
+   "seconds": {
+    "grid": 1.82,
+    "features": 5.46,
+    "unet": 81.51,
+    "perceive": 7.21,
+    "perceive_parts": {
+     "greens": 0.9,
+     "tees": 3.0,
+     "fairways": 0.5,
+     "bunkers_water_trees": 0.9,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 1.8,
+     "total": 7.1
+    },
+    "scene": 0.07,
+    "total": 96.19
+   },
+   "summary": {
+    "greens_hole": 20,
+    "greens_practice": 0,
+    "greens_uncertain": 1,
+    "tee_complexes": 26,
+    "fairways": 21,
+    "bunkers": 73,
+    "water": 2,
+    "tree_stands": 38,
+    "trees": 112,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 91,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": true
+   },
+   "greens_hole": {
+    "precision": 0.9,
+    "recall": 1.0,
+    "tp_pred": 18,
+    "n_pred": 20,
+    "tp_true": 18,
+    "n_true": 18,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 0.95,
+    "recall": 0.95,
+    "tp_pred": 19,
+    "n_pred": 20,
+    "tp_true": 19,
+    "n_true": 20,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.8462,
+    "recall": 0.7778,
+    "tp_pred": 22,
+    "n_pred": 26,
+    "tp_true": 14,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.8085,
+    "recall": 0.5714,
+    "tp_pred": 38,
+    "n_pred": 47,
+    "tp_true": 40,
+    "n_true": 70,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 0.7143,
+    "recall": 0.6,
+    "tp_pred": 15,
+    "n_pred": 21,
+    "tp_true": 15,
+    "n_true": 25,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.589,
+    "recall": 0.9184,
+    "tp_pred": 43,
+    "n_pred": 73,
+    "tp_true": 45,
+    "n_true": 49,
+    "eligible": true
+   },
+   "water": {
+    "precision": 1.0,
+    "recall": 0.2,
+    "tp_pred": 2,
+    "n_pred": 2,
+    "tp_true": 2,
+    "n_true": 10,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  },
+  "b20_maplewood": {
+   "pixel": {
+    "green": {
+     "iou": 0.702,
+     "prec": 0.926,
+     "rec": 0.744,
+     "true_px": 6004
+    },
+    "tee": {
+     "iou": 0.422,
+     "prec": 0.523,
+     "rec": 0.687,
+     "true_px": 4205
+    },
+    "fairway": {
+     "iou": 0.828,
+     "prec": 0.9,
+     "rec": 0.911,
+     "true_px": 66219
+    },
+    "bunker": {
+     "iou": 0.77,
+     "prec": 0.778,
+     "rec": 0.987,
+     "true_px": 529
+    },
+    "water": {
+     "iou": 0.426,
+     "prec": 0.439,
+     "rec": 0.933,
+     "true_px": 20802
+    }
+   },
+   "seconds": {
+    "grid": 1.01,
+    "features": 3.1,
+    "unet": 39.75,
+    "perceive": 4.16,
+    "perceive_parts": {
+     "greens": 0.5,
+     "tees": 1.6,
+     "fairways": 0.3,
+     "bunkers_water_trees": 0.5,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 1.3,
+     "total": 4.1
+    },
+    "scene": 0.06,
+    "total": 48.14
+   },
+   "summary": {
+    "greens_hole": 15,
+    "greens_practice": 0,
+    "greens_uncertain": 1,
+    "tee_complexes": 19,
+    "fairways": 17,
+    "bunkers": 31,
+    "water": 27,
+    "tree_stands": 102,
+    "trees": 464,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 359,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": false
+   },
+   "greens_hole": {
+    "precision": 0.9333,
+    "recall": 0.7778,
+    "tp_pred": 14,
+    "n_pred": 15,
+    "tp_true": 14,
+    "n_true": 18,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 0.9333,
+    "recall": 0.7,
+    "tp_pred": 14,
+    "n_pred": 15,
+    "tp_true": 14,
+    "n_true": 20,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.8947,
+    "recall": 0.8333,
+    "tp_pred": 17,
+    "n_pred": 19,
+    "tp_true": 15,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.8182,
+    "recall": 0.6818,
+    "tp_pred": 27,
+    "n_pred": 33,
+    "tp_true": 30,
+    "n_true": 44,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 1.0,
+    "recall": 0.8571,
+    "tp_pred": 17,
+    "n_pred": 17,
+    "tp_true": 18,
+    "n_true": 21,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.9677,
+    "recall": 0.9688,
+    "tp_pred": 30,
+    "n_pred": 31,
+    "tp_true": 31,
+    "n_true": 32,
+    "eligible": true
+   },
+   "water": {
+    "precision": 0.2222,
+    "recall": 0.6667,
+    "tp_pred": 6,
+    "n_pred": 27,
+    "tp_true": 4,
+    "n_true": 6,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  },
+  "b20_twisted_pine": {
+   "pixel": {
+    "green": {
+     "iou": 0.607,
+     "prec": 0.847,
+     "rec": 0.682,
+     "true_px": 2004
+    },
+    "tee": {
+     "iou": 0.001,
+     "prec": 0.002,
+     "rec": 0.003,
+     "true_px": 1387
+    },
+    "fairway": {
+     "iou": 0.347,
+     "prec": 0.391,
+     "rec": 0.756,
+     "true_px": 43284
+    },
+    "bunker": {
+     "iou": 0.58,
+     "prec": 0.871,
+     "rec": 0.635,
+     "true_px": 159
+    },
+    "water": {
+     "iou": 0.711,
+     "prec": 0.833,
+     "rec": 0.829,
+     "true_px": 10686
+    }
+   },
+   "seconds": {
+    "grid": 0.48,
+    "features": 1.03,
+    "unet": 21.38,
+    "perceive": 1.65,
+    "perceive_parts": {
+     "greens": 0.2,
+     "tees": 0.7,
+     "fairways": 0.2,
+     "bunkers_water_trees": 0.2,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 0.3,
+     "total": 1.6
+    },
+    "scene": 0.02,
+    "total": 24.61
+   },
+   "summary": {
+    "greens_hole": 6,
+    "greens_practice": 0,
+    "greens_uncertain": 1,
+    "tee_complexes": 1,
+    "fairways": 4,
+    "bunkers": 12,
+    "water": 1,
+    "tree_stands": 29,
+    "trees": 120,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 1,
+    "parking": 0,
+    "clubhouse": false,
+    "driving_range": false
+   },
+   "greens_hole": {
+    "precision": 0.8333,
+    "recall": 0.5556,
+    "tp_pred": 5,
+    "n_pred": 6,
+    "tp_true": 5,
+    "n_true": 9,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 1.0,
+    "recall": 0.6,
+    "tp_pred": 6,
+    "n_pred": 6,
+    "tp_true": 6,
+    "n_true": 10,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "tp_pred": 0,
+    "n_pred": 1,
+    "tp_true": 0,
+    "n_true": 9,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.25,
+    "recall": 0.0476,
+    "tp_pred": 1,
+    "n_pred": 4,
+    "tp_true": 1,
+    "n_true": 21,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 1.0,
+    "recall": 0.9,
+    "tp_pred": 4,
+    "n_pred": 4,
+    "tp_true": 9,
+    "n_true": 10,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 1.0,
+    "recall": 0.75,
+    "tp_pred": 12,
+    "n_pred": 12,
+    "tp_true": 12,
+    "n_true": 16,
+    "eligible": true
+   },
+   "water": {
+    "precision": 1.0,
+    "recall": 0.0,
+    "tp_pred": 1,
+    "n_pred": 1,
+    "tp_true": 0,
+    "n_true": 10,
+    "eligible": true
+   },
+   "mapped_holes": 9
+  },
+  "b20_pheasant_ridge": {
+   "pixel": {
+    "green": {
+     "iou": 0.464,
+     "prec": 0.473,
+     "rec": 0.961,
+     "true_px": 6045
+    },
+    "tee": {
+     "iou": 0.215,
+     "prec": 0.225,
+     "rec": 0.822,
+     "true_px": 3140
+    },
+    "fairway": {
+     "iou": 0.86,
+     "prec": 0.873,
+     "rec": 0.984,
+     "true_px": 72674
+    },
+    "bunker": {
+     "iou": 0.629,
+     "prec": 0.645,
+     "rec": 0.962,
+     "true_px": 3699
+    },
+    "water": {
+     "iou": 0.786,
+     "prec": 0.8,
+     "rec": 0.978,
+     "true_px": 10807
+    }
+   },
+   "seconds": {
+    "grid": 1.84,
+    "features": 1.86,
+    "unet": 54.79,
+    "perceive": 3.04,
+    "perceive_parts": {
+     "greens": 0.4,
+     "tees": 1.2,
+     "fairways": 0.4,
+     "bunkers_water_trees": 0.4,
+     "cart_paths": 0.0,
+     "buildings_parking_clubhouse_range": 0.8,
+     "total": 3.0
+    },
+    "scene": 0.07,
+    "total": 61.65
+   },
+   "summary": {
+    "greens_hole": 28,
+    "greens_practice": 0,
+    "greens_uncertain": 1,
+    "tee_complexes": 35,
+    "fairways": 23,
+    "bunkers": 46,
+    "water": 7,
+    "tree_stands": 73,
+    "trees": 798,
+    "cart_path_km": 0.0,
+    "cart_path_components": 0,
+    "buildings": 127,
+    "parking": 0,
+    "clubhouse": true,
+    "driving_range": false
+   },
+   "greens_hole": {
+    "precision": 0.6071,
+    "recall": 1.0,
+    "tp_pred": 17,
+    "n_pred": 28,
+    "tp_true": 17,
+    "n_true": 17,
+    "eligible": true
+   },
+   "greens_any": {
+    "precision": 0.6429,
+    "recall": 0.9474,
+    "tp_pred": 18,
+    "n_pred": 28,
+    "tp_true": 18,
+    "n_true": 19,
+    "eligible": true
+   },
+   "tee_complexes": {
+    "precision": 0.6857,
+    "recall": 0.9444,
+    "tp_pred": 24,
+    "n_pred": 35,
+    "tp_true": 17,
+    "n_true": 18,
+    "eligible": true
+   },
+   "tee_boxes": {
+    "precision": 0.5965,
+    "recall": 0.9211,
+    "tp_pred": 34,
+    "n_pred": 57,
+    "tp_true": 35,
+    "n_true": 38,
+    "eligible": true
+   },
+   "fairways": {
+    "precision": 0.7391,
+    "recall": 0.9444,
+    "tp_pred": 17,
+    "n_pred": 23,
+    "tp_true": 17,
+    "n_true": 18,
+    "eligible": true
+   },
+   "bunkers": {
+    "precision": 0.8261,
+    "recall": 1.0,
+    "tp_pred": 38,
+    "n_pred": 46,
+    "tp_true": 38,
+    "n_true": 38,
+    "eligible": true
+   },
+   "water": {
+    "precision": 0.5714,
+    "recall": 0.2,
+    "tp_pred": 4,
+    "n_pred": 7,
+    "tp_true": 1,
+    "n_true": 5,
+    "eligible": true
+   },
+   "mapped_holes": 18
+  }
+ },
+ "pooled": {
+  "greens_hole": {
+   "courses": 9,
+   "precision": 0.931,
+   "recall": 0.846
+  },
+  "greens_any": {
+   "courses": 9,
+   "precision": 0.962,
+   "recall": 0.781
+  },
+  "tee_complexes": {
+   "courses": 9,
+   "precision": 0.841,
+   "recall": 0.701
+  },
+  "tee_boxes": {
+   "courses": 9,
+   "precision": 0.784,
+   "recall": 0.634
+  },
+  "fairways": {
+   "courses": 9,
+   "precision": 0.93,
+   "recall": 0.791
+  },
+  "bunkers": {
+   "courses": 8,
+   "precision": 0.853,
+   "recall": 0.901
+  },
+  "water": {
+   "courses": 9,
+   "precision": 0.446,
+   "recall": 0.439
+  }
+ },
+ "note": "U-Net golfseg_own; pooled over the 9 courses not in its training set (b20_pheasant_ridge excluded)"
+}
