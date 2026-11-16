@@ -78,7 +78,16 @@ def render(pkg_dir, out_dir=None, holes=False, scale=1.0):
         p = f.get("properties") or {}
         if p.get("golf") == "hole" and f["geometry"]["type"] == "LineString":
             lines[str(p.get("ref"))] = f["geometry"]["coordinates"]
+    for ref, h in (pkg.get("holes") or {}).items():       # the built holes (OSM, joint or the stage selector's)
+        ln = h.get("hole_line_ll") or ([h["tee_ll"], h["green_ll"]] if h.get("tee_ll") and h.get("green_ll") else None)
+        if ln:
+            lines[str(ref)] = ln
     gate = json.load(open(os.path.join(pkg_dir, "gate.json"))) if os.path.exists(os.path.join(pkg_dir, "gate.json")) else {}
+    for ref, h in (pkg.get("holes") or {}).items():           # the strategy pick's aim point
+        d = (dec.get("holes") or {}).get(str(ref))
+        if d and h.get("aim_ll"):
+            a = px(h["aim_ll"])[0]
+            cv2.circle(img, (int(a[0]), int(a[1])), 5, COL["aim"], -1)
     for ref, ln in lines.items():
         q = px(ln)
         cv2.polylines(img, [q.reshape(-1, 1, 2)], False, COL["line"], 2, cv2.LINE_AA)
