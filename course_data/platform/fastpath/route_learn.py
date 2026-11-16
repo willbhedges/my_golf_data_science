@@ -118,6 +118,9 @@ def warp_chm(path, grid):
 def bench_maps(slug, scene, probs="d0"):
     """the routing bench's maps of a validation course (cached, compressed uint8; per probs variant)"""
     p = os.path.join(CACHE, "val", "maps", *([] if probs == "d0" else [probs]), slug + ".npz")
+    if slug.startswith("tb_"):                   # TRAIN-BIG (route_big.py): written with the scene
+        import route_big
+        p = os.path.join(route_big.BIG, "maps", slug + ".npz")
     if os.path.exists(p):
         z = np.load(p)
         return Maps(z["fair"], z["turf"], z["water"], z["bunker"], z["tree"], scene["grid"]["crs"],
@@ -618,11 +621,12 @@ def load_tables(split):
 
 
 KINDS = tuple(os.environ.get("ROUTE_LEARN_KINDS", "h,w").split(","))
+TRAIN = os.environ.get("ROUTE_LEARN_TRAIN", "train")      # 'train+big': + TRAIN-BIG (route_big.py)
 
 
 def cmd_cv(out_dir, k=5, kinds=KINDS):
     """out-of-fold sc overrides for the train courses (folds by state), written to out_dir/<slug>.pkl"""
-    ts = load_tables("train")
+    ts = load_tables(TRAIN)
     states = sorted({t["state"] for t in ts})
     fold = {s: i % k for i, s in enumerate(states)}
     os.makedirs(out_dir, exist_ok=True)
@@ -638,7 +642,7 @@ def cmd_cv(out_dir, k=5, kinds=KINDS):
 
 
 def cmd_fit(out_dir, kinds=KINDS):
-    ts = load_tables("train")
+    ts = load_tables(TRAIN)
     ms = {kind: _fit(ts, kind) for kind in kinds}
     pickle.dump(dict(models=ms, XF=XF, WXF=WXF, n_train=len(ts)), open(MODEL, "wb"))
     os.makedirs(out_dir, exist_ok=True)

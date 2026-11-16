@@ -89,6 +89,9 @@ class Problem2:
         ng, nt = len(co["G"]), len(co["T"])
         self.ng, self.nt = ng, nt
         self.Y = consistent_sets(S1.card_sets(card, N), P.get("set_corr", 0.0))
+        cp = (card or {}).get("par") or []
+        self.card_par = [int(cp[i % len(cp)]) if cp[i % len(cp)] else None for i in range(N)] if cp else None
+        self._xf = None
         ph = {(int(t), int(g)): float(p) for (t, g), p in zip(d["hp"], sc["ph"])}
         self.ph = ph
         # real candidates: per green its K best tees, anything decent, and (with a card) any pair whose play length
@@ -215,6 +218,23 @@ class Problem2:
         return np.minimum(P["v_base"] + np.maximum(0.0, gap - P["v0"]) / P["v1"], P["v_max"])
 
     def card_cost(self):
+        """[N, C] per-(position, option) cost: the card term + the weighted extra features (P['xw'], route_struct)"""
+        cc = self.card_term()
+        xw = self.P.get("xw") or {}
+        if xw:
+            F = self.extra()
+            for k, w in xw.items():
+                if w and k in F:
+                    cc = cc + float(w) * F[k]
+        return cc
+
+    def extra(self):
+        """extra per-(position, option) features [N, C] (cached): learned weights P['xw'] (route_struct.py)"""
+        if getattr(self, "_xf", None) is None:
+            self._xf = extra_features(self)
+        return self._xf
+
+    def card_term(self):
         C = len(self.cand)
         if self.R is None:
             return np.zeros((self.N, C))
@@ -321,6 +341,73 @@ class Problem2:
                 Tm[1 + ng:1 + ng + nt][:, rV] = P["c_vv"] + c2.min(axis=(2, 3))
         Tm[0, :] = P["walk_miss"]
         return Tm
+
+
+XFEATS = ("g_map", "g_small", "g_club_mid", "t_low", "card_rel", "par_bad", "vt_p3", "vg_p3", "not_top_t",
+          "not_top_g", "ph_lo")
+
+
+def extra_features(pr):
+    """{name: [N, C]} candidate / position features the base objective lacks (0 where they do not apply):
+    g_map        the green is a U-Net map green (route_learn.augment_scene), real or VT option
+    g_small      green area < 250 m2 (practice / false greens)
+    g_club_mid   green within 100 yd of the clubhouse at a position that does not end a loop (practice greens)
+    t_low        tee complex detector p < 0.4 (real / VG)
+    card_rel     |play length - card| / card (best tee set, capped 0.5), real options
+    par_bad      card par 3 with a play length > 260 yd, or par >= 4 under 200 yd (real)
+    vt_p3, vg_p3 a virtual tee / green on a card par 3
+    not_top_t    the tee is not the green's best-scored tee (hole model), not_top_g: the green not the tee's best
+    ph_lo        hole model p < 0.05 (real)"""
+    d = pr.d
+    co, geo = d["co"], d["geo"]
+    N, C = pr.N, len(pr.cand)
+    typ, ct, cg = pr.typ, pr.ct, pr.cg
+    F = {k: np.zeros((N, C)) for k in XFEATS}
+    ga = d.get("_gattr")
+    hasg = cg >= 0
+    if ga is not None and len(ga) == pr.ng:
+        gm = np.nan_to_num(ga[:, 2]) > 0
+        gs = np.nan_to_num(ga[:, 1], nan=1e9) < 250
+        F["g_map"][:] = np.where(hasg, gm[np.maximum(cg, 0)], False)[None]
+        F["g_small"][:] = np.where(hasg, gs[np.maximum(cg, 0)], False)[None]
+    if pr.Dcg is not None:
+        near = pr.Dcg < 100
+        ends = np.zeros(N, bool)
+        ends[pr.loop - 1::pr.loop] = True
+        F["g_club_mid"][~ends] = np.where(hasg, near[np.maximum(cg, 0)], False)[None]
+    if pr.nt:
+        tp = np.array([t["p"] for t in co["T"]])
+        hast = (ct >= 0) & (typ != VT)
+        F["t_low"][:] = np.where(hast, tp[np.maximum(ct, 0)] < 0.4, False)[None]
+    real = np.arange(C) < pr.real
+    if pr.real:
+        rt, rg = ct[:pr.real], cg[:pr.real]
+        L = geo["P"][rt, rg]
+        y = pr.ygeom()
+        if pr.R is not None:
+            with np.errstate(all="ignore"):
+                r = np.nanmin(pr.R, axis=0)[:, :pr.real]                # [N, real] yd
+            F["card_rel"][:, :pr.real] = np.minimum(np.nan_to_num(r / np.maximum(pr.Y.min(0), 1.0)[:, None], nan=0.0), 0.5)
+        pars = pr.card_par
+        if pars is not None:
+            for i in range(N):
+                p = pars[i]
+                if p == 3:
+                    F["par_bad"][i, :pr.real] = L > 260
+                elif p and p >= 4:
+                    F["par_bad"][i, :pr.real] = L < 200
+        phv = np.array([pr.ph[(int(t), int(g))] for t, g in zip(rt, rg)])
+        F["ph_lo"][:, :pr.real] = (phv < 0.05)[None]
+        Ph = np.zeros((pr.nt, pr.ng))
+        for (t, g), p in pr.ph.items():
+            Ph[t, g] = p
+        F["not_top_t"][:, :pr.real] = (Ph[rt, rg] < Ph[:, rg].max(0) - 1e-9)[None]
+        F["not_top_g"][:, :pr.real] = (Ph[rt, rg] < Ph[rt, :].max(1) - 1e-9)[None]
+    if pr.card_par is not None:
+        p3 = np.array([pr.card_par[i] == 3 for i in range(N)])
+        F["vt_p3"][p3] = (typ == VT)[None]
+        F["vg_p3"][p3] = (typ == VG)[None]
+    return F
 
 
 def tables(pr):

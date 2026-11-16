@@ -46,8 +46,22 @@ def log(*a):
 
 # ----------------------------------------------------------------------------- courses
 def courses(split=None):
+    """validation-set rows of a split (train / test / all); 'big' = TRAIN-BIG (route_big.py), 'train+big' both"""
     v = json.load(open(os.path.join(GEN, "validation_set.json")))["courses"]
-    return [c for c in v if split in (None, "all") or c["split"] == split]
+    if split and "big" in split.split("+"):
+        import route_big
+        v = v + route_big.kept_courses()
+    sp = set((split or "all").split("+"))
+    return [c for c in v if "all" in sp or c["split"] in sp]
+
+
+def is_big(slug):
+    return slug.startswith("tb_")
+
+
+def big_dir(*p):
+    import route_big
+    return os.path.join(route_big.BIG, *p)
 
 
 def rd(p):
@@ -59,6 +73,10 @@ def rd(p):
 
 
 def course_files(slug):
+    if is_big(slug):
+        d = big_dir("courses", slug)
+        return rd(os.path.join(d, "osm_golf.geojson.gz")), rd(os.path.join(d, "course.json")) or {}, \
+            rd(os.path.join(d, "scorecard.json"))
     d = os.path.join(GEN, "courses", slug)
     return rd(os.path.join(d, "osm_golf.geojson")), rd(os.path.join(d, "course.json")) or {}, \
         rd(os.path.join(d, "scorecard.json"))
@@ -92,6 +110,9 @@ def bench_probs(slug, combo=None):
     ('d0+yall': d0 and every cached extra NAIP year y<year>.npz, as perc_bench.load_combo; a course without extra
     years gives d0). None when missing."""
     combo = combo or PROBS
+    if is_big(slug):                 # TRAIN-BIG: production's multi-year probabilities, one file
+        q = big_dir("probs", slug, "d0+yall.npz")
+        return np.load(q)["p"] if os.path.exists(q) else None
     d = os.path.join(HELDOUT, "probs", slug)
     vs = combo.split("+")
     if "yall" in vs:
@@ -105,6 +126,8 @@ def bench_probs(slug, combo=None):
 
 
 def scene_path(slug, ver=None):
+    if is_big(slug):
+        return big_dir("scenes", slug + ".json.gz")
     return os.path.join(VAL, "scenes", ver or scene_version(), slug + ".json")
 
 
