@@ -48,7 +48,7 @@ BIG = os.environ.get("ROUTE_BIG_DIR") or os.path.join(os.environ.get("FASTPATH_C
 MANIFEST = os.path.join(BIG, "manifest.json")
 SEED = 20261116
 MIN_FREE_GB = 1.3
-CAP_MB = 800.0
+CAP_MB = 1500.0
 PROBS_NAME = "d0+yall"
 
 
@@ -113,6 +113,58 @@ def cmd_pick(n):
     os.makedirs(BIG, exist_ok=True)
     json.dump(dict(schema="route_big/1", seed=SEED, population=len(pop), courses=out), open(MANIFEST, "w"), indent=0)
     log("population", len(pop), "picked", len(out))
+
+
+NATIDX = os.path.join(CD, "library", "us_courses.json.gz")
+SEED2 = 20261117
+
+
+def cmd_pick2(n):
+    """TRAIN-BIG extension: n more courses drawn (SEED2) from the national course index (library/us_courses.json.gz,
+    readiness tier A / B = complete OSM hole ways) in the lower-48 states the generalize surveys do not cover, with
+    the same exclusions as cmd_pick (validation set, blind20, perception pool, U-Net index, 1.5 km around any of
+    them) plus the courses already in the manifest (and 1.5 km around them: one facility, one course). Appended to
+    the manifest, so `build` resumes over both draws."""
+    import sample as SM
+    ids, cen = excluded()
+    man = json.load(open(MANIFEST))
+    have = man["courses"]
+    ids |= {c["osm"] for c in have}
+    cen = cen + [[c["lon"], c["lat"]] for c in have]
+    surveyed = {os.path.basename(p)[7:9] for p in glob.glob(os.path.join(CD, "generalize", "surveys", "survey_*.json"))}
+    d = json.load(gzip.open(NATIDX, "rt"))
+    F = d["fields"]
+    pop = []
+    for row in d["rows"]:
+        r = dict(zip(F, row))
+        if r["state"] in surveyed or r["state"] in ("AK", "HI") or r["tier"] not in ("A", "B") or r["closed"]:
+            continue
+        if not r["outline"] or r["osm"].startswith("node/") or r["osm"] in ids or r["osm_holes"] not in (9, 18):
+            continue
+        if r["osm_holes"] == 9 and (r["greens"] or 0) >= 14:
+            continue
+        if not SM.eligible(dict(name=r["name"], osm=r["osm"], area_ha=99.0, tags={})):
+            continue
+        pop.append(r)
+    pop.sort(key=lambda r: r["osm"])
+    random.Random(SEED2).shuffle(pop)
+    used = {c["slug"][3:] for c in have}
+    out = []
+    for r in pop:
+        if len(out) >= n:
+            break
+        c = [r["lon"], r["lat"]]
+        if any(_hav_m(c, q) < 1500 for q in cen):
+            continue
+        cen.append(c)
+        s = "tb_" + SM.slug_for(r, used)
+        out.append(dict(slug=s, name=r["name"], state=r["state"], osm=r["osm"], lon=r["lon"], lat=r["lat"],
+                        osm_holes=r["osm_holes"], area_ha=None, draw=2))
+    man["courses"] = have + out
+    man["draw2"] = dict(seed=SEED2, source="library/us_courses.json.gz", population=len(pop), picked=len(out),
+                        states=sorted({c["state"] for c in out}))
+    json.dump(man, open(MANIFEST, "w"), indent=0)
+    log("draw 2 population", len(pop), "picked", len(out), "states", len(man["draw2"]["states"]))
 
 
 # ----------------------------------------------------------------------------- one course
@@ -327,13 +379,15 @@ def cmd_list():
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["pick", "build", "list"])
+    ap.add_argument("cmd", choices=["pick", "pick2", "build", "list"])
     ap.add_argument("--n", type=int, default=320)
     ap.add_argument("--max", type=int, default=0)
     ap.add_argument("--workers", type=int, default=4)
     a = ap.parse_args()
     if a.cmd == "pick":
         cmd_pick(a.n)
+    elif a.cmd == "pick2":
+        cmd_pick2(a.n)
     elif a.cmd == "build":
         cmd_build(a.max, a.workers)
     else:
