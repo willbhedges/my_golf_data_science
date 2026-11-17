@@ -30,11 +30,12 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [HERE, os.path.dirname(HERE)]
 CACHE = os.environ.get("FASTPATH_CACHE") or os.path.join(HERE, "cache")
+PEAKS0 = float(os.environ.get("ROUTE_LEARN_PEAKS", "0.2") or 0)   # (PEAK_P below) the bench tables per candidate set
 ROUTER = os.environ.get("ROUTE_LEARN_ROUTER", "v2")          # the bench prep the tables are built on
 VER = os.environ.get("ROUTE_LEARN_VER", "2ef0018e4_d0")         # bench scene version (detector commit _ probs variant)
 LEARN = os.environ.get("ROUTE_LEARN_DIR") or (
     os.path.join(CACHE, "val", "learn", ROUTER + ("" if VER == "2ef0018e4_d0" else "_" + VER))
-    if os.environ.get("ROUTE_SPLIT_TEES", "1") == "0" else os.path.join(CACHE, "val", "learn", "split"))
+    if os.environ.get("ROUTE_SPLIT_TEES", "1") == "0" else os.path.join(CACHE, "val", "learn", "split" if PEAKS0 == 0 else "pk20"))
 MODEL = os.path.join(HERE, "route_learn_model.pkl")
 CLASSES = ("background", "green", "tee", "fairway", "bunker", "water")
 TREE_M = 3.0
@@ -186,7 +187,7 @@ def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=No
     return sc, len(out)
 
 
-PEAK_P = float(os.environ.get("ROUTE_LEARN_PEAKS", "0") or 0)    # > 0: also P(green) local maxima >= this
+PEAK_P = float(os.environ.get("ROUTE_LEARN_PEAKS", "0.2") or 0)  # > 0: also P(green) local maxima >= this (0: off)
 PEAK_SEP_M = 24.0
 
 
@@ -842,7 +843,7 @@ HPAR = dict(n_estimators=300, learning_rate=0.04, num_leaves=15, min_child_sampl
 HPAR.update(json.loads(os.environ.get("ROUTE_LEARN_HPAR") or "{}"))
 
 
-X3 = os.environ.get("ROUTE_LEARN_X3", "0") == "1"      # + pair_features3 / walk_features3 (tables LEARN/x3)
+X3 = os.environ.get("ROUTE_LEARN_X3", "1") == "1"      # + pair_features3 / walk_features3 / loop_features3 (LEARN/x3)
 
 
 def _X(t, kind):

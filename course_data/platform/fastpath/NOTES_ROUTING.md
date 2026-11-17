@@ -238,3 +238,89 @@ different signal.
 Blind loop (all 20), new model + gate vs the previous one: tier A / B / C statuses, picks and flagged picks identical.
 D: Sunset draft, Remsen draft (P(all) 0.104 -> 0.234), Glenwild and Hawk's Point blocked (their routings changed),
 Makena North no build. Nothing shown.
+
+## State 2026-11-17 (later): auto show policy, TRAIN-BIG 600, P(green) peak greens, richer local features
+
+Product decision (user): every unmapped course that builds is delivered; the golfer never confirms holes.
+
+Show policy (`ROUTE_SHOW_POLICY`, default `auto`; `calibrated` restores the P(all) threshold), route_gate.policy:
+* scene-routed courses (tier D, route_scene v1 / v2): shown when the routing is complete. Every hole has
+  `p_right` (the per-hole gate's calibrated P(hole numbered right)) and `approximate` (p < 0.5) in package.json, plus
+  `routing_confidence`. The card-misfit, long-walk and par-sum gates become `warnings` (fast.SOFT_GATE_PREFIXES).
+* tier C (route_joint on OSM greens / tees, or unnumbered OSM hole lines): the same, with
+  route_gate.p_joint (`route_gate_joint.json`: logistic on margin, card fit, course min margin, virtual share and
+  mode). It was fitted with `route_bench.py joint` on train+big: mapped courses with their hole ways hidden (mode osm)
+  or kept without refs (mode lines). Out-of-fold: 89.7 % right, mean P 89.7 %, AUC 0.84. Test: osm 78.2 % right
+  against 83.2 % expected (somewhat over-confident); lines 98.5 % against 98.2 %. The min-margin rule is a warning.
+* hard blocks are unchanged: no card, missing holes / no routing, card-order conflict, a shared green, a hole with
+  neither end, no build (Makena North). Tier A / B are untouched (they never reach either router).
+
+TRAIN-BIG extension (`route_big.py pick2`): 560 more courses drawn (seed 20261117) from the national index
+(library/us_courses.json.gz, readiness A / B) in the 36 lower-48 states the 12 surveys do not cover. Same exclusions,
+plus 1.5 km around courses already drawn. The build was stopped at 600 kept courses (344 new), 1.06 GB, free disk
+1.8 GB, 179 not reached (`build` resumes). Learning curve on the first 256 (out-of-fold on the fixed 299 = 43 train
++ 256 big): 0 % of big in the training folds 71.3 %, 25 % 72.2 %, 50 % 71.7 %, 100 % 73.15 % holes right. Positive but
+noisy: one routing flip moves 9-18 holes, and 57 % of wrong holes sit in courses that are more than half wrong.
+
+Missing greens: 354 of 4860 truth greens (train+big 299) had no green candidate. Most are weak, not under trees:
+195 have P(green) >= 0.3 within 12 yd but no 0.5 blob; 9 have canopy over them. `route_learn._peak_greens`
+(augment_scene, `ROUTE_LEARN_PEAKS`, default 0.2) adds the local maxima of P(green) (smoothed, sigma 3 m, 25 m window,
+>= 0.2) that are not within 24 m of a green already offered, as kind `peak` (g_map = 2 in the hole model). It adds
+about 4 candidates a course, and truth greens with no candidate go 354 -> 178. Errors on the 299: virtual greens
+wrong 266 -> 130, greens that are no hole's green 93 -> 126, holes right +114.
+
+Richer local features (`route_learn` x3, `ROUTE_LEARN_X3`, default 1; tables `LEARN/x3/`):
+* hole: fairway / turf / tree profile in 5 bins along the line, water in 3; tree-free / fairway corridor width across
+  it; U-Net P(green) at / around the green and P(tee) at the tee; the pair in context (rank / ratio of the prior hole
+  score among the tee's greens and the green's tees, card-fit rank, card ambiguity, par-3 length); bunkers at the end.
+* walk: turf profile, longest tree run, distance ranks both ways, whether the next hole turns back, walk vs hole
+  length, trees ahead of the tee, P(tee), prior outgoing rank.
+* loop start / end: scene buildings (largest, >= 250 m2, count within 150 yd), tee + green hub counts, nearest
+  other end, P(tee / green).
+Pair AUC 0.979 -> 0.984 (log-loss 0.087 -> 0.076). The loop models stay weak (AUC 0.71 -> 0.72). Without peaks, x3 made
+holes right worse or no better (72.5 %; blended 73.3 %). With peaks it helps, because P(green) at the green tells a
+real peak green from a false one.
+
+Out-of-fold holes right / courses all right (folds by state):
+
+| recipe | fixed 299 | 200 new courses (draw 2, never used for a choice) |
+|---|---|---|
+| before (split tees, no peaks, no x3; 299 / 499 training courses) | 73.15 % / 57 | 67.78 % / 33 |
+| + peaks 0.2 | 75.47 % / 57 | |
+| + peaks + x3 | 76.33 % / 65 | 74.80 % / 39 |
+| final: + peaks + x3, 643 training courses | 76.27 % / 66 | 73.62 % / 47 (all 643: 75.59 % / 148) |
+
+Re-tuning the solver weights on the 299 (route_bench tune, now with `--slugs` and multi-split): w_h 1.3, w_s 1.0,
+c_vg 3, w_x 4 gave 76.3 -> 77.4 % there but 74.8 -> 74.3 % on the 200 new courses: overfit, so V2_PARAMS are unchanged.
+
+Course-level gate (route_scene now returns `alts`, the 8 best other routings as cost gap and holes that differ).
+A logistic / GBM on min / 2nd-min / mean / log-product of the per-hole P, share < 0.5 / < 0.7, virtual ends,
+card residuals, margins, loop-closure gaps and alternative gaps ranks courses a little better than the product
+(out-of-fold AUC 0.817 vs 0.791 on 626 courses). Its top course is right, the next wrong one scores 0.813 against
+0.879, so no threshold passes MIN_SHOWN 3 / MIN_RATIO 1.25. Test: AUC 0.86, and the top two test courses are one
+right, one wrong. The alternatives are almost all one-hole variants (gaps of 0.03-0.1), so they add little. Not wired
+in. The refitted per-hole gate (route_gate.json, 640 courses) now passes on train at P(all) >= 0.475 (4 / 4 right).
+No test course clears it, and under auto it only reports.
+
+Test (28 web-card courses, read once): before (ae0953b0f) 79.3 % / 7 all-right, now **80.5 % / 8**. Errors: virtual
+green 25 -> 8, another hole's green 25 -> 36. Under auto: 27 of 28 shown (96.4 %). Holes on shown courses: 80.0 %
+right, mean P 80.5 %. Approximate holes (P < 0.5) are 29 % right, the rest 86.7 %. Train+big out-of-fold: 626 of 643
+shown (97.4 %), 76.2 % right, mean P 76.1 %.
+
+Per-hole calibration (P(hole right) bins -> share right), out-of-fold train+big / test:
+< 0.5: 25 % / 29 %; 0.5-0.7: 59 % / 53 %; 0.7-0.85: 80 % / 77 %; 0.85-0.95: 91 % / 93 %; >= 0.95: 96 % / 95 %.
+AUC 0.843 / 0.844, log-loss 0.382 / 0.352.
+
+Blind loop (all 20, cache/val/struct/loop/auto*.txt): tier A / B statuses, picks and flagged picks identical; tier C
+picks identical, with status changes Brookhaven blocked -> shown (P 0.87-0.98) and Royal Scot ok -> shown
+(P 0.83-0.94). Candler, Down River and Heights stay blocked (shared greens). D: Sunset shown (approximate 1, 2, 6;
+P(all) 0.001), Glenwild shown (none approximate, 11 at 0.69 the lowest), Remsen shown (all >= 0.80), Hawk's Point shown
+(the new routing has no shared green; 11 of 18 approximate, P(all) 0.000), Makena North no build.
+
+Reproduce (defaults now point at the peaks recipe: prep `cache/val/prep_pk20`, tables `cache/val/learn/pk20`):
+`ROUTE_BENCH_PROBS=d0+yall ROUTE_LEARN_VER=feae37f33_d0+yall ROUTE_LEARN_KINDS=h,w,s,e ROUTE_LEARN_TRAIN=train+big`;
+`route_bench.py eval --scene fast --router v2 --card-only --prep --ver feae37f33_d0+yall --split train+big` (prep),
+`route_learn.py table --split train+big`, `route_learn.py x3 --split train+big|test`, `route_learn.py cv|fit --out
+cache/val/sc_final`, then eval with `ROUTE_BENCH_SC=cache/val/sc_final/cv` (train+big) / `.../test`.
+`ROUTE_LEARN_PEAKS=0 ROUTE_LEARN_X3=0` gives the old recipe (prep_split, learn/split).
+Renders (green right, red wrong): cache/val/render/v4_{kingwood_ga,los_amigos_ca,william_j_devine_ma,bonneville_ut}.jpg.

@@ -401,7 +401,8 @@ def card_fit(feats, card, n):
 
 
 PREP = os.environ.get("ROUTE_BENCH_PREP") or os.path.join(
-    VAL, "prep" if os.environ.get("ROUTE_SPLIT_TEES", "1") == "0" else "prep_split")    # split tee complexes (route_scene)
+    VAL, "prep" if os.environ.get("ROUTE_SPLIT_TEES", "1") == "0" else
+    "prep_split" if float(os.environ.get("ROUTE_LEARN_PEAKS", "0.2") or 0) == 0 else "prep_pk20")   # split tees, P(green) peaks
 
 
 def prep_path(slug, scene_kind, seed, router, ver=None):
