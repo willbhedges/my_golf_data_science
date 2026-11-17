@@ -652,8 +652,8 @@ def cmd_tune(a):
     """coordinate descent on the train split (hole accuracy + share of courses with every hole right), one parameter
     at a time over TUNE_GRID, prepared inputs cached; writes the path to --out (json lines)."""
     from multiprocessing import Pool
-    cs = [c for c in courses(a.split) if c.get("card")]
-    assert a.split != "test", "never tune on test"
+    cs = [c for c in courses(a.split) if c.get("card") and (not a.slugs or c["slug"] in a.slugs.split(","))]
+    assert "test" not in a.split.split("+"), "never tune on test"
     ver = a.ver or (scene_version() if a.scene == "fast" else None)
     cur = json.loads(a.start or "{}")
     cur.setdefault("no_margins", 1)

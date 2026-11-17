@@ -248,6 +248,31 @@ def prepare(fc, scene, card, n_holes, co=None, version="v0", params=None):
     return d, info
 
 
+def _alts(S2, sol, k):
+    """the k best other routings of the plain and the priced beam: [(cost gap, holes whose (tee, green) differ)],
+    by gap (the course-level confidence reads them; the chosen routing is unchanged)"""
+    pr, seq = sol["pr"], sol["seq"]
+    try:
+        rs = S2.beam2(pr, keep=k + 1)
+        if pr.P.get("lag_iters", 0) > 0:
+            pz = sol.get("price")
+            if pz is None:
+                pz = sol["price"] = S2.lagrange(pr)
+            rs += S2.beam2(pr, keep=k + 1, price=pz)
+    except Exception:                                                # noqa: BLE001
+        return []
+    best = [tuple(pr.cand[c][1:]) for c in seq]
+    out, seen = [], {tuple(seq)}
+    for cost, s2 in sorted(rs, key=lambda r: r[0]):
+        if tuple(s2) in seen:
+            continue
+        seen.add(tuple(s2))
+        ham = sum(tuple(pr.cand[c][1:]) != b for c, b in zip(s2, best))
+        if ham:
+            out.append([round(max(0.0, float(cost) - float(sol["cost"])), 3), int(ham)])
+    return out[:k]
+
+
 def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared=None):
     """version v0: zero_tap/joint solve.py (missing tee / hole = free placeholder); v1: solve2.py (the card places
     missing tees / greens; virtual ends are written as hole-line ends with tee_src / green_src 'virtual').
@@ -267,13 +292,16 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
         if not sol["seq"]:
             return dict(features=[], min_margin=0.0, why="no routing found", **info)
         tee_box = pp.pop("tee_box", "far")
+        n_alts = int(pp.pop("alts", 8))
         mg = [0.0] * len(sol["seq"]) if nomg else S2.margins(sol, None)
+        alts = _alts(S2, sol, n_alts) if n_alts else []
         virt = S2.place_virtual(sol)
         if pp.get("refine") and d.get("_maps") is not None:        # virtual ends onto P(green) / P(tee) / fairway ends
             virt = S2.refine_virtual(sol, virt, d["_maps"], pp.get("refine_params"))
         pr2 = sol["pr"]
         holes = [(t, g) for k, t, g in sol["holes"]]
     else:
+        alts = []
         sol = S.solve(d, card, dict(RJ.PARAMS, **(params or {})), None)
         if not sol["seq"]:
             return dict(features=[], min_margin=0.0, why="no routing found", **info)
@@ -347,7 +375,7 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
     return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
                 n_virtual=nv if version not in V1_LIKE else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
                 n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]), version=version,
-                cost=float(sol["cost"]), detected_holes=det, _used=used, hole_features=hole_f,
+                cost=float(sol["cost"]), detected_holes=det, _used=used, hole_features=hole_f, alts=alts,
                 has_card=bool(S.card_sets(card, int(n_holes)) is not None), **info)
 
 

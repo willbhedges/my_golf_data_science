@@ -141,7 +141,7 @@ AUG_AREA = (120, 2500)  # m2
 AUG_SEP_M = 22.0
 
 
-def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1]):
+def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=None):
     """greens the scene left out (below its hole-green threshold or never extracted) but the U-Net's P(green) map
     holds as a solid blob: added as scene greens kind 'map' (p_hole 0.36 + 0.3 * blob mean, so they pass route_scene's
     threshold), unless within AUG_SEP_M of a green that is a routing candidate already. -> (scene copy, n added)"""
@@ -179,8 +179,57 @@ def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1]):
                         centroid=[float(clo), float(cla)], area_m2=float(area),
                         polygon=[[float(u), float(v)] for u, v in zip(lo, la)]))
         have.append(np.array([x, y]))
+    peaks = PEAK_P if peaks is None else peaks
+    if peaks and peaks > 0:
+        out += _peak_greens(pg, g, have, inv, peaks)
     sc = dict(scene, greens=list(scene.get("greens") or []) + out)
     return sc, len(out)
+
+
+PEAK_P = float(os.environ.get("ROUTE_LEARN_PEAKS", "0") or 0)    # > 0: also P(green) local maxima >= this
+PEAK_SEP_M = 24.0
+
+
+def _peak_greens(pg, g, have, inv, th):
+    """weak greens (under trees, small, low contrast): local maxima of P(green) smoothed (sigma 3 m) >= th, in a
+    25 m window, not within PEAK_SEP_M of a green already offered; kind 'peak', p = the smoothed peak, outline = the
+    pixels >= half the peak around it (else a 9 m circle)"""
+    import cv2
+    a, _, c, _, e, f = g["transform"][:6]
+    sm = cv2.GaussianBlur(pg.astype(np.float32) / 255.0, (0, 0), 3.0 / abs(a))
+    w = max(3, int(round(25.0 / abs(a))) | 1)
+    mx = cv2.dilate(sm, np.ones((w, w), np.uint8))
+    rr, cc = np.where((sm >= mx - 1e-6) & (sm >= th))
+    order = np.argsort(-sm[rr, cc])
+    out = []
+    H, W = sm.shape
+    for i in order:
+        r0, c0 = int(rr[i]), int(cc[i])
+        x, y = c + a * (c0 + 0.5), f + e * (r0 + 0.5)
+        if have and min(np.hypot(x - h[0], y - h[1]) for h in have) < PEAK_SEP_M:
+            continue
+        v = float(sm[r0, c0])
+        k = int(round(18.0 / abs(a)))
+        ra, rb, ca, cb = max(0, r0 - k), min(H, r0 + k + 1), max(0, c0 - k), min(W, c0 + k + 1)
+        m = (sm[ra:rb, ca:cb] >= 0.5 * v).astype(np.uint8)
+        n_, lab = cv2.connectedComponents(m)
+        mk = (lab == lab[r0 - ra, c0 - ca]).astype(np.uint8)
+        area = float(mk.sum() * abs(a * e))
+        cs, _ = cv2.findContours(mk, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if cs and 60 <= area <= 2500:
+            ring = max(cs, key=cv2.contourArea).reshape(-1, 2).astype(float) + [ca, ra]
+            px, py = c + a * (ring[:, 0] + 0.5), f + e * (ring[:, 1] + 0.5)
+        else:
+            t_ = np.linspace(0, 2 * np.pi, 12, endpoint=False)
+            px, py = x + 9 * np.cos(t_), y + 9 * np.sin(t_)
+            area = float(np.pi * 81)
+        lo, la = inv.transform(px, py)
+        clo, cla = inv.transform(x, y)
+        out.append(dict(id="k%d_%d" % (r0, c0), p=round(v, 3), p_hole=round(0.36 + 0.3 * v, 3), kind="peak",
+                        centroid=[float(clo), float(cla)], area_m2=area,
+                        polygon=[[float(u), float(q)] for u, q in zip(lo, la)]))
+        have.append(np.array([x, y]))
+    return out
 
 
 # ----------------------------------------------------------------------------- features
@@ -273,7 +322,7 @@ def obj_attrs(d, scene, M):
     for gid, xy in zip(co["Gid"], np.asarray(co["G"], float)):
         g = gs.get(gid) or {}
         ga.append([float(g.get("p_hole", g.get("p", np.nan)) or np.nan), float(g.get("area_m2") or np.nan),
-                   float(g.get("kind") == "map"), float(M.sample(xy[None], "turf")[0])])
+                   {"map": 1.0, "peak": 2.0}.get(g.get("kind"), 0.0), float(M.sample(xy[None], "turf")[0])])
     ta = []
     for t in co["T"]:
         o = ts.get(t["id"].split("/")[0]) or {}
@@ -357,6 +406,235 @@ def walk_features(d, M, ph=None):
     back = np.sum(din[wp[:, 0]] * dw, 1)
     return np.c_[st["turf_mean"], st["tree_mean"], best[wp[:, 1]], np.hypot(*dw.T), own, tout, cos_in, rank_x,
                  rel_x, back]
+
+
+# ----------------------------------------------------------------------------- x3: richer local features (2026-11-17)
+XF3 = (["pf_fr%d" % i for i in range(5)] + ["pf_tu%d" % i for i in range(5)] + ["pf_tr%d" % i for i in range(5)]
+       + ["pf_wa%d" % i for i in range(3)] + ["cw_tr8", "cw_tr16", "cw_tr28", "cw_tr40", "cw_fr16", "cw_fr40",
+                                              "cw_free", "g_pg0", "g_pg8", "g_pgring", "t_pt0", "t_ptfar",
+                                              "c_rk_t", "c_rel_t", "c_rk_g", "c_rel_g", "c_cf_rk", "c_namb",
+                                              "c_par3", "bk_end"])
+WXF3 = ["wx_tu0", "wx_tu1", "wx_tu2", "wx_trrun", "wx_rk_t", "wx_rk_g", "wx_cos_out", "wx_rel_hole", "wx_ahead_tr",
+        "wx_tp", "wx_ph_out_rk"]
+
+
+def _prof(v, nb):
+    """[n, ns] -> [n, nb] bin means along the line"""
+    k = np.array_split(np.arange(v.shape[1]), nb)
+    return np.stack([v[:, i].mean(1) for i in k], 1)
+
+
+def _rank_rel(vals, keys):
+    """per row: rank (0 = best, high value) of vals within its key group and vals / group max"""
+    rk = np.zeros(len(vals))
+    rel = np.zeros(len(vals))
+    for k in np.unique(keys):
+        i = np.where(keys == k)[0]
+        o = np.argsort(-vals[i])
+        rk[i[o]] = np.arange(len(i))
+        rel[i] = vals[i] / max(float(vals[i].max()), 1e-6)
+    return rk, rel
+
+
+def pair_features3(d, M):
+    """[n pairs, len(XF3)]: along-path profiles (fairway / turf / trees in 5 bins, water in 3), the tree-free and
+    fairway corridor width across the line, U-Net P(green) at / around the green and P(tee) at the tee, and the pair
+    in context (rank / ratio of the prior hole score among the tee's greens and the green's tees, card-fit rank among
+    the tee's greens, how many card holes the length fits, par-3 length). M.green / M.tee: optional u8 P maps."""
+    co, geo = d["co"], d["geo"]
+    G = np.asarray(co["G"], float)
+    Tc = np.asarray(geo["Tc"], float)
+    hp = np.asarray(d["hp"], int).reshape(-1, 2)
+    n = len(hp)
+    if not n:
+        return np.zeros((0, len(XF3)))
+    A, B = Tc[hp[:, 0]], G[hp[:, 1]]
+    s = np.linspace(0.05, 0.95, 31)
+    P = A[:, None, :] + (B - A)[:, None, :] * s[None, :, None]
+    fr, tu, tr, wa = (M.sample(P, k) for k in ("fair", "turf", "tree", "water"))
+    L = np.maximum(np.hypot(*(B - A).T), 1.0)
+    u = (B - A) / L[:, None]
+    nrm = np.c_[-u[:, 1], u[:, 0]]
+    sm = np.array([0.3, 0.5, 0.7])
+    Q = A[:, None, :] + (B - A)[:, None, :] * sm[None, :, None]               # [n, 3, 2]
+    cw = {}
+    for off in (8.0, 16.0, 28.0, 40.0):
+        both = np.concatenate([Q + nrm[:, None, :] * off, Q - nrm[:, None, :] * off], 1)
+        cw["tr", off] = M.sample(both, "tree").mean(1)
+        cw["fr", off] = M.sample(both, "fair").mean(1)
+    # tree-free half-width: the first offset (of 0, 8, 16, 28, 40) where trees take over, mean over the 3 points
+    offs = np.array([0.0, 8.0, 16.0, 28.0, 40.0, 55.0])
+    free = np.zeros(n)
+    for j in range(3):
+        w = np.full(n, 55.0)
+        for side in (1.0, -1.0):
+            ws = np.full(n, 55.0)
+            for oi in range(len(offs) - 1, -1, -1):
+                pt = Q[:, j] + nrm * offs[oi] * side
+                t_ = M.sample(pt[:, None, :], "tree")[:, 0] > 0.5
+                ws = np.where(t_, offs[oi], ws)
+            w = np.minimum(w, ws) if side < 0 else ws
+        free += w / 3
+    ang = np.linspace(0, 2 * np.pi, 12, endpoint=False)
+    ring = np.c_[np.cos(ang), np.sin(ang)]
+    if M.green is not None:
+        pg0 = M.sample(B[:, None, :], "green")[:, 0]
+        pg8 = M.sample(B[:, None, :] + 8 * ring[None], "green").mean(1)
+        pgr = M.sample(B[:, None, :] + 25 * ring[None], "green").mean(1)
+    else:
+        pg0 = pg8 = pgr = np.full(n, np.nan)
+    far = np.array([np.asarray(co["T"][t]["pts"])[int(np.argmax(np.hypot(*(np.asarray(co["T"][t]["pts"]) - G[g]).T)))]
+                    for t, g in hp])
+    if M.tee is not None:
+        pt0 = M.sample(A[:, None, :], "tee")[:, 0]
+        ptf = M.sample(far[:, None, :], "tee")[:, 0]
+    else:
+        pt0 = ptf = np.full(n, np.nan)
+    ph0 = np.asarray(d["sc"]["ph"], float)
+    rk_t, rel_t = _rank_rel(ph0, hp[:, 0])
+    rk_g, rel_g = _rank_rel(ph0, hp[:, 1])
+    Y = d.get("_Y")
+    Lp = geo["P"][hp[:, 0], hp[:, 1]]
+    if Y is None:
+        cf = namb = np.full(n, np.nan)
+    else:
+        yv = np.asarray(Y, float).ravel()
+        yv = yv[np.isfinite(yv) & (yv > 0)]
+        if len(yv):
+            rr = np.abs(Lp[:, None] - yv[None, :]) / yv[None, :]
+            cf = rr.min(1)
+            namb = (rr < 0.08).sum(1) / max(len(yv), 1)
+        else:
+            cf = namb = np.full(n, np.nan)
+    cf_rk, _ = _rank_rel(-np.nan_to_num(cf, nan=9.0), hp[:, 0])
+    bk = M.sample(B[:, None, :] + 15 * ring[None], "bunker").mean(1)
+    return np.c_[_prof(fr, 5), _prof(tu, 5), _prof(tr, 5), _prof(wa, 3), cw["tr", 8.0], cw["tr", 16.0],
+                 cw["tr", 28.0], cw["tr", 40.0], cw["fr", 16.0], cw["fr", 40.0], free, pg0, pg8, pgr, pt0, ptf,
+                 rk_t, rel_t, rk_g, rel_g, cf_rk, namb, (Lp < 260).astype(float), bk]
+
+
+def walk_features3(d, M):
+    """[n walk pairs, len(WXF3)]: turf profile / tree run along the green -> tee walk, distance ranks both ways,
+    whether the next hole turns back along the walk, walk length vs the green's hole length, trees ahead of the tee,
+    P(tee) at the tee, rank of the tee's best outgoing prior hole score"""
+    co, geo = d["co"], d["geo"]
+    G = np.asarray(co["G"], float)
+    Tc = np.asarray(geo["Tc"], float)
+    wp = np.asarray(d["wp"], int).reshape(-1, 2)
+    n = len(wp)
+    if not n:
+        return np.zeros((0, len(WXF3)))
+    A, B = G[wp[:, 0]], Tc[wp[:, 1]]
+    s = np.linspace(0.1, 0.9, 15)
+    P = A[:, None, :] + (B - A)[:, None, :] * s[None, :, None]
+    tu = M.sample(P, "turf")
+    tr = M.sample(P, "tree")
+    Lw = np.maximum(np.hypot(*(B - A).T), 1.0)
+    trrun = _runs(tr > 0.5, 1.0) * Lw * 0.8 / 14                     # longest tree run, yd
+    Dgt = np.hypot(G[:, None, 0] - Tc[None, :, 0], G[:, None, 1] - Tc[None, :, 1])
+    rk_t = np.argsort(np.argsort(Dgt, 1), 1)[wp[:, 0], wp[:, 1]]
+    rk_g = np.argsort(np.argsort(Dgt, 0), 0)[wp[:, 0], wp[:, 1]]
+    Ph = ph_matrix(d)
+    bg = np.argmax(Ph, 1) if Ph.shape[1] else np.zeros(len(Tc), int)        # tee's best green (prior)
+    dout = G[bg] - Tc
+    dout = dout / np.maximum(np.hypot(*dout.T), 1.0)[:, None]
+    dw = (B - A) / Lw[:, None]
+    cos_out = np.sum(dout[wp[:, 1]] * dw, 1)
+    bt = np.argmax(Ph, 0) if Ph.shape[0] else np.zeros(len(G), int)
+    hole_len = np.hypot(*(G - Tc[bt]).T)
+    rel_hole = Lw / np.maximum(hole_len[wp[:, 0]], 30.0)
+    ahead = M.sample(Tc[:, None, :] + dout[:, None, :] * np.array([60.0, 110.0, 160.0])[None, :, None], "tree").mean(1)
+    tp = M.sample(Tc[:, None, :], "tee")[:, 0] if M.tee is not None else np.full(len(Tc), np.nan)
+    pmax = Ph.max(1) if Ph.shape[1] else np.zeros(len(Tc))
+    prk = np.argsort(np.argsort(-pmax)).astype(float)
+    return np.c_[_prof(tu, 3), trrun, rk_t, rk_g, cos_out, rel_hole, ahead[wp[:, 1]], tp[wp[:, 1]], prk[wp[:, 1]]]
+
+
+LXF3 = ["lp_bld_big", "lp_bld_big_rk", "lp_bld250", "lp_nbld150", "lp_hub200", "lp_hub350", "lp_other", "lp_pmap",
+        "lp_hub_rk"]
+
+
+def loop_features3(d, scene, M, which):
+    """loop start (tee complex) / end (green): buildings of the scene (distance to the largest and to the nearest
+    >= 250 m2, how many within 150 yd), hub counts (tees + greens within 200 / 350 yd: the clubhouse is where both
+    nines start and end), the nearest other end (a start tee: the nearest green; an end green: the nearest tee),
+    P(tee) / P(green) at the point"""
+    co, geo = d["co"], d["geo"]
+    G = np.asarray(co["G"], float).reshape(-1, 2)
+    Tc = np.asarray(geo["Tc"], float).reshape(-1, 2)
+    P = Tc if which == "start" else G
+    n = len(P)
+    if not n:
+        return np.zeros((0, len(LXF3)))
+    pj = co["pj"]
+    bl = [(pj.fwd(*b["centroid"][:2]), float(b.get("area_m2") or 0)) for b in (scene or {}).get("buildings") or []
+          if b.get("centroid")]
+    if bl:
+        B = np.asarray([b[0] for b in bl], float).reshape(-1, 2)
+        A = np.asarray([b[1] for b in bl], float)
+        D = np.hypot(P[:, None, 0] - B[None, :, 0], P[:, None, 1] - B[None, :, 1])
+        big = D[:, int(np.argmax(A))]
+        b250 = np.min(np.where(A[None, :] >= 250, D, 9999.0), 1)
+        nb = ((D < 150) & (A[None, :] >= 40)).sum(1)
+    else:
+        big = b250 = np.full(n, 9999.0)
+        nb = np.zeros(n)
+    allp = np.r_[G, Tc]
+    Dp = np.hypot(P[:, None, 0] - allp[None, :, 0], P[:, None, 1] - allp[None, :, 1])
+    hub2, hub3 = (Dp < 200).sum(1), (Dp < 350).sum(1)
+    O = G if which == "start" else Tc
+    other = np.min(np.hypot(P[:, None, 0] - O[None, :, 0], P[:, None, 1] - O[None, :, 1]), 1) if len(O) else np.full(n, 999.0)
+    key = "tee" if which == "start" else "green"
+    pm = M.sample(P[:, None, :], key)[:, 0] if getattr(M, key) is not None else np.full(n, np.nan)
+    return np.c_[np.minimum(big, 3000), np.argsort(np.argsort(big)).astype(float), np.minimum(b250, 3000), nb, hub2,
+                 hub3, other, pm, np.argsort(np.argsort(-hub2)).astype(float)]
+
+
+def x3_table(slug, split, ver=None):
+    """hx3 / wx3 of a bench course (LEARN/x3/<slug>.pkl), from the prep pickle + maps + P(green) / P(tee)"""
+    import route_bench as RB
+    import route_scene as RS
+    C, F, Mo, S = RS._mods()
+    p = os.path.join(LEARN, "x3", slug + ".pkl")
+    if os.path.exists(p):
+        o = pickle.load(open(p, "rb"))
+        if "sx3" in o:
+            return o
+    ver = ver or VER
+    x, pd = _prep(slug, split, ver)
+    if pd is None:
+        return None
+    d, _ = pd
+    pv = ver.split("_", 1)[1]
+    scene = RB.rd(RB.scene_path(slug, ver))
+    M = bench_maps(slug, scene, pv).bind(d["co"]["pj"])
+    Pb = RB.bench_probs(slug, pv)
+    if Pb is not None:
+        M.green, M.tee = Pb[1], Pb[2]
+    d["_Y"] = S.card_sets(x["card"], int(x["n"]))
+    out = dict(slug=slug, hx3=pair_features3(d, M), wx3=walk_features3(d, M), sx3=loop_features3(d, scene, M, "start"),
+               ex3=loop_features3(d, scene, M, "end"))
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    pickle.dump(out, open(p, "wb"))
+    return out
+
+
+def _x3_safe(slug, split):
+    try:
+        return x3_table(slug, split) is not None
+    except Exception as e:                                           # noqa: BLE001
+        import traceback
+        print(slug, "FAIL", repr(e)[:200], traceback.format_exc()[-400:], flush=True)
+        return None
+
+
+def cmd_x3(split, procs=2):
+    import route_bench as RB
+    args = [(c["slug"], c["split"]) for c in RB.courses(split) if c.get("card")]
+    from multiprocessing import Pool
+    with Pool(procs) as pool:
+        rs = pool.starmap(_x3_safe, args, chunksize=1)
+    print("x3 tables", sum(bool(r) for r in rs), "of", len(rs))
 
 
 # ----------------------------------------------------------------------------- practice greens
@@ -564,12 +842,15 @@ HPAR = dict(n_estimators=300, learning_rate=0.04, num_leaves=15, min_child_sampl
 HPAR.update(json.loads(os.environ.get("ROUTE_LEARN_HPAR") or "{}"))
 
 
+X3 = os.environ.get("ROUTE_LEARN_X3", "0") == "1"      # + pair_features3 / walk_features3 (tables LEARN/x3)
+
+
 def _X(t, kind):
     if kind == "h":
-        return np.c_[t["hx"], t["hx2"]]
+        return np.c_[t["hx"], t["hx2"], t["hx3"]] if "hx3" in t else np.c_[t["hx"], t["hx2"]]
     if kind in ("s", "e"):
-        return t[kind + "x"]
-    return np.c_[t["wx"], t["wx2"]]
+        return np.c_[t[kind + "x"], t[kind + "x3"]] if kind + "x3" in t else t[kind + "x"]
+    return np.c_[t["wx"], t["wx2"], t["wx3"]] if "wx3" in t else np.c_[t["wx"], t["wx2"]]
 
 
 def loop_x(d, which):
@@ -617,6 +898,11 @@ def load_tables(split):
         if os.path.exists(p):
             t = pickle.load(open(p, "rb"))
             t["state"] = c["state"]
+            q = os.path.join(LEARN, "x3", c["slug"] + ".pkl")
+            if X3:
+                if not os.path.exists(q):
+                    continue
+                t.update({k: v for k, v in pickle.load(open(q, "rb")).items() if k != "slug"})
             ts.append(t)
     return ts
 
@@ -645,7 +931,8 @@ def cmd_cv(out_dir, k=5, kinds=KINDS):
 def cmd_fit(out_dir, kinds=KINDS):
     ts = load_tables(TRAIN)
     ms = {kind: _fit(ts, kind) for kind in kinds}
-    pickle.dump(dict(models=ms, XF=XF, WXF=WXF, n_train=len(ts)), open(MODEL, "wb"))
+    pickle.dump(dict(models=ms, XF=XF, WXF=WXF, n_train=len(ts), x3=X3,
+                     **(dict(XF3=XF3, WXF3=WXF3, LXF3=LXF3) if X3 else {})), open(MODEL, "wb"))
     os.makedirs(out_dir, exist_ok=True)
     for t in load_tables("test"):
         pickle.dump(predict(ms, t), open(os.path.join(out_dir, t["slug"] + ".pkl"), "wb"))
@@ -735,6 +1022,9 @@ def rescore(d, scene, M, card=None, n_holes=None, path=MODEL):
     d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)
     t = dict(hx=d["hx"], hx2=pair_features(d, M), wx=d["wx"], wx2=walk_features(d, M), sx=loop_x(d, "start"),
              ex=loop_x(d, "end"))
+    if m.get("x3"):                       # the richer local features (pair_features3 ...), read before ph is replaced
+        t.update(hx3=pair_features3(d, M), wx3=walk_features3(d, M), sx3=loop_features3(d, scene, M, "start"),
+                 ex3=loop_features3(d, scene, M, "end"))
     d["sc"] = dict(d["sc"], **predict(m["models"], t))
     if m["models"].get("p") is not None and len(d["co"]["G"]):
         d["sc"]["pp"] = m["models"]["p"].predict_proba(prac_features(d, M))[:, 1]
@@ -777,5 +1067,7 @@ if __name__ == "__main__":
         auc_report("train", os.path.join(a.out, "cv"))
     elif a.cmd == "fit":
         cmd_fit(os.path.join(a.out, "test"))
+    elif a.cmd == "x3":
+        cmd_x3(a.split, a.procs)
     elif a.cmd == "prac":
         cmd_prac(a.out)

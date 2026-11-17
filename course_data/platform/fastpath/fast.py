@@ -75,6 +75,7 @@ def lookup(query):
 
 
 MAX_CONFIRMS = 3                # a course routed on imagery detections: at most this many flagged holes is shown
+SOFT_GATE_PREFIXES = ("the card does not fit the map", "holes out of order", "built pars sum")   # auto policy: warnings
 GATE_SHARED_GREEN_YD = 15.0     # two holes whose greens are this close are one hole built twice
 GATE_MISFIT_YD, GATE_MISFIT_HOLES = 25.0, 3   # card vs measured yards off by more than this on this many holes
 
@@ -299,6 +300,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                            "the numbering is not certain")
     confirm = []
     draft = []
+    auto_warn = None
     if scene_routed is not None:
         import route_scene
         pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
@@ -310,6 +312,23 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             scene_routed["gate"] = g
             pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
             draft = [f"holes routed on imagery detections: {r}" for r in g["reasons"]]
+            if g.get("policy") == "auto":
+                # ROUTE_SHOW_POLICY=auto (default): delivered without golfer confirms. The quality gates that only say
+                # the routing may be wrong (card misfit, long walks, par sum) become warnings; the per-hole P(right)
+                # says where. Broken builds stay drafts: missing holes / no card / shared green / wrong course.
+                soft = [b for b in blocked if b.startswith(SOFT_GATE_PREFIXES)]
+                blocked = [b for b in blocked if not b.startswith(SOFT_GATE_PREFIXES)]
+                auto_warn = soft
+                refs = [str(h.get("ref")) for h in scene_routed.get("hole_features") or []]
+                for ref, pr in zip(refs, g.get("p_holes") or []):
+                    h = (package.get("holes") or {}).get(ref)
+                    if isinstance(h, dict):
+                        h["p_right"] = pr
+                        h["approximate"] = bool(pr < route_gate.APPROX_P)
+                package["routing_confidence"] = dict(policy="auto", p_all=g.get("p_all"), p_holes=dict(zip(refs, g.get("p_holes") or [])),
+                                                     approximate=[refs[i] for i in g.get("approximate") or [] if i < len(refs)],
+                                                     approx_below=route_gate.APPROX_P, warnings=soft)
+                pk.write(package, pkg_dir)
         else:
             import route_joint
             if scene_routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or scene_routed.get("n_virtual") \
@@ -323,6 +342,9 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                                "the golfer confirms them (confirm_scene.json)")
             pc.write_json(os.path.join(pkg_dir, "confirm_scene.json"), route_scene.confirm_questions(package, scene_routed))
     gate_out = dict(blocked=blocked, confirm=confirm, draft=draft)
+    if auto_warn is not None:
+        gate_out["policy"] = "auto"
+        gate_out["warnings"] = auto_warn
     if scene_routed is not None and scene_routed.get("gate"):
         # per-hole calibrated P(hole numbered right) next to the course-level P(all): a draft view can mark the unsure
         # holes; what is shown is decided by p_all and the hard blocks only
@@ -331,7 +353,8 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
         refs = [h.get("ref") for h in scene_routed.get("hole_features") or []]
         gate_out["routing"] = dict(p_all=gg.get("p_all"), threshold=gg.get("threshold"),
                                    p_holes={str(r): p for r, p in zip(refs, ph)},
-                                   unsure=[str(r) for r, p in zip(refs, ph) if p < 0.5])
+                                   unsure=[str(r) for r, p in zip(refs, ph) if p < 0.5],
+                                   policy=gg.get("policy"))
     pc.write_json(os.path.join(pkg_dir, "gate.json"), gate_out)
     T["total"] = round(time.time() - t_all, 2)
     T["stages"] = package.get("stages")
@@ -343,6 +366,13 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
         if draft:
             blocked = draft + blocked
         return dict(status="blocked", stage="gate", why="; ".join(blocked)[:400], slug=slug, holes=len(package["holes"]),
+                    timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
+    if auto_warn is not None and r.returncode == 0:
+        rc = package.get("routing_confidence") or {}
+        return dict(status="shown", stage=None, why=f"routed on imagery detections, shown (policy auto): P(all) "
+                    f"{(rc.get('p_all') or 0):.3f}, approximate holes {', '.join(rc.get('approximate') or []) or 'none'}"
+                    + (f"; warnings: {'; '.join(auto_warn)}"[:300] if auto_warn else ""), slug=slug,
+                    holes=len(package["holes"]), p_holes=rc.get("p_holes"), approximate=rc.get("approximate"),
                     timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
     if confirm and r.returncode == 0:
         return dict(status="confirm", stage="gate", why=f"usable with {len(confirm)} flagged confirms", slug=slug,

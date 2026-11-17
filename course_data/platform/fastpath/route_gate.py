@@ -34,6 +34,19 @@ MIN_RATIO = 1.25     # ... and the threshold must sit 25 % above the best-scored
                      # the top test course, wrong, scores 0.142
 
 
+POLICY_ENV = "ROUTE_SHOW_POLICY"
+APPROX_P = 0.5       # auto policy: a hole whose calibrated P(hole right) is below this is marked "approximate"
+
+
+def policy():
+    """'auto' (default, product decision 2026-11-17): every scene-routed course with a complete routing is shown, no
+    golfer confirms; each hole carries its calibrated P(hole right), holes under APPROX_P are marked approximate; only
+    the hard blocks (no card, missing holes, card-order conflict, shared green, no routing) keep it a draft.
+    'calibrated': shown only when P(all holes right) clears the precision-1.0 threshold (the 2026-11-16 gate)."""
+    v = (os.environ.get(POLICY_ENV) or "auto").strip().lower()
+    return v if v in ("auto", "calibrated") else "auto"
+
+
 def hole_x(h):
     m = min(float(h.get("margin") or 0.0), MARGIN_CAP)
     cr = h.get("card_rel")
@@ -95,9 +108,12 @@ def p_all(routed, params=None):
     return float(np.prod(p)), [round(float(v), 4) for v in p]
 
 
-def decide(routed, params=None):
-    """-> dict(show, p_all, threshold, reasons). Hard blocks first: no routing, a missing hole."""
+def decide(routed, params=None, show_policy=None):
+    """-> dict(show, p_all, threshold, reasons, p_holes, policy, approximate). Hard blocks first: no routing, no card,
+    card-order conflict, a hole with neither end, a missing hole. Policy 'calibrated' adds the P(all) threshold;
+    'auto' does not (approximate = indices of holes with p < APPROX_P)."""
     params = params or load()
+    show_policy = show_policy or policy()
     reasons = []
     n = int(routed.get("n_holes") or 0)
     if not routed.get("hole_features"):
@@ -112,13 +128,18 @@ def decide(routed, params=None):
         reasons.append(f"only {len(routed.get('hole_features') or [])} of {n} holes routed")
     p, ph = p_all(routed, params)
     thr = float(params["threshold"]) if params else 1.1
+    approx = [i for i, v in enumerate(ph) if v < APPROX_P]
+    if show_policy == "auto":
+        return dict(show=not reasons, p_all=p, threshold=thr, reasons=reasons, p_holes=ph, policy="auto",
+                    approximate=approx)
     if p is None:
         reasons.append("no calibrated gate (route_gate.json)")
     elif p < thr:
         weak = sorted(range(len(ph)), key=lambda i: ph[i])[:3]
         reasons.append(f"routing confidence {p:.3f} < {thr:.3f} (least certain holes: "
                        + ", ".join(f"{i + 1} ({ph[i]:.2f})" for i in weak) + ")")
-    return dict(show=not reasons, p_all=p, threshold=thr, reasons=reasons, p_holes=ph)
+    return dict(show=not reasons, p_all=p, threshold=thr, reasons=reasons, p_holes=ph, policy="calibrated",
+                approximate=approx)
 
 
 def fit(courses, l2=1.0, iters=3000, lr=0.5):

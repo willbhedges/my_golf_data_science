@@ -39,11 +39,11 @@ def one(c):
             r = r2
     d = os.path.join(fast.pc.PACKAGES, c["slug"])
     sheet = os.path.join(fast.CACHE, "contact", f"{c['order']:02d}_{c['slug']}.jpg")
-    if r.get("status") in ("ok", "blocked", "confirm", "draft") and os.path.exists(os.path.join(d, "imagery", "naip_rgb.tif")):
+    if r.get("status") in ("ok", "blocked", "confirm", "draft", "shown") and os.path.exists(os.path.join(d, "imagery", "naip_rgb.tif")):
         subprocess.run([sys.executable, SHEETS, "--course-dir", d, "--img", os.path.join(d, "imagery"), "--contact", sheet],
                        capture_output=True)
         r["sheet"] = sheet
-    pkg = json.load(open(os.path.join(d, "package.json"))) if os.path.exists(os.path.join(d, "package.json")) and r.get("status") in ("ok", "blocked", "confirm", "draft") else {}
+    pkg = json.load(open(os.path.join(d, "package.json"))) if os.path.exists(os.path.join(d, "package.json")) and r.get("status") in ("ok", "blocked", "confirm", "draft", "shown") else {}
     st = pkg.get("stages") or {}
     print(f"{c['order']} {c['tier']} {c['name']} ({c['city']}, {c['state']}): {r.get('status')} {r.get('stage') or ''} "
           f"{r.get('wall')} s | holes {r.get('holes')} | {r.get('why') or ''}")
@@ -55,6 +55,8 @@ def one(c):
         for k in ("routing", "tees", "green_auto", "fairway_fill", "green_visibility", "trees_meta", "elevation"):
             if st.get(k):
                 print(f"   {k}: {str(st[k])[:150]}")
+        if r.get("p_holes"):
+            print("   p_holes", r["p_holes"], "| approximate", r.get("approximate"))
         if r.get("phase2"):
             print("   phase 2:", r["phase2"])
         print("   warnings", len(pkg.get("warnings") or []), [w[:110] for w in (pkg.get("warnings") or [])[:6]])
