@@ -189,3 +189,52 @@ cache/val/render/v3_{ozaukee_wi,south_hills_ca,green_harbor_ma,woods_hole_ma}.jp
 Blind loop after the change (all 20): tier A / B / C statuses, picks and flagged picks identical to the previous run;
 D: Sunset and Remsen drafts (Remsen P(all) 0.104, hole 9 the unsure one in gate.json routing), Glenwild and Hawk's
 Point blocked, Makena North no build. Nothing shown.
+
+## State 2026-11-17: TRAIN-BIG (256 more training courses), refit, structured weight learning tried
+
+TRAIN-BIG (`route_big.py`, cache/big, 422 MB, not committed): 340 tier "full" survey courses drawn with a seed
+(12 survey states, 18 or 9 OSM hole ways). Excluded: every validation-set course (train and test), the blind20 list
+(this covers TEST-40's b20 courses), the perception stacks_meta pool, the U-Net training index, and anything within
+1.5 km of one of them. Each course was simulated unmapped through the normal fast path: OSM API, web card search,
+NAIP "latest" + 2 other years, canopy, fastscene U-Net (production stride / AMX). Kept per course (~1.6 MB): the
+scene, P(green) / P(tee), the corridor maps, the OSM truth and the cards. Raw imagery was deleted. 256 courses were
+built. Skipped: 32 without a card, 15 without complete numbered hole ways, 1 closed, 36 not reached (a container
+restart). Caveat: the card search's plausibility check sees the OSM hole lengths, as the validation set's did.
+route_bench / route_learn read these courses as split `big`; `ROUTE_LEARN_TRAIN=train+big` fits on both.
+
+Refit (`route_learn.py cv|fit --out cache/val/sc_big`, h / w / s / e, same hyperparameters; out-of-fold by state over
+train+big). route_learn_model.pkl is now this fit. Pair AUC on old train, out-of-fold: 0.970 -> 0.980.
+
+| split | before (old-train fit) | after (train+big fit) |
+|---|---|---|
+| train (43, out-of-fold) | 76.2 % / 11 | 76.0 % / 9 |
+| big (256: before = never trained on, after = out-of-fold) | 66.6 % / 39 | 72.6 % / 48 |
+| test (28, read once) | 73.7 % / 7 | **79.3 % / 7** |
+
+Larger trees (700 x 31 leaves): train 75.8 % / 9, big 73.5 % / 46. Not kept.
+
+Structured learning (`route_struct.py`): the solve2 cost is linear in 15 group weights (hole, detector p, virtual /
+miss costs, obstacles, card, walk, loop, virtual geometry, crossings, reuse), checked exactly against the solver's own
+cost. solve2 also has optional extra per-(position, option) features weighted by params `xw` (map green, small green,
+green near the clubhouse mid-loop, low tee p, relative card misfit, par / length mismatch, virtual end on a par 3, tee
+or green not the hole model's best, low ph). They are off by default, so routing is identical. The learner is a
+margin-rescaled structured SVM with cutting planes: the decoded routing, the loss-augmented beam's 8 best (hole
+Hamming loss), and the truth (each position restricted to right options). Theta is refitted on all constraints with L2
+to the current params, and the iterate with the fewest wrong training holes is kept. Result: no out-of-fold gain.
+* Old train fold 0 (10 courses): 73.7 % / 1 -> 74.9 % / 2.
+* Train+big fold 0 (113 courses): 69.8 % / 17 -> 69.2 % / 18.
+* In-sample, wrong holes go 544 -> 495 at best, but the iterates oscillate: the virtual-geometry weight flips to 0
+  and back.
+Reweighting the existing terms does not make the true routing cheapest. The errors sit in the local scores, and the
+refit with more data is what moved them. Not wired into production (V2_PARAMS unchanged).
+
+Gate refit on train+big out-of-fold results (293 courses), route_gate.json. Per-hole calibration on test: AUC 0.814,
+log-loss 0.379. Bins: < 0.5 -> 0.23 right, 0.5-0.7 -> 0.49, 0.7-0.85 -> 0.81, 0.85-0.95 -> 0.91, >= 0.95 -> 0.93.
+No threshold reaches precision 1.0 with MIN_SHOWN 3. On train+big the top two courses are right, the third is wrong,
+and the top 10 are 8 right. On test the two top-scored courses are wrong. So the threshold stays 1.1 and nothing is
+shown. A product of per-hole p tops out near 0.39 and does not separate whole courses. A course-level gate needs a
+different signal.
+
+Blind loop (all 20), new model + gate vs the previous one: tier A / B / C statuses, picks and flagged picks identical.
+D: Sunset draft, Remsen draft (P(all) 0.104 -> 0.234), Glenwild and Hawk's Point blocked (their routings changed),
+Makena North no build. Nothing shown.

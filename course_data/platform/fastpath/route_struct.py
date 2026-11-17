@@ -489,7 +489,9 @@ def run_rounds_mixed(cs, ver, sc_dir_of, P0, rounds, mu, lam, procs, fixed=()):
             theta = theta_new
             if done:
                 break
-    return theta, hist
+    # cutting-plane iterates oscillate: keep the one with the fewest wrong holes on its own training courses
+    b = min(hist, key=lambda h: (h["wrong"], h["round"]))
+    return np.array(b["theta"], float), hist
 
 
 def cmd_evalfolds(a):

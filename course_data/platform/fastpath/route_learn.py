@@ -561,6 +561,7 @@ def _table_safe(slug, split):
 # ----------------------------------------------------------------------------- models
 HPAR = dict(n_estimators=300, learning_rate=0.04, num_leaves=15, min_child_samples=20, subsample=0.8,
             subsample_freq=1, colsample_bytree=0.8, reg_lambda=2.0, verbose=-1, n_jobs=2)
+HPAR.update(json.loads(os.environ.get("ROUTE_LEARN_HPAR") or "{}"))
 
 
 def _X(t, kind):
