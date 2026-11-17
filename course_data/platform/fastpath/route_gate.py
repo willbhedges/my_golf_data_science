@@ -41,7 +41,8 @@ APPROX_P = 0.5       # auto policy: a hole whose calibrated P(hole right) is bel
 def policy():
     """'auto' (default, product decision 2026-11-17): every scene-routed course with a complete routing is shown, no
     golfer confirms; each hole carries its calibrated P(hole right), holes under APPROX_P are marked approximate; only
-    the hard blocks (no card, missing holes, card-order conflict, shared green, no routing) keep it a draft.
+    the hard blocks (no card, missing holes, card-order conflict, shared green, no routing) keep it a draft. Tier C
+    (route_joint on OSM greens / tees, or unnumbered OSM hole lines) likewise, with p_joint (route_gate_joint.json).
     'calibrated': shown only when P(all holes right) clears the precision-1.0 threshold (the 2026-11-16 gate)."""
     v = (os.environ.get(POLICY_ENV) or "auto").strip().lower()
     return v if v in ("auto", "calibrated") else "auto"
@@ -198,3 +199,72 @@ def pick_threshold(cur, n_courses, min_shown=1, min_ratio=1.0):
 
 def _sigmoid(z):
     return 1.0 / (1.0 + math.exp(-z))
+
+
+# ----------------------------------------------------------------------------- tier C (route_joint) per-hole confidence
+JOINT_PARAMS = os.path.join(HERE, "route_gate_joint.json")
+JFEATS = ["margin_c", "margin_lo", "card_rel", "card_bad", "course_mg", "virt_frac", "lines_mode"]
+
+
+def _line_yd(co):
+    a = np.asarray(co, float)
+    k = math.cos(math.radians(a[:, 1].mean()))
+    return float(np.hypot(np.diff(a[:, 0]) * k, np.diff(a[:, 1])).sum() * 111320.0 / 0.9144)
+
+
+def joint_card_rel(feats, card, n):
+    """{ref: |routed length - card| / card} for the card tee set that fits the routed lines best (median)"""
+    L = {str(f["properties"]["ref"]): _line_yd(f["geometry"]["coordinates"]) for f in feats or []}
+    best = None
+    for s in ((card or {}).get("tee_sets") or {}).values():
+        y = list(s.get("yards") or [])
+        if len(y) < n and y and n % len(y) == 0:
+            y = y * (n // len(y))
+        r = {k: abs(L[k] - y[int(k) - 1]) / max(float(y[int(k) - 1]), 1.0) for k in L if int(k) - 1 < len(y) and y[int(k) - 1]}
+        if r and (best is None or np.median(list(r.values())) < np.median(list(best.values()))):
+            best = r
+    return best or {}
+
+
+def joint_rows(routed, card_rel, mode):
+    """per routed hole: feature dicts for the tier C calibration (margins indexed by position)"""
+    n = int(routed.get("n_holes") or 0) or len(routed.get("margins") or [])
+    mg = routed.get("margins") or []
+    cmg = min(float(routed.get("min_margin") or 0.0), MARGIN_CAP)
+    vf = float(routed.get("n_virtual") or 0) / max(n, 1)
+    out = []
+    for ref, cr in sorted(card_rel.items(), key=lambda kv: int(kv[0])):
+        i = int(ref) - 1
+        m = min(float(mg[i]) if i < len(mg) else 0.0, MARGIN_CAP)
+        out.append(dict(ref=ref, margin=m, card_rel=cr, course_mg=cmg, virt=vf, lines=float(mode == "lines")))
+    return out
+
+
+def joint_x(h):
+    cr = min(float(h["card_rel"]), 0.6)
+    return [h["margin"] / MARGIN_CAP, float(h["margin"] < 2.0), cr, float(cr > 0.15), h["course_mg"] / MARGIN_CAP,
+            h["virt"], h["lines"]]
+
+
+def fit_joint(rows, l2=1.0, iters=3000, lr=0.5):
+    """rows: [(hole feature dict, ok)] -> weights [bias, w...] (L2 logistic, as fit)"""
+    X = np.asarray([joint_x(h) for h, _ in rows], float)
+    y = np.asarray([float(ok) for _, ok in rows], float)
+    A = np.c_[np.ones(len(X)), X]
+    w = np.zeros(A.shape[1])
+    for _ in range(iters):
+        p = 1.0 / (1.0 + np.exp(-(A @ w)))
+        w -= lr * (A.T @ (p - y) / len(y) + l2 * np.r_[0.0, w[1:]] / len(y))
+    return [float(v) for v in w]
+
+
+def p_joint(rows, params=None):
+    """-> {ref: calibrated P(hole numbered right)} for a route_joint routing (None without route_gate_joint.json)"""
+    if params is None:
+        params = json.load(open(JOINT_PARAMS)) if os.path.exists(JOINT_PARAMS) else None
+    if params is None or not rows:
+        return None
+    w = np.asarray(params["w"], float)
+    X = np.asarray([joint_x(h) for h in rows], float)
+    p = 1.0 / (1.0 + np.exp(-(X @ w[1:] + w[0])))
+    return {h["ref"]: round(float(v), 4) for h, v in zip(rows, p)}

@@ -636,6 +636,66 @@ def cmd_gate(a):
     return res
 
 
+# ----------------------------------------------------------------------------- tier C (route_joint) calibration bench
+def joint_one(c, mode):
+    """tier C simulated on a mapped course: OSM greens / tees kept, golf=hole ways hidden (mode 'osm': route_joint.route)
+    or kept without their refs (mode 'lines': route_joint.route_lines). -> per-hole rows for route_gate.fit_joint"""
+    import routing as R
+    import route_joint as RJ
+    fc, _, scj = course_files(c["slug"])
+    truth = {k: v for k, v in R.truth_from_fc(fc).items() if int(k) <= 18}
+    x = load_course(dict(c), "oracle")                     # only for card / n (the oracle scene is not used)
+    card, n = x["card"], x["n"]
+    feats = fc.get("features", [])
+    if mode == "osm":
+        f2 = dict(fc, features=[f for f in feats if (f.get("properties") or {}).get("golf") != "hole"])
+        t = time.time()
+        r = RJ.route(f2, card, n)
+    else:
+        f2 = dict(fc, features=[f if (f.get("properties") or {}).get("golf") != "hole" else
+                                dict(f, properties={k: v for k, v in f["properties"].items() if k != "ref"}) for f in feats])
+        lines = RJ.unnumbered_lines(f2, n)
+        if lines is None:
+            return None
+        t = time.time()
+        r = RJ.route_lines(f2, lines, card, n)
+    out = dict(slug=c["slug"], split=c["split"], mode=mode, n=n, n_true=len(truth), seconds=round(time.time() - t, 2))
+    fs = r.pop("features", [])
+    sc = R.score(to_res(fs), truth)
+    out["hole_ok"] = {k: e["hole_ok"] for k, e in sc["per_hole"].items()}
+    out["route"] = r
+    cf = card_fit(fs, card, n)
+    out["card_resid"] = {str(k): round(v, 1) for k, v in cf[2].items()} if cf else {}
+    out["card_yd"] = {}
+    if cf:
+        y = (card.get("tee_sets") or {}).get(cf[0], {}).get("yards") or []
+        out["card_yd"] = {str(i + 1): v for i, v in enumerate(y[:n])}
+    out["refs"] = [f["properties"]["ref"] for f in fs]
+    return out
+
+
+def _job_joint(a):
+    try:
+        return joint_one(*a)
+    except Exception as e:                                           # noqa: BLE001
+        return dict(slug=a[0]["slug"], mode=a[1], error=repr(e)[:200])
+
+
+def cmd_joint(a):
+    cs = [c for c in courses(a.split) if c.get("card") and (not a.slugs or c["slug"] in a.slugs.split(","))]
+    jobs = [(c, m) for m in ("osm", "lines") for c in cs]
+    from multiprocessing import Pool
+    with Pool(a.procs) as pool:
+        rs = [r for r in pool.map(_job_joint, jobs, chunksize=2) if r]
+    for m in ("osm", "lines"):
+        x = [r for r in rs if r.get("mode") == m and "hole_ok" in r]
+        H = sum(r["n_true"] for r in x)
+        ok = sum(sum(r["hole_ok"].values()) for r in x)
+        log(m, "courses", len(x), "holes right", round(ok / max(H, 1), 4), "errors", sum(1 for r in rs if r.get("mode") == m and "error" in r))
+    if a.out:
+        json.dump(dict(courses=rs), open(a.out, "w"), default=float)
+
+
 def _job_p(a):
     os.environ["ROUTER_PARAMS"] = json.dumps(a[-1])
     return run_one(*a[:-1])
@@ -724,6 +784,8 @@ if __name__ == "__main__":
         cmd_tune(a)
     elif a.cmd == "gate":
         cmd_gate(a)
+    elif a.cmd == "joint":                       # joint --split train+big --out joint.json (tier C calibration rows)
+        cmd_joint(a)
     elif a.cmd == "render":                      # render --out RESULTS.json --slugs a,b  (eval --out file)
         R0 = {r["slug"]: r for r in json.load(open(a.out))["courses"]}
         for sl in a.slugs.split(","):

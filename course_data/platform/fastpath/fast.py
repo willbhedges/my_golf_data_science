@@ -105,6 +105,25 @@ def extra_gate(package):
     return out
 
 
+def _mark_confidence(package, p_holes, warnings, source, pkg_dir, p_all=None):
+    """auto policy: per-hole calibrated P(hole right) into package.json (holes[ref].p_right / approximate, and
+    routing_confidence), rewritten in place"""
+    import package as pk
+    import route_gate
+    for ref, pr in p_holes.items():
+        h = (package.get("holes") or {}).get(str(ref))
+        if isinstance(h, dict):
+            h["p_right"] = pr
+            h["approximate"] = bool(pr < route_gate.APPROX_P)
+    if p_all is None and p_holes:
+        import math
+        p_all = float(math.prod(p_holes.values()))
+    package["routing_confidence"] = dict(policy="auto", source=source, p_all=p_all, p_holes=dict(p_holes),
+                                         approximate=[str(r) for r, p in p_holes.items() if p < route_gate.APPROX_P],
+                                         approx_below=route_gate.APPROX_P, warnings=list(warnings))
+    pk.write(package, pkg_dir)
+
+
 def wait_card(seconds=60.0):
     """True when the card search of the last build was still running at its budget and has now finished."""
     t = LATE.get("card")
@@ -190,6 +209,11 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
             fc, summ = osm_api.features(course, raw, CACHE, req)
         T["route_joint"] = round(time.time() - t, 2)
+        try:                                     # per-hole card fit: the tier C confidence model's input
+            import route_gate
+            r["card_rel"] = route_gate.joint_card_rel(r.get("features"), card, n)
+        except Exception:                                            # noqa: BLE001
+            r["card_rel"] = None
         return {k: v for k, v in r.items() if k != "features"}
 
     def route_perception():
@@ -291,16 +315,33 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     except Exception as e:                                           # noqa: BLE001
         blocked = [f"gate could not run: {type(e).__name__}: {e}"]
     blocked += extra_gate(package)
+    auto_warn = None
     if routed is not None:
         import route_joint
+        import route_gate
         pc.write_json(os.path.join(pkg_dir, "route_joint.json"), routed)
-        if routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or routed.get("n_virtual"):
+        pj_ = None
+        if route_gate.policy() == "auto" and routed.get("card_rel"):
+            rows_ = route_gate.joint_rows(routed, routed["card_rel"], "lines" if routed.get("mode") else "osm")
+            pj_ = route_gate.p_joint(rows_)
+        if pj_:
+            # ROUTE_SHOW_POLICY=auto: tier C delivered with per-hole confidence (route_gate_joint.json, calibrated on
+            # mapped courses with their hole ways hidden); the margin rule and the soft gates become warnings
+            soft = [b for b in blocked if b.startswith(SOFT_GATE_PREFIXES)]
+            if routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or routed.get("n_virtual"):
+                soft.append(f"joint routing min margin {routed.get('min_margin', 0):.1f} (< {route_joint.MIN_MARGIN}), "
+                            f"{routed.get('n_virtual', 0)} holes without a tee or green")
+            blocked = [b for b in blocked if not b.startswith(SOFT_GATE_PREFIXES)]
+            auto_warn = soft
+            _mark_confidence(package, pj_, soft, "route_joint", pkg_dir)
+            routed["gate"] = dict(policy="auto", p_holes=pj_)
+            pc.write_json(os.path.join(pkg_dir, "route_joint.json"), routed)
+        elif routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or routed.get("n_virtual"):
             blocked.append(f"hole lines routed by the joint solver with min margin {routed.get('min_margin', 0):.1f} "
                            f"(< {route_joint.MIN_MARGIN}; {routed.get('n_virtual', 0)} holes without a tee or green): "
                            "the numbering is not certain")
     confirm = []
     draft = []
-    auto_warn = None
     if scene_routed is not None:
         import route_scene
         pc.write_json(os.path.join(pkg_dir, "route_scene.json"), scene_routed)
@@ -320,15 +361,8 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                 blocked = [b for b in blocked if not b.startswith(SOFT_GATE_PREFIXES)]
                 auto_warn = soft
                 refs = [str(h.get("ref")) for h in scene_routed.get("hole_features") or []]
-                for ref, pr in zip(refs, g.get("p_holes") or []):
-                    h = (package.get("holes") or {}).get(ref)
-                    if isinstance(h, dict):
-                        h["p_right"] = pr
-                        h["approximate"] = bool(pr < route_gate.APPROX_P)
-                package["routing_confidence"] = dict(policy="auto", p_all=g.get("p_all"), p_holes=dict(zip(refs, g.get("p_holes") or [])),
-                                                     approximate=[refs[i] for i in g.get("approximate") or [] if i < len(refs)],
-                                                     approx_below=route_gate.APPROX_P, warnings=soft)
-                pk.write(package, pkg_dir)
+                _mark_confidence(package, dict(zip(refs, g.get("p_holes") or [])), soft, "route_scene", pkg_dir,
+                                 p_all=g.get("p_all"))
         else:
             import route_joint
             if scene_routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or scene_routed.get("n_virtual") \
@@ -345,6 +379,10 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     if auto_warn is not None:
         gate_out["policy"] = "auto"
         gate_out["warnings"] = auto_warn
+    if routed is not None and routed.get("gate"):
+        ph = routed["gate"]["p_holes"]
+        gate_out["routing"] = dict(source="route_joint", p_holes=ph, unsure=[r for r, p in ph.items() if p < 0.5],
+                                   policy="auto")
     if scene_routed is not None and scene_routed.get("gate"):
         # per-hole calibrated P(hole numbered right) next to the course-level P(all): a draft view can mark the unsure
         # holes; what is shown is decided by p_all and the hard blocks only
@@ -369,7 +407,8 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                     timing={k: v for k, v in T.items() if k != "stages"}, dir=pkg_dir)
     if auto_warn is not None and r.returncode == 0:
         rc = package.get("routing_confidence") or {}
-        return dict(status="shown", stage=None, why=f"routed on imagery detections, shown (policy auto): P(all) "
+        how = "routed by the joint solver on OSM greens / tees" if rc.get("source") == "route_joint" else "routed on imagery detections"
+        return dict(status="shown", stage=None, why=f"{how}, shown (policy auto): P(all) "
                     f"{(rc.get('p_all') or 0):.3f}, approximate holes {', '.join(rc.get('approximate') or []) or 'none'}"
                     + (f"; warnings: {'; '.join(auto_warn)}"[:300] if auto_warn else ""), slug=slug,
                     holes=len(package["holes"]), p_holes=rc.get("p_holes"), approximate=rc.get("approximate"),
