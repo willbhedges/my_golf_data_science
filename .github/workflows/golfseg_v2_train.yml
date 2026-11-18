@@ -1,0 +1,219 @@
+name: golfseg-v2-train
+
+# National fine-tune of our own NAIP golf-feature U-Net (golfseg_own -> v2). Trigger: a committed request file
+# course_data/requests/golfseg_v2_train.json (fields: rev, data_run_id = "" to build the data here or the id of an
+# earlier run of this workflow whose data artifacts are reused, nshards).
+# 1. data (matrix): build_dataset.py --courses v2_courses.json (pick_v2.py, every evaluation course excluded) per
+#    shard -> artifact golfseg-v2-data-<k> (NAIP JPEG GeoTIFF + OSM label npz per course; 30 days).
+# 2. smoke: train_v2.py on synthetic data, fine-tuned from the v1 dir, one job + a resumed one.
+# 3. train-a, train-b: train_v2.py resumable, each < 6 h (checkpoint passed as an artifact); the model export
+#    (artifact golfseg-v2-model) is what gets imported into course_data/segment/models/golfseg_own_v2/.
+# Nothing is committed by this workflow.
+
+on:
+  push:
+    branches:
+      - claude/mozingo-lake-tee-strategy-ef54wl
+    paths:
+      - "course_data/requests/golfseg_v2_train.json"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: golfseg-v2-train
+  cancel-in-progress: false
+
+env:
+  NSHARDS: 12
+  TOTAL_MIN: 630
+  JOB_MIN: 315
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      data_run: ${{ steps.p.outputs.data_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - id: p
+        run: |
+          D=$(python3 -c "import json;print(json.load(open('course_data/requests/golfseg_v2_train.json')).get('data_run_id') or '')")
+          echo "data_run=$D" >> "$GITHUB_OUTPUT"
+          echo "data run: '${D}'"
+
+  data:
+    needs: plan
+    if: needs.plan.outputs.data_run == ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 175
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests numpy scipy pillow shapely pyproj rasterio affine pystac-client planetary-computer
+      - name: Build shard
+        env:
+          PYTHONWARNINGS: "ignore::DeprecationWarning"
+        run: |
+          mkdir -p /home/runner/segdata
+          python -u course_data/segment/train/build_dataset.py --out /home/runner/segdata \
+            --courses course_data/segment/train/v2_courses.json --shard ${{ matrix.shard }} --nshards $NSHARDS \
+            --quality --max 1000 --minutes 150 || echo "build failed"
+          mv /home/runner/segdata/index.json /home/runner/segdata/index_${{ matrix.shard }}.json || true
+          ls /home/runner/segdata | wc -l; du -sh /home/runner/segdata
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-v2-data-${{ matrix.shard }}
+          path: /home/runner/segdata
+          retention-days: 30
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-v2-index-${{ matrix.shard }}
+          path: /home/runner/segdata/index_${{ matrix.shard }}.json
+          retention-days: 90
+
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio
+      - name: Smoke test
+        run: python -u course_data/segment/train/smoke_v2.py
+
+  train-a:
+    needs: [plan, data, smoke]
+    if: always() && needs.smoke.result == 'success' && (needs.data.result == 'success' || needs.data.result == 'skipped' || needs.data.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Free disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          sudo mkdir -p /mnt/seg && sudo chown "$USER" /mnt/seg || true
+          df -h / /mnt || true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: golfseg-v2-data-*
+          path: /mnt/seg/data
+          run-id: ${{ needs.plan.outputs.data_run || github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio
+      - name: Train (job a)
+        run: |
+          du -sh /mnt/seg/data; ls /mnt/seg/data | head -20; free -g; nproc
+          python -u course_data/segment/train/train_v2.py --data /mnt/seg/data --out /mnt/seg/model \
+            --init course_data/segment/models/golfseg_own --ckpt /mnt/seg/ckpt/ck.pt \
+            --minutes $JOB_MIN --total-minutes $TOTAL_MIN > /tmp/train.txt 2>&1 && rc=0 || rc=$?
+          grep -v "^[0-9:]* step " /tmp/train.txt | tail -100 || true
+          grep " step " /tmp/train.txt | awk 'NR % 10 == 0' | tail -30 || true
+          exit $rc
+        env:
+          PYTHONUNBUFFERED: "1"
+      - name: mkdir ckpt
+        if: always()
+        run: mkdir -p /mnt/seg/ckpt /mnt/seg/model; cp /tmp/train.txt /mnt/seg/model/train_a.txt || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-v2-ckpt-a
+          path: /mnt/seg/ckpt
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-v2-model-a
+          path: /mnt/seg/model
+          retention-days: 90
+
+  train-b:
+    needs: [plan, train-a]
+    if: always() && needs.train-a.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Free disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          sudo mkdir -p /mnt/seg && sudo chown "$USER" /mnt/seg || true
+          df -h / /mnt || true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: golfseg-v2-data-*
+          path: /mnt/seg/data
+          run-id: ${{ needs.plan.outputs.data_run || github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: golfseg-v2-ckpt-a
+          path: /mnt/seg/ckpt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio
+      - name: Train (job b, resumed)
+        run: |
+          python -u course_data/segment/train/train_v2.py --data /mnt/seg/data --out /mnt/seg/model \
+            --init course_data/segment/models/golfseg_own --ckpt /mnt/seg/ckpt/ck.pt --resume \
+            --minutes $JOB_MIN --total-minutes $TOTAL_MIN > /tmp/train.txt 2>&1 && rc=0 || rc=$?
+          grep -v "^[0-9:]* step " /tmp/train.txt | tail -100 || true
+          grep " step " /tmp/train.txt | awk 'NR % 10 == 0' | tail -30 || true
+          exit $rc
+      - name: keep log
+        if: always()
+        run: mkdir -p /mnt/seg/model; cp /tmp/train.txt /mnt/seg/model/train_b.txt || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-v2-ckpt-b
+          path: /mnt/seg/ckpt
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-v2-model
+          path: /mnt/seg/model
+          retention-days: 90

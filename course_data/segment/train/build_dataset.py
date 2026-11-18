@@ -2,6 +2,8 @@
 Computer, ~20 s per course).
 
     python course_data/segment/train/build_dataset.py --out /tmp/golfseg_data [--states IA MO] [--max 160]
+    python course_data/segment/train/build_dataset.py --out /tmp/d --courses course_data/segment/train/v2_courses.json \
+        --shard 3 --nshards 12 --quality            (v2: the national list from pick_v2.py, one shard per job)
 
 Courses: course_data/packages/_survey/<STATE>.json rows with >= 9 greens and >= 7 fairways (bunkers >= 3),
 minus the evaluation courses (Spirit Hollow, Veenker, Mozingo Lake: never trained on). Per course:
@@ -11,6 +13,8 @@ minus the evaluation courses (Spirit Hollow, Veenker, Mozingo Lake: never traine
   * label raster: 0 background inside the outline, 1 green, 2 tee, 3 fairway, 4 bunker, 5 water (painted
     fairway < tee < green < water < bunker), 255 = ignore outside the outline (OSM maps nothing there).
 Writes <out>/<osm type>_<id>.npz (img uint8 4xHxW, lab uint8 HxW) and <out>/index.json.
+v2 (--courses): the image stays the fetched NAIP GeoTIFF (JPEG q88, the same bytes v1 decoded) as <name>.tif and
+the npz holds lab only (about 4x smaller); --quality drops courses whose OSM polygons miss holes (quality()).
 Labels: OpenStreetMap contributors, ODbL 1.0. Imagery: USDA NAIP (public domain).
 """
 from __future__ import annotations
@@ -56,6 +60,54 @@ def candidates(states, max_n):
     return out
 
 
+def from_list(path, shard, nshards, max_n):
+    d = json.load(open(path))
+    rows = [dict(r, score=0) for r in d["courses"] if r["osm"] not in EXCLUDE]
+    return rows[shard::nshards][:max_n]
+
+
+def quality(feats, tr, holes):
+    """label completeness from the OSM polygons (projected with tr): bunkers >= 3; with golf=hole ways for >= 80 % of
+    the holes, hole ends near a green polygon (25 m) >= 80 %, starts near a tee polygon (30 m) >= 70 %, par 4 / 5
+    lines (or >= 230 m without a par) crossing a fairway >= 70 %; without hole ways greens >= 0.9 x holes, tees >=
+    holes, fairways >= 0.6 x holes. -> (ok, info)"""
+    from shapely.geometry import shape, Point
+    from shapely.ops import transform as stransform, unary_union
+    P = {c: [] for c in CODE}
+    lines = []
+    for f in feats:
+        g = f["geometry"]
+        pr = f["properties"]
+        if pr.get("golf") == "hole" and g["type"] == "LineString" and len(g["coordinates"]) >= 2:
+            lines.append((stransform(tr, shape(g)), pr.get("par")))
+            continue
+        c = feature_class(pr)
+        if c and g["type"] in ("Polygon", "MultiPolygon"):
+            try:
+                P[c].append(stransform(tr, shape(g)).buffer(0))
+            except Exception:                                   # noqa: BLE001
+                pass
+    n = {c: len(v) for c, v in P.items()}
+    info = dict(n=n, hole_ways=len(lines), holes=holes)
+    if n["bunker"] < 3:
+        return False, dict(info, why="bunkers < 3")
+    if len(lines) >= 0.8 * holes:
+        U = {c: unary_union(P[c]) if P[c] else None for c in ("green", "tee", "fairway")}
+        def near(pt, c, d):
+            return U[c] is not None and U[c].distance(Point(pt)) <= d
+        gc = sum(near(l.coords[-1], "green", 25) for l, _ in lines) / len(lines)
+        tc = sum(near(l.coords[0], "tee", 30) for l, _ in lines) / len(lines)
+        long_ = [l for l, par in lines if (str(par).strip() in ("4", "5", "6")) or (not par and l.length >= 230)]
+        fc = (sum(U["fairway"] is not None and l.intersects(U["fairway"]) for l in long_) / len(long_)) if long_ else 1.0
+        info.update(green_cov=round(gc, 3), tee_cov=round(tc, 3), fairway_cov=round(fc, 3))
+        if gc < 0.8 or tc < 0.7 or fc < 0.7:
+            return False, dict(info, why="polygons miss holes")
+        return True, info
+    if n["green"] < 0.9 * holes or n["tee"] < holes or n["fairway"] < 0.6 * holes:
+        return False, dict(info, why="too few polygons (no hole ways)")
+    return True, info
+
+
 def osm_course(osm):
     import fetch_course as FC
     import platform_common as pc
@@ -66,11 +118,47 @@ def osm_course(osm):
     .c map_to_area->.a;
     (nwr["golf"](area.a); nwr["natural"="water"](area.a); nwr["water"](area.a););
     out body geom;"""
-    els = pc.overpass(q, timeout=200).get("elements", [])
-    fc = FC.to_geojson(els)
-    outline = [f for f in fc["features"] if f["properties"].get("osm_id") == int(oid)
-               and f["properties"].get("osm_type") == typ and f["geometry"]["type"] in ("Polygon", "MultiPolygon")]
-    return (outline[0] if outline else None), [f for f in fc["features"] if f not in outline]
+    if os.environ.get("SEGDATA_OSM", "overpass") == "overpass":
+        try:
+            els = pc.overpass(q, timeout=200).get("elements", [])
+            fc = FC.to_geojson(els)
+            outline = [f for f in fc["features"] if f["properties"].get("osm_id") == int(oid)
+                       and f["properties"].get("osm_type") == typ and f["geometry"]["type"] in ("Polygon", "MultiPolygon")]
+            return (outline[0] if outline else None), [f for f in fc["features"] if f not in outline]
+        except RuntimeError as e:
+            print("  overpass failed, OSM API instead:", str(e)[:160], flush=True)
+    return osm_course_api(osm)
+
+
+def osm_course_api(osm):
+    """the same answer from the OSM API (fastpath/osm_api.py: <type>/<id>/full + map?bbox=), features kept when
+    their representative point lies inside the outline (what Overpass's map_to_area query returns)."""
+    import fetch_course as FC
+    from shapely.geometry import shape
+    sys.path.insert(0, os.path.join(CD, "platform", "fastpath"))
+    import osm_api
+    cache = os.environ.get("SEGDATA_OSM_CACHE") or os.path.join(tempfile.gettempdir(), "segdata_osm")
+    c = osm_api.course_from_row(dict(osm=osm, name="", state="", lat=0.0, lon=0.0), cache)
+    if not c.get("boundary") or c["boundary"]["type"] not in ("Polygon", "MultiPolygon"):
+        return None, []
+    outline = dict(type="Feature", geometry=c["boundary"], properties={})
+    og = shape(c["boundary"]).buffer(0)
+    w, s, e, n = c["bbox"]
+    fc = FC.to_geojson(osm_api.features_data((s, w, n, e), cache).get("elements", []))
+    typ, oid = osm.split("/")
+    feats = []
+    for f in fc["features"]:
+        pr = f["properties"]
+        if pr.get("osm_id") == int(oid) and pr.get("osm_type") == typ:
+            continue
+        if not (pr.get("golf") or pr.get("natural") == "water" or pr.get("water")):
+            continue
+        try:
+            if og.contains(shape(f["geometry"]).representative_point()):
+                feats.append(f)
+        except Exception:                                       # noqa: BLE001
+            pass
+    return outline, feats
 
 
 def feature_class(p):
@@ -82,7 +170,7 @@ def feature_class(p):
     return None
 
 
-def build_one(row, out_dir, cat):
+def build_one(row, out_dir, cat, v2=False, check=False):
     import rasterio
     import rasterio.features
     from pyproj import Transformer
@@ -95,6 +183,12 @@ def build_one(row, out_dir, cat):
     og = shape(outline["geometry"]).buffer(0)
     w, s, e, n = og.bounds
     g1 = FA.Grid((s, w, n, e), 30.0, 1.0)
+    qinfo = None
+    if check:
+        ok, qinfo = quality(feats, Transformer.from_crs("EPSG:4326", g1.crs, always_xy=True).transform,
+                            int(row.get("holes") or 18))
+        if not ok:
+            return dict(error="quality: " + qinfo["why"], quality=qinfo)
     with tempfile.TemporaryDirectory() as td:
         meta = {}
         FA.fetch_naip(cat, g1, td, meta, n_years=1, res=0.6)
@@ -104,6 +198,9 @@ def build_one(row, out_dir, cat):
         with rasterio.open(os.path.join(td, ys[0]["file"])) as src:
             img = src.read()
             T, crs = src.transform, src.crs
+            if v2:
+                import shutil
+                shutil.copy(os.path.join(td, ys[0]["file"]), os.path.join(out_dir, row["osm"].replace("/", "_") + ".tif"))
     tr = Transformer.from_crs("EPSG:4326", crs, always_xy=True).transform
     H, W = img.shape[1:]
     lab = np.full((H, W), 255, np.uint8)
@@ -123,8 +220,12 @@ def build_one(row, out_dir, cat):
             lab[m > 0] = CODE[c]
     lab[~img.any(axis=0)] = 255
     name = row["osm"].replace("/", "_")
-    np.savez_compressed(os.path.join(out_dir, name + ".npz"), img=img, lab=lab)
-    return dict(file=name + ".npz", shape=[H, W], naip_year=ys[0]["year"], naip_items=ys[0]["items"],
+    if v2:
+        np.savez_compressed(os.path.join(out_dir, name + ".npz"), lab=lab)
+    else:
+        np.savez_compressed(os.path.join(out_dir, name + ".npz"), img=img, lab=lab)
+    return dict(file=name + ".npz", image=(name + ".tif") if v2 else None, quality=qinfo,
+                shape=[H, W], naip_year=ys[0]["year"], naip_items=ys[0]["items"],
                 counts=counts, pixels={k: int((lab == v).sum()) for k, v in CODE.items()},
                 inside=int((lab != 255).sum()))
 
@@ -135,6 +236,10 @@ def main():
     ap.add_argument("--states", nargs="+", default=["IA", "MO"])
     ap.add_argument("--max", type=int, default=160)
     ap.add_argument("--minutes", type=float, default=100.0, help="stop adding courses after this long")
+    ap.add_argument("--courses", help="v2: course list json (pick_v2.py)")
+    ap.add_argument("--shard", type=int, default=0)
+    ap.add_argument("--nshards", type=int, default=1)
+    ap.add_argument("--quality", action="store_true", help="drop courses whose polygons miss holes (quality())")
     a = ap.parse_args()
     import fetch_any as FA
     os.makedirs(a.out, exist_ok=True)
@@ -142,7 +247,7 @@ def main():
     index = json.load(open(ip)) if os.path.exists(ip) else {"courses": {}}
     cat = FA.stac()
     t0 = time.time()
-    rows = candidates(a.states, a.max)
+    rows = from_list(a.courses, a.shard, a.nshards, a.max) if a.courses else candidates(a.states, a.max)
     print(f"{len(rows)} candidate courses", flush=True)
     for i, r in enumerate(rows):
         if (time.time() - t0) / 60 > a.minutes:
@@ -151,8 +256,10 @@ def main():
         if r["osm"] in index["courses"] and "file" in index["courses"][r["osm"]] \
                 and os.path.exists(os.path.join(a.out, index["courses"][r["osm"]]["file"])):
             continue
+        if str(index["courses"].get(r["osm"], {}).get("error", "")).startswith("quality"):
+            continue
         try:
-            res = build_one(r, a.out, cat)
+            res = build_one(r, a.out, cat, v2=bool(a.courses), check=a.quality)
         except Exception as e:  # noqa: BLE001
             res = dict(error=f"{type(e).__name__}: {e}"[:300], tb=traceback.format_exc()[-600:])
         res.update(name=r["name"], state=r["state"], osm=r["osm"])
