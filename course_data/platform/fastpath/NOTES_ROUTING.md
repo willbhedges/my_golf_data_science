@@ -392,3 +392,75 @@ gates). D: the re-ranker keeps every routing (best predicted gains: Sunset -0.56
 Remsen -1.0; threshold 0.75); only the refitted per-hole P moves. Sunset shown, approximate 1, 2, 6 (P 0.10 / 0.24 /
 0.27, the rest 0.64-0.93, P(all) 0.002). Hawk's Point shown, 11 of 18 approximate (P 0.12-0.42; 4, 8, 11, 12,
 16-18 at 0.65-0.74). Glenwild (lowest 11 at 0.68) and Remsen (all >= 0.84) shown. Makena North no build.
+
+## State 2026-11-18 (later): per-hole tee refinement (route_tee.py, ROUTE_TEE default 1)
+
+After the routing is fixed (solver + re-ranker), `route_tee.refine` revisits each hole's tee with its green fixed.
+Candidates: every box of every tee complex (other holes' complexes too), local maxima of P(tee) >= 0.25 and the
+incumbent, within card reach of the green (0.4 x shortest to 1.5 x longest set + 20 yd), 4 yd dedupe; 45 features
+(card residuals, offset from the incumbent, P(tee), complex p / size / box rank, other holes' tees / greens, walk from
+the previous green, line profile, pair score). Gradient-boosted classifier (300 iterations, 31 leaves, lr 0.05) on
+P(candidate counts as this hole's tee under routing.score), trained on holes whose green is right.
+`route_tee_model.pkl` = fit on all 633 train+big courses with rows (643 minus 10 with no v2 routing / card).
+
+Choice (`route_tee.choose`): among candidates within eps of the best P, the one whose straight play length is
+closest to the course's card set (`course_set`: the set of solve2's card rows that best fits the incumbent tees,
+median |residual|); switch when its P beats the incumbent's by more than delta. Why the tie-break: routing.score counts
+any spot within 40 yd of the first 60 % of the true line as right, so the model rates forward / middle boxes and spots
+down the line as high as the back box. The argmax alone (eps 0, delta 0) gained the most holes but moved 4543 tees
+on the 436 choice courses and pushed the bench card error (|line length - best card set|) from 6.4 / 37.9 yd
+(median / p90) to 20.8 / 83.1.
+
+Grid on the 436 choice courses (out-of-fold by state; the 197 never-used courses are slugs_new1, untouched). Card
+error here is |straight tee-green distance - course set| (a proxy for the bench's line-length error; incumbent 8.5 /
+43.1 yd):
+
+| choice | holes gained | switched | card error med / p90 yd |
+|---|---|---|---|
+| argmax, eps 0, delta 0 | +141 | 4543 | 30.4 / 91.1 |
+| argmax, delta 0.05 / 0.1 | +103 / +80 | 901 / 452 | 9.7 / 60.9, 8.8 / 51.3 |
+| tie-break by nearest card set of any (r_min), eps 0.05 | +99 | 2432 | 12.5 / 67.6 (491-course run) |
+| tie-break by the course set, eps 0.05 / 0.1 | +92 / +85 | 1820 / 1506 | 7.2 / 45.2, 6.7 / 37.8 |
+| **tie-break by the course set, eps 0.15, delta 0** | **+89** | 1409 | **6.5 / 35.5** |
+| course set, eps 0.2 / 0.3 | +85 / +81 | | 6.5 / 34.4, 6.4 / 33.5 |
+| penalty P - lambda x residual (lambda 0.5 / 1) | +81 / +65 | | 6.4 / 34.3, 5.8 / 26.3 |
+| switch only if P(incumbent) < 0.85, argmax | +88 | 562 | 8.8 / 51.6 |
+| geometric equivalence (pick the card fit within 15-40 yd of the argmax) | +131-139 | | 18-29 / 86-91 |
+
+The nearest-of-any-set tie-break looks fine on relative residuals (each hole fits *some* set) but mixes sets across
+holes, so against the one set a golfer plays it is worse than today. The remaining ~50 holes of the argmax's gain
+come with ~3000 switches to spots off the card: not taken. Chosen: course-set tie-break, eps 0.15, delta 0 (in the
+model file; env ROUTE_TEE_EPS / ROUTE_TEE_DELTA override). Never-used 197: +50 holes (77.29 -> 78.81 %), 60 better /
+10 worse, card proxy 9.1 / 45.4 -> 7.0 / 37.9 yd.
+
+Bench (route_bench eval, out-of-fold: `ROUTE_TEE=0 ROUTE_RERANK=0 ROUTE_RERANK_PICKS=<re-ranker picks>
+ROUTE_TEE_PICKS=<tee picks>`; ROUTE_TEE=0 is needed with the picks, or courses without a pick get the in-sample
+model). Holes right / all-right, card error median / p90 yd:
+
+| | before (re-ranker) | argmax (not shipped) | **shipped** |
+|---|---|---|---|
+| choice 443 | 77.78 % / 101, 6.3 / 36.4 | 79.69 % / 135, 20.0 / 81.7 | **78.99 % / 119, 6.2 / 38.4** |
+| never-used 200 | 76.48 % / 47, 6.6 / 39.8 | 79.52 % / 55, 23.2 / 87.0 | **77.99 % / 51, 6.5 / 42.3** |
+| train+big 643 | 77.38 % / 148, 6.4 / 37.9 | 79.64 % / 190, 20.8 / 83.1 | **78.68 % / 170, 6.3 / 39.2** |
+| test 28 (read once, production path) | 82.8 % / 8, 5.8 / 29.8 | | **83.2 % / 9, 5.6 / 31.5** |
+
+Test: 6 courses move (elmcrest, kingwood, los_amigos, visalia +1; green_harbor, bonneville -1). Cost about 0.5-1 s a
+course.
+
+Per-hole gate refitted on the new out-of-fold results (`route_bench.py gate --train tee_oof15.json --write`, 640
+courses). Calibration (P bins -> share right), out-of-fold train+big / test:
+< 0.5: 28 % / 31 %; 0.5-0.7: 60 % / 64 %; 0.7-0.85: 80 % / 61 % (62 test holes); 0.85-0.95: 91 % / 93 %;
+>= 0.95: 95 % / 96 %. AUC 0.825 / 0.816, log-loss 0.374 / 0.350. Auto policy: train+big 626 of 643 shown, holes
+79.3 % right vs mean P 79.3 %; test 27 of 28 shown, holes 82.7 % right vs mean P 83.4 %.
+
+Blind loop (cache/val/struct/loop/rt1.txt vs rr1.txt): tier A / B blocks identical (statuses, picks, gates); tier C
+picks and statuses identical (Candler / Down River now log "v2+structure" instead of an AttributeError fallback in
+the OSM hole inference, unrelated to routing; same picks, both still blocked on shared greens). D, tees switched
+(positions 0-based in route_scene.json tee_refine): Sunset holes 2, 4, 7, 9 (holes 2 / 9 now 377 / 437 vs card
+434 / 496); Hawk's Point 2, 5, 6, 11, 16, 18 (6 now 499 vs 596); Glenwild 9, 10, 18 (boxes of the same complex);
+Remsen 5, 7. Per-hole P: Sunset 0.22 / 0.29 / 0.93 / 0.80 / 0.89 / 0.49 / 0.65 / 0.87 / 0.74 (approximate 1, 2, 6);
+Hawk's Point 11 of 18 approximate (0.16-0.48; 4, 8, 11, 12, 16, 17 at 0.68-0.74, 18 0.52); Glenwild all >= 0.75
+(lowest 11); Remsen all >= 0.82. Makena North no build.
+
+Reproduce: scratch tgen.py (training rows per course via route_scene params tee_dump / tee=0, resumable),
+tlearn3.py (out-of-fold by state, cached P, grid, picks, fit; uses route_tee.choose / course_set / set_resid).

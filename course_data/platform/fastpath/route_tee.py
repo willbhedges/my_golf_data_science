@@ -16,10 +16,16 @@ This module, per hole with its green fixed:
     the hole axis, P(tee) at the spot, detector p / size of its complex and the box's place in it, whether another hole
     of the routing tees off there (and in which direction), fairway / turf / trees along the line to the green, the
     walk from the previous green, the hole model's pair score;
-  * a gradient-boosted classifier (route_tee_model.pkl) gives P(candidate is a hole tee of this hole); the best one
-    replaces the incumbent when it beats it by the model's margin.
+  * a gradient-boosted classifier (route_tee_model.pkl) gives P(candidate is a hole tee of this hole);
+  * choice (`choose`): among the candidates within eps of the best P, the one whose play length (straight tee-green
+    distance) is closest to the course's tee set (the card set that best fits the incumbent tees, median over holes);
+    it replaces the incumbent when its P beats the incumbent's by more than delta. The tie-break matters because
+    routing.score counts any spot within 40 yd of the first 60 % of the hole line as right, so the model rates
+    forward / middle boxes and spots along the line about as high as the back box, and the argmax alone moved the
+    play lengths golfers see off the card (bench median card error 6.4 -> 20.8 yd).
 
-Env ROUTE_TEE (default 1 when route_tee_model.pkl exists): 0 turns it off. The bench's ROUTE_TEE_PICKS (json {slug:
+Env ROUTE_TEE (default 1 when route_tee_model.pkl exists): 0 turns it off; ROUTE_TEE_EPS / ROUTE_TEE_DELTA override the
+model's eps / delta. The bench's ROUTE_TEE_PICKS (json {slug:
 {position: [x, y] local yd}}) gives out-of-fold choices instead (route_bench).
 """
 from __future__ import annotations
@@ -222,6 +228,34 @@ def enabled():
     return os.environ.get("ROUTE_TEE", "1") != "0" and model() is not None
 
 
+def course_set(Y, D_inc):
+    """the card set (row of Y [k, N]) that best fits the incumbent play lengths {position: yd} (median |residual|),
+    None without a card"""
+    if Y is None or not len(Y) or not D_inc:
+        return None
+    ii = sorted(D_inc)
+    med = [float(np.median([abs(D_inc[i] - Y[k][i]) for i in ii])) for k in range(len(Y))]
+    return np.asarray(Y[int(np.argmin(med))], float)
+
+
+def set_resid(F, y):
+    """relative play-length residual of each candidate to card yardage y (the hole's yardage in the course set);
+    the nearest card set (r_min) without one"""
+    if y is None or not y > 0:
+        return F[:, FEATS.index("r_min")]
+    return np.abs(F[:, FEATS.index("D")] - y) / y
+
+
+def choose(p, rset, delta, eps):
+    """index of the chosen candidate (0 = keep the incumbent): among those within eps of the best P the best card fit,
+    taken when its P beats the incumbent's by more than delta"""
+    j = int(np.argmax(p))
+    if eps > 0:
+        A = np.where(p >= p[j] - eps)[0]
+        j = int(A[np.argmin(rset[A])])
+    return j if (j != 0 and p[j] - p[0] > delta) else 0
+
+
 def refine(d, pr, holes, TQ, GQ, m=None, cands=None):
     """-> (new TQ list, info {position: dict(p_inc, p_new)}) for the switched holes"""
     m = m or model()
@@ -230,12 +264,16 @@ def refine(d, pr, holes, TQ, GQ, m=None, cands=None):
     cs = cands if cands is not None else candidates(d, pr, holes, TQ, GQ)
     TQ = list(TQ)
     info = {}
+    delta = float(os.environ.get("ROUTE_TEE_DELTA") or m["delta"])
+    eps = float(os.environ.get("ROUTE_TEE_EPS") or m.get("eps", 0.0))
+    ys = course_set(getattr(pr, "Y", None), {i: float(c["F"][0, FEATS.index("D")]) for i, c in enumerate(cs)
+                                             if c is not None})
     for i, c in enumerate(cs):
         if c is None or len(c["P"]) < 2:
             continue
         p = m["model"].predict_proba(c["F"][:, m.get("keep", slice(None))])[:, 1]
-        j = int(np.argmax(p))
-        if j != 0 and p[j] - p[0] > m["delta"]:
+        j = choose(p, set_resid(c["F"], ys[i] if ys is not None else None), delta, eps)
+        if j:
             TQ[i] = tuple(c["P"][j])
             info[i] = dict(p_inc=round(float(p[0]), 3), p_new=round(float(p[j]), 3), src=int(c["src"][j]))
     return TQ, info
