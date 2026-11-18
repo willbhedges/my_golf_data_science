@@ -351,6 +351,7 @@ def main():
     run = None
 
     def save_ckpt():
+        os.makedirs(os.path.dirname(os.path.abspath(a.ckpt)), exist_ok=True)
         torch.save(dict(model=model.state_dict(), opt=opt.state_dict(), state=state, best_sd=best_sd), a.ckpt + ".tmp")
         os.replace(a.ckpt + ".tmp", a.ckpt)
 
@@ -366,7 +367,8 @@ def main():
         loss.backward()
         opt.step()
         state["step"] = step
-        run = float(loss) if run is None else 0.98 * run + 0.02 * float(loss)
+        lv = loss.item()
+        run = lv if run is None else 0.98 * run + 0.02 * lv
         if step % 50 == 0:
             state["steps"].append([step, round(run, 4), round(time.time() - t0)])
             log(f"step {step}/{state['total']} loss {run:.4f} lr {lr_at(step):.2e} {time.time() - t0:.0f}s "

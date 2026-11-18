@@ -20,7 +20,7 @@ def main():
     from rasterio.transform import from_origin
     rng = np.random.default_rng(0)
     with tempfile.TemporaryDirectory() as td:
-        data, out, ck = os.path.join(td, "data", "shard0"), os.path.join(td, "model"), os.path.join(td, "ck.pt")
+        data, out, ck = os.path.join(td, "data", "shard0"), os.path.join(td, "model"), os.path.join(td, "ck", "sub", "ck.pt")
         os.makedirs(data)
         idx = {"courses": {}}
         for i in range(6):
