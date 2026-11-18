@@ -1,0 +1,119 @@
+name: import-golfseg-v2
+
+# Copy the national fine-tune of our own NAIP U-Net (golfseg_v2_train.yml, artifact "golfseg-v2-model" of the run
+# named in the request) into course_data/segment/models/golfseg_own_v2/ (weights + config + README with run id and
+# sha256), and the merged training-set index (artifacts golfseg-v2-index-*) into
+# course_data/segment/train/dataset_index_v2.json. Nothing else. The ariadgolf weights are never imported.
+# Trigger: course_data/requests/import_golfseg_v2.json {"run_id": ..., "rev": ...}.
+
+on:
+  push:
+    branches:
+      - claude/mozingo-lake-tee-strategy-ef54wl
+    paths:
+      - "course_data/requests/import_golfseg_v2.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: import-golfseg-v2
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - id: req
+        run: |
+          echo "run_id=$(python3 -c "import json;print(json.load(open('course_data/requests/import_golfseg_v2.json'))['run_id'])")" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          name: golfseg-v2-model
+          run-id: ${{ steps.req.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/v2model
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: golfseg-v2-index-*
+          run-id: ${{ steps.req.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/v2index
+      - name: Copy weights, README, index
+        env:
+          RUN_ID: ${{ steps.req.outputs.run_id }}
+        run: |
+          set -e
+          ls -la /tmp/v2model
+          D=course_data/segment/models/golfseg_own_v2
+          mkdir -p "$D"
+          for f in model.safetensors config.json preprocessor_config.json train_log.json; do cp "/tmp/v2model/$f" "$D/"; done
+          python3 - "$D" "$RUN_ID" <<'PY'
+          import glob, hashlib, json, os, sys
+          d, run = sys.argv[1], sys.argv[2]
+          rows = {}
+          for p in sorted(glob.glob("/tmp/v2index/**/index_*.json", recursive=True)):
+              rows.update(json.load(open(p))["courses"])
+          ok = {k: v for k, v in rows.items() if "file" in v}
+          idx = dict(courses=rows, n_ok=len(ok), n_tried=len(rows), source="course_data/segment/train/v2_courses.json (pick_v2.py)",
+                     labels="OpenStreetMap contributors (ODbL 1.0)", imagery="USDA NAIP via Planetary Computer",
+                     classes=["background", "green", "tee", "fairway", "bunker", "water"], ignore=255, run_id=int(run))
+          json.dump(idx, open("course_data/segment/train/dataset_index_v2.json", "w"), indent=0)
+          states = sorted({v["state"] for v in ok.values()})
+          w = os.path.join(d, "model.safetensors")
+          sha = hashlib.sha256(open(w, "rb").read()).hexdigest()
+          log = json.load(open(os.path.join(d, "train_log.json")))
+          st = log["state"]
+          ev, iv = log.get("exported_val") or {}, log.get("init_val") or {}
+          fmt = lambda v: ", ".join(f"{k} {x}" for k, x in (v.get("iou") or {}).items())
+          jobs = "; ".join(f"steps {j['start_step']}-{j['end_step']} in {j['minutes']} min" for j in st["jobs"])
+          open(os.path.join(d, "README.md"), "w").write(f"""# golfseg_own_v2: our NAIP golf-feature U-Net, national fine-tune
+
+          * Source: GitHub Actions run {run} (`.github/workflows/golfseg_v2_train.yml`, CPU runners, two chained jobs:
+            {jobs}), artifact `golfseg-v2-model`; copied by `.github/workflows/import_golfseg_v2.yml`.
+          * File: `model.safetensors`, {os.path.getsize(w)} bytes, sha256 `{sha}`.
+          * Architecture and input: unchanged from `../golfseg_own` (segmentation_models_pytorch Unet, ResNet-34, 4 bands
+            R, G, B, NIR NAIP 0.6 m uint8, 6 classes background / green / tee / fairway / bunker / water, the same
+            image_mean / image_std in `preprocessor_config.json`), so `fastc/perception/unet.py` runs it as is.
+          * Initialisation: `../golfseg_own` (our v1, run 38987845450). Training: `course_data/segment/train/train_v2.py`,
+            {st['step']} of {st['total']} planned steps (320 px crops, batch {log['bs']}, AdamW lr {log['lr']} warm-up + cosine),
+            class-balanced crop centres {log['class_p']} (green, tee, fairway, bunker, water), cross-entropy weights
+            {[round(x, 3) for x in log['class_weights']]} + 0.5 x soft Dice. Exported: step {log['exported_step']}
+            (best mean validation IoU).
+          * Training data: NAIP (USDA, public domain, via Microsoft Planetary Computer) with OpenStreetMap golf polygons
+            as labels (ODbL 1.0): {log['courses_train']} training courses in {len(log['states_train'])} states
+            ({len(ok)} built of {len(rows)} drawn, `course_data/segment/train/dataset_index_v2.json`; drawn by
+            `pick_v2.py` with every validation-set, blind20 / TEST-40, perception pool and TRAIN-BIG course and a 1.5 km
+            buffer around them excluded).
+          * Validation ({len(log['courses_val'])} held-out courses of the same draw, 512 px tiles), IoU: init (v1) {fmt(iv)};
+            exported {fmt(ev)}.
+          * Licence: ours (trained by this project; encoder start ImageNet ResNet-34 via v1, torchvision BSD-3). The
+            ariadgolf/golf-course-segmentation weights are a different model and are not in this repository.
+          * Used by: `course_data/platform/fastpath/fastscene.py` (FASTSCENE_UNET_MODEL) through
+            `course_data/platform/fastc/perception/unet.py`.
+          """.replace("\n          ", "\n"))
+          PY
+          cat "$D/README.md"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/segment/models/golfseg_own_v2 course_data/segment/train/dataset_index_v2.json
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "segment: national fine-tune of our NAIP U-Net (Actions run ${{ steps.req.outputs.run_id }}) into course_data/segment/models/golfseg_own_v2 + training index" \
+            "" \
+            "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
