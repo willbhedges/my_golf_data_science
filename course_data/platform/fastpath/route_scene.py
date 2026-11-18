@@ -216,6 +216,7 @@ def _axis(pts):
 
 
 V1_PARAMS = dict(K=18, beam=3000, tee_reuse=1, tee_box="long", c_vt=2.0, c_vg=2.0)   # c_vt / c_vg: route_bench tune (train)
+RERANK = int(os.environ.get("ROUTE_RERANK", "0") or 0)   # route_rerank.py: alternatives scored by a learned model
 V1_LIKE = ("v1", "v2")         # v2: v1's solver + map-recovered greens and learned hole / walk scores (route_learn.py)
 ROUTER = os.environ.get("ROUTE_SCENE_VERSION", "v2")      # fast.py's unmapped routing (v1 / v0: the previous solvers)
 SCENE_MODEL = os.path.join(RJ.J, "model_scene.pkl")    # evidence models fitted on detection-like candidates (fit_scene.py)
@@ -288,12 +289,30 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
         pp.update(V2_PARAMS if version == "v2" else {})
         pp.update(params or {})
         nomg = pp.pop("no_margins", False)
+        fix_seq = pp.pop("fix_seq", None)                    # the bench's out-of-fold re-ranker pick (route_rerank)
+        rr = pp.pop("rerank", RERANK if version == "v2" else 0)
         sol = S2.solve(d, card, pp, None)
         if not sol["seq"]:
             return dict(features=[], min_margin=0.0, why="no routing found", **info)
+        rr_info = None
+        if fix_seq is not None or rr:
+            import route_rerank as RR
+            seq0 = list(sol["seq"])
+            if fix_seq is not None:
+                new = [int(c) for c in fix_seq] if len(fix_seq) == len(seq0) else seq0
+                rr_info = dict(fixed=True)
+            else:
+                new, rr_info = RR.rerank(sol["pr"], seq0)
+            if new != seq0:
+                sol = dict(sol, seq=new, holes=[sol["pr"].cand[c] for c in new],
+                           cost=RR.cost_parts(sol["pr"], new)["total"], cost0=sol["cost"])
+                rr_info = dict(rr_info or {}, switched=True,
+                               changed=[i for i, (a, b) in enumerate(zip(seq0, new)) if a != b])
         tee_box = pp.pop("tee_box", "far")
         n_alts = int(pp.pop("alts", 8))
-        mg = [0.0] * len(sol["seq"]) if nomg else S2.margins(sol, None)
+        # margins against the solver's own optimum: a re-ranked routing's unchanged holes keep their min-marginals,
+        # its changed holes get ~0 (the optimum does not use them there)
+        mg = [0.0] * len(sol["seq"]) if nomg else S2.margins(dict(sol, cost=sol.get("cost0", sol["cost"])), None)
         alts = _alts(S2, sol, n_alts) if n_alts else []
         virt = S2.place_virtual(sol)
         if pp.get("refine") and d.get("_maps") is not None:        # virtual ends onto P(green) / P(tee) / fairway ends
@@ -370,12 +389,14 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
                                ph=round(float(pr2.ph.get((t, g), 0.0)), 4) if (t >= 0 and g >= 0) else None,
                                cross=int(sum(pr2.X[c, c2] for c2 in sol["seq"] if c2 < pr2.real)) if c < pr2.real else 0,
                                pw=_walk_p(d, holes, i, pr2.loop), **_obj_f(d, t, g)))
+            if rr_info and rr_info.get("switched"):
+                hole_f[-1]["rr"] = int(i in rr_info["changed"])
     if version not in V1_LIKE:
         n_vt = sum(1 for t, g in holes if t < 0 and g >= 0)
     return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
                 n_virtual=nv if version not in V1_LIKE else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
                 n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]), version=version,
-                cost=float(sol["cost"]), detected_holes=det, _used=used, hole_features=hole_f, alts=alts,
+                cost=float(sol["cost"]), rerank=rr_info if version in V1_LIKE else None, detected_holes=det, _used=used, hole_features=hole_f, alts=alts,
                 has_card=bool(S.card_sets(card, int(n_holes)) is not None), **info)
 
 

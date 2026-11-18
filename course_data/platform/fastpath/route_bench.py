@@ -410,6 +410,17 @@ def prep_path(slug, scene_kind, seed, router, ver=None):
     return os.path.join(PREP, tag, router, "%s_%d.pkl" % (slug, seed))
 
 
+_PK = {}
+
+
+def _picks():
+    """ROUTE_RERANK_PICKS: json {slug: [option per position]} (route_rerank out-of-fold picks), else {}"""
+    p = os.environ.get("ROUTE_RERANK_PICKS")
+    if p and p not in _PK:
+        _PK[p] = json.load(open(p))
+    return _PK.get(p, {}) if p else {}
+
+
 def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
     """route one course and score it. prep=True: cache prepare()'s output (candidates, features, model scores) per
     (course, scene, seed, router) on disk and reuse it (parameter tuning re-solves only)."""
@@ -464,8 +475,11 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
             r = RS.route(x["fc"], x["scene"], x["card"], x["n"], prepared=pd)
         else:
             import route_scene as RS
-            r = RS.route(x["fc"], x["scene"], x["card"], x["n"], version=router,
-                         params=json.loads(os.environ.get("ROUTER_PARAMS") or "{}"), prepared=pd)
+            prm = json.loads(os.environ.get("ROUTER_PARAMS") or "{}")
+            pk = _picks().get(x["slug"])                 # route_rerank's out-of-fold pick for this course
+            if pk is not None:
+                prm["fix_seq"] = pk
+            r = RS.route(x["fc"], x["scene"], x["card"], x["n"], version=router, params=prm, prepared=pd)
     except Exception as e:                                           # noqa: BLE001
         out.update(error=repr(e)[:300], seconds=round(time.time() - t, 2))
         return out
