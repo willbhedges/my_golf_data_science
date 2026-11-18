@@ -309,6 +309,9 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
                 rr_info = dict(rr_info or {}, switched=True,
                                changed=[i for i, (a, b) in enumerate(zip(seq0, new)) if a != b])
         tee_box = pp.pop("tee_box", "far")
+        tee_fix = pp.pop("tee_fix", None)                    # the bench's out-of-fold tee choices (route_tee)
+        tee_dump = pp.pop("tee_dump", None)                  # a list: route_tee candidates appended (training rows)
+        tee_rr = pp.pop("tee", 1)
         n_alts = int(pp.pop("alts", 8))
         # margins against the solver's own optimum: a re-ranked routing's unchanged holes keep their min-marginals,
         # its changed holes get ~0 (the optimum does not use them there)
@@ -334,15 +337,16 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
     yk = None
     if version in V1_LIKE and pr2.Y is not None:
         yk = pr2.ygeom()
+    TQ, GQ = [], []                                 # tee / green spot per hole (local yd), None: no end
     for i, (t, g) in enumerate(holes):
         v = virt.get(i) or {}
         if (t < 0 and "tee" not in v) or (g < 0 and "green" not in v):
-            nv += 1
-            n_miss += 1
+            TQ.append(None)
+            GQ.append(None)
             continue
+        gq = co["G"][g] if g >= 0 else np.asarray(v["green"])
         if t >= 0:
             tc = co["T"][t]
-            gq = co["G"][g] if g >= 0 else np.asarray(v["green"])
             far = int(np.argmax(np.hypot(*(np.asarray(tc["pts"]) - gq).T)))
             if version in V1_LIKE and tee_box != "far" and g >= 0 and pr2.Y is not None and len(tc["pts"]) > 1 \
                     and geo["Pbox"][t][g] is not None:
@@ -356,14 +360,32 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
                                        0.15, 0.85, 25)["fr_mean"]
                     cr = np.abs(np.asarray(geo["Pbox"][t][g]) - yk[i]) / max(float(yk[i]), 1.0)
                     far = int(np.argmin(pp.get("box_card", 2.0) * cr + pp["box_fair"] * (1.0 - fr)))
-            tq = tc["pts"][far]
+            TQ.append(tc["pts"][far])
         else:
-            tq = np.asarray(v["tee"])
+            TQ.append(np.asarray(v["tee"]))
+        GQ.append(gq)
+    tee_info = None
+    if version == "v2" and pr2.Y is not None:
+        import route_tee as RT
+        if tee_fix is not None:                     # the bench's out-of-fold tee choices
+            TQ = [tuple(tee_fix[str(i)]) if str(i) in tee_fix and TQ[i] is not None else TQ[i]
+                  for i in range(len(TQ))]
+            tee_info = dict(fixed=True)
+        elif tee_dump is not None or (tee_rr and RT.enabled()):
+            cs = RT.candidates(d, pr2, holes, TQ, GQ)
+            if tee_dump is not None:
+                tee_dump.append(cs)
+            if tee_rr and RT.enabled():
+                TQ, tee_info = RT.refine(d, pr2, holes, TQ, GQ, cands=cs)
+    for i, (t, g) in enumerate(holes):
+        if TQ[i] is None:
+            nv += 1
+            n_miss += 1
+            continue
+        tq, gq = TQ[i], GQ[i]
+        if t < 0:
             n_vt += 1
-        if g >= 0:
-            gq = co["G"][g]
-        else:
-            gq = np.asarray(v["green"])
+        if g < 0:
             n_vg += 1
         path = RJ._line(F, co, tq, gq)
         line = [[round(x, 7) for x in co["pj"].inv(*q)] for q in path]
@@ -396,7 +418,8 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
     return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
                 n_virtual=nv if version not in V1_LIKE else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
                 n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]), version=version,
-                cost=float(sol["cost"]), rerank=rr_info if version in V1_LIKE else None, detected_holes=det, _used=used, hole_features=hole_f, alts=alts,
+                cost=float(sol["cost"]), rerank=rr_info if version in V1_LIKE else None,
+                tee_refine=tee_info if version in V1_LIKE else None, detected_holes=det, _used=used, hole_features=hole_f, alts=alts,
                 has_card=bool(S.card_sets(card, int(n_holes)) is not None), **info)
 
 

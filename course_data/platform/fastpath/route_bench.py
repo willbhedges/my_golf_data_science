@@ -413,9 +413,10 @@ def prep_path(slug, scene_kind, seed, router, ver=None):
 _PK = {}
 
 
-def _picks():
-    """ROUTE_RERANK_PICKS: json {slug: [option per position]} (route_rerank out-of-fold picks), else {}"""
-    p = os.environ.get("ROUTE_RERANK_PICKS")
+def _picks(env="ROUTE_RERANK_PICKS"):
+    """ROUTE_RERANK_PICKS: json {slug: [option per position]} (route_rerank out-of-fold picks); ROUTE_TEE_PICKS:
+    {slug: {position: [x, y]}} (route_tee out-of-fold tee spots), else {}"""
+    p = os.environ.get(env)
     if p and p not in _PK:
         _PK[p] = json.load(open(p))
     return _PK.get(p, {}) if p else {}
@@ -479,6 +480,9 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
             pk = _picks().get(x["slug"])                 # route_rerank's out-of-fold pick for this course
             if pk is not None:
                 prm["fix_seq"] = pk
+            tk = _picks("ROUTE_TEE_PICKS").get(x["slug"])   # route_tee's out-of-fold tee choices for this course
+            if tk is not None:
+                prm["tee_fix"] = tk
             r = RS.route(x["fc"], x["scene"], x["card"], x["n"], version=router, params=prm, prepared=pd)
     except Exception as e:                                           # noqa: BLE001
         out.update(error=repr(e)[:300], seconds=round(time.time() - t, 2))
