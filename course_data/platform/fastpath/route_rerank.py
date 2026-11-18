@@ -283,19 +283,30 @@ def rerank(pr, seq0, m=None):
     m = m or model()
     if m is None or not seq0:
         return seq0, None
+    try:
+        return _rerank(pr, seq0, m)
+    except Exception as e:                                           # noqa: BLE001
+        return seq0, dict(error=repr(e)[:200])
+
+
+def _rerank(pr, seq0, m):
     cands = candidates(pr, seq0, **m.get("gen", {}))
     f0 = features(pr, seq0)
     best, bi, gains = m["thr"], 0, []
-    X = []
+    X, keep = [], []
+    kinds = set(m.get("kinds") or KINDS)
     for k, s in cands[1:]:
+        if k not in kinds:
+            continue
         ham = sum(a != b for a, b in zip(s, seq0))
         X.append(row(features(pr, s), f0, k, ham, pr.N))
+        keep.append((k, s))
     if not X:
         return seq0, dict(n_alts=0)
     g = m["model"].predict(np.asarray(X, float))
     j = int(np.argmax(g))
-    info = dict(n_alts=len(X), best_gain=round(float(g[j]), 3), kind=cands[j + 1][0])
+    info = dict(n_alts=len(X), best_gain=round(float(g[j]), 3), kind=keep[j][0])
     if g[j] > best:
         info["switched"] = True
-        return list(cands[j + 1][1]), info
+        return list(keep[j][1]), info
     return seq0, info

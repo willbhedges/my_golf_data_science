@@ -216,7 +216,7 @@ def _axis(pts):
 
 
 V1_PARAMS = dict(K=18, beam=3000, tee_reuse=1, tee_box="long", c_vt=2.0, c_vg=2.0)   # c_vt / c_vg: route_bench tune (train)
-RERANK = int(os.environ.get("ROUTE_RERANK", "0") or 0)   # route_rerank.py: alternatives scored by a learned model
+RERANK = int(os.environ.get("ROUTE_RERANK", "1") or 0)   # route_rerank.py: alternatives scored by a learned model
 V1_LIKE = ("v1", "v2")         # v2: v1's solver + map-recovered greens and learned hole / walk scores (route_learn.py)
 ROUTER = os.environ.get("ROUTE_SCENE_VERSION", "v2")      # fast.py's unmapped routing (v1 / v0: the previous solvers)
 SCENE_MODEL = os.path.join(RJ.J, "model_scene.pkl")    # evidence models fitted on detection-like candidates (fit_scene.py)

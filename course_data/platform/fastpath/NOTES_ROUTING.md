@@ -324,3 +324,71 @@ Reproduce (defaults now point at the peaks recipe: prep `cache/val/prep_pk20`, t
 cache/val/sc_final`, then eval with `ROUTE_BENCH_SC=cache/val/sc_final/cv` (train+big) / `.../test`.
 `ROUTE_LEARN_PEAKS=0 ROUTE_LEARN_X3=0` gives the old recipe (prep_split, learn/split).
 Renders (green right, red wrong): cache/val/render/v4_{kingwood_ga,los_amigos_ca,william_j_devine_ma,bonneville_ut}.jpg.
+
+## State 2026-11-18: error taxonomy, routing re-ranker (route_rerank.py, ROUTE_RERANK default 1)
+
+Error taxonomy (train+big out-of-fold, 640 scored courses, wrong holes; "renumbered" = the routed (tee, green) is a
+true hole under another number). Before -> after the re-ranker:
+
+| wrong hole | before | after | in courses > half wrong (before) |
+|---|---|---|---|
+| another hole's green + another hole's tee (scrambled stretch) | 408 | 359 | 321 |
+| green right, tee not a hole tee (123 of them: tee 40+ yd behind the OSM line start) | 357 | 371 | 56 |
+| green that is no hole's green | 338 | 300 | 165 |
+| green right, tee of another hole (shared / merged tees) | 305 | 324 | 56 |
+| renumbered: other permutation | 276 | 239 | 189 |
+| renumbered: shifted run (loop started from the wrong tee) | 253 | 173 | 206 |
+| renumbered: nine swap | 193 | 183 | 169 |
+| virtual green wrong | 187 | 196 | 158 |
+| another hole's green, tee not a hole tee | 148 | 126 | 114 |
+| green right, virtual tee | 70 | 74 | 9 |
+| renumbered: reversed segment | 22 | 21 | 9 |
+| total wrong | 2564 | 2373 | courses > half wrong 118 -> 104 |
+
+27 / 36-hole sites (OSM hole ways > n + 1): 40 courses, 184 wrong holes (7 %): small, not addressed. Card-order
+conflicts: 10 courses, 70 wrong. Oracle over pure renumberings of the chosen routing: 75.9 -> 79.2 %.
+
+Re-ranker (`route_rerank.py`, wired in `route_scene.route` for v2; env `ROUTE_RERANK=0` turns it off; params
+`fix_seq` / `rerank`; the bench's `ROUTE_RERANK_PICKS` = json {slug: sequence} of out-of-fold picks):
+* alternatives to the solver's routing: the beam's 10 best (plain and priced), all renumberings (rotate / reverse a
+  nine, swap nines, both rotated, whole-card rotation), and re-solves with each loop start fixed to another tee
+  complex (the next tees of that loop + the top loop-start P) and each loop end fixed to another green (6 each).
+* features (relative to the chosen routing): solver cost split (hole, card, walk, loop ends, reuse, crossings), card
+  yardage correlation / mean and max relative residual / holes > 15 % off, par 3 / par 5 misfits, loop starts / ends
+  distance and rank to the clubhouse, walk sum / max / long walks, loop P sums, hole-model P sum, size of the change.
+* model: gradient boosting (absolute loss, 15 leaves, 300 iterations) predicting the gain in right holes; the best
+  alternative is taken when its predicted gain > 0.75. Trained only on loop start / end re-solves (beam alternatives
+  and renumberings rarely helped and the model picked bad ones: renumberings -18 holes out-of-fold).
+  `route_rerank_model.pkl` = fit on all 628 labelled train+big courses. Labels: route_struct.correct (hidden OSM ways).
+* choice protocol: kinds / loss / leaves / threshold chosen on the 443 courses outside the 200 never-used ones
+  (criterion gain - 2 x worse courses); 5 variants tried.
+* cost: about 8-12 s more per 18-hole course (24 fixed re-solves).
+
+| holes right / all-right | before | after |
+|---|---|---|
+| train+big out-of-fold (643) | 75.59 % / 148 | **77.38 % / 148** |
+| 200 never used for a choice | 73.62 % / 47 | **76.48 % / 47** |
+| test (28, read once) | 80.5 % / 8 | **82.8 % / 8** |
+
+Out-of-fold the re-ranker switches 73 of 628 courses: 49 better (+222 holes), 13 worse (-31). Test: 4 switched
+(william_j_devine 10 -> 17 of 18, visalia 12 -> 15, elmcrest 7 -> 10, kingwood 12 -> 10). Courses all-right do
+not move: the switches fix stretches of courses that stay partly wrong. Test errors: another hole's green 36 -> 27.
+(Caveat: an exploratory label-count summary of the fitted model on test was printed once before the bench test run;
+nothing was chosen after it.)
+
+Per-hole gate refitted on the re-ranked out-of-fold results (route_gate.json; margins of a re-ranked routing are taken
+against the solver's own optimum, so changed holes get margin ~0). Calibration out-of-fold / test:
+< 0.5: 25 % / 31 %; 0.5-0.7: 59 % / 61 %; 0.7-0.85: 80 % / 72 %; 0.85-0.95: 91 % / 93 %; >= 0.95: 95 % / 96 %.
+AUC 0.837 / 0.820, log-loss 0.373 / 0.350. Auto policy: train+big 626 of 643 shown, holes 78.0 % right vs mean P
+77.9 %; test 27 of 28 shown, holes 82.3 % right vs mean P 82.2 %.
+
+Reproduce: scratch scripts gen.py (route_struct.decode + route_rerank.candidates / features + labels per course,
+resumable), learn.py (out-of-fold by state, threshold grid), picks.py; then route_bench eval with
+`ROUTE_RERANK=0 ROUTE_RERANK_PICKS=<picks.json>` (train+big) or plain (test, production path). Renders:
+cache/val/render/v5_{william_j_devine_ma,visalia_ca,elmcrest_ma,kingwood_ga}.jpg.
+
+Blind loop (all 20, cache/val/struct/loop/rr1.txt vs auto3.txt): tier A / B / C blocks identical (statuses, picks,
+gates). D: the re-ranker keeps every routing (best predicted gains: Sunset -0.56, Glenwild 0.36, Hawk's Point 0.15,
+Remsen -1.0; threshold 0.75); only the refitted per-hole P moves. Sunset shown, approximate 1, 2, 6 (P 0.10 / 0.24 /
+0.27, the rest 0.64-0.93, P(all) 0.002). Hawk's Point shown, 11 of 18 approximate (P 0.12-0.42; 4, 8, 11, 12,
+16-18 at 0.65-0.74). Glenwild (lowest 11 at 0.68) and Remsen (all >= 0.84) shown. Makena North no build.
