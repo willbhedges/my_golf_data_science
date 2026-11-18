@@ -22,11 +22,11 @@ permissions:
   actions: read
 
 concurrency:
-  group: golfseg-v2-train
+  group: golfseg-v2-train-rev2
   cancel-in-progress: false
 
 env:
-  NSHARDS: 12
+  NSHARDS: 20
   TOTAL_MIN: 630
   JOB_MIN: 315
 
@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,11 +68,12 @@ jobs:
       - name: Build shard
         env:
           PYTHONWARNINGS: "ignore::DeprecationWarning"
+          SEGDATA_OSM: api          # the public Overpass mirrors answered 502 / timeouts for most courses (run 44380758575)
         run: |
           mkdir -p /home/runner/segdata
           python -u course_data/segment/train/build_dataset.py --out /home/runner/segdata \
             --courses course_data/segment/train/v2_courses.json --shard ${{ matrix.shard }} --nshards $NSHARDS \
-            --quality --max 1000 --minutes 150 || echo "build failed"
+            --quality --max 1000 --minutes 130 || echo "build failed"
           mv /home/runner/segdata/index.json /home/runner/segdata/index_${{ matrix.shard }}.json || true
           ls /home/runner/segdata | wc -l; du -sh /home/runner/segdata
       - uses: actions/upload-artifact@v4

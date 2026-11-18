@@ -13,7 +13,7 @@ minus the evaluation courses (Spirit Hollow, Veenker, Mozingo Lake: never traine
   * label raster: 0 background inside the outline, 1 green, 2 tee, 3 fairway, 4 bunker, 5 water (painted
     fairway < tee < green < water < bunker), 255 = ignore outside the outline (OSM maps nothing there).
 Writes <out>/<osm type>_<id>.npz (img uint8 4xHxW, lab uint8 HxW) and <out>/index.json.
-v2 (--courses): the image stays the fetched NAIP GeoTIFF (JPEG q88, the same bytes v1 decoded) as <name>.tif and
+v2 (--courses): OSM from the OSM API when SEGDATA_OSM=api (else Overpass, falling back to the API); the image stays the fetched NAIP GeoTIFF (JPEG q88, the same bytes v1 decoded) as <name>.tif and
 the npz holds lab only (about 4x smaller); --quality drops courses whose OSM polygons miss holes (quality()).
 Labels: OpenStreetMap contributors, ODbL 1.0. Imagery: USDA NAIP (public domain).
 """
