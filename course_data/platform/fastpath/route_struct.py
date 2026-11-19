@@ -110,7 +110,7 @@ def load(c, ver, sc_dir):
     Pb = RB.bench_probs(c["slug"], pv)
     if Pb is not None:
         d["_maps"].green, d["_maps"].tee = Pb[1], Pb[2]
-        sca, _ = RL.augment_scene(sc0, Pb)
+        sca, _ = RL.augment_scene(sc0, Pb, n_holes=x["n"])
         d["_gattr"], d["_tattr"] = RL.obj_attrs(d, sca, d["_maps"])
     return x, d
 

@@ -562,3 +562,49 @@ To ship it, the Hawk's Point shared-green block has to be resolved (or accepted)
 
 Reproduce: scratch teerec/pipe2.sh FASTPATH_CACHE P_TEE WORKDIR (then route_bench gate --train oof.json --write with
 ROUTE_GATE_PARAMS), teerec/testeval.sh (one test read), teerec/cover.py (coverage), teerec/loopcmp.py (loop diff).
+
+## State 2026-11-19 (later): tee cutoff 0 is the default, with a shared-green fallback
+
+The cutoff-0 routing (section above) failed the ship rule only on Hawk's Point (tier D): its chosen routing put holes
+1 and 14 on two green candidates 3 m apart, a hard block (fast.extra_gate "share a green"). Policy: deliver every
+course, mark unsure holes approximate; hard blocks stay hard. So the routing now avoids a hard block it causes itself.
+
+Fallback (route_scene._shared_fallback, after the re-ranker, before the tee refinement; `ROUTE_SHARED_FALLBACK=0`
+turns it off). Shared green = two holes whose package greens are within 15 yd (fast.GATE_SHARED_GREEN_YD). The check
+reproduces the package build: a virtual green end snaps to the nearest green the package holds (OSM greens + the
+scene greens the routing uses) within 40 yd of its edge, as geometry/build_holes.find_green does (the first version
+checked line ends only and picked an alternative that the package then blocked on holes 13 / 16). Only when the
+routing has a shared green: alternatives = the routing before the re-ranker, the re-ranker's candidate list (beams,
+renumberings, start / end re-solves; reused, not rebuilt), the same list built around the blocked routing, and
+re-solves with one green of each offending pair forbidden at that hole / at every hole. Kept: complete (no more
+missing holes than before), valid, no shared green. Chosen: fewest holes changed, then lowest solver cost
+(`ROUTE_SHARED_ORDER=cost` for cost only). Its changed holes and the blocked pair's holes get P(right) capped at 0.45
+(route_gate.FALLBACK_P), so they are marked approximate. The bench's out-of-fold tee picks are not applied to the
+changed holes (they were made for the other routing). Cost: about +9 s on a course that needs it, 0 otherwise.
+The other routing-side hard blocks are not routing-caused (card-order conflict reads the web cards only; a missing
+hole is one no alternative fills), so the fallback handles shared greens only.
+
+Out-of-fold, cutoff-0 fits (route_models/v2_teeall, now v2), train+big 643: 25 courses have a shared green under
+the package rule (the bench's line-end rule gate_v0 counted 12); the fallback rescues 21 of them (4 have no complete
+alternative without one; gate_v0 shared green 12 -> 3). No other course changes (per-course lines and holes identical
+on the other 618 + 3 errors: verified). The rescued courses' holes: order choice on choice 443 only:
+
+| fallback order | choice 443 holes | never-used 200 holes |
+|---|---|---|
+| lowest cost | -10 | 0 |
+| **fewest changed holes, then cost** | **-5** | +1 |
+
+Holes right / all-right out-of-fold with the fallback: train+big 643 82.96 % / 209 -> **82.93 % / 209**, choice 443
+83.01 % / 151 -> **82.94 % / 151**, never-used 200 82.87 % / 58 -> **82.90 % / 58** (the cost of no longer counting
+holes on courses that were blocked; vs the old default 0.3: +2.78 / +2.93 / +2.44 points). Test not re-read here
+(see the tee detection section below for the one test read).
+
+Default switched: detector.ROUTE_P_TEE["v2"] = 0.0 and the cutoff-0 fits are route_models/v2/; the previous v2 fits
+(cutoff 0.3) are route_models/v2_p03/, selected with `ROUTE_TEE_ALL=0` (cutoff 0.3 + those fits; rollback).
+ROUTE_TEE_ALL=1 is now the default and a no-op.
+
+Blind loop with the new defaults and no env (cache/val/struct/loop/teep0fb.txt vs teep0.txt / segv2.txt): tier A / B
+/ C identical (statuses, picks, flagged picks, approximate). D: Sunset, Remsen identical; Glenwild as in teep0 (one
+pick 15: Driver +8 -> +12, P(all) 0.210); Makena North no build; **Hawk's Point shown again** (fallback switched hole 1
+only, "start" re-solve; approximate 1-8, 13-18 = 14 of 18 as with the 0.3 default; P(all) 0.000). No tier D course
+goes from shown to blocked.

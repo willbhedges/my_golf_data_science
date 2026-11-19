@@ -292,6 +292,7 @@ def rerank(pr, seq0, m=None):
 
 def _rerank(pr, seq0, m):
     cands = candidates(pr, seq0, **m.get("gen", {}))
+    pr.rr_cands = cands                  # reused by route_scene's shared-green fallback
     f0 = features(pr, seq0)
     best, bi, gains = m["thr"], 0, []
     X, keep = [], []

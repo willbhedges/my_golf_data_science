@@ -143,7 +143,7 @@ AUG_AREA = (120, 2500)  # m2
 AUG_SEP_M = 22.0
 
 
-def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=None):
+def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=None, n_holes=None):
     """greens the scene left out (below its hole-green threshold or never extracted) but the U-Net's P(green) map
     holds as a solid blob: added as scene greens kind 'map' (p_hole 0.36 + 0.3 * blob mean, so they pass route_scene's
     threshold), unless within AUG_SEP_M of a green that is a routing candidate already. -> (scene copy, n added)"""
@@ -185,7 +185,85 @@ def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=No
     if peaks and peaks > 0:
         out += _peak_greens(pg, g, have, inv, peaks)
     sc = dict(scene, greens=list(scene.get("greens") or []) + out)
+    tp = tee_peak_p()
+    if tp > 0 and P.shape[0] > CLASSES.index("tee"):
+        gx = [(np.array(fwd.transform(*gg["centroid"])), math.sqrt(max(float(gg.get("area_m2") or 300.0), 30.0) / math.pi))
+              for gg in sc["greens"] if gg.get("kind") != "practice" and float(gg.get("p_hole", gg.get("p", 0))) >= P_GREEN]
+        tc = _peak_tees(P[CLASSES.index("tee")], scene, gx, fwd, inv, tp, n_holes or 18)
+        if tc:
+            sc["tee_complexes"] = list(scene.get("tee_complexes") or []) + tc
     return sc, len(out)
+
+
+# Tee complexes from the U-Net's P(tee) map (opt-in ROUTE_TEE_PEAKS=<threshold>, NOTES_ROUTING.md 2026-11-19 tee
+# detection): tee boxes below the scene's box threshold never form complexes, so a hole start the scene missed has
+# no tee candidate at all. Local maxima of P(tee) (smoothed, sigma TEE_PEAK_SIG_M) >= the threshold in a
+# TEE_PEAK_WIN_M window, at least TEE_PEAK_SEP_M from every scene complex box and from an earlier peak, and clear of
+# every green (radius + TEE_PEAK_GREEN_M), are added as one-box complexes kind 'peak' with p = the smoothed peak,
+# strongest first, until the course holds tee_peak_fill() complexes a hole.
+TEE_PEAK_SIG_M, TEE_PEAK_WIN_M, TEE_PEAK_SEP_M, TEE_PEAK_GREEN_M = 2.0, 15.0, 25.0, 6.0
+
+
+def tee_peak_p():
+    return float(os.environ.get("ROUTE_TEE_PEAKS", "0") or 0)
+
+
+def tee_peak_fill():
+    """peaks are added until the course has this many complexes a hole (ROUTE_TEE_PEAK_FILL, default 2)"""
+    return float(os.environ.get("ROUTE_TEE_PEAK_FILL", "2") or 2)
+
+
+def _peak_tees(pt, scene, greens, fwd, inv, th, n_holes):
+    import cv2
+    g = scene["grid"]
+    a, _, c, _, e, f = g["transform"][:6]
+    pt = np.asarray(pt)
+    pt = pt.astype(np.float32) / (255.0 if pt.dtype == np.uint8 else 1.0)
+    sm = cv2.GaussianBlur(pt, (0, 0), TEE_PEAK_SIG_M / abs(a))
+    w = max(3, int(round(TEE_PEAK_WIN_M / abs(a))) | 1)
+    mx = cv2.dilate(sm, np.ones((w, w), np.uint8))
+    rr, cc = np.where((sm >= mx - 1e-6) & (sm >= th))
+    real = [t for t in scene.get("tee_complexes") or [] if not t.get("virtual")]
+    have = [np.array(fwd.transform(*q)) for t in real
+            for q in ([b["centroid"] for b in t.get("boxes") or [] if b.get("centroid")] or [t["centroid"]])]
+    budget = max(0, int(tee_peak_fill() * n_holes) - len(real))     # course-adaptive: few complexes, more peaks
+    out = []
+    H, W = sm.shape
+    for i in np.argsort(-sm[rr, cc]):
+        if len(out) >= budget:
+            break
+        r0, c0 = int(rr[i]), int(cc[i])
+        x, y = c + a * (c0 + 0.5), f + e * (r0 + 0.5)
+        q = np.array([x, y])
+        if have and min(float(np.hypot(*(q - h))) for h in have) < TEE_PEAK_SEP_M:
+            continue
+        if any(float(np.hypot(*(q - gq))) < gr + TEE_PEAK_GREEN_M for gq, gr in greens):
+            continue
+        v = float(sm[r0, c0])
+        k = int(round(15.0 / abs(a)))
+        ra, rb, ca, cb = max(0, r0 - k), min(H, r0 + k + 1), max(0, c0 - k), min(W, c0 + k + 1)
+        m = (sm[ra:rb, ca:cb] >= 0.5 * v).astype(np.uint8)
+        _, lab = cv2.connectedComponents(m)
+        mk = (lab == lab[r0 - ra, c0 - ca]).astype(np.uint8)
+        area = float(mk.sum() * abs(a * e))
+        cs, _ = cv2.findContours(mk, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if cs and 20 <= area <= 1500:
+            ring = max(cs, key=cv2.contourArea).reshape(-1, 2).astype(float) + [ca, ra]
+            px, py = c + a * (ring[:, 0] + 0.5), f + e * (ring[:, 1] + 0.5)
+        else:
+            t_ = np.linspace(0, 2 * np.pi, 12, endpoint=False)
+            px, py = x + 5 * np.cos(t_), y + 5 * np.sin(t_)
+            area = float(np.pi * 25)
+        lo, la = inv.transform(px, py)
+        clo, cla = inv.transform(x, y)
+        poly = [[float(u), float(z)] for u, z in zip(lo, la)]
+        cid = "kp%d_%d" % (r0, c0)
+        out.append(dict(id=cid, p=round(v, 3), p_range_tee=0.0, centroid=[float(clo), float(cla)], polygon=poly,
+                        axis_deg=None, length_m=None, src=["peak"], virtual=False, kind="peak",
+                        boxes=[dict(id=cid + ".1", p=round(v, 3), centroid=[float(clo), float(cla)], area_m2=area,
+                                    polygon=poly, src=["peak"])]))
+        have.append(q)
+    return out
 
 
 PEAK_P = float(os.environ.get("ROUTE_LEARN_PEAKS", "0.2") or 0)  # > 0: also P(green) local maxima >= this (0: off)
@@ -727,7 +805,7 @@ def prac_table(slug, split, ver=None, sc_dir=None):
         d = dict(d, sc=dict(d["sc"], **pickle.load(open(os.path.join(sc_dir, slug + ".pkl"), "rb"))))
     scene = RB.rd(RB.scene_path(slug, ver))
     M = bench_maps(slug, scene, ver.split("_", 1)[1]).bind(d["co"]["pj"])
-    scene, _ = augment_scene(scene, RB.bench_probs(slug, ver.split("_", 1)[1]))
+    scene, _ = augment_scene(scene, RB.bench_probs(slug, ver.split("_", 1)[1]), n_holes=x["n"])
     d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)
     fc, _, _ = RB.course_files(slug)
     out = dict(slug=slug, px=prac_features(d, M), yp=prac_labels(d, fc), yh=np.asarray(labels(d, x["truth"])["g2h"]) > 0)
@@ -797,7 +875,7 @@ def table(slug, split, ver=None):
     scene = RB.rd(RB.scene_path(slug, ver))
     M = bench_maps(slug, scene, ver.split("_", 1)[1]).bind(d["co"]["pj"])
     if ROUTER == "v2":
-        scene, _ = augment_scene(scene, RB.bench_probs(slug, ver.split("_", 1)[1]))
+        scene, _ = augment_scene(scene, RB.bench_probs(slug, ver.split("_", 1)[1]), n_holes=x["n"])
     Y = S.card_sets(x["card"], int(x["n"]))
     d["_Y"] = Y
     d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)

@@ -355,7 +355,7 @@ def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
         Pb = bench_probs(c["slug"], (ver or scene_version()).split("_", 1)[1]) if router == "v2" else None
         if router == "v2" and scene is not None and Pb is not None:
             import route_learn as RL                     # greens the U-Net map holds but the scene left out
-            scene, _ = RL.augment_scene(scene, Pb)
+            scene, _ = RL.augment_scene(scene, Pb, n_holes=n)
     elif scene_kind == "perc":
         m = {r["slug"]: r for r in rd(os.path.join(CD, "zero_tap", "benchmark.json"))["courses"]}
         f = (m.get(c["slug"]) or {}).get("files", {}).get("scene")
@@ -458,7 +458,7 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
             if Pb is not None:
                 pd[0]["_maps"].green, pd[0]["_maps"].tee = Pb[1], Pb[2]     # P(green) / P(tee): virtual end anchors
             if Pb is not None:                           # detector p / map flag of each candidate (the gate reads them)
-                sca, _ = RL.augment_scene(sc0, Pb)
+                sca, _ = RL.augment_scene(sc0, Pb, n_holes=x["n"])
                 pd[0]["_gattr"], pd[0]["_tattr"] = RL.obj_attrs(pd[0], sca, pd[0]["_maps"])
             if json.loads(os.environ.get("ROUTER_PARAMS") or "{}").get("map_fair"):
                 pd[0]["co"] = dict(pd[0]["co"], maps=pd[0]["_maps"])

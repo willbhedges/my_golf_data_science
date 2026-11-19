@@ -37,6 +37,7 @@ MIN_RATIO = 1.25     # ... and the threshold must sit 25 % above the best-scored
 
 POLICY_ENV = "ROUTE_SHOW_POLICY"
 APPROX_P = 0.5       # auto policy: a hole whose calibrated P(hole right) is below this is marked "approximate"
+FALLBACK_P = 0.45    # cap on P(hole right) of a hole the shared-green fallback touched (so it is marked approximate)
 
 
 def policy():
@@ -107,6 +108,9 @@ def p_all(routed, params=None):
     X = np.array([hole_x(h) for h in hf], float)[:, :len(w) - 1]          # a gate fitted on fewer features
     z = X @ w[1:] + w[0]
     p = 1.0 / (1.0 + np.exp(-z))
+    # holes the shared-green fallback (route_scene._shared_fallback) moved or that held the shared green: approximate
+    fb = np.array([bool(h.get("fallback")) for h in hf])
+    p = np.where(fb, np.minimum(p, FALLBACK_P), p)
     return float(np.prod(p)), [round(float(v), 4) for v in p]
 
 

@@ -276,6 +276,113 @@ def _alts(S2, sol, k):
     return out[:k]
 
 
+# Fallback for a routing that would be hard-blocked by its own doing (fast.extra_gate): two holes whose greens are
+# within SHARED_YD of each other (the solver uses each green candidate once, but two candidates can be one green,
+# or a virtual green can snap onto a real one in the package build). The replacement is the complete routing without
+# a shared green that changes the fewest holes (then the lowest solver cost) among the re-ranker's alternatives (the
+# routing before the re-ranker, the beams, renumberings, start / end re-solves, also around the blocked routing) and
+# re-solves with one green of each offending pair excluded; its changed holes and the holes of the
+# blocked pair are marked approximate (route_gate). A routing without a shared green is never touched.
+# ROUTE_SHARED_FALLBACK=0 turns it off. (The other routing-side hard blocks: card-order conflict reads the web cards
+# only; a missing hole is a candidate the solver could not fill, which no alternative here fixes.)
+SHARED_YD = 15.0                   # = fast.GATE_SHARED_GREEN_YD
+SHARED_FALLBACK = os.environ.get("ROUTE_SHARED_FALLBACK", "1") == "1"
+SHARED_ORDER = os.environ.get("ROUTE_SHARED_ORDER", "ham")      # fewest changed holes first, then cost ("cost": cost only)
+
+
+SNAP_YD = 40.0                     # geometry/build_holes.find_green: a line end snaps to a green this close
+
+
+def _green_spots(S2, sol, d, pp, co):
+    """per hole the green the package build will give it (local yd), None for a hole without a line. A virtual
+    green end snaps to the nearest green the package holds (OSM greens + the scene greens this routing uses) within
+    SNAP_YD of its edge, as build_holes.find_green does (edge approximated by centre distance - radius)."""
+    virt = S2.place_virtual(sol)
+    if pp.get("refine") and d.get("_maps") is not None:
+        virt = S2.refine_virtual(sol, virt, d["_maps"], pp.get("refine_params"))
+    world = [j for j, src in enumerate(co["Gsrc"]) if src != "scene"] + \
+        [int(g) for k, t, g in sol["holes"] if g >= 0 and co["Gsrc"][g] == "scene"]
+    out = []
+    for i, (k, t, g) in enumerate(sol["holes"]):
+        v = virt.get(i) or {}
+        if (t < 0 and "tee" not in v) or (g < 0 and "green" not in v):
+            out.append(None)
+            continue
+        if g < 0:
+            q = np.asarray(v["green"], float)
+            ed = [(max(0.0, float(np.hypot(*(q - np.asarray(co["G"][j], float)))) - float(co["Gr"][j])), j)
+                  for j in world]
+            if ed and min(ed)[0] < SNAP_YD:
+                g = min(ed)[1]
+        out.append(np.asarray(co["G"][g], float) if g >= 0 else np.asarray(v["green"], float))
+    return out
+
+
+def _shared_pairs(S2, sol, d, pp, co):
+    G = _green_spots(S2, sol, d, pp, co)
+    return [(i, j) for i in range(len(G)) for j in range(i + 1, len(G))
+            if G[i] is not None and G[j] is not None and float(np.hypot(*(G[i] - G[j]))) <= SHARED_YD]
+
+
+def _shared_fallback(S2, sol, d, pp, co, seq0=None):
+    """-> (sol, info): sol unchanged unless its routing has a shared green and a complete alternative without one
+    exists. info None when there is no shared green."""
+    pairs = _shared_pairs(S2, sol, d, pp, co)
+    if not pairs:
+        return sol, None
+    import route_rerank as RR
+    pr = sol["pr"]
+    seq = [int(c) for c in sol["seq"]]
+    n_miss = sum(pr.cand[c][0] == S2.MISS for c in seq)
+    info = dict(pairs=[[i + 1, j + 1] for i, j in pairs], switched=False)
+    alts = []
+    if seq0 is not None and list(seq0) != seq:
+        alts.append(("before_rerank", [int(c) for c in seq0]))
+    try:                                     # the re-ranker's alternatives (around seq0) and those around seq
+        rc = getattr(pr, "rr_cands", None)
+        alts += [(k, s) for k, s in (rc or [])]
+        if not rc or rc[0][1] != seq:
+            alts += [(k, s) for k, s in RR.candidates(pr, seq)[1:]]
+    except Exception:                                                # noqa: BLE001
+        pass
+    for i, j in pairs:                       # re-solve without one green of the pair (at that hole / everywhere)
+        for h in (i, j):
+            g = int(pr.cand[seq[h]][2])
+            if g < 0:
+                continue
+            for fb in ({(h, "g", g)}, {(p, "g", g) for p in range(pr.N)}):
+                try:
+                    r = S2.search(pr, forbid=fb)
+                except Exception:                                    # noqa: BLE001
+                    r = None
+                if r:
+                    alts.append(("drop_green", [int(c) for c in r[0][1]]))
+    pool = []
+    seen = {tuple(seq)}
+    for kind, s in alts:
+        if len(s) != len(seq) or tuple(s) in seen or not RR.valid(pr, s):
+            continue
+        seen.add(tuple(s))
+        if sum(pr.cand[c][0] == S2.MISS for c in s) > n_miss:
+            continue
+        ham = sum(pr.cand[a][1:] != pr.cand[b][1:] for a, b in zip(seq, s))
+        cost = float(RR.cost_parts(pr, s)["total"])
+        pool.append(((ham, cost) if SHARED_ORDER == "ham" else (cost,), len(pool), cost, kind, s))
+    info["n_alts"] = len(pool)
+    best = None
+    for _, _, cost, kind, s in sorted(pool):       # the cheapest one without a shared green
+        if not _shared_pairs(S2, dict(sol, seq=s, holes=[pr.cand[c] for c in s]), d, pp, co):
+            best = (cost, kind, s)
+            break
+    if best is None:
+        return sol, info
+    cost, kind, s = best
+    changed = [i for i, (a, b) in enumerate(zip(seq, s)) if pr.cand[a][1:] != pr.cand[b][1:]]
+    info.update(switched=True, kind=kind, cost=round(cost, 3), changed=changed,
+                affected=sorted(set(changed) | {i for p in pairs for i in p}))
+    return dict(sol, seq=s, holes=[pr.cand[c] for c in s], cost=cost, cost0=sol.get("cost0", sol["cost"])), info
+
+
 def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared=None):
     """version v0: zero_tap/joint solve.py (missing tee / hole = free placeholder); v1: solve2.py (the card places
     missing tees / greens; virtual ends are written as hole-line ends with tee_src / green_src 'virtual').
@@ -310,6 +417,9 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
                            cost=RR.cost_parts(sol["pr"], new)["total"], cost0=sol["cost"])
                 rr_info = dict(rr_info or {}, switched=True,
                                changed=[i for i, (a, b) in enumerate(zip(seq0, new)) if a != b])
+        shared_fb = None
+        if SHARED_FALLBACK:
+            sol, shared_fb = _shared_fallback(S2, sol, d, pp, co, seq0=list(seq0) if (fix_seq is not None or rr) else None)
         tee_box = pp.pop("tee_box", "far")
         tee_fix = pp.pop("tee_fix", None)                    # the bench's out-of-fold tee choices (route_tee)
         tee_dump = pp.pop("tee_dump", None)                  # a list: route_tee candidates appended (training rows)
@@ -370,7 +480,8 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
     if version == "v2" and pr2.Y is not None:
         import route_tee as RT
         if tee_fix is not None:                     # the bench's out-of-fold tee choices
-            TQ = [tuple(tee_fix[str(i)]) if str(i) in tee_fix and TQ[i] is not None else TQ[i]
+            moved = set((shared_fb or {}).get("changed") or [])     # made for the routing the fallback replaced
+            TQ = [tuple(tee_fix[str(i)]) if str(i) in tee_fix and TQ[i] is not None and i not in moved else TQ[i]
                   for i in range(len(TQ))]
             tee_info = dict(fixed=True)
         elif tee_dump is not None or (tee_rr and RT.enabled()):
@@ -415,13 +526,16 @@ def route(fc, scene, card, n_holes, co=None, version="v0", params=None, prepared
                                pw=_walk_p(d, holes, i, pr2.loop), **_obj_f(d, t, g)))
             if rr_info and rr_info.get("switched"):
                 hole_f[-1]["rr"] = int(i in rr_info["changed"])
+            if shared_fb and shared_fb.get("switched") and i in shared_fb["affected"]:
+                hole_f[-1]["fallback"] = 1          # route_gate caps its P below APPROX_P: marked approximate
     if version not in V1_LIKE:
         n_vt = sum(1 for t, g in holes if t < 0 and g >= 0)
     return dict(features=feats, min_margin=float(min(mg)) if len(mg) else 0.0, margins=[round(float(m), 2) for m in mg],
                 n_virtual=nv if version not in V1_LIKE else n_vt + n_vg + n_miss, n_vt=n_vt, n_vg=n_vg, n_miss=n_miss,
                 n_holes=int(n_holes), greens=len(co["G"]), tee_complexes=len(co["T"]), version=version,
                 cost=float(sol["cost"]), rerank=rr_info if version in V1_LIKE else None,
-                tee_refine=tee_info if version in V1_LIKE else None, detected_holes=det, _used=used, hole_features=hole_f, alts=alts,
+                tee_refine=tee_info if version in V1_LIKE else None,
+                shared_fallback=shared_fb if version in V1_LIKE else None, detected_holes=det, _used=used, hole_features=hole_f, alts=alts,
                 has_card=bool(S.card_sets(card, int(n_holes)) is not None), **info)
 
 
@@ -510,7 +624,7 @@ def route_v2(fc, scene, card, n_holes, P, hag=None, params=None):
     walk scores from route_learn's models (real-candidate fit, fairway / turf / tree features along each line),
     solve2 with V2_PARAMS. -> (route result, candidate info, the augmented scene)"""
     import route_learn as RL
-    scene, n_aug = RL.augment_scene(scene, P)
+    scene, n_aug = RL.augment_scene(scene, P, n_holes=n_holes)
     co, ci = candidates(fc, scene, n_holes=n_holes)
     d, _ = prepare(fc, scene, card, n_holes, co=co, version="v2")
     M = RL.corridor_maps(P, scene["grid"], hag=hag).bind(co["pj"])
