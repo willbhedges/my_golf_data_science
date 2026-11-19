@@ -13,7 +13,7 @@
   (best mean validation IoU).
 * Training data: NAIP (USDA, public domain, via Microsoft Planetary Computer) with OpenStreetMap golf polygons
   as labels (ODbL 1.0): 1329 training courses in 49 states
-  (0 built of 0 drawn, `course_data/segment/train/dataset_index_v2.json`; drawn by
+  (1383 built of 1500 drawn, `course_data/segment/train/dataset_index_v2.json`; drawn by
   `pick_v2.py` with every validation-set, blind20 / TEST-40, perception pool and TRAIN-BIG course and a 1.5 km
   buffer around them excluded).
 * Validation (54 held-out courses of the same draw, 512 px tiles), IoU: init (v1) green 0.6473, tee 0.3306, fairway 0.6312, bunker 0.4933, water 0.6023, mean 0.5409;
