@@ -8,7 +8,8 @@
 The routing models (route_learn / route_rerank / route_tee / the per-hole gate) read per-pixel U-Net maps, so each
 U-Net has its own fit: the files in this folder are the v1 fits; another model's live in route_models/<name>/ and
 are used when that model is selected (a file missing there falls back to this folder's). Each module's env override
-(ROUTE_LEARN_MODEL, ROUTE_RERANK_MODEL, ROUTE_TEE_MODEL, ROUTE_GATE_PARAMS) wins over both.
+(ROUTE_LEARN_MODEL, ROUTE_RERANK_MODEL, ROUTE_TEE_MODEL, ROUTE_GATE_PARAMS) wins over both. ROUTE_TEE_ALL=1 (opt-in, v2): every scene tee complex enters routing, with the
+fits in route_models/v2_teeall/ (route_p_tee / tee_all below).
 """
 from __future__ import annotations
 
@@ -19,6 +20,27 @@ CD = os.path.dirname(os.path.dirname(HERE))
 DEFAULT = "v2"            # national fine-tune (NOTES_PERCEPTION.md 2026-11-19); FASTSCENE_UNET_MODEL=v1 rolls back
 UNETS = {"v1": os.path.join(CD, "segment", "models", "golfseg_own", "model.safetensors"),
          "v2": os.path.join(CD, "segment", "models", "golfseg_own_v2", "model.safetensors")}
+
+
+# Scene tee complexes enter routing (route_scene.candidates) at p * (1 - p_range_tee) >= route_p_tee(); each U-Net's
+# routing fits were made at its value. Opt-in ROUTE_TEE_ALL=1 (v2 only, NOTES_ROUTING.md 2026-11-19 later): every
+# scene complex enters (cutoff 0.0) and the routing fits refitted at that cutoff (route_models/v2_teeall/) are used.
+# Env ROUTE_P_TEE overrides the cutoff alone (the fits must match it: ROUTE_*_MODEL).
+ROUTE_P_TEE = {"v1": 0.3, "v2": 0.3}
+TEE_ALL = {"v2": ("v2_teeall", 0.0)}          # U-Net -> (routing fits folder, cutoff) under ROUTE_TEE_ALL=1
+
+
+def tee_all():
+    """the (routing fits folder, cutoff) of the opt-in ROUTE_TEE_ALL=1 for the selected U-Net, else None"""
+    return TEE_ALL.get(unet_model()) if os.environ.get("ROUTE_TEE_ALL", "0") == "1" else None
+
+
+def route_p_tee():
+    v = os.environ.get("ROUTE_P_TEE")
+    if v:
+        return float(v)
+    ta = tee_all()
+    return ta[1] if ta else ROUTE_P_TEE[unet_model()]
 
 
 def unet_model():
@@ -37,8 +59,9 @@ def routing_file(name, env=None):
     if env and os.environ.get(env):
         return os.environ[env]
     m = unet_model()
-    if m != "v1":
-        p = os.path.join(HERE, "route_models", m, name)
+    ta = tee_all()
+    for d in ([ta[0]] if ta else []) + ([m] if m != "v1" else []):
+        p = os.path.join(HERE, "route_models", d, name)
         if os.path.exists(p):
             return p
     return os.path.join(HERE, name)

@@ -513,3 +513,52 @@ Glenwild none approximate, card misfit warning 5 -> 3 holes; Hawk's Point approx
 
 Reproduce: scratch pipe.sh (prep, table, x3, cv / fit, gen + learn re-ranker, tgen + tlearn3, out-of-fold eval with
 picks, test, gate) with FASTPATH_CACHE=cache/v2root, ROUTE_LEARN_VER=v2seg_d0+yall, FASTSCENE_UNET_MODEL=v2.
+
+## State 2026-11-19 (later): low-p tee complexes as routing candidates (opt-in ROUTE_TEE_ALL=1, not the default)
+
+Lever named above: the v2 tee-complex object model's lower recall. The complexes it rejects are not dropped: every
+complex stays in the scene with its calibrated p (the F1 threshold 0.40 maps to p 0.5), and routing's own cutoff
+(route_scene, p * (1 - p_range_tee) >= 0.3) is what keeps them out. So the cutoff, not the object model, is the knob.
+Coverage of truth tee starts by a scene complex (any box / centroid within 30 m), choice courses (451 with a v2 scene,
+never-used and test not read): v2 79.7 % at >= 0.3, 81.8 % at 0.2, 83.1 % at 0.1, 83.4 % at 0.05 and at 0 (complexes
+a course 19.6 -> 21.9); v1 84.2 % at 0.3, 85.3 % at 0. The rest of v2's gap is upstream (tee boxes below the complex
+builder's min box p 0.3), not tried: it needs a scene rebuild.
+
+Every routing fit was redone per cutoff with the v2 recipe unchanged (route_learn h / w / s / e + x3, re-ranker,
+tee refinement, gate; scratch teerec/pipe2.sh = pipe.sh without test stages, ROUTE_P_TEE=<cutoff>). Candidates are still
+capped at 3 a hole (54) by p, and complex p is already a route_learn feature (t_p). Out-of-fold, holes right / courses
+all-right; card error median / p90 yd on train+big:
+
+| cutoff | train+big 643 | choice 443 | never-used 200 | card err |
+|---|---|---|---|---|
+| 0.3 (v2 default) | 80.15 % / 183 | 80.01 % / 130 | 80.46 % / 53 | 6.2 / 37.0 |
+| 0.2 | 81.52 % / 198 | 81.57 % / 141 | 81.42 % / 57 | 6.1 / 37.3 |
+| 0.1 | 82.42 % / 212 | 82.06 % / 153 | 83.23 % / 59 | 5.9 / 36.4 |
+| 0.05 | 82.68 % / 203 | 82.64 % / 146 | 82.78 % / 57 | 6.0 / 35.5 |
+| **0 (every complex)** | **82.96 % / 209** | **83.01 % / 151** | **82.87 % / 58** | 5.9 / 35.6 |
+
+Chosen on choice 443 holes right: 0 (all-right peaks at 0.1, 153 vs 151; holes is the target). Per course vs 0.3:
+choice 120 better (+340 holes) / 58 worse (-119); never-used 50 better (+144) / 35 worse (-64). Cost about +0.1 s a
+course (2.06 vs 1.94 s). Re-ranker at 0: 22 picks (54 at 0.3) since the base routing is stronger. Gate refitted on
+the cutoff-0 out-of-fold results (640 courses, threshold still 1.1 under the auto policy).
+
+Test 28 (read once, after the choice, bench production path: final fits, sc overrides from the final route_learn
+model): 81.78 % / 9 -> **86.54 % / 10** (395 -> 418 of 483 holes; v1 was 83.23 %), card error 5.3 / 39.4 -> 5.0 / 34.8 yd.
+9 courses better, none worse: towne_lake_hills 12 -> 17, visalia 11 -> 16, green_harbor 11 -> 15, skokie 12 -> 15,
+ozaukee 14 -> 16, elmcrest, kingwood, smoke_rise, woods_hole 7 -> 8 (+1 each). Never-used 200 + test 28 pooled (3804
+holes): 80.63 -> 83.33 %.
+
+Blind loop (cache/val/struct/loop/teep0.txt vs segv2.txt, same NAIP years): tier A / B / C identical (statuses, picks,
+flagged picks, gates). D: Sunset and Remsen identical; Glenwild shown, P(all) 0.191 -> 0.210, one pick moves (15:
+Driver +8 -> +12); Makena North no build; **Hawk's Point goes from shown (P(all) 0.000, 14 of 18 approximate) to
+blocked**: hard block "holes 1 and 14 share a green". That fails the ship rule (no tier D course from shown to blocked),
+so this is NOT the default: the default stays cutoff 0.3 with route_models/v2/ (re-run of the loop on 2, 4, 13, 18
+without the flag reproduces segv2.txt). Not tuned on the loop: 0.05 / 0.1 / 0.2 were not tried there.
+
+Opt-in: `ROUTE_TEE_ALL=1` (v2 only; detector.tee_all / route_p_tee) sets the cutoff to 0 and reads the fits in
+`route_models/v2_teeall/` (route_learn / re-ranker / tee / gate at cutoff 0; checked: the loop with only the flag set
+gives teep0.txt's Hawk's Point). `ROUTE_P_TEE=<x>` alone overrides the cutoff (fits must match: ROUTE_*_MODEL).
+To ship it, the Hawk's Point shared-green block has to be resolved (or accepted) first.
+
+Reproduce: scratch teerec/pipe2.sh FASTPATH_CACHE P_TEE WORKDIR (then route_bench gate --train oof.json --write with
+ROUTE_GATE_PARAMS), teerec/testeval.sh (one test read), teerec/cover.py (coverage), teerec/loopcmp.py (loop diff).

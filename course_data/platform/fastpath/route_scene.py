@@ -5,7 +5,7 @@ joint solver as route_joint.py (zero_tap/joint, card-aware, tee_reuse) and writt
     co, info = candidates(fc, scene)         # zero_tap/joint Course: OSM first, scene detections that add to it
     r = route(fc, scene, card, n_holes)      # route_joint.route's result + per-hole sources
 
-A detection enters only with its probability >= P_GREEN / P_TEE, and never within MERGE_YD of an OSM object of the
+A detection enters only with its probability >= P_GREEN / detector.route_p_tee(), and never within MERGE_YD of an OSM object of the
 same kind (OSM wins). The joint models were fitted on OSM candidates (p 0.9 each), so every kept candidate gets
 p 0.9 too: the detector's probability only decides whether it is a candidate. Gate (fast.py): a course routed on
 detections is shown only with min margin >= route_joint.MIN_MARGIN and no virtual hole, like route_joint; every
@@ -18,10 +18,11 @@ import os
 
 import numpy as np
 
+import detector as _DET
 import route_joint as RJ
 
 P_GREEN = 0.35
-P_TEE = 0.3
+P_TEE = 0.3        # v1 fits; the cutoff in use is detector.route_p_tee() (per U-Net, env ROUTE_P_TEE overrides)
 MERGE_YD = 25.0
 FAIRWAY_MIN_M2 = 1500.0
 
@@ -59,8 +60,9 @@ def split_complex(pts, min_len=None, min_gap=None):
     return [[tuple(P[i]) for i in o[:j + 1]], [tuple(P[i]) for i in o[j + 1:]]]
 
 
-def candidates(fc, scene, p_green=P_GREEN, p_tee=P_TEE, n_holes=18, split_tees=None):
+def candidates(fc, scene, p_green=P_GREEN, p_tee=None, n_holes=18, split_tees=None):
     C, F, M, S = _mods()
+    p_tee = _DET.route_p_tee() if p_tee is None else p_tee
     from shapely.geometry import Polygon
     TR = C.TR
     split_tees = SPLIT_TEES if split_tees is None else split_tees
@@ -469,7 +471,7 @@ def scene_features(scene, kinds=("green", "tee", "fairway", "bunker", "water"), 
         for t in scene.get("tee_complexes") or []:
             if t.get("virtual") or (used is not None and "scene:" + t["id"] not in used):
                 continue
-            if used is None and float(t.get("p", 0)) < P_TEE:
+            if used is None and float(t.get("p", 0)) < _DET.route_p_tee():
                 continue
             for b in t.get("boxes") or []:
                 if b.get("polygon") and len(b["polygon"]) >= 3:
