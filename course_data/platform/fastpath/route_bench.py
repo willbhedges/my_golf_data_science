@@ -462,7 +462,25 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
                 pd[0]["_gattr"], pd[0]["_tattr"] = RL.obj_attrs(pd[0], sca, pd[0]["_maps"])
             if json.loads(os.environ.get("ROUTER_PARAMS") or "{}").get("map_fair"):
                 pd[0]["co"] = dict(pd[0]["co"], maps=pd[0]["_maps"])
+    alt_src = _picks("ROUTE_CARD_PICKS").get(x["slug"])        # route_scene card selection's out-of-fold pick
+    if alt_src and pd is not None and x["scene"] is not None:
+        _, _, scj0 = course_files(x["slug"])
+        alt = next((c["card"] for c in (scj0 or {}).get("cards") or [] if c.get("source") == alt_src and c.get("card")), None)
+        fd = os.environ.get("ROUTE_BENCH_FOLDS")                 # route_learn fold models (folds.json + fold_<i>.pkl)
+        if alt is not None and fd:
+            import route_learn as RL
+            fo = json.load(open(os.path.join(fd, "folds.json")))
+            sc0 = rd(scene_path(x["slug"], ver))
+            pv = (ver or scene_version()).split("_", 1)[1]
+            sca, _ = RL.augment_scene(sc0, bench_probs(x["slug"], pv), n_holes=x["n"])
+            d = dict(pd[0], card=alt)
+            RL.rescore(d, sca, d["_maps"], card=alt, n_holes=x["n"],
+                       path=os.path.join(fd, "fold_%d.pkl" % fo[x["slug"]]))
+            pd = (d, pd[1])
+            x = dict(x, card=alt)
     out = dict(slug=x["slug"], split=x["split"], n=x["n"], n_true=len(x["truth"]), has_card=x["card"] is not None)
+    if alt_src:
+        out["card_pick"] = alt_src
     if x["scene"] is None:
         out.update(error="no scene")
         return out
@@ -477,10 +495,10 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
         else:
             import route_scene as RS
             prm = json.loads(os.environ.get("ROUTER_PARAMS") or "{}")
-            pk = _picks().get(x["slug"])                 # route_rerank's out-of-fold pick for this course
+            pk = None if alt_src else _picks().get(x["slug"])   # route_rerank's out-of-fold pick (made for its card)
             if pk is not None:
                 prm["fix_seq"] = pk
-            tk = _picks("ROUTE_TEE_PICKS").get(x["slug"])   # route_tee's out-of-fold tee choices for this course
+            tk = None if alt_src else _picks("ROUTE_TEE_PICKS").get(x["slug"])   # route_tee's out-of-fold tee choices
             if tk is not None:
                 prm["tee_fix"] = tk
             r = RS.route(x["fc"], x["scene"], x["card"], x["n"], version=router, params=prm, prepared=pd)

@@ -223,17 +223,25 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
         nonlocal fc, summ
         import package as pk
         import route_scene
-        card, _ = pk.pick_scorecard(req, raw, fc)
+        card, cinfo = pk.pick_scorecard(req, raw, fc)
         n = len(next(iter(card["tee_sets"].values()))["yards"]) if card and card.get("tee_sets") else (row.get("holes") or 18)
         if not imagery or os.environ.get("FASTPATH_PERCEPTION", "1") == "0" or not route_scene.needs_perception(fc, n):
             return None
         t = time.time()
-        try:
-            r, sup, ts = route_scene.run(pkg_dir, fc, card, n)
+        try:                                     # web cards only: a request / file / typed card is never replaced
+            r, sup, ts = route_scene.run(pkg_dir, fc, card, n,
+                                         card_select=(cinfo or {}).get("kind") not in ("request", "file", "typed"))
         except Exception as e:                                       # noqa: BLE001
             T["perception"] = f"failed: {type(e).__name__}: {e}"[:200]
             return None
         T["perception"] = ts
+        cs = r.get("card_select") or {}
+        if cs.get("switched") and cs.get("card"):   # the routed holes fit another web card better: the package uses it
+            p = os.path.join(raw, "scene_card.json")
+            pc.write_json(p, cs.pop("card"))
+            req["scorecard"] = p
+            pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
+        cs.pop("card", None)
         if r.get("n_holes") and any((f.get("properties") or {}).get("golf") == "hole" for f in sup):
             p = os.path.join(raw, "scene_holes.geojson")
             pc.write_json(p, {"type": "FeatureCollection", "features": sup})

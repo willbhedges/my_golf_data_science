@@ -72,14 +72,16 @@ def unet_file():
     return UNETS[unet_model()]
 
 
-# Routing selection (NOTES_ROUTING.md 2026-11-20 "routing selection"): v2's re-ranker is a lambdarank ranker and the tee
-# refinement a ranker / classifier hybrid with a card-residual penalty (route_models/v2/). ROUTE_SELECT=0 rolls back to
-# the previous re-ranker / tee / gate fits (route_models/v2_pk/: regressor re-ranker, eps tie-break tee choice).
-SELECT_ROLLBACK = {"v2": "v2_pk"}
+# Routing selection (NOTES_ROUTING.md 2026-11-20 "routing selection" and "re-ranker features"): v2's re-ranker is a
+# bagged lambdarank ranker over all alternative kinds with the extended features, the tee refinement a ranker /
+# classifier hybrid with a card-residual penalty (route_models/v2/). Rollbacks of the re-ranker / tee / gate fits:
+# ROUTE_SELECT=w1e (route_models/v2_w1e/: single ranker over start / end alternatives), ROUTE_SELECT=0
+# (route_models/v2_pk/: regressor re-ranker, eps tie-break tee choice).
+SELECT_ROLLBACK = {"v2": {"0": "v2_pk", "w1e": "v2_w1e"}}
 
 
 def select_rollback():
-    return SELECT_ROLLBACK.get(unet_model()) if os.environ.get("ROUTE_SELECT", "1") == "0" else None
+    return SELECT_ROLLBACK.get(unet_model(), {}).get(os.environ.get("ROUTE_SELECT", "1"))
 
 
 def routing_file(name, env=None):

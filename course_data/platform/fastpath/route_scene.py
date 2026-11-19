@@ -637,7 +637,52 @@ def route_v2(fc, scene, card, n_holes, P, hag=None, params=None):
     return r, ci, scene
 
 
-def run(pkg_dir, fc, card, n_holes, log=None):
+# Card selection (NOTES_ROUTING.md 2026-11-20 "card selection"): the web cards can disagree (a card of the sister
+# course on a 27 / 36-hole site, a stale or misnumbered card). When another web card's yardages differ materially from
+# the chosen one, the course is routed with it as well, and the card the routed holes fit best (median relative
+# residual of the hole line lengths to the card's best tee set) replaces the chosen card when it fits better by more
+# than CARD_SELECT_MARGIN. Only here (tiers C / D, routed on detections); an explicit request card is never replaced.
+# Opt-in (ROUTE_CARD_SELECT=1): on the strict out-of-fold bench never-used 200 lost holes (the switched courses lose
+# their out-of-fold re-ranker / tee picks there), so it is not the default.
+CARD_SELECT_MARGIN = float(os.environ.get("ROUTE_CARD_SELECT_MARGIN", "0.01"))
+CARD_DIFFER = 0.01
+
+
+def card_select_on():
+    return os.environ.get("ROUTE_CARD_SELECT", "0") == "1"
+
+
+def card_fit(feats, card, n):
+    """median relative |line length - card yards| of the routed holes, for the card's best tee set (None: no fit)"""
+    if not card or not feats:
+        return None
+    L = {}
+    for f in feats:
+        a = np.asarray(f["geometry"]["coordinates"], float)
+        k = math.cos(math.radians(float(a[:, 1].mean())))
+        L[int(f["properties"]["ref"])] = float(np.hypot(np.diff(a[:, 0]) * k, np.diff(a[:, 1])).sum() * 111320.0 / 0.9144)
+    best = None
+    for s in (card.get("tee_sets") or {}).values():
+        y = list(s.get("yards") or [])
+        if y and len(y) < n and n % len(y) == 0:
+            y = y * (n // len(y))
+        rr = [abs(L[i] - y[i - 1]) / max(float(y[i - 1]), 1.0) for i in L if i - 1 < len(y) and y[i - 1]]
+        if rr:
+            m = float(np.median(rr))
+            best = m if best is None or m < best else best
+    return best
+
+
+def cards_differ(a, b, n, tol=CARD_DIFFER):
+    """the two cards' closest tee sets differ by more than tol (median relative per hole)"""
+    C, F, M, S = _mods()
+    A, B = S.card_sets(a, n), S.card_sets(b, n)
+    if A is None or B is None:
+        return False
+    return min(float(np.median(np.abs(x - y) / np.maximum(y, 1))) for x in A for y in B) > tol
+
+
+def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
     """Build the fast-path scene (fastscene.build -> pkg_dir/scene.json), route OSM + detections jointly.
     -> (route result without features, supplement features [golf=hole lines + the detected greens / tee boxes the
     route uses + detected fairways / bunkers / water where OSM has none of that kind], seconds)"""
@@ -650,7 +695,11 @@ def run(pkg_dir, fc, card, n_holes, log=None):
     t1 = time.time()
     P = info.get("P")
     if ROUTER == "v2" and P is not None and np.shape(P)[0] == 6:
-        r, ci, scene = route_v2(fc, scene, card, n_holes, P, getattr(info.get("stack"), "a", {}).get("hag"))
+        hag = getattr(info.get("stack"), "a", {}).get("hag")
+        scene0 = scene
+        r, ci, scene = route_v2(fc, scene0, card, n_holes, P, hag)
+        if card_select and card_select_on() and card:
+            r, ci, scene = _card_select(pkg_dir, fc, scene0, card, n_holes, P, hag, (r, ci, scene))
     else:
         co, ci = candidates(fc, scene, n_holes=n_holes)
         r = route(fc, scene, card, n_holes, co=co, version="v1" if ROUTER == "v2" else ROUTER)
@@ -676,6 +725,44 @@ def run(pkg_dir, fc, card, n_holes, log=None):
         f["properties"]["origin"] = "fastscene"
     T["total"] = round(time.time() - t, 2)
     return {k: v for k, v in r.items() if k != "features"}, sup, T
+
+
+def _card_select(pkg_dir, fc, scene0, card, n_holes, P, hag, cur):
+    """route with every other web card that differs materially; keep the card the routed holes fit best (by more
+    than CARD_SELECT_MARGIN) -> (r, ci, scene); r['card_select'] records the choice (and the card when switched)"""
+    import json as _json
+    try:
+        web = _json.load(open(os.path.join(pkg_dir, "raw", "scorecard_web.json")))
+    except Exception:                                                # noqa: BLE001
+        return cur
+    try:
+        import scorecard as scm
+        norm = scm.normalise
+    except Exception:                                                # noqa: BLE001
+        norm = lambda c: c                                           # noqa: E731
+    f0 = card_fit(cur[0].get("features"), card, n_holes)
+    best, info = (f0, None), dict(fit_chosen=f0, tried=[])
+    for c in web.get("cards") or []:
+        alt = c.get("card")
+        if not alt:
+            continue
+        try:
+            alt = norm(alt)
+            if not cards_differ(alt, card, n_holes):
+                continue
+            r2 = route_v2(fc, scene0, alt, n_holes, P, hag)
+        except Exception:                                            # noqa: BLE001
+            continue
+        f2 = card_fit(r2[0].get("features"), alt, n_holes)
+        info["tried"].append(dict(source=c.get("source"), fit=f2))
+        if f2 is not None and (best[0] is None or f2 < best[0]):
+            best = (f2, (c.get("source"), alt, r2))
+    if best[1] is not None and (f0 is None or f0 - best[0] > CARD_SELECT_MARGIN):
+        src, alt, r2 = best[1]
+        r2[0]["card_select"] = dict(info, switched=True, source=src, fit=best[0], card=alt)
+        return r2
+    cur[0]["card_select"] = dict(info, switched=False)
+    return cur
 
 
 def confirm_questions(package, routed):

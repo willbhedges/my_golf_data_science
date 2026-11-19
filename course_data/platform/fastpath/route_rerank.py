@@ -264,14 +264,148 @@ def features(pr, seq, seq0=None):
     return {k: f[k] for k in FEATS}
 
 
+# extended features (model key feats2=True; NOTES_ROUTING.md 2026-11-20 "re-ranker features")
+FEATS2 = ("par_out_yd", "par4_bad", "rel_sum", "rel_n08", "rel_n25", "rel_top3", "rel_kset", "len_corr_k",
+          "walk_rank_sum", "walk_rank_bad", "walk_back", "walk_med", "loop_close", "club_both", "nine_err",
+          "nine_swap_gain", "nine_rel", "x_pairs_near", "ph_min", "ph_n05", "pw_sum", "pw_min")
+PAR_BAND = {3: (90.0, 260.0), 4: (240.0, 490.0), 5: (430.0, 680.0)}
+
+
+def features2(pr, seq):
+    """extra course-level description of a routing: per-hole par bands, card residual distribution (course set and
+    best set), walk geometry (next tee's rank among tees near the green, backtracking toward the green just played),
+    loop closure / clubhouse, front / back nine totals vs the card (and vs the card with the nines swapped), the hole /
+    walk model scores' weakest links"""
+    S2 = _s2()
+    N, L = pr.N, pr.loop
+    geo = pr.d["geo"]
+    D = geo["D"]                                    # [t, g]
+    f = {k: 0.0 for k in FEATS2}
+    Lp = np.full(N, np.nan)
+    for i, c in enumerate(seq):
+        k, t, g = pr.cand[c]
+        if k == S2.REAL:
+            Lp[i] = float(geo["P"][t, g])
+    if pr.card_par:
+        for i in range(N):
+            par = pr.card_par[i]
+            if par in PAR_BAND and Lp[i] == Lp[i]:
+                lo, hi = PAR_BAND[par]
+                out = max(0.0, lo - Lp[i], Lp[i] - hi)
+                f["par_out_yd"] += min(out, 200.0)
+                if par == 4 and out > 0:
+                    f["par4_bad"] += 1
+    if pr.Y is not None:
+        ok = Lp == Lp
+        Y = np.asarray(pr.Y, float)
+        k0 = pr.kstar if pr.kstar is not None else int(np.argmin([np.nanmedian(np.abs(Lp[ok] - y[ok])) if ok.any()
+                                                                  else 0 for y in Y]))
+        y = Y[k0]
+        rel = np.abs(Lp[ok] - y[ok]) / np.maximum(y[ok], 1.0)
+        if len(rel):
+            f["rel_sum"] = float(np.sum(np.minimum(rel, 0.5)))
+            f["rel_n08"] = float(np.sum(rel > 0.08))
+            f["rel_n25"] = float(np.sum(rel > 0.25))
+            f["rel_top3"] = float(np.mean(np.sort(rel)[-3:]))
+            f["rel_kset"] = float(np.mean(np.min(np.abs(Lp[ok][None] - Y[:, ok]) / np.maximum(Y[:, ok], 1.0), 0)))
+            if ok.sum() >= 4 and np.std(Lp[ok]) > 0 and np.std(y[ok]) > 0:
+                f["len_corr_k"] = float(np.corrcoef(Lp[ok], y[ok])[0, 1])
+        if N == 18 and L == 9:
+            def nine(a, b):
+                m = (Lp[a:b] == Lp[a:b])
+                return float(np.sum(Lp[a:b][m])), m
+            fr, mf = nine(0, 9)
+            bk, mb = nine(9, 18)
+            yf, yb = y[:9], y[9:]
+            e = abs(fr - np.sum(yf[mf])) + abs(bk - np.sum(yb[mb]))
+            es = abs(fr - np.sum(yb[mf])) + abs(bk - np.sum(yf[mb]))
+            f["nine_err"] = e
+            f["nine_swap_gain"] = e - es
+            f["nine_rel"] = e / max(float(np.sum(y)), 1.0)
+    # walks: rank of the next tee among all tee complexes by distance from the green
+    used_t = [int(pr.ct[c]) for c in seq]
+    ws, rk = [], []
+    for i in range(N - 1):
+        if (i + 1) % L == 0:
+            continue
+        g = int(pr.cg[seq[i]])
+        t = int(pr.ct[seq[i + 1]])
+        if g < 0 or t < 0 or pr.typ[seq[i + 1]] == S2.VT:
+            continue
+        dg = D[:, g]
+        r = int(np.sum(dg < dg[t]))
+        rk.append(r)
+        ws.append(float(dg[t]))
+        tp = int(pr.ct[seq[i]])                    # backtracking: next tee nearer the tee just played than its green
+        if tp >= 0 and pr.Dtt is not None and len(pr.Dtt) and pr.Dtt[tp, t] < 0.5 * float(D[tp, g]):
+            f["walk_back"] += 1
+    if rk:
+        f["walk_rank_sum"] = float(np.sum(np.minimum(rk, 10)))
+        f["walk_rank_bad"] = float(np.sum(np.asarray(rk) >= 3))
+        f["walk_med"] = float(np.median(ws))
+    for i0 in range(0, N, L):                       # loop closure: last green back near the first tee
+        t = int(pr.ct[seq[i0]])
+        g = int(pr.cg[seq[i0 + L - 1]])
+        if t >= 0 and g >= 0:
+            f["loop_close"] += min(float(D[t, g]), 1000.0)
+        if pr.club is not None and t >= 0 and g >= 0 and pr.Dct is not None:
+            f["club_both"] += float(np.log1p(pr.Dct[t] / 50.0) + np.log1p(pr.Dcg[g] / 50.0))
+    # crossings between holes that are adjacent in the numbering are cheap; far ones are suspicious
+    for a in range(N):
+        for b in range(a + 2, N):
+            if pr.X[seq[a], seq[b]]:
+                f["x_pairs_near"] += 1
+    ph = [pr.ph.get((int(pr.ct[c]), int(pr.cg[c])), 0.0) for c in seq if pr.typ[c] == S2.REAL]
+    if ph:
+        f["ph_min"] = float(np.min(ph))
+        f["ph_n05"] = float(np.sum(np.asarray(ph) < 0.5))
+    wn = []
+    for i in range(N - 1):
+        if (i + 1) % L == 0:
+            continue
+        g = int(pr.cg[seq[i]])
+        t = int(pr.ct[seq[i + 1]])
+        if g >= 0 and t >= 0:
+            wn.append(float(pr.wn[g, t]))
+    if wn:
+        f["pw_sum"] = float(np.sum(wn))
+        f["pw_min"] = float(np.max(wn))
+    return f
+
+
 KINDS = ("beam", "renum", "start", "end")
 
 
-def row(f, f0, kind, ham, N):
-    """learner input: differences to seq0, a few seq0 levels, the alternative's kind and size"""
+CLUB_FEATS = ("club_start", "club_end", "club_rank_s", "club_rank_e", "club_both")
+
+
+def row(f, f0, kind, ham, N, f2=None, f20=None, noclub=False, sub2=None):
+    """learner input: differences to seq0, a few seq0 levels, the alternative's kind and size (+ FEATS2 differences
+    and seq0 levels when given). noclub: the clubhouse-derived features are zeroed (on the bench the clubhouse comes
+    from OSM tags / car parks far more often than on unmapped courses, where it is usually absent)"""
+    if noclub:
+        f, f0 = ({k: (0.0 if k in CLUB_FEATS else v) for k, v in x.items()} for x in (f, f0))
+        if f2 is not None:
+            f2, f20 = ({k: (0.0 if k in CLUB_FEATS else v) for k, v in x.items()} for x in (f2, f20))
     d = [f[k] - f0[k] for k in FEATS]
     lv = [f0["total"] / N, f0["card_rel"], f0["card_corr"], f0["n_vt"] + f0["n_vg"] + f0["n_miss"], N]
-    return d + lv + [float(kind == k) for k in KINDS] + [ham, ham / N]
+    out = d + lv + [float(kind == k) for k in KINDS] + [ham, ham / N]
+    if f2 is not None:
+        if sub2:
+            out += [f2[k] - f20[k] for k in sub2]
+        else:
+            out += [f2[k] - f20[k] for k in FEATS2] + [f20[k] for k in FEATS2]
+    return out
+
+
+class RankAvg:
+    """the mean score of several rankers (bagged LightGBM lambdarank fits: row / column subsamples, seeds)"""
+
+    def __init__(self, models):
+        self.models = list(models)
+
+    def predict(self, X):
+        return np.mean([m.predict(X) for m in self.models], axis=0)
 
 
 # ----------------------------------------------------------------------------- production
@@ -296,6 +430,10 @@ def _rerank(pr, seq0, m):
     cands = candidates(pr, seq0, **m.get("gen", {}))
     pr.rr_cands = cands                  # reused by route_scene's shared-green fallback
     f0 = features(pr, seq0)
+    x2 = bool(m.get("feats2"))
+    nc = bool(m.get("noclub"))
+    sub2 = m.get("feats2_sub")
+    f20 = features2(pr, seq0) if x2 else None
     best, bi, gains = m["thr"], 0, []
     X, keep = [], []
     kinds = set(m.get("kinds") or KINDS)
@@ -303,13 +441,13 @@ def _rerank(pr, seq0, m):
         if k not in kinds:
             continue
         ham = sum(a != b for a, b in zip(s, seq0))
-        X.append(row(features(pr, s), f0, k, ham, pr.N))
+        X.append(row(features(pr, s), f0, k, ham, pr.N, features2(pr, s) if x2 else None, f20, nc, sub2))
         keep.append((k, s))
     if not X:
         return seq0, dict(n_alts=0)
     X = np.asarray(X, float)
     if m.get("rank"):                    # a ranker (LightGBM lambdarank): scores relative to seq0's own row
-        s0 = m["model"].predict(np.asarray([row(f0, f0, "chosen", 0, pr.N)], float))[0]
+        s0 = m["model"].predict(np.asarray([row(f0, f0, "chosen", 0, pr.N, f20, f20, nc, sub2)], float))[0]
         g = m["model"].predict(X) - s0
     else:
         g = m["model"].predict(X)

@@ -750,3 +750,101 @@ Reproduce (scratch rsel/): run_gen.sh (prep, tgen2 tee rows, gen re-ranker rows 
 rr_fit.py (re-ranker variants, picks, fit), run_w1.sh (tee rows under the new picks + out-of-fold bench), tl_exp.py /
 tl_pen*.py / tl_hyb.py / tl_cap.py (tee variants), tl_fit.py (picks + fit), cerr.py (per-split holes + card error),
 loop_w1e.sh, teerec/testeval.sh.
+
+## State 2026-11-20 (later): re-ranker features + bagged ranker over all alternatives (v2 default); card selection (opt-in)
+
+Re-ranker rows regenerated on the current fits (scratch rsel/gen3.py = gen.py + `route_rerank.features2`; prep rebuilt,
+reproduces 75.43 %). New course-level features (FEATS2, model key feats2): par-band yd outside / par-4 misses; card
+residual sum, counts over 8 % / 25 %, top-3 mean, best-of-any-set fit, length correlation to the course set; walk
+geometry (rank of the next tee among all complexes by distance from the green, backtracking toward the tee just
+played, median walk, walk-model cost sum / worst); loop closure (last green to first tee) and clubhouse at both ends;
+front / back nine totals vs the card and the gain from swapping the nines; non-adjacent crossings; weakest hole-model
+score / count below 0.5.
+
+Clubhouse bias check (as for OSM footways): co["club"] on the bench (train+big 651) comes from OSM car parks 55, OSM
+clubhouse tags 6, scene parking 20, none 570 (9.4 % OSM); on the blind loop's tier D courses 0 of 4 have one (tier C:
+1 OSM tag of 7, 2 not routed). So the new re-ranker zeroes every clubhouse-derived feature (model key noclub:
+club_start / club_end / club_rank_s / club_rank_e / club_both), in training and in production. (route_learn's loop
+model reads OSM buildings, lp_bld_*: buildings are mapped independently of golf, left as is.)
+
+Out-of-fold by state on the gen rows (route_struct labels), holes gained choice / never-used (re-ranker oracle over
+all kinds +383 / +174):
+
+| re-ranker | thr | choice | never-used |
+|---|---|---|---|
+| ranker start,end, old features (w1e, shipped) | 0.5 | +48 | +16 |
+| + all 44 FEATS2 columns (differences + levels) | 0.5 | +35 | +9 |
+| + 6 or 3 FEATS2 differences | 0.5 | +18 / +17 | +8 / +21 |
+| all kinds, FEATS2, single ranker | 0.25 | +34 | +33 |
+| bagged ranker (5 seeds, 0.8 row / column subsample), start,end, old / FEATS2 | 0.0 | +30 / +36 | +10 / +10 |
+| bagged, all kinds, old features | 0.5 | +49 | +26 |
+| bagged, all kinds, FEATS2 | 0.0 / 0.5 | +58 / +58 | +30 / +30 |
+| **bagged, all kinds, FEATS2, noclub** | 0.0 / 0.5 / 0.75 | +56 / +49 / +46 | +31 / +33 / +32 |
+
+Switches at thr 0.0 / 0.5 / 0.75: choice 339 / 186 / 122 of 431, never-used 159 / 90 / 58. Bench out-of-fold (tee rows
+regenerated under each variant's picks, tee rule of w1e unchanged: tau 0.93, lam_r 12, lam_c 0.5):
+
+| variant | choice 443 holes / all-right, card | never-used 200 | train+big 643 |
+|---|---|---|---|
+| w1e (previous default) | 86.08 % / 161, 6.2 / 36.8 | 86.72 % / 66, 6.2 / 38.1 | 86.28 % / 227, 6.2 / 37.5 |
+| bagged noclub thr 0.0 | 86.16 % / 162, 6.2 / 35.8 | 87.35 % / 70, 6.2 / 37.0 | 86.53 % / 232, 6.2 / 36.4 |
+| **bagged noclub thr 0.5** | **86.09 % / 161, 6.1 / 36.2** | **87.38 % / 68**, 6.2 / 38.0 | **86.49 % / 229**, 6.1 / 36.8 |
+| bagged noclub thr 0.75 | 86.01 % / 167, 6.1 / 35.8 | 87.47 % / 71, 6.2 / 37.8 | 86.46 % / 238 |
+
+Chosen: thr 0.5 (within 0.1 point of the best on choice with half the switches of 0.0; 0.75 is 0.15 below). The choice
+gain is flat (+0.01 points); never-used +0.66, train+big +0.21; card error within the guardrail (choice 6.1 / 36.2).
+The features alone did not help; the gain came with bagging and all alternative kinds (renumberings, nine swaps and
+beams back in).
+
+Gate refitted on the chosen variant's out-of-fold results (threshold still 1.1). Test 28 (read once, production path):
+89.44 % / 11 -> **89.23 % / 11** (432 -> 431 holes: elmcrest, arrowhead_pointe -1, smoke_rise +1), card error
+5.0 / 37.2 -> 4.8 / 36.0 yd. Never-used 200 + test 28 pooled: 87.07 -> 87.62 %.
+
+Blind loop: a first run with the new fits (rsel2.txt) showed pick / status differences on tier A / C courses (Candler
+Park blocked -> ok), but it ran while the test evaluation loaded the machine; re-run idle on every course that
+differed (rsel3.txt vs a same-day baseline with the installed defaults, rsel2b.txt; rsel2b vs rsel1 differs only in
+Glenwild): tier A / B / C identical (Candler Park, Chevy Chase, Cedar Glen, Zintel Creek, Maplewood, Brookhaven). The
+load-sensitive picks are worth knowing about when comparing loops. D all still shown: Sunset P(all) 0.398 -> 0.359;
+Glenwild 0.268 -> 0.265; Hawk's Point approximate holes 6 -> 12 of 18 (P(all) 0.000 both; a regression on that
+course); Remsen 0.527 -> 0.531 (same picks); Makena North no build. Nothing goes from shown to blocked.
+
+Shipped as the default (OOF 643 and never-used 200 better, loop rule met, card guardrail met): route_models/v2/
+(re-ranker: route_rerank.RankAvg of 5 lambdarank fits, feats2, noclub, kinds beam / renum / start / end, thr 0.5; tee
+model refitted on the new picks' rows with the same rule; gate refitted). Rollbacks: `ROUTE_SELECT=w1e`
+(route_models/v2_w1e/, the previous default) and `ROUTE_SELECT=0` (route_models/v2_pk/).
+
+### Card selection (opt-in ROUTE_CARD_SELECT=1)
+
+d bucket (card / data, 224 wrong holes on choice): card yd off > 15 % 107, multi-course / duplicate ways 74, card
+order conflict 34, card count != truth 9; concentrated in 83 courses (canyon_lake 17, tb_valley_co 15,
+tb_hermitage_va 14 ...). 439 of 643 courses have two or more web cards, 77 of them materially different (closest tee
+sets > 1 % apart); on 6 choice courses another card fits the true holes much better (66 wrong holes; e.g.
+tb_valley_co golfify 17 % vs opengolfapi 1.5 %, a card of the sister course on 36-hole sites such as tb_hermitage_va).
+
+Experiment (scratch rsel/cardalt.py): route those 77 courses with every card, hole / walk / loop scores rescored per
+card with route_learn fold models (rsel/foldfit.py, the same state folds: out-of-fold), base solver (no re-ranker /
+tee step). Oracle (best card per course): choice +85 holes, never-used +35. Rules (switch to the card the routed holes
+fit best when better by more than a margin), choice holes (switches, worse) | never-used:
+
+| rule | choice | never-used |
+|---|---|---|
+| routed median card residual, margin 0 / 0.005 | +68 (23, 3) / +58 (16, 2) | +11 (16, 5) / +8 (12, 4) |
+| **margin 0.01** | **+45 (11, 1)** | **+14 (6, 0)** |
+| margin 0.015 / 0.02 / 0.03 | +23 / +29 / +10 | +12 / +11 / +9 |
+| residual + 0.02 x virtual ends, margin 0 | +74 (23, 2) | +7 (16, 6) |
+| solver cost / hole model / margins | +48 / +40 / +68 at best | -1 / +10 / 0 |
+
+Chosen on choice with a penalty of 15 holes per worse switch: margin 0.01 (17 picks). Bench out-of-fold on top of the
+new default (switched courses: alternative card rescored with the fold models, their re-ranker / tee picks dropped
+since those were made for the other card): choice 86.09 -> **86.50 %** / 162, card 6.0 / 35.7; never-used 87.38 ->
+**87.02 %**; train+big 86.49 -> 86.66 %. Never-used loses (tb_knoxville_municipal 16 -> 9, tb_stonetree 17 -> 13,
+partly the dropped picks); like-for-like on the 17 switched courses: base solver +45 / +14, in-sample re-ranker / tee
++15 / +3. Fails the ship rule on the strict bench, so opt-in: route_scene._card_select (tier C / D perception path
+only, route_scene.run; a request / file / typed card is never replaced; on a switch fast.py writes raw/scene_card.json
+and the package uses it). Costs one more routing per differing web card (about 12 % of courses). Not tried: per-nine
+card choice, 27 / 36-hole site detection.
+
+Reproduce (scratch rsel/): run_gen3.sh (prep + gen3 rows), rr_exp.py / rr_fit.py (X2=1 NC=1 MODEL=rankbag
+KS=beam,renum,start,end THRS=...), run_w2.sh (tee rows, tee fit, bench), clubsrc.py / clubloop.py (clubhouse source),
+cardscan.py, run_card.sh (tables, foldfit.py, cardalt.py), cardpen.py, run_w1c.sh (bench with ROUTE_CARD_PICKS +
+ROUTE_BENCH_FOLDS), run_card_rt.sh, loop_w2b.sh, teerec/testeval.sh.
