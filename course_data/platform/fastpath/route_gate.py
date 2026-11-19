@@ -23,7 +23,8 @@ import os
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PARAMS = os.path.join(HERE, "route_gate.json")
+import detector as _DET  # noqa: E402
+PARAMS = _DET.routing_file("route_gate.json", "ROUTE_GATE_PARAMS")
 FEATS = ["margin_c", "margin_lo", "card_rel", "card_bad", "virtual", "ob", "ph_lo", "cross", "ph_l", "pw_l", "pw_none", "g_l", "g_map", "t_l"]
 MARGIN_CAP = 12.0
 MIN_SHOWN = 3        # a threshold counts only when at least this many train courses clear it, all of them right: with

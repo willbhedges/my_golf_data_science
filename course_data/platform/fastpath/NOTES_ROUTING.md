@@ -464,3 +464,52 @@ Hawk's Point 11 of 18 approximate (0.16-0.48; 4, 8, 11, 12, 16, 17 at 0.68-0.74,
 
 Reproduce: scratch tgen.py (training rows per course via route_scene params tee_dump / tee=0, resumable),
 tlearn3.py (out-of-fold by state, cached P, grid, picks, fit; uses route_tee.choose / course_set / set_resid).
+
+## State 2026-11-19: scenes from the national U-Net (golfseg_own_v2), routing models refitted, v2 default
+
+Detector: `FASTSCENE_UNET_MODEL=v2` (default, detector.py; NOTES_PERCEPTION.md 2026-11-19). The routing models read
+U-Net maps, so they were refitted on the v2 scenes with the same recipe and hyperparameters (no new choices):
+route_learn h / w / s / e (out-of-fold by state, peaks + x3), re-ranker (start / end re-solves, absolute loss, 15
+leaves, threshold 0.75), tee refinement (course-set tie-break, eps 0.15, delta 0), per-hole gate. The fits live in
+`route_models/v2/` (detector.routing_file); the top-level route_learn_model.pkl / route_rerank_model.pkl /
+route_tee_model.pkl / route_gate.json stay the v1 fits (rollback: FASTSCENE_UNET_MODEL=v1). Env overrides
+ROUTE_LEARN_MODEL / ROUTE_RERANK_MODEL / ROUTE_TEE_MODEL / ROUTE_GATE_PARAMS win over both.
+
+Scenes: every validation course from its heldout package with v2 probabilities (val years refetched as before), and
+all 600 TRAIN-BIG courses rebuilt (scratch rebuild_big.py: package refetched, NAIP pinned to the years the v1 build
+used: NAIP 2025 appeared for some states since, 88 package years pinned; 598 of 600 with identical U-Net year sets).
+A rebuild with v1 weights reproduced the cached v1 scenes bit for bit. Everything under cache/v2root
+(FASTPATH_CACHE), so the v1 caches are untouched. Pair AUC (x3) 0.984 -> 0.988.
+
+Holes right / courses all-right (out-of-fold for train+big; test read once at the end on the production path):
+
+| split | v1 (2026-11-18) | **v2** |
+|---|---|---|
+| train+big 643 | 78.68 % / 170 | **80.15 % / 183** |
+| choice 443 | 78.99 % / 119 | **80.01 % / 130** |
+| never-used 200 | 77.99 % / 51 | **80.46 % / 53** |
+| test 28 | 83.23 % / 9 | **81.78 % / 9** (402 -> 395 holes) |
+| never-used 200 + test 28 pooled (3804 holes) | 78.65 % | **80.63 %** |
+
+Card error median / p90 yd: train+big 6.3 / 39.2 -> 6.2 / 37.0; test 5.6 / 31.5 -> 5.3 / 39.4. Out-of-fold per course:
+215 better (+673 holes), 196 worse (-516). Test: 9 better, 8 worse; two courses carry the loss. (The pipeline's
+intermediate stages print test numbers, as v1's did; nothing was chosen on them.)
+
+Next lever, from the two test losses (diagnosed, not tuned on): both lost tee complexes, matching the tee-complex
+recall drop on TEST-40 (0.834 -> 0.765).
+* woods_hole_ma 14 -> 7: v2 scene 23 tee complexes vs 26; the hole 9 start has no complex within 30 m (v1 missed 14
+  and 18 instead), and the router renumbered a stretch: wrong 1, 5, 8-15, 18 (v1: 5, 14, 15, 18). Same greens
+  (22; truth green 5 missed by both).
+* visalia_ca 16 -> 11: 19 complexes vs 23; truth starts 7, 9, 12, 14 uncovered (v1: 7, 10, 12); wrong 1, 7, 10, 16,
+  17 (v1 none).
+So: give routing the complexes the v2 tee-complex model drops (below its F1 threshold 0.40) as low-p candidates, or
+choose that threshold for routing recall on train+big out-of-fold.
+
+Gate refitted on the v2 out-of-fold results (route_models/v2/route_gate.json; threshold still 1.1 under the auto
+policy). Blind loop with v2 (cache/val/struct/loop/segv2.txt vs rt1.txt): tier A / B / C blocks identical (statuses,
+picks, flagged picks, gates). D, all still shown: Sunset approximate holes 1, 2, 6 -> 2 (P(all) 0.009 -> 0.102);
+Glenwild none approximate, card misfit warning 5 -> 3 holes; Hawk's Point approximate 11 -> 14 of 18; Remsen P(all)
+0.409 -> 0.432; Makena North no build. Nothing goes from shown to blocked.
+
+Reproduce: scratch pipe.sh (prep, table, x3, cv / fit, gen + learn re-ranker, tgen + tlearn3, out-of-fold eval with
+picks, test, gate) with FASTPATH_CACHE=cache/v2root, ROUTE_LEARN_VER=v2seg_d0+yall, FASTSCENE_UNET_MODEL=v2.

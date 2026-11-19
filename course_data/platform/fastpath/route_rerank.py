@@ -24,7 +24,8 @@ import pickle
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MODEL = os.path.join(HERE, "route_rerank_model.pkl")
+import detector as _DET  # noqa: E402
+MODEL = _DET.routing_file("route_rerank_model.pkl", "ROUTE_RERANK_MODEL")
 _M = {}
 
 

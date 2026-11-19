@@ -34,8 +34,13 @@ B20 = ["b20_crow_canyon", "b20_chevy_chase", "b20_cedar_glen", "b20_kittansett",
 
 
 def _unet_train_ids():
-    p = os.path.join(CD, "segment", "train", "dataset_index.json")
-    return set(json.load(open(p))["courses"]) if os.path.exists(p) else set()
+    """osm ids of every U-Net training index (v1 IA / MO, v2 national: dataset_index_v2.json)"""
+    out = set()
+    for f in ("dataset_index.json", "dataset_index_v2.json"):
+        p = os.path.join(CD, "segment", "train", f)
+        if os.path.exists(p):
+            out |= set(json.load(open(p))["courses"])
+    return out
 
 
 def _osm_id(o):

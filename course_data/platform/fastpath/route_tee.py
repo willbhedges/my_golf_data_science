@@ -36,7 +36,8 @@ import pickle
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-MODEL = os.path.join(HERE, "route_tee_model.pkl")
+import detector as _DET  # noqa: E402
+MODEL = _DET.routing_file("route_tee_model.pkl", "ROUTE_TEE_MODEL")
 _M = {}
 
 FEATS = ("src", "is_inc", "D", "r_min", "r_back", "r_front", "r_geom", "r_geom_inc", "dD", "d_inc", "along", "lat",

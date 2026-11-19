@@ -36,7 +36,8 @@ VER = os.environ.get("ROUTE_LEARN_VER", "2ef0018e4_d0")         # bench scene ve
 LEARN = os.environ.get("ROUTE_LEARN_DIR") or (
     os.path.join(CACHE, "val", "learn", ROUTER + ("" if VER == "2ef0018e4_d0" else "_" + VER))
     if os.environ.get("ROUTE_SPLIT_TEES", "1") == "0" else os.path.join(CACHE, "val", "learn", "split" if PEAKS0 == 0 else "pk20"))
-MODEL = os.path.join(HERE, "route_learn_model.pkl")
+import detector as _DET  # noqa: E402
+MODEL = _DET.routing_file("route_learn_model.pkl", "ROUTE_LEARN_MODEL")
 CLASSES = ("background", "green", "tee", "fairway", "bunker", "water")
 TREE_M = 3.0
 

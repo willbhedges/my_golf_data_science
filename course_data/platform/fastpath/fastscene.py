@@ -445,7 +445,8 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
 
 
 UNET_GSD_M = 0.6
-UNET_DEFAULT = os.path.join(CD, "segment", "models", "golfseg_own", "model.safetensors")   # ours (README there)
+import detector as _DET  # noqa: E402
+UNET_DEFAULT = _DET.unet_file()            # ours (README there); FASTSCENE_UNET_MODEL v1 / v2 (detector.py)
 
 
 def unet_weights():
@@ -655,6 +656,8 @@ def objects2_dir():
     exists; '0' -> off (perception's models); 'features' -> the extra candidate features only (row collection);
     a directory -> its green / tee_box / tee_complex models; a .json -> {package: dir} (cross-fitted folds)"""
     d = os.path.join(MODEL_DIR, "objects_unet")
+    if _DET.unet_model() != "v1" and os.path.isdir(d + "_" + _DET.unet_model()):   # fitted on that U-Net's candidates
+        d = d + "_" + _DET.unet_model()
     v = os.environ.get("FASTSCENE_OBJECTS2", d if os.path.isdir(d) else "")
     return v if v and v != "0" else None
 

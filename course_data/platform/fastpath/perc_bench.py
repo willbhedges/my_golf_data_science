@@ -24,7 +24,7 @@ sys.path.insert(0, HERE)
 import fastscene as FS  # noqa: E402
 import heldout as HO  # noqa: E402
 
-PROBS = os.path.join(HO.ROOT, "probs")
+PROBS = os.environ.get("PERC_PROBS_DIR") or os.path.join(HO.ROOT, "probs")   # another dir per U-Net model
 EVAL = os.path.join(HO.ROOT, "eval")
 KEYS = ("greens_hole", "greens_any", "tee_complexes", "tee_boxes", "fairways", "bunkers", "water")
 

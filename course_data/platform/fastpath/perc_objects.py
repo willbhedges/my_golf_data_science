@@ -28,7 +28,7 @@ from scipy import ndimage as ndi
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(HERE, "fastscene_model", "objects_unet")
-ROWS = os.path.join(HERE, "cache", "heldout", "rows")
+ROWS = os.environ.get("PERC_ROWS_DIR") or os.path.join(HERE, "cache", "heldout", "rows")   # per U-Net model
 RING_IN, RING_OUT = 3.0, 25.0
 
 

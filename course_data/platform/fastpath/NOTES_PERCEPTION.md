@@ -98,3 +98,38 @@ pixels with p_water >= 0.25), opened, holes filled; a U-Net component is kept on
 NIR rule's own water, and a rule component is dropped when its mean p_water < 0.05 (tree shadows / dark roofs the
 rule takes for ponds). Alone, the U-Net water class finds more ponds (VAL recall 0.77) but adds bright false
 ponds (precision 0.34); `FASTSCENE_WATER=rule` restores the old detector.
+
+## 2026-11-19: national U-Net fine-tune (golfseg_own_v2), now the default
+
+`detector.py`: `FASTSCENE_UNET_MODEL` = `v2` (default) -> `segment/models/golfseg_own_v2` + second-stage object models
+`fastscene_model/objects_unet_v2` + routing fits `route_models/v2/`; `v1` rolls back to golfseg_own + objects_unet +
+the routing files at the top of this folder (`FASTSCENE_UNET=<file>` still overrides the weights).
+
+Model (README in the model folder): v1 fine-tuned on 1383 well-mapped OSM courses from 49 lower-48 states + DC
+(`segment/train/pick_v2.py` -> `v2_courses.json`, 1500 drawn; `build_dataset.py --courses --quality`; Actions run
+44408172242 data, 44417856467 training, 6353 steps on CPU, exported step 3783 = best mean validation IoU).
+Excluded from the draw: every validation-set course (train + test), blind20 (TEST-40's b20), the perception
+stacks_meta pool, the heldout sets, all 900 TRAIN-BIG manifest courses, and anything within 1.5 km of them
+(checked after the build: 0 ids, 0 within 1.5 km). Same input / normalisation as v1, so fastc/perception runs it
+unchanged. heldout.py's leak check now reads dataset_index.json and dataset_index_v2.json (sets unchanged:
+TEST 40 / VAL 51 / TRAIN 63). Validation IoU on 54 held-out national courses, v1 -> v2: green 0.647 -> 0.689, tee
+0.331 -> 0.352, fairway 0.631 -> 0.687, bunker 0.493 -> 0.526, water 0.602 -> 0.747 (mean 0.541 -> 0.600).
+
+The second-stage object models were refitted on v2's candidates the same way objects_unet was (perc_objects fit on
+TRAIN + VAL d0 rows; rows in cache/v2root/heldout/rows). v2 has all 63 TRAIN courses (v1's fit had 31; the
+missing pool packages were fetched for this). With v1's object models v2 lost tee complexes (0.779 / 0.811).
+
+TEST-40 (production path: AMX, stride 448, d0+yall), P / R; v1 = test_speedgate_amx448 (reproduced exactly):
+
+| element | v1 | v2 (v1 object models) | **v2 (objects_unet_v2, default)** |
+|---|---|---|---|
+| hole greens | 0.925 / 0.887 | 0.924 / 0.929 | **0.939 / 0.917** |
+| tee complexes | 0.847 / 0.834 | 0.779 / 0.811 | **0.941 / 0.765** (F1 0.840 -> 0.843) |
+| tee boxes | 0.829 / 0.739 | 0.760 / 0.712 | **0.864 / 0.676** (F1 0.78 = 0.78) |
+| fairways | 0.882 / 0.833 | 0.883 / 0.830 | **0.883 / 0.830** |
+| bunkers | 0.926 / 0.874 | 0.920 / 0.895 | **0.920 / 0.895** |
+| water | 0.636 / 0.505 | 0.736 / 0.482 | **0.736 / 0.482** |
+
+TEST-40 was read twice (before / after the object-model refit; nothing tuned on it). Tee complexes trade recall for
+precision (the refitted tee-complex threshold is 0.40 vs 0.325); for routing the lost complexes are the next lever
+(NOTES_ROUTING.md). Probabilities: cache/v2root/heldout/probs (perc_bench PERC_PROBS_DIR; PERC_ROWS_DIR for rows).
