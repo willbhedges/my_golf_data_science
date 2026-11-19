@@ -4,7 +4,7 @@ name: import-golfseg-v2
 # named in the request) into course_data/segment/models/golfseg_own_v2/ (weights + config + README with run id and
 # sha256), and the merged training-set index (artifacts golfseg-v2-index-*) into
 # course_data/segment/train/dataset_index_v2.json. Nothing else. The ariadgolf weights are never imported.
-# Trigger: course_data/requests/import_golfseg_v2.json {"run_id": ..., "rev": ...}.
+# Trigger: course_data/requests/import_golfseg_v2.json {"run_id": ..., "data_run_id": <run that built the data, default run_id>, "rev": ...}.
 
 on:
   push:
@@ -32,6 +32,7 @@ jobs:
       - id: req
         run: |
           echo "run_id=$(python3 -c "import json;print(json.load(open('course_data/requests/import_golfseg_v2.json'))['run_id'])")" >> "$GITHUB_OUTPUT"
+          echo "data_run=$(python3 -c "import json;d=json.load(open('course_data/requests/import_golfseg_v2.json'));print(d.get('data_run_id') or d['run_id'])")" >> "$GITHUB_OUTPUT"
       - uses: actions/download-artifact@v4
         with:
           name: golfseg-v2-model
@@ -41,7 +42,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           pattern: golfseg-v2-index-*
-          run-id: ${{ steps.req.outputs.run_id }}
+          run-id: ${{ steps.req.outputs.data_run }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: /tmp/v2index
       - name: Copy weights, README, index
@@ -60,6 +61,7 @@ jobs:
           for p in sorted(glob.glob("/tmp/v2index/**/index_*.json", recursive=True)):
               rows.update(json.load(open(p))["courses"])
           ok = {k: v for k, v in rows.items() if "file" in v}
+          assert ok, "no training-set index found"
           idx = dict(courses=rows, n_ok=len(ok), n_tried=len(rows), source="course_data/segment/train/v2_courses.json (pick_v2.py)",
                      labels="OpenStreetMap contributors (ODbL 1.0)", imagery="USDA NAIP via Planetary Computer",
                      classes=["background", "green", "tee", "fairway", "bunker", "water"], ignore=255, run_id=int(run))
