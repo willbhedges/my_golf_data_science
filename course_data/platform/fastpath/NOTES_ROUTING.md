@@ -608,3 +608,57 @@ Blind loop with the new defaults and no env (cache/val/struct/loop/teep0fb.txt v
 pick 15: Driver +8 -> +12, P(all) 0.210); Makena North no build; **Hawk's Point shown again** (fallback switched hole 1
 only, "start" re-solve; approximate 1-8, 13-18 = 14 of 18 as with the 0.3 default; P(all) 0.000). No tier D course
 goes from shown to blocked.
+
+## State 2026-11-19 (later): tee detection, P(tee) peak complexes from the U-Net map (v2 default)
+
+Ceiling analysis (choice 443, cutoff 0.05): 351 wrong holes have no tee complex at any p near their start, 69 % of
+them with U-Net P(tee) >= 0.1 within 30 m; the misses cluster in courses (worst 20 courses = 47 %;
+tb_woodlyn_hills_ia: 4 complexes for 18 holes). Tee boxes need P(tee) >= 0.4 (detect.TEE_P) and box p >= 0.3 to
+form a complex, so a weak tee never becomes a candidate. Cheapest fix first (no scene rebuild): candidates straight
+from the cached probability maps, the same way augment_scene already adds map / peak greens.
+
+`route_learn._peak_tees` (called from augment_scene, so production route_v2 and every bench / table path get the
+same candidates): local maxima of P(tee) (Gaussian sigma 2 m, 15 m window) >= threshold, >= 25 m from every scene
+complex box and from an earlier peak, not on a green (centre distance >= radius + 6 m); added strongest first as
+one-box complexes kind 'peak' (p = the smoothed peak, outline = pixels >= half the peak, length_m unset, so the
+learned models can tell them apart) **until the course holds fill x n_holes complexes** (course-adaptive: a course
+with 4 complexes for 18 holes gets 32 peaks; one with 36 gets none). Settings: detector.route_tee_peaks (v2 0.1, v1
+off; env ROUTE_TEE_PEAKS, 0 = off) and ROUTE_TEE_PEAK_FILL (default 2).
+
+Coverage of truth tee starts (any complex box within 30 m), choice 451 courses with a scene, 7496 starts: scene
+complexes 84.9 %. Peaks with no budget: 95.5 % at p >= 0.15 but 77 added a course (too many for the 60-candidate
+solver). With a budget: fixed 6 / 12 / 24 a course 89.2 / 91.0 / 92.9 %; fill to 1.5 / 2 / 2.5 / 3 x holes
+89.1 / **91.6** / 92.8 / 93.7 % (4.5 / 11.8 / 19.8 / 28.0 added a course; threshold 0.1 vs 0.2 the same within 0.1).
+
+Routing refitted per variant with the cutoff-0 recipe unchanged (scratch tdet/run3.sh = teerec/pipe2.sh + env, route_learn
+h / w / s / e + x3, re-ranker, tee refinement; the shared-green fallback on). Out-of-fold, holes right / all-right:
+
+| variant | train+big 643 | choice 443 | never-used 200 | card err med / p90 yd |
+|---|---|---|---|---|
+| cutoff 0 + fallback (previous default) | 82.93 % / 209 | 82.94 % / 151 | 82.90 % / 58 | 5.9 / 35.7 |
+| **peaks >= 0.1, fill 2 x holes** | **85.63 % / 220** | **85.29 % / 155** | **86.39 % / 65** | 5.6 / 32.0 |
+| peaks >= 0.1, fill 2.5 x holes | 85.57 % / 212 | 85.28 % / 149 | 86.21 % / 63 | 5.6 / 31.4 |
+
+Chosen on choice 443: fill 2 (85.29 vs 85.28 %, all-right 155 vs 149; fewer candidates). Per course vs the previous
+default, choice 107 better (+340 holes) / 71 worse (-167), never-used 60 better (+179) / 35 worse (-63). Truth pairs
+among route_learn's candidates 1838 -> 1971; prep stage (stale models) 71.67 -> 75.43 %. Shared green: 20 courses,
+16 rescued by the fallback (4 not). The worst courses barely move (woodlyn_hills 2 -> 0 of 18, great_southern 0 -> 1,
+holly_ridge 0 -> 4, edgebrook 0 -> 2, shagbark 0 -> 2, merriland_farm 0 -> 0; brent_bruehl_memorial 0 -> 15): there
+the U-Net sees no tee or the card / course data are off. Not tried yet: (b) beyond the fill rule, (c) lidar / DEM pad
+or canopy-gap cues, a scene rebuild with a lower box threshold.
+
+Gate refitted on the fill-2 out-of-fold results (route_models/v2/route_gate.json, 643 courses, threshold still 1.1
+under the auto policy). Cost: route about the same (bench 2.6 s a course; loop route 1.6-15.8 s vs 1.9-19.2 s).
+
+Test 28 (read once, after the choice, testeval.sh production path): 86.54 % / 10 -> **89.65 % / 12** (418 -> 433 of
+483 holes), card error 4.5 / 30.0 yd (was 5.0 / 34.8). 6 better (woods_hole 8 -> 16, elmcrest 13 -> 18, ozaukee,
+riverwood_national, green_harbor, crossings +1), 2 worse (lake_tahoe, empire_ranch -1). No shared green on test.
+
+Blind loop (cache/val/struct/loop/teepk.txt vs teep0fb.txt): tier A / B / C identical (statuses, picks, flagged
+picks, approximate). D all still shown: Sunset approximate 2 -> none (P(all) 0.103 -> 0.315), Glenwild one pick moves
+(P(all) 0.210 -> 0.270), Hawk's Point approximate 14 -> 6 of 18 (6, 10, 13-16; no shared green now, the fallback is
+not needed), Remsen P(all) 0.476 -> 0.508; Makena North no build. Nothing goes from shown to blocked.
+
+Shipped as the default (OOF 643 and never-used 200 both better, loop rule met): detector.TEE_PEAKS["v2"] = 0.1, fits
+in route_models/v2/. Rollbacks: ROUTE_TEE_PEAKS=0 (no peaks, the cutoff-0 fits in route_models/v2_nopk/),
+ROUTE_TEE_ALL=0 (cutoff 0.3, no peaks, route_models/v2_p03/).

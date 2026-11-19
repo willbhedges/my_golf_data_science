@@ -195,8 +195,8 @@ def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=No
     return sc, len(out)
 
 
-# Tee complexes from the U-Net's P(tee) map (opt-in ROUTE_TEE_PEAKS=<threshold>, NOTES_ROUTING.md 2026-11-19 tee
-# detection): tee boxes below the scene's box threshold never form complexes, so a hole start the scene missed has
+# Tee complexes from the U-Net's P(tee) map (detector.route_tee_peaks, v2 default 0.1; NOTES_ROUTING.md 2026-11-19
+# tee detection): tee boxes below the scene's box threshold never form complexes, so a hole start the scene missed has
 # no tee candidate at all. Local maxima of P(tee) (smoothed, sigma TEE_PEAK_SIG_M) >= the threshold in a
 # TEE_PEAK_WIN_M window, at least TEE_PEAK_SEP_M from every scene complex box and from an earlier peak, and clear of
 # every green (radius + TEE_PEAK_GREEN_M), are added as one-box complexes kind 'peak' with p = the smoothed peak,
@@ -205,7 +205,8 @@ TEE_PEAK_SIG_M, TEE_PEAK_WIN_M, TEE_PEAK_SEP_M, TEE_PEAK_GREEN_M = 2.0, 15.0, 25
 
 
 def tee_peak_p():
-    return float(os.environ.get("ROUTE_TEE_PEAKS", "0") or 0)
+    """P(tee) peak threshold (detector.route_tee_peaks: v2 default 0.1, env ROUTE_TEE_PEAKS, 0 = off)"""
+    return _DET.route_tee_peaks()
 
 
 def tee_peak_fill():

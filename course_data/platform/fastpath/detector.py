@@ -10,7 +10,8 @@ U-Net has its own fit: the files in this folder are the v1 fits; another model's
 are used when that model is selected (a file missing there falls back to this folder's). Each module's env override
 (ROUTE_LEARN_MODEL, ROUTE_RERANK_MODEL, ROUTE_TEE_MODEL, ROUTE_GATE_PARAMS) wins over both. v2 default: every scene
 tee complex enters routing (cutoff 0, fits in route_models/v2/); ROUTE_TEE_ALL=0 rolls back to the cutoff 0.3 with
-its fits in route_models/v2_p03/ (route_p_tee / tee_rollback below).
+its fits in route_models/v2_p03/ (route_p_tee / tee_rollback below). v2 default also adds P(tee) peak complexes
+(route_tee_peaks below); ROUTE_TEE_PEAKS=0 turns them off with the fits in route_models/v2_nopk/.
 """
 from __future__ import annotations
 
@@ -34,6 +35,22 @@ TEE_ROLLBACK = {"v2": ("v2_p03", 0.3)}        # U-Net -> (routing fits folder, c
 def tee_rollback():
     """the (routing fits folder, cutoff) of the rollback ROUTE_TEE_ALL=0 for the selected U-Net, else None"""
     return TEE_ROLLBACK.get(unet_model()) if os.environ.get("ROUTE_TEE_ALL", "1") == "0" else None
+
+
+# P(tee) peak complexes (route_learn.augment_scene / _peak_tees): threshold per U-Net, 0 = off. v2 default 0.1 since
+# 2026-11-19 (NOTES_ROUTING.md "tee detection"), fits in route_models/v2/; ROUTE_TEE_PEAKS=0 turns them off and reads
+# the fits made without them (route_models/v2_nopk/); ROUTE_TEE_ALL=0 (cutoff 0.3 rollback) turns them off too.
+TEE_PEAKS = {"v1": 0.0, "v2": 0.1}
+NO_PEAKS_FITS = {"v2": "v2_nopk"}
+
+
+def route_tee_peaks():
+    if tee_rollback():
+        return 0.0
+    v = os.environ.get("ROUTE_TEE_PEAKS")
+    if v not in (None, ""):
+        return float(v)
+    return TEE_PEAKS[unet_model()]
 
 
 def route_p_tee():
@@ -61,7 +78,8 @@ def routing_file(name, env=None):
         return os.environ[env]
     m = unet_model()
     rb = tee_rollback()
-    for d in ([rb[0]] if rb else []) + ([m] if m != "v1" else []):
+    np_ = NO_PEAKS_FITS.get(m) if not rb and TEE_PEAKS.get(m) and route_tee_peaks() == 0 else None
+    for d in ([rb[0]] if rb else []) + ([np_] if np_ else []) + ([m] if m != "v1" else []):
         p = os.path.join(HERE, "route_models", d, name)
         if os.path.exists(p):
             return p
