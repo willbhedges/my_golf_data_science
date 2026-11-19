@@ -12,7 +12,9 @@ This module
     parts, the full-card fit (yardage correlation, relative residuals, par 3 / par 5 positions), loop starts / ends
     near the clubhouse, walk lengths, crossings, virtual ends;
   * a gradient-boosted model (route_rerank_model.pkl) predicts the gain in right holes of each alternative over seq0;
-    the best one replaces seq0 when its predicted gain clears the model's threshold.
+    the best one replaces seq0 when its predicted gain clears the model's threshold. A model with rank=True is a
+    LightGBM lambdarank ranker over each course's alternatives plus seq0 (graded by right holes); its score of an
+    alternative minus seq0's own score (the row of seq0 against itself) is the gain the threshold reads.
 
 Training rows come from the routing bench (scratch scripts; labels = route_struct.correct on the hidden OSM ways).
 """
@@ -305,7 +307,12 @@ def _rerank(pr, seq0, m):
         keep.append((k, s))
     if not X:
         return seq0, dict(n_alts=0)
-    g = m["model"].predict(np.asarray(X, float))
+    X = np.asarray(X, float)
+    if m.get("rank"):                    # a ranker (LightGBM lambdarank): scores relative to seq0's own row
+        s0 = m["model"].predict(np.asarray([row(f0, f0, "chosen", 0, pr.N)], float))[0]
+        g = m["model"].predict(X) - s0
+    else:
+        g = m["model"].predict(X)
     j = int(np.argmax(g))
     info = dict(n_alts=len(X), best_gain=round(float(g[j]), 3), kind=keep[j][0])
     if g[j] > best:

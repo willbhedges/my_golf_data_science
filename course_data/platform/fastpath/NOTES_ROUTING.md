@@ -662,3 +662,91 @@ not needed), Remsen P(all) 0.476 -> 0.508; Makena North no build. Nothing goes f
 Shipped as the default (OOF 643 and never-used 200 both better, loop rule met): detector.TEE_PEAKS["v2"] = 0.1, fits
 in route_models/v2/. Rollbacks: ROUTE_TEE_PEAKS=0 (no peaks, the cutoff-0 fits in route_models/v2_nopk/),
 ROUTE_TEE_ALL=0 (cutoff 0.3, no peaks, route_models/v2_p03/).
+
+## State 2026-11-20: routing selection, ranker re-ranker + hybrid tee choice (v2 default)
+
+Fresh error buckets on the previous default (choice 443 out-of-fold, ceiling/holes.py + analyse.py, cutoff 0 + peaks):
+85.29 % right, 1119 wrong holes: a1 (no candidate) 174, b (cut: 20 tee cap, 8 green cap) 28, a2 99, d (card / data)
+224, failed 36, **c (routing selection among existing candidates) 558** = green right but tee not a hole start 162,
+renumbered other 133, scrambled 66, green that is no hole's green 62, nine swap 53, another hole's tee 38, shift by one
+27, virtual green wrong 15. Oracle "perfect routing on the router's candidates" 97.35 % (was 94.2 % before peaks).
+Re-ranker candidates (gen rows, route_struct labels, choice): base 86.79 %, oracle over all kinds +383 holes
+(start / end only +240); the shipped regressor took +9. Tee refinement rows: oracle +4.8 points, shipped rule +32-36.
+
+Re-ranker (route_rerank, model file key rank=True): LightGBM lambdarank over each course's start / end alternatives
+plus seq0 (seq0 = the row of seq0 against itself; graded by right holes, gain truncated at 30; 300 trees, 15 leaves,
+lr 0.05, min 40 / leaf, truncation level 3); an alternative replaces seq0 when its score minus seq0's > thr. Out-of-fold
+by state on the gen rows, choice / never-used holes gained:
+
+| re-ranker | thr | choice | never-used |
+|---|---|---|---|
+| regressor start,end (previous) | 0.75 | +9 | +19 |
+| regressor all kinds | 0.75 / 1.5 | -1 / +3 | -8 / -2 |
+| classifier P(better) - P(worse), all kinds | 0.5 / 0.75 | +30 / +25 | +11 / +12 |
+| ranker all kinds | 0.25-1.0 | -7 to -14 | -4 to -8 |
+| **ranker start,end** | **0.5** (fixed grid 0-2; max) | **+48** (33 switched, 16 / 9) | +16 |
+
+Tee choice (route_tee): rows regenerated (scratch rsel/tgen2.py: + distance to the true start) under the ranker's picks.
+Tried, out-of-fold choice holes gained (card proxy = |straight tee-green - course set| median / p90 yd; incumbent
+8.6 / 42.2, previous rule course-set eps 0.15 +32 at 6.5 / 34.9):
+* stricter label (tee within 30 yd of the true start): -120 holes at any eps: dropped (the OSM start is often no box).
+* extra columns (card residual rank / vs incumbent, boxes behind within 30 yd, P(tee) vs the hole's best): classifier
+  argmax +112 vs +118, no gain; a lambdarank ranker on them: argmax +144 (vs +118) but card proxy 36 / 92 yd.
+* penalised classifier P - lam x min(residual, 0.3): lam 0.25 / 0.35 / 0.5 -> +68 / +56 / +35 at 7.7 / 6.9 / 6.3 yd
+  median (a smooth holes-vs-card trade).
+* hybrid: when the classifier's P(incumbent) < tau, the ranker's best (score - lam_r x min(residual, 0.3)) if it beats
+  the incumbent's; otherwise the penalised classifier (lam_c). Grid tau {0, 0.9, 0.93, 0.95}, lam_r {8..14}, lam_c
+  {0.35, 0.4, 0.5}; cap on the ranker's residual tried, no better.
+
+Guardrail (card error is a product metric: tee spots set the yardages shown): on choice, bench card error at most
++1 yd median and +5 yd p90 over the previous default (5.7 / 32.0). The proxy under-reads the bench p90 (about +2-4 yd),
+so the top variants were benched out-of-fold (route_bench eval with the re-ranker / tee picks, same route_learn fits):
+
+| variant (re-ranker / tee) | choice 443 holes / all-right, card | never-used 200 | train+big 643 |
+|---|---|---|---|
+| previous default (regressor / course-set eps 0.15) | 85.29 % / 155, 5.7 / 32.0 | 86.39 % / 65, 5.6 / 31.9 | 85.63 % / 220, 5.6 / 32.0 |
+| w1c ranker / previous tee rule | 85.66 % / 154, 5.7 / 32.1 | **86.21 %** / 65, 5.5 / 30.7 | 85.83 % / 219 |
+| w1 ranker / tau 0.93, lam_r 10, lam_c 0.4 | 86.34 % / 168, 6.5 / **39.7** | 87.02 % / 65, 6.5 / 43.1 | 86.55 % / 233, 6.5 / 40.4 |
+| w1b ranker / tau 0.93, lam_r 10, lam_c 0.5 | 86.23 % / 165, 6.3 / **38.9** | 86.99 % / 65, 6.3 / 41.6 | 86.46 % / 230 |
+| **w1e ranker / tau 0.93, lam_r 12, lam_c 0.5** | **86.08 % / 161, 6.2 / 36.8** | **86.72 % / 66**, 6.2 / 38.1 | **86.28 % / 227**, 6.2 / 37.5 |
+| w1d ranker / tau 0.9, lam_r 14, lam_c 0.5 | 85.89 % / 157, 6.0 / 34.4 | 86.57 % / 65, 6.1 / 35.7 | 86.10 % / 222 |
+
+Chosen on choice within the guardrail: w1e (+0.79 points choice, +0.33 never-used, +0.65 train+big). The re-ranker
+alone (w1c) gains on choice but loses on never-used (-0.18), so it does not ship alone; the gain needs the tee step.
+Regressions to note: card error median +0.5 yd and p90 +4.8 yd (choice), +6.2 yd p90 on never-used (above the choice
+guardrail; not chosen on it). A correction I made mid-way and retracted: the out-of-fold tee picks behind the previous
+85.63 % do use the production course-set rule (my first offline run had an empty FASTPATH_CACHE, so no cards for
+TRAIN-BIG); the earlier numbers stand.
+
+Gate refitted on w1e's out-of-fold results (route_models/v2/route_gate.json, 643 courses; threshold still 1.1 under the
+auto policy).
+
+Test 28 (read once, after the choice; teerec/testeval.sh production path, final fits): 89.65 % / 12 -> **89.44 % / 11**
+(433 -> 432 of 483 holes), card error 4.5 / 30.0 -> 5.0 / 37.2 yd. 2 courses better (bartram_trail, arrowhead_pointe
++1), 3 worse (elmcrest, smoke_rise, wildwood -1). A small test regression (1 hole), reported, not tuned on. Never-used
+200 + test 28 pooled (3804 holes): 86.80 -> 87.07 %.
+
+Blind loop with the w1e fits (cache/val/struct/loop/rsel1.txt vs teepk.txt): tier A / B / C identical (statuses,
+picks, flagged picks, approximate). D all still shown: Sunset picks move, P(all) 0.315 -> 0.398 (hole 6 0.73 -> 0.88);
+Glenwild picks move, P(all) 0.270 -> 0.247 (holes 10 / 14 0.93 -> 0.86); Hawk's Point picks move, same approximate
+holes 6, 10, 13-16, P(all) 0.000; Remsen P(all) 0.508 -> 0.527; Makena North no build. Nothing goes from shown to
+blocked. Re-runs with the installed defaults and no env reproduce rsel1 (Sunset, Remsen); ROUTE_SELECT=0 reproduces
+teepk (Sunset 0.315).
+
+Shipped as the default (OOF 643 and never-used 200 both better, loop rule met, card guardrail met on choice): fits in
+route_models/v2/ (route_learn unchanged; re-ranker = ranker with rank=True, thr 0.5; tee model = classifier +
+ranker with lam 0.5, tau 0.93, lam_r 12; gate refitted). Rollback: `ROUTE_SELECT=0` (route_models/v2_pk/: the
+previous re-ranker, tee and gate fits; the code reads model files without the new keys the old way). Env knobs:
+ROUTE_TEE_TAU=0 (no ranker branch), ROUTE_TEE_LAM=0 (eps tie-break). Cost: the ranker branch adds one LightGBM
+predict a hole (loop route times unchanged within noise).
+
+Not done / next: richer re-ranker features (per-hole par fit, walk geometry) need a gen re-run (about 40 min); the
+re-ranker oracle over all kinds is still +383 holes on choice and the ranker over all kinds lost holes. OSM footways /
+paths survive the bench's hiding (strip_golf drops only golf-tagged features), but bench courses are better mapped
+than unmapped ones, so they would be a biased walk signal: not used. Green cap (2 x holes) cuts only 8 wrong holes:
+not tried.
+
+Reproduce (scratch rsel/): run_gen.sh (prep, tgen2 tee rows, gen re-ranker rows on the tdet/pk10f2 fits), rr_exp.py /
+rr_fit.py (re-ranker variants, picks, fit), run_w1.sh (tee rows under the new picks + out-of-fold bench), tl_exp.py /
+tl_pen*.py / tl_hyb.py / tl_cap.py (tee variants), tl_fit.py (picks + fit), cerr.py (per-split holes + card error),
+loop_w1e.sh, teerec/testeval.sh.

@@ -24,6 +24,12 @@ This module, per hole with its green fixed:
     forward / middle boxes and spots along the line about as high as the back box, and the argmax alone moved the
     play lengths golfers see off the card (bench median card error 6.4 -> 20.8 yd).
 
+Since 2026-11-20 (NOTES_ROUTING.md "routing selection"): the choice is a hybrid. When the classifier's P of the
+incumbent is below the model's tau, a LightGBM lambdarank ranker (FEATS + extra_feats) picks the spot with the best
+score - lam_r x min(card residual, 0.3) if it beats the incumbent's; otherwise (and for every other hole) the
+classifier's P - lam x min(card residual, 0.3) (residual to the course set). A model file without these keys keeps
+the eps tie-break above. Env ROUTE_TEE_TAU=0 turns the ranker branch off, ROUTE_TEE_LAM=0 restores the eps rule.
+
 Env ROUTE_TEE (default 1 when route_tee_model.pkl exists): 0 turns it off; ROUTE_TEE_EPS / ROUTE_TEE_DELTA override the
 model's eps / delta. The bench's ROUTE_TEE_PICKS (json {slug:
 {position: [x, y] local yd}}) gives out-of-fold choices instead (route_bench).
@@ -247,9 +253,29 @@ def set_resid(F, y):
     return np.abs(F[:, FEATS.index("D")] - y) / y
 
 
-def choose(p, rset, delta, eps):
-    """index of the chosen candidate (0 = keep the incumbent): among those within eps of the best P the best card fit,
-    taken when its P beats the incumbent's by more than delta"""
+def extra_feats(F, P, rset):
+    """the ranker's extra columns per candidate: card residual to the course set (value, rank, vs the incumbent), boxes /
+    candidates within 30 yd that lie farther from the green, all candidates within 30 yd, P(tee) below the hole's best"""
+    P = np.asarray(P, float)
+    rs = np.asarray(rset, float)
+    rk = np.argsort(np.argsort(rs)).astype(float)
+    pt = F[:, FEATS.index("pt")]
+    dd = np.hypot(*(P[:, None] - P[None]).transpose(2, 0, 1))
+    D = F[:, FEATS.index("D")]
+    nb = ((dd < 30) & (D[None] > D[:, None] + 3)).sum(1).astype(float)
+    nn = (dd < 30).sum(1).astype(float)
+    return np.c_[rs, rk, rs - rs[0], nb, nn, pt - pt.max()]
+
+
+def choose(p, rset, delta, eps, lam=0.0):
+    """index of the chosen candidate (0 = keep the incumbent). lam > 0: the best P - lam x min(card residual, 0.3)
+    (residual = rset, relative to the course set), taken when it beats the incumbent's score by more than delta;
+    else among those within eps of the best P the best card fit, taken when its P beats the incumbent's by more
+    than delta"""
+    if lam > 0:
+        s = np.asarray(p, float) - lam * np.minimum(np.asarray(rset, float), 0.3)
+        j = int(np.argmax(s))
+        return j if (j != 0 and s[j] - s[0] > delta) else 0
     j = int(np.argmax(p))
     if eps > 0:
         A = np.where(p >= p[j] - eps)[0]
@@ -267,13 +293,23 @@ def refine(d, pr, holes, TQ, GQ, m=None, cands=None):
     info = {}
     delta = float(os.environ.get("ROUTE_TEE_DELTA") or m["delta"])
     eps = float(os.environ.get("ROUTE_TEE_EPS") or m.get("eps", 0.0))
+    lam = float(os.environ.get("ROUTE_TEE_LAM") or m.get("lam", 0.0))
     ys = course_set(getattr(pr, "Y", None), {i: float(c["F"][0, FEATS.index("D")]) for i, c in enumerate(cs)
                                              if c is not None})
+    rk = m.get("rank")
+    tau = float(os.environ.get("ROUTE_TEE_TAU") or m.get("tau", 0.0)) if rk is not None else 0.0
     for i, c in enumerate(cs):
         if c is None or len(c["P"]) < 2:
             continue
         p = m["model"].predict_proba(c["F"][:, m.get("keep", slice(None))])[:, 1]
-        j = choose(p, set_resid(c["F"], ys[i] if ys is not None else None), delta, eps)
+        rs = set_resid(c["F"], ys[i] if ys is not None else None)
+        j = 0
+        if p[0] < tau:                              # the incumbent looks wrong: the ranker's pick, card-penalised
+            sr = rk.predict(np.c_[c["F"], extra_feats(c["F"], c["P"], rs)]) - m["lam_r"] * np.minimum(rs, 0.3)
+            j = int(np.argmax(sr))
+            j = j if (j != 0 and sr[j] > sr[0]) else 0
+        if not j:
+            j = choose(p, rs, delta, eps, lam)
         if j:
             TQ[i] = tuple(c["P"][j])
             info[i] = dict(p_inc=round(float(p[0]), 3), p_new=round(float(p[j]), 3), src=int(c["src"][j]))

@@ -72,6 +72,16 @@ def unet_file():
     return UNETS[unet_model()]
 
 
+# Routing selection (NOTES_ROUTING.md 2026-11-20 "routing selection"): v2's re-ranker is a lambdarank ranker and the tee
+# refinement a ranker / classifier hybrid with a card-residual penalty (route_models/v2/). ROUTE_SELECT=0 rolls back to
+# the previous re-ranker / tee / gate fits (route_models/v2_pk/: regressor re-ranker, eps tie-break tee choice).
+SELECT_ROLLBACK = {"v2": "v2_pk"}
+
+
+def select_rollback():
+    return SELECT_ROLLBACK.get(unet_model()) if os.environ.get("ROUTE_SELECT", "1") == "0" else None
+
+
 def routing_file(name, env=None):
     """the routing model file `name` (e.g. route_learn_model.pkl) for the selected U-Net"""
     if env and os.environ.get(env):
@@ -79,7 +89,8 @@ def routing_file(name, env=None):
     m = unet_model()
     rb = tee_rollback()
     np_ = NO_PEAKS_FITS.get(m) if not rb and TEE_PEAKS.get(m) and route_tee_peaks() == 0 else None
-    for d in ([rb[0]] if rb else []) + ([np_] if np_ else []) + ([m] if m != "v1" else []):
+    sr = select_rollback() if not rb and not np_ else None
+    for d in ([rb[0]] if rb else []) + ([np_] if np_ else []) + ([sr] if sr else []) + ([m] if m != "v1" else []):
         p = os.path.join(HERE, "route_models", d, name)
         if os.path.exists(p):
             return p
