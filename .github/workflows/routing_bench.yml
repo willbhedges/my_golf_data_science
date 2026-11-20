@@ -1,0 +1,103 @@
+name: routing-bench
+
+# Routing bench on Actions (NOTES_ROUTING.md "Design 2026-11-20: routing bench and refit on GitHub Actions";
+# course_data/platform/fastpath/refit/README.md). Smoke scope for now:
+#   bench:  the shipped default's out-of-fold protocol (refit/smoke_bench.sh: re-ranker / tee picks + out-of-fold
+#           route_learn scores, ROUTE_BENCH_SC) on the courses of benchdata/smoke/slugs.txt, with the committed
+#           copies of the local bench inputs (benchdata/smoke/big); pass = per-hole results and routed lines
+#           identical to the local reference benchdata/smoke/ref_oof.json (refit/smoke_compare.py).
+#   inputs: the same courses' scenes / probs / maps rebuilt here from free imagery (refit/build_inputs.py: NAIP +
+#           3DEP + Meta canopy, U-Net, fastscene; truth + cards from benchdata/big), then the same bench on them
+#           (informational: a newer NAIP flight or another CPU can move a scene).
+# Trigger: commit course_data/requests/routing_bench_<name>.json
+#   {"schema": "request/1", "kind": "routing_bench", "stage": "smoke", "slugs": ""}   (slugs "" = benchdata/smoke)
+# Nothing is committed by this workflow; results are artifacts (30 days).
+
+on:
+  push:
+    branches:
+      - claude/mozingo-lake-tee-strategy-ef54wl
+    paths:
+      - "course_data/requests/routing_bench_*.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: routing-bench-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FP: course_data/platform/fastpath
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      slugs: ${{ steps.p.outputs.slugs }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 20
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
+            /course_data/platform/fastpath/benchdata/smoke/slugs.txt
+      - id: p
+        run: |
+          F=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/routing_bench_*.json' 2>/dev/null | tail -1)
+          [ -n "$F" ] && [ -f "$F" ] || F=$(ls course_data/requests/routing_bench_*.json | tail -1)
+          echo "request: $F"; cat "$F"
+          S=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('slugs') or '')" "$F")
+          [ -n "$S" ] || S=$(cat $FP/benchdata/smoke/slugs.txt)
+          echo "slugs=$S" >> "$GITHUB_OUTPUT"
+
+  bench:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q -r $FP/refit/requirements.txt
+      - name: Bench on the committed inputs (identity test vs the local reference)
+        run: |
+          $FP/refit/smoke_bench.sh $RUNNER_TEMP/bench_committed.json
+          python3 $FP/refit/smoke_compare.py $FP/benchdata/smoke/ref_oof.json $RUNNER_TEMP/bench_committed.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: routing-bench-smoke-committed
+          retention-days: 30
+          path: ${{ runner.temp }}/bench_committed.json
+
+  inputs:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q -r $FP/refit/requirements.txt
+      - name: Rebuild the inputs from free imagery
+        run: python3 -u $FP/refit/build_inputs.py $RUNNER_TEMP/inputs "${{ needs.plan.outputs.slugs }}"
+      - name: Bench on the rebuilt inputs (informational)
+        continue-on-error: true
+        run: |
+          $FP/refit/smoke_bench.sh $RUNNER_TEMP/inputs/bench_rebuilt.json $RUNNER_TEMP/inputs
+          python3 $FP/refit/smoke_compare.py $FP/benchdata/smoke/ref_oof.json $RUNNER_TEMP/inputs/bench_rebuilt.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: routing-bench-smoke-inputs
+          retention-days: 30
+          path: ${{ runner.temp }}/inputs/
