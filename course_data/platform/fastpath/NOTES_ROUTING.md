@@ -1333,3 +1333,44 @@ Bench caveats:
 
 Reproduce (scratch vint/): cues.py (per-vintage green cues; packages rebuilt and deleted), loop_def.txt,
 rebuild_jato.log.
+
+## State 2026-11-20 (later): routing fits refitted under the bench's card pick (default; ROUTE_SELECT=chosen rollback)
+
+The bench now routes production's card pick (ROUTE_BENCH_CARD=pick, 4ab2004b7); the route_models/v2 fits were made with
+scorecard.json's chosen card, which differs in content on 186 of the 643 courses (source on 52), so their out-of-fold
+re-ranker / tee picks do not apply there.
+
+Hybrid pick baseline (HEAD 95d5c5500 defaults, scratch t2/pickbase.sh): every course rescored with the route_learn
+state-fold models (ROUTE_BENCH_FOLD_RESCORE), the old out-of-fold re-ranker / tee picks on the 457 courses whose card is
+unchanged, none on the other 186 (so those run without the re-ranker and tee step: the baseline is pessimistic there).
+Holes right / all-right, card median / p90 yd: train+big 643 86.43 % / 223, 6.0 / 33.9; choice 443 86.08 % / 158,
+5.9 / 33.2; never-used 200 87.20 % / 65, 6.2 / 35.6. (Neither this bench path nor the refit's includes the
+27 / 36-hole cluster routing, which runs in route_v2 only; its 2 switched courses are not in these numbers.)
+
+Refit (scratch t4/run_pick.sh: the shipped recipe unchanged under ROUTE_BENCH_CARD=pick, --ver v2seg_d0+yall: route_learn
+h / w / s / e + x3 cv / fit, gen3 rows + bagged ranker thr 0.5 (out-of-fold gain choice +67 / never-used +67, vs +49 /
++33 for the old fits), tgen2 rows + hybrid tee rule 0.93 / 12 / 0.5 (tl_exp reading the bench's card), gate refitted):
+
+| | train+big 643 | choice 443 | never-used 200 |
+|---|---|---|---|
+| hybrid pick baseline | 86.43 % / 223, 6.0 / 33.9 | 86.08 % / 158, 5.9 / 33.2 | 87.20 % / 65, 6.2 / 35.6 |
+| **refit under pick** | **87.04 % / 233**, 6.1 / 36.3 | **86.70 % / 166**, 6.1 / 36.3 | **87.80 % / 67**, 6.2 / 36.4 |
+
+Per course: choice 80 better (+159) / 67 worse (-113), never-used 31 (+59) / 26 (-39). Card on choice +0.2 / +3.1 yd
+(within the +1 / +5 guardrail; vs the old default's 6.1 / 36.2 flat). Part of the gain is the 186 courses getting the
+re-ranker / tee step back (the baseline caveat above); the other agent's delta composite for the pick convention was
+86.83 / 86.42 / 87.74 %, which the refit also beats.
+
+Test 28 (read once, production path with the new fits, teerec/testeval.sh): 89.23 % -> **88.20 %** (431 -> 426 of 483),
+a regression: smoke_rise_ga 16 -> 9 (the old re-ranker switched to a beam alternative changing holes 10 / 11, the new one
+does not switch; 7 of the 9 holes lost), bartram_trail -1; arrowhead_pointe, elmcrest, towne_lake_hills +1
+(jato_highlands_me has no x3 table on test, as before). Never-used + test pooled: +20 - 5 = +15 holes.
+
+Blind loop with the new defaults (t4/loop_refit.txt vs t1/idle1.txt): tier A / B / C identical (statuses, picks,
+flagged picks, approximate). Tier D all still shown; picks move with the new routing: Sunset P(all) 0.359 -> 0.449,
+Glenwild 0.265 -> 0.261, Remsen 0.531 -> 0.569, **Hawk's Point approximate 12 -> 1 of 18 (hole 15; P(all) 0.000 ->
+0.012)**; Makena North no build. Nothing goes from shown to blocked.
+
+Shipped: route_models/v2 = the refit; the previous fits are route_models/v2_chosen (ROUTE_SELECT=chosen). The
+ROUTE_SELECT=0 / w1e rollbacks (v2_pk, v2_w1e) now carry their own copy of the previous route_learn fit, so they load
+exactly the fit sets they were made with.

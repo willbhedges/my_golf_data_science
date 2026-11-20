@@ -93,7 +93,9 @@ def unet_file():
 # classifier hybrid with a card-residual penalty (route_models/v2/). Rollbacks of the re-ranker / tee / gate fits:
 # ROUTE_SELECT=w1e (route_models/v2_w1e/: single ranker over start / end alternatives), ROUTE_SELECT=0
 # (route_models/v2_pk/: regressor re-ranker, eps tie-break tee choice).
-SELECT_ROLLBACK = {"v2": {"0": "v2_pk", "w1e": "v2_w1e"}}
+# ROUTE_SELECT=chosen (route_models/v2_chosen/): the fits made with the bench's old card (scorecard.json's chosen card),
+# before the 2026-11-20 refit under the production card pick (NOTES_ROUTING.md "refit under the card pick").
+SELECT_ROLLBACK = {"v2": {"0": "v2_pk", "w1e": "v2_w1e", "chosen": "v2_chosen"}}
 
 
 def select_rollback():
