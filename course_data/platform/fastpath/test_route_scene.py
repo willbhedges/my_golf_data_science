@@ -171,3 +171,16 @@ def test_route_v2_smoke():
     r, ci, s2 = RS.route_v2({"features": []}, sc, card, 9, P, params=dict(beam=500))
     assert len(r["features"]) == 9 and ci["greens_map"] == 0
     assert all(h.get("pw") is None or 0 <= h["pw"] <= 1 for h in r["hole_features"])
+
+
+def test_route_n_nine_repeated():
+    import route_scene as RS
+    y9 = [312, 357, 130, 207, 125, 468, 197, 504, 301]
+    card = dict(par=[4] * 18, tee_sets=dict(B=dict(yards=y9 + [v + 5 for v in y9], par=[4] * 18, total=0)))
+    g = lambda k: dict(greens=[dict(id=str(i), p_hole=0.9, centroid=[0, 0]) for i in range(k)])
+    assert RS.route_n(card, g(10), 18) == 9
+    assert RS.route_n(card, g(20), 18) == 18                  # a real 18-hole course with a repeating card
+    other = dict(tee_sets=dict(B=dict(yards=y9 + [400, 150, 520, 380, 410, 170, 360, 540, 300])))
+    assert RS.route_n(other, g(10), 18) == 18
+    f = RS.front_nine(card)
+    assert f["tee_sets"]["B"]["yards"] == y9 and len(f["par"]) == 9 and f["tee_sets"]["B"]["total"] == sum(y9)
