@@ -14,7 +14,8 @@ slugs_new1.txt. Results and history are in ../NOTES_ROUTING.md.
 | summ3.py OOF.json [TEST.json] | holes right / all-right per split (643 / choice 443 / never-used 200 / test) | segv2/summ3.py |
 | testeval.sh P_TEE WORKDIR | the ONE read of test 28 on a workdir's fits (production path) | teerec/testeval.sh |
 | link_benchdata.sh | on a fresh checkout, links cache/big/{courses,manifest.json,status} to ../benchdata/big | new |
-| smoke_bench.sh OUT [INPUT_DIR] / smoke_compare.py REF RUN | the Actions smoke (.github/workflows/routing_bench.yml): the default's out-of-fold protocol on benchdata/smoke's 5 courses; identical per-hole results to benchdata/smoke/ref_oof.json | new |
+| smoke_bench.sh OUT [INPUT_DIR] / smoke_compare.py REF RUN | the Actions smoke (.github/workflows/routing_bench.yml): the default's out-of-fold protocol on benchdata/smoke's 5 courses; identical per-hole results to benchdata/smoke/ref_oof.json; SMOKE_MODE=fold: fold-model scores + live re-ranker / tee, vs ref_fold.json | new |
+| smoke_scenes.py REF_DIR RUN_DIR | rebuilt vs committed scenes (greens / tees matched) | new |
 | build_inputs.py OUT_DIR SLUGS | rebuild TRAIN-BIG scenes / probs / maps from free imagery (route_big's stages without the card search) | new |
 
 ## The shipped recipe (pick refit, 2026-11-20)

@@ -8,7 +8,10 @@ name: routing-bench
 #           identical to the local reference benchdata/smoke/ref_oof.json (refit/smoke_compare.py).
 #   inputs: the same courses' scenes / probs / maps rebuilt here from free imagery (refit/build_inputs.py: NAIP +
 #           3DEP + Meta canopy, U-Net, fastscene; truth + cards from benchdata/big), then the same bench on them
-#           (informational: a newer NAIP flight or another CPU can move a scene).
+#           (informational: a newer NAIP flight or another CPU can move a scene); scenes compared with
+#           refit/smoke_scenes.py, routing in the scene-independent fold-model protocol (SMOKE_MODE=fold:
+#           route_learn state-fold models in benchdata/smoke/folds, re-ranker + tee step live).
+#   The bench job also runs the fold protocol on the committed inputs (identity vs benchdata/smoke/ref_fold.json).
 # Trigger: commit course_data/requests/routing_bench_<name>.json
 #   {"schema": "request/1", "kind": "routing_bench", "stage": "smoke", "slugs": ""}   (slugs "" = benchdata/smoke)
 # Nothing is committed by this workflow; results are artifacts (30 days).
@@ -65,16 +68,20 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -q -r $FP/refit/requirements.txt
-      - name: Bench on the committed inputs (identity test vs the local reference)
+      - name: Bench on the committed inputs, out-of-fold protocol (identity test vs the local reference)
         run: |
           $FP/refit/smoke_bench.sh $RUNNER_TEMP/bench_committed.json
           python3 $FP/refit/smoke_compare.py $FP/benchdata/smoke/ref_oof.json $RUNNER_TEMP/bench_committed.json
+      - name: Bench on the committed inputs, fold-model protocol (identity test; re-ranker + tee step live)
+        run: |
+          SMOKE_MODE=fold $FP/refit/smoke_bench.sh $RUNNER_TEMP/bench_committed_fold.json
+          python3 $FP/refit/smoke_compare.py $FP/benchdata/smoke/ref_fold.json $RUNNER_TEMP/bench_committed_fold.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: routing-bench-smoke-committed
           retention-days: 30
-          path: ${{ runner.temp }}/bench_committed.json
+          path: ${{ runner.temp }}/bench_committed*.json
 
   inputs:
     needs: plan
@@ -90,11 +97,14 @@ jobs:
       - run: pip install -q -r $FP/refit/requirements.txt
       - name: Rebuild the inputs from free imagery
         run: python3 -u $FP/refit/build_inputs.py $RUNNER_TEMP/inputs "${{ needs.plan.outputs.slugs }}"
-      - name: Bench on the rebuilt inputs (informational)
+      - name: Rebuilt scenes vs the committed ones (informational)
+        continue-on-error: true
+        run: python3 $FP/refit/smoke_scenes.py $FP/benchdata/smoke $RUNNER_TEMP/inputs
+      - name: Bench on the rebuilt inputs, fold-model protocol (informational; the out-of-fold picks fit only the committed scenes)
         continue-on-error: true
         run: |
-          $FP/refit/smoke_bench.sh $RUNNER_TEMP/inputs/bench_rebuilt.json $RUNNER_TEMP/inputs
-          python3 $FP/refit/smoke_compare.py $FP/benchdata/smoke/ref_oof.json $RUNNER_TEMP/inputs/bench_rebuilt.json
+          SMOKE_MODE=fold $FP/refit/smoke_bench.sh $RUNNER_TEMP/inputs/bench_rebuilt_fold.json $RUNNER_TEMP/inputs
+          python3 $FP/refit/smoke_compare.py $FP/benchdata/smoke/ref_fold.json $RUNNER_TEMP/inputs/bench_rebuilt_fold.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
