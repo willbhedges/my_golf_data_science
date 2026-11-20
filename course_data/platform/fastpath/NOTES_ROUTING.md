@@ -868,3 +868,69 @@ holds; the loop under artificial load (8 busy processes on 4 cores, load average
 idle on all 20 courses (statuses, picks, flagged picks, approximate holes, p_holes, warnings; only timings differ);
 after the change, an idle loop (t1/post1.txt) identical to idle1 line for line except timings. Hawk's Point
 approximate holes 12 of 18 (4-10, 13, 15-18) in all three.
+
+## State 2026-11-20 (later): DEM pad tee complexes (opt-in ROUTE_TEE_PADS=1, not the default)
+
+Target: choice wrong holes with no tee candidate at all (a1, 174 before the tee-choice work), concentrated in whole
+courses where the U-Net P(tee) is ~0 (woodlyn_hills, merriland_farm, shagbark, edgebrook, holly_ridge, paintsville,
+hansen_park ...). Per the scorer's tee rule (a candidate within 40 m of the first 60 % of the true line) the current
+scene complexes + P(tee) peaks leave 176 truth starts on choice 443 (83 on never-used) with no acceptable candidate
+(631 / 282 without one within 30 m of the start).
+
+(a) DEM pads. Data already fetched: fastscene builds its grid from the package DEM (3DEP exportImage, 1 m,
+imagery/dem.tif), and perceive already turns lidar pads into tee boxes, but a lidar-only box gets p 0.25-0.5 and the
+complex builder keeps boxes >= 0.3, so most never become complexes; TRAIN-BIG kept no DEM. The bench job (scratch
+pads/padgen.py) fetched the 3DEP 1 m DEM on each bench scene grid (680 courses; 2 fetches failed: tb_tara_sc,
+tb_robert_trent_jones_hampton_cove_al, no pads there; DEM deleted after use) and ran tees/lidar_pads.components
+(slope < 5 %, top-hat > 0.05 m, mean >= 0.1 m, >= 30 % banked ring, 30-2000 m2): ~150 pads a course. Raw pads cover
+96 of the 176 (54 %) but at 1 % precision; a pad classifier (route_pad_model.pkl: LightGBM on pad shape, U-Net class
+means under the pad, distance to the nearest complex / green edge; label = within 30 m of a start no complex covers;
+out-of-fold by state, AUC 0.909, 99 133 pads, 395 positive) ranks them. Coverage of the 176 / 83 (choice / never-used)
+by pads >= 25 m from every complex and clear of greens, filling to 3 complexes a hole: score >= 0.01 53 / 29 (5.8 pads a
+course), >= 0.02 40 / 22, >= 0.05 22 / 11 (1.3 a course); turf-score ranking instead: 43 / 27 at 8 a course.
+Pads go in as one-box complexes kind 'pad' (p = score) with a source column t_src (0 scene, 1 peak, 2 pad) in the
+route_learn tee attributes (only in fits made with pads: model key tsrc). They are added to the solver's candidate list
+after the split halves of real complexes (the first run put them before and cut truth pairs 1971 -> 1888 through the
+60-candidate cap; fixed, 1987).
+
+Full refit per variant with the shipped recipe unchanged (scratch dpad/run.sh: route_learn h / w / s / e + x3, gen3 +
+bagged ranker thr 0.5, tgen2 + hybrid tee rule 0.93 / 12 / 0.5, out-of-fold bench), out-of-fold holes / all-right, card
+median / p90 yd:
+
+| variant | train+big 643 | choice 443 | never-used 200 |
+|---|---|---|---|
+| default (bagged noclub thr 0.5) | 86.49 % / 229, 6.1 / 36.8 | 86.09 % / 161, 6.1 / 36.2 | 87.38 % / 68, 6.2 / 38.0 |
+| A: pads score >= 0.01, fill 3 | 86.28 % / 231, 6.2 / 37.8 | 85.95 % / 161, 6.1 / 37.4 | 86.99 % / 70, 6.3 / 39.2 |
+| **B: pads score >= 0.05, fill 3** | 86.43 % / 228, 6.1 / 37.6 | 86.12 % / 162, 6.1 / 37.8 | 87.11 % / 66, 6.2 / 36.9 |
+
+Per course vs the default: A choice 73 better (+132) / 75 worse (-142), never-used 32 (+74) / 38 (-87); B choice
+66 (+130) / 66 (-128), never-used 26 (+50) / 33 (-59). Re-ranker OOF gain on the new rows: A choice +61 / never-used
++68, B +69 / +23 (default +49 / +33). The collapse courses under A: paintsville 0 -> 8, woodlyn 0 -> 1, merriland
+0 -> 0, black_desert / hunter 0 -> 0, but shagbark 6 -> 2, edgebrook 7 -> 3, holly_ridge 4 -> 1, great_southern 1 -> 0.
+The per-course swings both ways are of the size of refit noise; the net is flat on choice (B +2 holes) and negative
+on never-used (A -13, B -9). Fails the ship rule (OOF 643 and never-used 200 must both improve): NOT the default. Test
+not read (nothing to ship).
+
+Opt-in: `ROUTE_TEE_PADS=1` reads route_models/v2_pads/ (variant B: route_learn / re-ranker / tee / gate fits +
+route_pad_model.pkl; ROUTE_TEE_PAD_MIN 0.05, ROUTE_TEE_PAD_FILL 3) and is ignored under every rollback (ROUTE_SELECT,
+ROUTE_TEE_PEAKS=0, ROUTE_TEE_ALL=0). Production (route_scene.run) computes the pads from the package's imagery/dem.tif,
+which is the scene grid: on 4 loop packages the package DEM equals a fresh 3DEP fetch on the scene grid (max |dz| 0)
+and the pads are identical (102 / 37 / 41 / 256). Cost: no extra network (the DEM is fetched for the scene and
+elevation stages anyway, cold 2-5 s / 4-10 MB, warm 0); +0.4-1.1 s CPU a course. No DEM, a DEM off the scene grid or
+mostly NaN, no 1 m coverage (the seamless fallback yields few or no pads), a missing model or any pad error -> no pads,
+the build goes on (checked: Remsen with the pad model path broken is shown, not blocked).
+
+Blind loop with the opt-in on (ROUTE_TEE_PADS=1 only, pads computed from each package DEM; scratch dpad/loop_pads.txt
+vs t1/post1.txt): tier A / B / C identical (statuses, picks, flagged picks, approximate). D all shown: Sunset P(all)
+0.359 -> 0.412, Glenwild 0.265 -> 0.225 (one pick), Hawk's Point approximate 12 -> 6 of 18 (6, 10, 14-16, 18; P(all)
+0.000 both), Remsen same picks, Makena North no build. Route stage +0.2-0.9 s a course. With the flag off, the loop
+after these changes (t1/post2.txt) is identical to today's idle baseline (t1/idle1.txt) line for line except timings.
+
+(b) geometry virtual tees, not tried as separate candidates: solve2 already places virtual tees on the card ring at
+every bearing with corridor costs, and of the 103 a1 'tee' holes 87 were routed onto a wrong real tee rather than a
+virtual one, so more candidates of that kind would face the same competition. (c) a scene rebuild with a lower
+box threshold is not cheap: TRAIN-BIG kept only probabilities and scenes (needs the NAIP / DEM / canopy refetch).
+
+Reproduce (scratch pads/, dpad/): padgen.py (DEM -> pads), cover.py / cover2.py / ana.py (coverage), padfit.py (pad
+classifier OOF + bench pad files keyed by scene grid), dpad/run.sh WORKDIR MIN FILL (refit + bench; env ROUTE_TEE_PADS=1
+ROUTE_PADS_DIR ROUTE_PAD_MODEL), parity.py (production vs bench pads), dpad/loop_optin.sh.

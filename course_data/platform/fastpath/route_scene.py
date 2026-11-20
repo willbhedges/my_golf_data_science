@@ -132,6 +132,8 @@ def candidates(fc, scene, p_green=P_GREEN, p_tee=None, n_holes=18, split_tees=No
         bp = [(boxes[i][0].centroid.x, boxes[i][0].centroid.y) for i in mem]
         co["T"].append(dict(c=tuple(np.mean(bp, 0)), pts=bp, id=boxes[mem[0]][1], ax=_axis(bp), p=0.9, src="osm"))
     osm_tc = [t["c"] for t in co["T"]]
+    pads = [t for t in st if t.get("kind") == "pad"]     # DEM pads (opt-in): after the split halves, so they never
+    st = [t for t in st if t.get("kind") != "pad"]       # take a real complex's half out of the MAX_CAND budget
     for t in st:
         bp = [C._xy(pj, b["centroid"]) for b in t.get("boxes", []) if b.get("centroid")] or [C._xy(pj, t["centroid"])]
         c = tuple(np.mean(bp, 0))
@@ -151,6 +153,14 @@ def candidates(fc, scene, p_green=P_GREEN, p_tee=None, n_holes=18, split_tees=No
             for half, bp2 in zip("ab", split_complex(tt["pts"])):
                 co["T"].append(dict(c=tuple(np.mean(bp2, 0)), pts=bp2, id=tt["id"] + "/" + half, ax=_axis(bp2),
                                     p=0.9, src="scene"))
+    for t in pads:
+        if len(co["T"]) >= MAX_CAND:
+            break
+        bp = [C._xy(pj, b["centroid"]) for b in t.get("boxes", []) if b.get("centroid")] or [C._xy(pj, t["centroid"])]
+        c = tuple(np.mean(bp, 0))
+        if osm_tc and min(math.hypot(c[0] - a, c[1] - b) for a, b in osm_tc) < MERGE_YD:
+            continue
+        co["T"].append(dict(c=c, pts=bp, id="scene:" + t["id"], ax=_axis(bp), p=0.9, src="scene"))
     if not co["T"]:
         raise ValueError("no tees (OSM or detected)")
     co["T"] = co["T"][:MAX_CAND]
@@ -696,6 +706,12 @@ def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
     P = info.get("P")
     if ROUTER == "v2" and P is not None and np.shape(P)[0] == 6:
         hag = getattr(info.get("stack"), "a", {}).get("hag")
+        import route_learn as RL
+        if RL.tee_pads_on() and scene.get("grid"):              # DEM pads (opt-in ROUTE_TEE_PADS=1), off the package DEM
+            try:
+                scene = dict(scene, dem_pads=RL.dem_pads_file(os.path.join(pkg_dir, "imagery", "dem.tif"), scene["grid"], P))
+            except Exception:                                    # noqa: BLE001
+                scene = dict(scene, dem_pads=[])
         scene0 = scene
         r, ci, scene = route_v2(fc, scene0, card, n_holes, P, hag)
         if card_select and card_select_on() and card:

@@ -53,6 +53,22 @@ def route_tee_peaks():
     return TEE_PEAKS[unet_model()]
 
 
+# DEM pad complexes (route_learn.augment_scene / _pad_tees; NOTES_ROUTING.md 2026-11-20 "DEM pads"): opt-in
+# ROUTE_TEE_PADS=1 (v2 only); off with every rollback.
+TEE_PADS = {"v1": False, "v2": False}
+PADS_FITS = {"v2": "v2_pads"}            # the fits made with pads (route_learn / re-ranker / tee / gate + route_pad_model)
+
+
+def route_tee_pads():
+    """DEM pads on: only with their own fits (route_models/v2_pads), so off under every other rollback / variant"""
+    if tee_rollback() or select_rollback() or route_tee_peaks() == 0:
+        return False
+    v = os.environ.get("ROUTE_TEE_PADS")
+    if v not in (None, ""):
+        return v == "1" and unet_model() == "v2"
+    return TEE_PADS[unet_model()]
+
+
 def route_p_tee():
     v = os.environ.get("ROUTE_P_TEE")
     if v:
@@ -92,7 +108,9 @@ def routing_file(name, env=None):
     rb = tee_rollback()
     np_ = NO_PEAKS_FITS.get(m) if not rb and TEE_PEAKS.get(m) and route_tee_peaks() == 0 else None
     sr = select_rollback() if not rb and not np_ else None
-    for d in ([rb[0]] if rb else []) + ([np_] if np_ else []) + ([sr] if sr else []) + ([m] if m != "v1" else []):
+    pd = PADS_FITS.get(m) if not rb and not np_ and not sr and route_tee_pads() else None
+    for d in ([rb[0]] if rb else []) + ([np_] if np_ else []) + ([sr] if sr else []) + ([pd] if pd else []) + \
+            ([m] if m != "v1" else []):
         p = os.path.join(HERE, "route_models", d, name)
         if os.path.exists(p):
             return p

@@ -192,7 +192,176 @@ def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=No
         tc = _peak_tees(P[CLASSES.index("tee")], scene, gx, fwd, inv, tp, n_holes or 18)
         if tc:
             sc["tee_complexes"] = list(scene.get("tee_complexes") or []) + tc
+    if tee_pads_on():
+        pads = scene.get("dem_pads")
+        if pads is None:
+            pads = bench_pads(scene)
+        if pads:
+            gx = [(np.array(fwd.transform(*gg["centroid"])), math.sqrt(max(float(gg.get("area_m2") or 300.0), 30.0) / math.pi))
+                  for gg in sc["greens"] if gg.get("kind") != "practice" and float(gg.get("p_hole", gg.get("p", 0))) >= P_GREEN]
+            try:                                         # degrade to no pads (missing model, bad pad data), never fail
+                tc = _pad_tees(pads, sc, gx, fwd, n_holes or 18)
+            except Exception as ex:                      # noqa: BLE001
+                print("DEM pads skipped:", repr(ex)[:200])
+                tc = []
+            if tc:
+                sc["tee_complexes"] = list(sc.get("tee_complexes") or []) + tc
     return sc, len(out)
+
+
+# Tee complexes from 3DEP DEM pads (NOTES_ROUTING.md 2026-11-20 "DEM pads"): a tee is a small level, slightly raised
+# platform with banked sides (tees/lidar_pads.components on the 1 m DEM: slope < 5 %, top-hat > 0.05 m, mean >= 0.1 m,
+# >= 30 % banked ring, 30-2000 m2). Where the U-Net sees no tee (P(tee) ~ 0 on whole courses), the scene has no
+# candidate; pads are geometry. A pad >= TEE_PAD_SEP_M from every scene complex / P(tee) peak and clear of the greens
+# is scored by a small classifier (route_pad_model.pkl: pad shape, U-Net class means under it, distance to the nearest
+# complex / green edge; label = within 30 m of a hole start no other complex covers) and added as a one-box complex
+# kind 'pad' (p = that score; t_src 2 in the tee attributes of a fit made with pads) when the score >= tee_pad_min(),
+# best first, until the course holds tee_pad_fill() complexes a hole. Opt-in: ROUTE_TEE_PADS=1 (fits must match).
+TEE_PAD_SEP_M, TEE_PAD_GREEN_M = 25.0, 6.0
+PAD_FEATS = ("area_m2", "tophat_m", "slope_pct", "bank_frac", "p_bg", "p_green", "p_tee", "p_fair", "p_bunker", "p_water",
+             "p_tee_max", "dT", "dG")
+PAD_MODEL = _DET.routing_file("route_pad_model.pkl", "ROUTE_PAD_MODEL")
+_PADM = {}
+
+
+def tee_pads_on():
+    return _DET.route_tee_pads()
+
+
+def tee_pad_fill():
+    return float(os.environ.get("ROUTE_TEE_PAD_FILL", "3") or 3)
+
+
+def tee_pad_min():
+    return float(os.environ.get("ROUTE_TEE_PAD_MIN", "0.05") or 0.0)
+
+
+def pad_x(p):
+    return [min(float(p[k]), 500.0) if k in ("dT", "dG") else float(p.get(k, np.nan)) for k in PAD_FEATS]
+
+
+def pad_scores(pads):
+    """route_pad_model.pkl scores of pads carrying dT / dG; a pad with a precomputed 'score' (the bench's out-of-fold
+    score) keeps it"""
+    if PAD_MODEL not in _PADM:
+        _PADM[PAD_MODEL] = pickle.load(open(PAD_MODEL, "rb")) if os.path.exists(PAD_MODEL) else None
+    m = _PADM[PAD_MODEL]
+    todo = [i for i, p in enumerate(pads) if p.get("score") is None]
+    out = [p.get("score") for p in pads]
+    if todo:
+        if m is None:
+            raise FileNotFoundError("ROUTE_TEE_PADS=1 needs " + PAD_MODEL)
+        pr = m["model"].predict_proba(np.asarray([pad_x(pads[i]) for i in todo], float))[:, 1]
+        for i, v in zip(todo, pr):
+            out[i] = float(v)
+    return out
+
+
+def dem_pads(z, grid, P):
+    """pad components of a DEM on the scene grid (z [H, W] m, NaN no data; P: U-Net uint8 [6, H, W] or None) ->
+    [dict(centroid, polygon (lon / lat), area_m2, tophat_m, slope_pct, bank_frac, p_<class> means, p_tee_max)]"""
+    import sys as _sys
+    tees = os.path.join(os.path.dirname(os.path.dirname(HERE)), "tees")
+    if tees not in _sys.path:
+        _sys.path.append(tees)
+    import lidar_pads as LP
+    from pyproj import Transformer
+    z = np.asarray(z, np.float64)
+    if not np.isfinite(z).any() or np.isfinite(z).mean() <= 0.5:
+        return []
+    inv = Transformer.from_crs(grid["crs"], "EPSG:4326", always_xy=True)
+    a, _, c, _, e, f = grid["transform"][:6]
+    out = []
+    for cp in LP.components(z, 1.0):
+        rr, cc = cp["rows"], cp["cols"]
+        x, y = c + a * (cc.mean() + 0.5), f + e * (rr.mean() + 0.5)
+        lo, la = inv.transform(x, y)
+        ft = {}
+        if P is not None:
+            for k, nm in enumerate(("bg", "green", "tee", "fair", "bunker", "water")):
+                v = P[k][np.clip(rr, 0, P.shape[1] - 1), np.clip(cc, 0, P.shape[2] - 1)].astype(np.float32) / 255
+                ft["p_" + nm] = round(float(v.mean()), 3)
+                if nm == "tee":
+                    ft["p_tee_max"] = round(float(v.max()), 3)
+        hull = LP._hull(np.c_[c + a * (cc + 0.5), f + e * (rr + 0.5)])
+        hl, ha = inv.transform([q[0] for q in hull], [q[1] for q in hull])
+        out.append(dict(centroid=[float(lo), float(la)], polygon=[[float(u), float(v)] for u, v in zip(hl, ha)],
+                        **{k: cp[k] for k in ("area_m2", "tophat_m", "slope_pct", "bank_frac")}, **ft))
+    return out
+
+
+def dem_pads_file(dem_path, grid, P):
+    """dem_pads on a GeoTIFF that is the scene grid (fastscene builds its grid from the package DEM); [] otherwise"""
+    import rasterio
+    if not dem_path or not os.path.exists(dem_path):
+        return []
+    with rasterio.open(dem_path) as s:
+        if (s.height, s.width) != (grid["height"], grid["width"]) or abs(s.transform.c - grid["transform"][2]) > 0.01 \
+                or abs(s.transform.f - grid["transform"][5]) > 0.01:
+            return []
+        z = s.read(1).astype(np.float64)
+        if s.nodata is not None and np.isfinite(s.nodata):
+            z[z == s.nodata] = np.nan
+    z[z < -1000] = np.nan
+    return dem_pads(z, grid, P)
+
+
+def _grid_key(grid):
+    t = grid["transform"]
+    return "%s_%d_%d_%d_%d" % (str(grid["crs"]).replace(":", ""), round(t[2]), round(t[5]), grid["width"], grid["height"])
+
+
+def bench_pads(scene):
+    """the bench's precomputed pads of a scene (ROUTE_PADS_DIR/<grid key>.json, written by the bench pad job)"""
+    d = os.environ.get("ROUTE_PADS_DIR")
+    if not d or not scene or not scene.get("grid"):
+        return None
+    p = os.path.join(d, _grid_key(scene["grid"]) + ".json")
+    if not os.path.exists(p):
+        return None
+    return json.load(open(p)).get("pads") or []
+
+
+def pad_context(pads, scene, greens, fwd):
+    """copies of the pads with dT (m to the nearest real complex box) / dG (m to the nearest green edge) and xy"""
+    real = [t for t in scene.get("tee_complexes") or [] if not t.get("virtual")]
+    have = np.asarray([fwd.transform(*q) for t in real
+                       for q in ([b["centroid"] for b in t.get("boxes") or [] if b.get("centroid")] or [t["centroid"]])],
+                      float).reshape(-1, 2)
+    gq = np.asarray([g for g, _ in greens], float).reshape(-1, 2)
+    gr = np.asarray([r for _, r in greens], float)
+    out = []
+    for p in pads:
+        q = np.array(fwd.transform(*p["centroid"]))
+        dT = float(np.min(np.hypot(*(have - q).T))) if len(have) else 1e9
+        dG = float(np.min(np.hypot(*(gq - q).T) - gr)) if len(gq) else 1e9
+        out.append(dict(p, dT=dT, dG=dG, _xy=q))
+    return out, len(real)
+
+
+def _pad_tees(pads, scene, greens, fwd, n_holes):
+    P, n_real = pad_context(pads, scene, greens, fwd)
+    P = [p for p in P if p["dT"] >= TEE_PAD_SEP_M and p["dG"] >= TEE_PAD_GREEN_M]
+    if not P:
+        return []
+    sc = pad_scores(P)
+    budget = max(0, int(round(tee_pad_fill() * n_holes)) - n_real)
+    mn = tee_pad_min()
+    out, have = [], []
+    for i in sorted(range(len(P)), key=lambda i: -sc[i]):
+        if len(out) >= budget or sc[i] < mn:
+            break
+        p, q = P[i], P[i]["_xy"]
+        if have and min(float(np.hypot(*(q - h))) for h in have) < TEE_PAD_SEP_M:
+            continue
+        v = round(float(sc[i]), 4)
+        cid = "kd%d_%d" % (round(q[0]), round(q[1]))
+        out.append(dict(id=cid, p=v, p_range_tee=0.0, centroid=list(p["centroid"]), polygon=p["polygon"],
+                        axis_deg=None, length_m=None, src=["dem_pad"], virtual=False, kind="pad",
+                        boxes=[dict(id=cid + ".1", p=v, centroid=list(p["centroid"]), area_m2=float(p["area_m2"]),
+                                    polygon=p["polygon"], src=["dem_pad"])]))
+        have.append(q)
+    return out
 
 
 # Tee complexes from the U-Net's P(tee) map (detector.route_tee_peaks, v2 default 0.1; NOTES_ROUTING.md 2026-11-19
@@ -386,7 +555,7 @@ def pair_features(d, M):
     fb, bg = bend(M, A, B, st["fr_mean"])
     ga, ta = d.get("_gattr"), d.get("_tattr")
     ga = np.full((len(G), 4), np.nan) if ga is None else ga
-    ta = np.full((len(Tc), 3), np.nan) if ta is None else ta
+    ta = np.full((len(Tc), 4 if d.get("_tsrc") else 3), np.nan) if ta is None else ta
     return np.c_[st["fr_mean"], st["fr_mid"], st["fr_lo"], st["turf_mean"], st["turf_gap"], st["tree_mean"],
                  st["tree_run"], st["water"], side, st["fr_mid"] - side, st["fr_end"], st["fr_start"], gb[hp[:, 1]],
                  gt[hp[:, 1]], tt[hp[:, 0]], sf["fr_mean"], sf["tree_mean"], sf["turf_gap"], np.hypot(*(B - A).T), cf,
@@ -405,10 +574,12 @@ def obj_attrs(d, scene, M):
         ga.append([float(g.get("p_hole", g.get("p", np.nan)) or np.nan), float(g.get("area_m2") or np.nan),
                    {"map": 1.0, "peak": 2.0}.get(g.get("kind"), 0.0), float(M.sample(xy[None], "turf")[0])])
     ta = []
+    src = bool(d.get("_tsrc"))              # + t_src (0 scene, 1 P(tee) peak, 2 DEM pad) for fits made with DEM pads
     for t in co["T"]:
         o = ts.get(t["id"].split("/")[0]) or {}
-        ta.append([float(o.get("p", np.nan) or np.nan), float(len(t["pts"])), float(o.get("length_m") or np.nan)])
-    return np.asarray(ga, float).reshape(-1, 4), np.asarray(ta, float).reshape(-1, 3)
+        ta.append([float(o.get("p", np.nan) or np.nan), float(len(t["pts"])), float(o.get("length_m") or np.nan)]
+                  + ([float({"peak": 1, "pad": 2}.get(o.get("kind"), 0))] if src else []))
+    return np.asarray(ga, float).reshape(-1, 4), np.asarray(ta, float).reshape(-1, 4 if src else 3)
 
 
 def bend(M, A, B, straight):
@@ -807,6 +978,7 @@ def prac_table(slug, split, ver=None, sc_dir=None):
     scene = RB.rd(RB.scene_path(slug, ver))
     M = bench_maps(slug, scene, ver.split("_", 1)[1]).bind(d["co"]["pj"])
     scene, _ = augment_scene(scene, RB.bench_probs(slug, ver.split("_", 1)[1]), n_holes=x["n"])
+    d["_tsrc"] = tee_pads_on()
     d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)
     fc, _, _ = RB.course_files(slug)
     out = dict(slug=slug, px=prac_features(d, M), yp=prac_labels(d, fc), yh=np.asarray(labels(d, x["truth"])["g2h"]) > 0)
@@ -879,6 +1051,7 @@ def table(slug, split, ver=None):
         scene, _ = augment_scene(scene, RB.bench_probs(slug, ver.split("_", 1)[1]), n_holes=x["n"])
     Y = S.card_sets(x["card"], int(x["n"]))
     d["_Y"] = Y
+    d["_tsrc"] = tee_pads_on()
     d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)
     hx2 = pair_features(d, M)
     wx2 = walk_features(d, M)
@@ -1012,7 +1185,7 @@ def cmd_cv(out_dir, k=5, kinds=KINDS):
 def cmd_fit(out_dir, kinds=KINDS):
     ts = load_tables(TRAIN)
     ms = {kind: _fit(ts, kind) for kind in kinds}
-    pickle.dump(dict(models=ms, XF=XF, WXF=WXF, n_train=len(ts), x3=X3,
+    pickle.dump(dict(models=ms, XF=XF + ["t_src"] * tee_pads_on(), WXF=WXF, n_train=len(ts), x3=X3, tsrc=tee_pads_on(),
                      **(dict(XF3=XF3, WXF3=WXF3, LXF3=LXF3) if X3 else {})), open(MODEL, "wb"))
     os.makedirs(out_dir, exist_ok=True)
     for t in load_tables("test"):
@@ -1100,6 +1273,7 @@ def rescore(d, scene, M, card=None, n_holes=None, path=MODEL):
     if m is None:
         return False
     d["_Y"] = S.card_sets(card if card is not None else d.get("card"), int(n_holes or d["kind"]))
+    d["_tsrc"] = bool(m.get("tsrc"))
     d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)
     t = dict(hx=d["hx"], hx2=pair_features(d, M), wx=d["wx"], wx2=walk_features(d, M), sx=loop_x(d, "start"),
              ex=loop_x(d, "end"))
