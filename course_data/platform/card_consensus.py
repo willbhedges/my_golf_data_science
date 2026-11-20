@@ -305,6 +305,8 @@ def consensus(cards, ground, overrides=None):
     -> {card, base, base_url, changes, flags, scores} or None when there are no cards."""
     prepared, flags = [], []
     normed = [(k, scm.normalise(c), u) for k, c, u in cards if c and c.get("tee_sets")]
+    if scm.sanity_on():          # a card with yardage on few holes scores its ground share over those few (1 of 1 = 1.0)
+        normed = [x for x in normed if not scm.sanity(x[1])]
     for kind, c, url in normed:
         c, f = check_units(c, ground, [o for k2, o, u2 in normed if o is not c])
         if f:

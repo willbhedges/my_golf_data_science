@@ -232,19 +232,138 @@ def cross_check(card, other, tol=10):
     return out
 
 
-def choose_card(cards):
+SANE_FILL = 0.8          # a usable card has a tee set with yardage on at least this share of its holes
+NINE_TOL = 0.04          # nine_order: per-hole median relative yardage gap for "the same card"
+NINE_GAP = 0.03          # ... and the other orientation must be at least this much worse
+
+
+def sanity_on():
+    """CARD_SANITY=0 restores the card choice of before 2026-11-20 (no sanity filter, no source vote)."""
+    return os.environ.get("CARD_SANITY", "1") != "0"
+
+
+def sanity(card):
+    """-> list of reasons the card cannot number holes (empty = usable). A card none of whose tee sets lists
+    yardage on SANE_FILL of the holes is unusable: OpenGolfAPI's per-hole rows are sometimes empty but for the
+    last hole (Rocky Ford CO: Blue [None x 8, 369] under a stated 2904 yd; the par row then comes out sorted
+    5, 5, 5, ..., 3, 4). Routing (zero_tap.joint.solve.card_sets) already ignores a set with a missing hole, so
+    such a card is a card-blind routing with a garbage par row; and card_consensus's ground share over the
+    holes that have yards scores it 1.0 (1 of 1)."""
+    if not card:
+        return ["no card"]
+    sets = (card.get("tee_sets") or {}).values()
+    n = max([len(card.get("par") or [])] + [len(s.get("yards") or []) for s in sets])
+    if not n:
+        return ["no holes"]
+    fill = max((sum(1 for y in (s.get("yards") or []) if y) / n for s in sets), default=0.0)
+    return [] if fill >= SANE_FILL else [f"no tee set with yardage on {round(100 * SANE_FILL)} % of the {n} holes "
+                                         f"(best {round(100 * fill)} %)"]
+
+
+def _rows(card, n):
+    out = []
+    for s in (card.get("tee_sets") or {}).values():
+        y = list(s.get("yards") or [])[:n]
+        if len(y) == n and all(v for v in y):
+            out.append(y)
+    return out
+
+
+def nine_order(a, b):
+    """'same' / 'swapped' / None: is card b card a, or (18 holes) card a with its nines swapped (b's front nine =
+    a's back nine)? Per-hole yardage of the closest pair of complete tee sets: median relative gap <= NINE_TOL in
+    one orientation and (18 holes) NINE_GAP worse in the other; None for cards of another course / layout, cards of
+    different lengths or too close to tell."""
+    n = 18 if _rows(a, 18) and _rows(b, 18) else 9
+    ra, rb = _rows(a, n), _rows(b, n)
+    if not ra or not rb or (n == 9 and (_rows(a, 10) or _rows(b, 10))):
+        return None
+
+    def gap(sw):
+        best = 9.0
+        for ya in ra:
+            ya2 = ya[9:] + ya[:9] if sw else ya
+            for yb in rb:
+                r = sorted(abs(x - y) / y for x, y in zip(ya2, yb))
+                best = min(best, float(r[n // 2]) if n % 2 else (r[n // 2 - 1] + r[n // 2]) / 2)
+        return best
+    gi = gap(False)
+    if n == 9:
+        return "same" if gi <= NINE_TOL else None
+    gs = gap(True)
+    if gi <= NINE_TOL and gs >= gi + NINE_GAP:
+        return "same"
+    if gs <= NINE_TOL and gi >= gs + NINE_GAP:
+        return "swapped"
+    return None
+
+
+def vote_mode():
+    """CARD_VOTE: 'agree' (default): the card most sources agree on (see source_vote); 'nine': only the nine-order
+    vote (sources listing the pick with its nines swapped outvote it); 'off'."""
+    v = os.environ.get("CARD_VOTE", "agree")
+    return v if v in ("agree", "nine", "off") else "agree"
+
+
+def source_vote(pick, ranked, mode=None):
+    """The vote across web sources. mode 'nine': when more sources list the pick's card with its nines swapped
+    than as the pick (the pick counting itself), the most reliable card of the majority. mode 'agree': support(c)
+    = 1 + the sources whose card is the same as c (nine_order 'same'); when a card has more support than the pick,
+    the most reliable card of its group (one that passes `consistency` if any does). A lone card that two others
+    contradict (nines swapped: Reflection Bay golfify; another layout: Naperville golfify) loses; a tie keeps the
+    pick (source reliability). The tie-break by a clubhouse / hole-1 prior needs one routing per card: on the
+    bench's two tied nine-order courses (valley_co, canyon_lake_ca) the scene clubhouse picks the wrong card or is
+    1300 yd from both starts (NOTES_ROUTING.md 2026-11-20), so it is not used. OpenGolfAPI votes like any source
+    (ODbL, partly derived from OSM: see the notes for what that means on the bench). -> (card tuple, note | None)"""
+    mode = mode or vote_mode()
+    if mode == "off" or len(ranked) < 2:
+        return pick, None
+    rel = {}
+    for i, c in enumerate(ranked):
+        for d in ranked[i + 1:]:
+            rel[(id(c), id(d))] = rel[(id(d), id(c))] = nine_order(c[1], d[1])
+    if mode == "nine":
+        same = [pick] + [c for c in ranked if c is not pick and rel[(id(pick), id(c))] == "same"]
+        grp = [c for c in ranked if c is not pick and rel[(id(pick), id(c))] == "swapped"]
+        if len(grp) <= len(same):
+            return pick, None
+        why = f"{', '.join(c[0] for c in grp)} list {pick[0]}'s card with the nines swapped ({len(grp)} to {len(same)})"
+    else:
+        grp_of = {id(c): [c] + [d for d in ranked if d is not c and rel[(id(c), id(d))] == "same"] for c in ranked}
+        top = max(ranked, key=lambda c: len(grp_of[id(c)]))       # ranked order breaks ties: the most reliable
+        if len(grp_of[id(top)]) <= len(grp_of[id(pick)]):
+            return pick, None
+        grp = [c for c in ranked if c in grp_of[id(top)]]
+        how = {"swapped": "with the nines swapped", None: "as another card"}[rel[(id(pick), id(top))]]
+        why = (f"{', '.join(c[0] for c in grp)} agree on a card {len(grp)} to {len(grp_of[id(pick)])} and list "
+               f"{pick[0]}'s {how}")
+    ok = [c for c in grp if consistency(c[1])["ok"]]
+    new = (ok or grp)[0]
+    return new, f"source vote ({mode}): {why}: {new[0]} taken"
+
+
+def choose_card(cards, notes=None):
     """cards = [(kind, card, url)] from the web. -> (kind, card, url, consistency) by RELIABILITY: the most
-    reliable card that passes `consistency`, else the most reliable one (flagged). Never by map fit."""
+    reliable card that passes `consistency`, else the most reliable one (flagged). Never by map fit.
+    With sanity_on() (default): cards failing `sanity` are dropped first (None when no card is left: the course
+    routes card-blind, as it did on such a card), and `source_vote` may replace the pick. notes (a list) collects
+    what the two steps did."""
     ranked = sorted([c for c in cards if c[1]], key=lambda c: RELIABILITY.index(c[0]) if c[0] in RELIABILITY
                     else len(RELIABILITY))
+    if sanity_on():
+        bad = [(c[0], sanity(c[1])) for c in ranked]
+        if notes is not None:
+            notes += [f"{k}: dropped, {'; '.join(r)}" for k, r in bad if r]
+        ranked = [c for c, (_, r) in zip(ranked, bad) if not r]
     if not ranked:
         return None
     checked = [(c, consistency(c[1])) for c in ranked]
-    for c, chk in checked:
-        if chk["ok"]:
-            return (*c, chk)
-    c, chk = checked[0]
-    return (*c, chk)
+    pick = next((c for c, chk in checked if chk["ok"]), checked[0][0])
+    if sanity_on():
+        pick, note = source_vote(pick, ranked)
+        if note and notes is not None:
+            notes.append(note)
+    return (*pick, consistency(pick[1]))
 
 
 # ----------------------------------------------------------------------------- parsers

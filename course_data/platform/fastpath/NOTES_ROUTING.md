@@ -1007,3 +1007,97 @@ one golf_course polygon over 15 ha flags 2 of the 7 plus 38 single courses, so n
 scene greens >= 1.5 x n flags 7 of the 8 sites and 5 single courses (101 / 126 right on 1.4 x n: 7). The truth
 itself takes one way per duplicated ref (routing.truth_from_fc: the par-tagged one), which mixes courses on hermitage
 (3 truth walks > 400 yd, up to 1884 yd) and toscana (1066 yd).
+
+## State 2026-11-20 (later): card sanity + source vote in the card choice (default; CARD_SANITY=0 rollback), bench card = production's pick
+
+From the collapse diagnosis (courses with <= 40 % of holes right: choice 35 / 457 wrong holes, never-used 8 / 105),
+two of the causes are card data, not routing: broken cards and cards that other sources contradict.
+
+Changes:
+* `scorecard.sanity`: a card none of whose tee sets lists yardage on 80 % of its holes is unusable. OpenGolfAPI
+  sometimes returns per-hole rows empty but for the last hole (tb_rocky_ford_co Blue [None x 8, 369] under a stated
+  2904 yd; the par row then comes out sorted 5, 5, 5, ..., 3, 4). `choose_card` drops such cards first; with none left
+  it returns None (the course routes card-blind, which it already did: zero_tap.joint.solve.card_sets ignores a set
+  with a missing hole, so has_card was False on such a card and route_gate's no-card block applied before and after;
+  the no-card block is unchanged). `card_consensus.consensus` drops them too: its ground share over the holes that
+  have yards scored such a card 1.0 (1 of 1), so it won the base on tb_hillcrest_sc / tb_rocky_ford_co.
+* `scorecard.source_vote` (CARD_VOTE=agree, default): support(card) = 1 + the other sources whose card is the same
+  (`nine_order` 'same': median per-hole relative gap <= 4 % on the closest pair of complete sets and, for 18 holes,
+  the nine-swapped order 3 points worse). When some card has more support than the reliability pick, the most
+  reliable card of that group (one passing `consistency` if any) is taken. A lone card that two others contradict
+  loses, whether its nines are swapped (tb_reflection_bay_nv golfify) or it is another layout (tb_naperville_il
+  golfify). A tie keeps the reliability order. CARD_VOTE=nine: only the nine-swap case (the first version);
+  CARD_VOTE=off: no vote.
+* Tie-break by a clubhouse / hole-1 prior: not used. It needs one routing per card, and on the two tied nine-order
+  courses (tb_valley_co golfify vs opengolfapi, canyon_lake_ca) the scene clubhouse would pick the wrong card (valley:
+  hole-1 tee 56 yd from the clubhouse on the wrong card vs 84 yd on the right one, clubhouse p 0.04) or is about
+  1300 yd from both starts (canyon). No source preference either: the only one the bench would support
+  (opengolfapi over golfify on the ties) is circular (next point).
+* OpenGolfAPI / OSM circularity: OpenGolfAPI is ODbL and partly derived from OpenStreetMap. On the bench every course
+  is OSM-mapped (the truth), so OpenGolfAPI agreeing with the truth's hole order is not independent evidence, and
+  preferring it would flatter the bench on courses production meets unmapped. In the vote OpenGolfAPI counts as one
+  source like any other. Every switch the vote makes on the bench has OpenGolfAPI as one of its two votes, but always
+  with an independent source (allsquare or golfify) agreeing on the per-hole yardages, which OSM does not carry. Without
+  OpenGolfAPI's vote all five switches would be ties (no switch). Read the gains with that caveat.
+* Bench parity (route_bench.bench_card, ROUTE_BENCH_CARD=pick, now the default): the bench routed scorecard.json's
+  `chosen` raw card. For TRAIN-BIG that was package.pick_scorecard on raw/summary.json, i.e. card_consensus on the OSM
+  hole lengths the bench hides: an OSM-informed card choice production does not have on an unmapped course (there,
+  pick_scorecard has no ground and falls back to choose_card). 45 of the 643 courses (31 choice, 14 never-used) differ
+  from production's pick. The bench now uses production's pick; ROUTE_BENCH_CARD=chosen restores the old card. The
+  fits in route_models/v2 were made with `chosen` (not refitted: 50 courses change card). Cached prep pickles keep the
+  card they were made with.
+* Secondary bench metric `hole_acc_fwd` (route_bench.hole_ok_fwd; primary unchanged): a hole also counts as right when
+  its green is right and its routed tee sits behind the OSM way's start (within 40 yd of the first segment's line, up to
+  200 yd back): the OSM way starts at a forward tee, and the router took the back box (tb_sand_creek_station_ks
+  6 -> 17, tb_bear_ridge_tx).
+
+Evaluation (current models, no refit). The 52 courses whose card changes under any variant were re-prepared with
+each card and routed by the base solver with route_learn state-fold models (rsel/folds; out-of-fold; the re-ranker /
+tee step off because their out-of-fold picks were made for the old card). Each course's like-for-like delta was then
+added to the default's out-of-fold result; the other 591 courses keep the default's result. The default bench was
+re-run on the current code first (cardfix/fwd_oof.json): 86.49 %, identical hole_ok on all 643 courses. Holes right
+(primary) / hole_acc_fwd, card error median / p90 yd:
+
+| variant | train+big 643 | choice 443 | never-used 200 |
+|---|---|---|---|
+| default (bench card = chosen) | 86.49 % / 87.87 %, 6.1 / 36.8 | 86.09 % / 87.27 %, 6.1 / 36.2 | 87.38 % / 89.19 %, 6.2 / 38.0 |
+| parity (production's old pick, CARD_SANITY=0) | 86.27 % / 87.64 %, 6.1 / 36.2 | 86.15 % / 87.31 %, 6.0 / 35.0 | 86.54 % / 88.38 %, 6.2 / 38.1 |
+| sanity + nine vote (CARD_VOTE=nine) | 86.41 % / 87.78 %, 6.1 / 35.9 | 86.15 % / 87.31 % | 86.99 % / 88.83 % |
+| **sanity + source vote (shipped)** | **86.83 % / 88.21 %, 6.1 / 35.7** | **86.42 % / 87.58 %, 6.0 / 34.5** | **87.74 % / 89.58 %, 6.2 / 37.5** |
+
+All-right courses (switched courses substituted): 643 227 / 228 / 228 / 230; choice 160 / 163 / 163 / 164; never-used
+67 / 65 / 65 / 66.
+
+Shipped vs parity (the production change): +60 holes (choice +20, never-used +40), no course worse.
+* Choice: tb_belvedere_mi 0 -> 18 (golfify + opengolfapi agree; allsquare, the consistent-card pick, is another
+  layout); tb_nevada_mo 6 -> 8.
+* Never-used: tb_naperville_il 1 -> 18; tb_greenview_il 9 -> 17; tb_reflection_bay_nv 0 -> 15 (the nine-swap case).
+* The 5 courses whose only card is broken (tb_hillcrest_sc, tb_lakeside_ut, tb_oshkosh_wi, tb_eagle_crest_ny,
+  tb_northern_michigan_university_mi) now route with no card: 0 holes changed.
+
+Parity vs the old bench card (a measurement correction, not a production change):
+* Choice: 10 courses better (+41), 6 worse (-37; tb_belvedere_mi -18, which the vote recovers).
+* Never-used: 1 better (+5), 4 worse (-33; naperville -17 and greenview -8, both recovered).
+* Shipped vs the old bench card: choice 11 better (+43) / 5 worse (-19: indian_trace -6, blue_hill -6, coventry_pines
+  -5, wollaston -1, goat_hill -1); never-used 2 better (+20) / 2 worse (-8: burlington -7, gallery -1). The worse ones
+  are courses where production's pick was always this card and only the OSM-informed bench choice had hidden it.
+* B1 / B3 of the diagnosis (tb_rocky_ford_co 0 -> 8, tb_targhee_village_wy 4 -> 7, tb_monona_wi 0 -> 9) were
+  bench-only: production's choose_card already took the good card there.
+
+Protocol note: the vote was generalised from nine-swap to agreement after seeing the parity losers, which include two
+never-used courses (naperville, greenview). So never-used is not untouched for this choice. The choice split alone
+supports the rule (+20, no course worse).
+
+Ship rule: OOF 643 and never-used both better (vs parity and vs the old default). Blind loop with CARD_SANITY=0 vs the
+default (cardfix/loop_off.txt / loop_on.txt, same code otherwise): all 20 courses identical line for line except
+timings (statuses, cards, picks, gates, approximate holes); nothing goes from shown to blocked. Test 28 (read once,
+production path, route_models/v2 fits, bench card = pick): **89.23 % / 11, card error 4.8 / 36.0**, identical routings
+on all 28 courses (no test course changes card); hole_acc_fwd 89.44 % (432 / 483).
+
+Rollbacks: CARD_SANITY=0 (no sanity filter, no vote: production's old choice); CARD_VOTE=nine / off;
+ROUTE_BENCH_CARD=chosen (the bench's old card). Not done: the no-card block (route_gate "no scorecard yardages") is
+unchanged; no refit on production's cards; a per-orientation routing for nine-order ties.
+test_package.py::test_black_package_uses_the_joint_tee_stage fails with or without the change (CARD_SANITY=0 too).
+
+Reproduce (scratch cardfix/): count2.py (picks per variant), run.sh MODE base|live (switched courses; modes chosen /
+par0 / new / agree), run_def.sh (default OOF with hole_acc_fwd), cmp.py base (tables), loop.sh, testeval.sh.

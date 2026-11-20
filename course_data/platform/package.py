@@ -272,10 +272,13 @@ def pick_scorecard(req, raw_dir, fc=None):
         if cons:
             card, info = cons
     if card is None:
-        pick = scm.choose_card([(c["source"], scm.normalise(c["card"]), c.get("url")) for c in web_cards])
+        notes = []                               # scorecard.choose_card: cards dropped by sanity / the nine-order vote
+        pick = scm.choose_card([(c["source"], scm.normalise(c["card"]), c.get("url")) for c in web_cards], notes)
         if pick:
             kind, card, url, _ = pick
             info = dict(kind=kind, source=kind, url=url)
+        if notes:
+            tried.append(dict(source="card_choice", ok=bool(pick), info="; ".join(notes)[:500]))
     if card is None and req.get("typed_card"):
         # no card online: the golfer's typed yardages (+ pars), strictly validated (typed_card.py)
         import typed_card as tc

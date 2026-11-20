@@ -211,6 +211,35 @@ def test_choose_card_by_reliability_not_by_fit():
     assert kind == "opengolfapi" and not chk["ok"]                 # nothing better: used, but flagged
 
 
+def test_choose_card_drops_cards_without_yardage():
+    # OpenGolfAPI rows empty but for the last hole (Rocky Ford CO): never the pick, even over a less reliable card
+    broken = scm.card_from_yardages([None] * 8 + [369], [5, 5, 5, 5, 5, 4, 3, 3, 4], name="Blue", source="opengolfapi")
+    good = scm.card_from_yardages([290, 508, 170, 222, 306, 388, 146, 505, 369], [4, 5, 3, 3, 4, 4, 3, 5, 4],
+                                  name="Mens", source="allsquare")
+    assert scm.sanity(broken) and not scm.sanity(good)
+    notes = []
+    kind, *_ = scm.choose_card([("golfify", broken, "u1"), ("allsquare", good, "u2")], notes)
+    assert kind == "allsquare" and "golfify: dropped" in notes[0]
+    assert scm.choose_card([("opengolfapi", broken, "u3")]) is None       # no usable card: routed card-blind
+
+
+def test_choose_card_nine_order_vote(monkeypatch):
+    y = list(BLACK)
+    sw = y[9:] + y[:9]
+    gfy = scm.card_from_yardages(sw, None, name="Blue", source="golfify")          # nines swapped vs the others
+    asq = scm.card_from_yardages(y, None, name="Blue", source="allsquare")
+    oga = scm.card_from_yardages([v + 2 for v in y], None, name="Blue", source="opengolfapi")
+    assert scm.nine_order(gfy, asq) == "swapped" and scm.nine_order(asq, oga) == "same"
+    notes = []
+    kind, *_ = scm.choose_card([("golfify", gfy, "u1"), ("allsquare", asq, "u2"), ("opengolfapi", oga, "u3")], notes)
+    assert kind == "allsquare" and "source vote" in notes[-1]
+    kind, *_ = scm.choose_card([("golfify", gfy, "u1"), ("allsquare", asq, "u2")])   # a tie keeps reliability
+    assert kind == "golfify"
+    monkeypatch.setenv("CARD_SANITY", "0")
+    kind, *_ = scm.choose_card([("golfify", gfy, "u1"), ("allsquare", asq, "u2"), ("opengolfapi", oga, "u3")])
+    assert kind == "golfify"
+
+
 def test_cross_check_matches_sets_by_colour():
     club = scm.normalise(json.load(open(os.path.join(FIX, "spirit_hollow_scorecard.json"))))
     sh = scm.parse_opengolfapi(oga("spirit_hollow")["details"][0])

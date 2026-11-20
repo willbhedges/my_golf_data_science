@@ -332,16 +332,35 @@ def oracle_scene(fc, seed=0, noise=None):
 
 
 # ----------------------------------------------------------------------------- one course
+def bench_card(scj):
+    """-> (source, card) the bench routes a course with. ROUTE_BENCH_CARD=pick (default since 2026-11-20): the card
+    production picks for an unmapped course (package.pick_scorecard with no OSM hole ground = scorecard.choose_card
+    over the web cards, with its sanity filter and source vote unless CARD_SANITY=0 / CARD_VOTE; (None, None) when
+    no card is usable). TRAIN-BIG's 'picked' entry (a card_consensus copy made on the OSM ground) is left out.
+    ROUTE_BENCH_CARD=chosen: scorecard.json's `chosen`, the raw card, as before: for TRAIN-BIG that is
+    package.pick_scorecard on raw/summary.json, i.e. card_consensus on the OSM hole lengths the bench hides (45 of
+    the 643 courses differ from production's pick; NOTES_ROUTING.md 2026-11-20 "card sanity"). The fits in
+    route_models/v2 were made with `chosen`; cached prep pickles (ROUTE_BENCH_PREP) keep the card they were made with."""
+    cards = [x for x in (scj or {}).get("cards") or [] if x.get("card")]
+    if not cards:
+        return None, None
+    if os.environ.get("ROUTE_BENCH_CARD", "pick") == "pick":
+        import scorecard as scm
+        pick = scm.choose_card([(x["source"], scm.normalise(x["card"]), x.get("url")) for x in cards
+                                if x["source"] != "picked"])
+        return (pick[0], pick[1]) if pick else (None, None)
+    ch = scj.get("chosen")
+    x = next((x for x in cards if x["source"] == ch), cards[0])
+    return x["source"], x["card"]
+
+
 def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
     import platform_common  # noqa: F401
     sys.path.insert(0, GEN)
     import routing as R
     fc, course, scj = course_files(c["slug"])
     truth = {k: v for k, v in R.truth_from_fc(fc).items() if int(k) <= 18}
-    card = None
-    if scj and scj.get("cards"):
-        ch = scj.get("chosen")
-        card = next((x for x in scj["cards"] if x["source"] == ch), scj["cards"][0])["card"]
+    card_src, card = bench_card(scj)
     n_card = None
     if card and card.get("tee_sets"):
         n_card = max(len(s.get("yards") or []) for s in card["tee_sets"].values())
@@ -363,7 +382,7 @@ def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
     else:
         raise ValueError(scene_kind)
     return dict(slug=c["slug"], split=c["split"], fc=strip_golf(fc), course=course, card=card, n=n, truth=truth,
-                scene=scene)
+                scene=scene, card_src=card_src)
 
 
 def to_res(feats):
@@ -478,9 +497,23 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
                        path=os.path.join(fd, "fold_%d.pkl" % fo[x["slug"]]))
             pd = (d, pd[1])
             x = dict(x, card=alt)
+    elif os.environ.get("ROUTE_BENCH_FOLD_RESCORE") == "1" and pd is not None and x["scene"] is not None:
+        # every course rescored with its route_learn fold model on its own (bench_card) card: out-of-fold scores
+        # without ROUTE_BENCH_SC (whose cached scores were made with scorecard.json's chosen card)
+        import route_learn as RL
+        fd = os.environ["ROUTE_BENCH_FOLDS"]
+        fo = json.load(open(os.path.join(fd, "folds.json")))
+        sc0 = rd(scene_path(x["slug"], ver))
+        pv = (ver or scene_version()).split("_", 1)[1]
+        sca, _ = RL.augment_scene(sc0, bench_probs(x["slug"], pv), n_holes=x["n"])
+        d = dict(pd[0], card=x["card"])
+        RL.rescore(d, sca, d["_maps"], card=x["card"], n_holes=x["n"],
+                   path=os.path.join(fd, "fold_%d.pkl" % fo[x["slug"]]))
+        pd = (d, pd[1])
     out = dict(slug=x["slug"], split=x["split"], n=x["n"], n_true=len(x["truth"]), has_card=x["card"] is not None)
     if alt_src:
         out["card_pick"] = alt_src
+    out["card_src"] = alt_src or x.get("card_src")
     if x["scene"] is None:
         out.update(error="no scene")
         return out
@@ -515,6 +548,7 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
     sc = R.score(to_res(feats), x["truth"])
     out["score"] = {k: v for k, v in sc.items() if k != "per_hole"}
     out["hole_ok"] = {k: e["hole_ok"] for k, e in sc["per_hole"].items()}
+    out["hole_ok_fwd"] = hole_ok_fwd(feats, x["truth"], sc["per_hole"])
     cf = card_fit(feats, x["card"], x["n"])
     if cf:
         out["card_set"], out["card_resid"] = cf[0], {str(k): round(v, 1) for k, v in cf[2].items()}
@@ -549,6 +583,35 @@ def _job(a):
     return run_one(*a)
 
 
+FWD_BEHIND_YD = 200.0     # hole_ok_fwd: how far behind the OSM way's start a routed tee may sit
+FWD_LATERAL_YD = 40.0     # ... and how far off the line of the way's first segment (the scorer's tee tolerance)
+
+
+def hole_ok_fwd(feats, truth, per):
+    """The secondary bench metric (2026-11-20, forward-tee convention): a hole is right as routing.score has it, or
+    when its green is right and its routed tee sits behind the OSM way's start, within FWD_LATERAL_YD of the first
+    segment's line and up to FWD_BEHIND_YD back (a back box when the mapper started the way at a forward tee: on the
+    default 87 such holes on choice, 60 on never-used). The primary metric stays routing.score."""
+    from routing import Proj
+    lines = {str(f["properties"]["ref"]): f["geometry"]["coordinates"] for f in feats}
+    out = {}
+    for k, e in per.items():
+        ok = bool(e["hole_ok"])
+        if not ok and e.get("green_ok") and k in lines and k in truth:
+            t = truth[k]
+            pr = Proj(*t["green_ll"])
+            ln = pr.ring(t["line"])
+            a = ln[0]
+            b = next((q for q in ln[1:] if np.hypot(*(q - a)) > 1.0), None)
+            if b is not None:
+                u = (b - a) / np.hypot(*(b - a))
+                p = np.asarray(pr.fwd(*lines[k][0])) - a
+                along, lat = float(p @ u), abs(float(p[0] * u[1] - p[1] * u[0]))
+                ok = -FWD_BEHIND_YD <= along <= 0 and lat <= FWD_LATERAL_YD
+        out[k] = ok
+    return out
+
+
 def summarise(rs, gate_key="gate_v0"):
     ok = [r for r in rs if "score" in r]
     H = sum(r["n_true"] for r in rs)
@@ -557,7 +620,9 @@ def summarise(rs, gate_key="gate_v0"):
     res = [abs(v) for r in ok for v in (r.get("card_resid") or {}).values()]
     shown = [r for r in ok if (r.get(gate_key) or {}).get("show")]
     Hok = sum(r["n_true"] for r in ok)
+    right2 = sum(sum((r.get("hole_ok_fwd") or r["hole_ok"]).values()) for r in ok)
     return dict(courses=len(rs), errors=len(rs) - len(ok), hole_acc=round(right / max(H, 1), 4),
+                hole_acc_fwd=round(right2 / max(H, 1), 4),
                 hole_acc_routed=round(right / max(Hok, 1), 4),
                 all_right=f"{len(allr)}/{len(rs)}", all_right_frac=round(len(allr) / max(len(rs), 1), 4),
                 card_err_med=round(float(np.median(res)), 1) if res else None,
