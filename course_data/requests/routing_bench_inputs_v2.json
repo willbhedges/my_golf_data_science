@@ -1,0 +1,6 @@
+{"schema": "request/1", "kind": "routing_bench", "stage": "bench_inputs",
+ "note": "refit stage validation (c): the bench inputs (600 TRAIN-BIG + 51 validation train; never test) rebuilt with the v2 detector, numpy/OpenBLAS U-Net (impl ref, OPENBLAS_CORETYPE=Haswell, 4 threads); twins: 12 courses whose arm A moved between gate-2 runs 44817755394 and 44823590755 + 1 validation course, rebuilt again with impl ref (1 job) and auto (3 jobs)",
+ "detector": "v2", "impl": "ref", "nshards": 20,
+ "twins": ["tb_currie_park_wi", "tb_livingston_ny", "tb_southwinds_mi", "tb_moors_mi", "tb_fox_chapel_pa", "tb_hidden_valley_oh",
+           "tb_airways_ca", "tb_frosty_valley_pa", "tb_turlock_ca", "tb_galloway_tn", "tb_prairie_rose_nd", "tb_jones_creek_ga", "wild_ridge_wi"],
+ "twin_jobs": {"ref": 1, "auto": 3}, "attempt": 1}
