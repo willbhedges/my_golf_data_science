@@ -291,3 +291,28 @@ def test_fetch_opengolfapi_offline(tmp_path):
     assert (tmp_path / "opengolfapi_search.json").exists()
     assert (tmp_path / "opengolfapi_939125f5-e5e5-4c0c-84e3-4271dc5fa4c7.json").exists()
     assert set(card["tee_sets"]) == {"Blue", "Gold", "Red"}
+
+
+def test_source_vote_non_transitive_same_does_not_crash():
+    # review 2026-11-20: A lists Blue, B Blue + White, C White: A~B and B~C 'same', A-C not; the vote crashed
+    y = [412, 365, 178, 521, 390, 205, 433, 548, 380, 331, 455, 136, 582, 320, 240, 375, 490, 449]
+
+    def card(mults):
+        return scm.normalise(dict(par=[4] * 18, tee_sets={f"T{i}": dict(yards=[round(v * m) for v in y])
+                                                          for i, m in enumerate(mults)}))
+    a, b, c = card([1.0]), card([1.0, 0.93]), card([0.93])
+    assert scm.nine_order(a, b) == "same" and scm.nine_order(b, c) == "same" and scm.nine_order(a, c) is None
+    for order in (("golfify", "allsquare", "opengolfapi"), ("allsquare", "golfify", "opengolfapi"),
+                  ("opengolfapi", "golfify", "allsquare")):
+        assert scm.choose_card([(order[0], a, "u"), (order[1], b, "u"), (order[2], c, "u")]) is not None
+
+
+def test_sanity_fill_per_set_length():
+    # review 2026-11-20: a complete 9-hole set under an 18-long par row, 18-hole sets under a 27-long par row
+    c9 = scm.normalise(dict(par=[4, 5, 3, 4, 4, 3, 5, 4, 4] * 2,
+                            tee_sets=dict(Blue=dict(yards=[350, 510, 160, 380, 400, 170, 520, 390, 410]))))
+    assert scm.sanity(c9) == []
+    c27 = scm.normalise(dict(par=[4] * 27, tee_sets=dict(Blue=dict(yards=list(BLACK)))))
+    assert scm.sanity(c27) == []
+    assert scm.sanity(dict(par=[4] * 9, tee_sets=dict(B=dict(yards=None), C=None)))      # no usable set
+    assert scm.sanity(dict(tee_sets=dict(B=dict(yards=["350"] * 9)))) == []              # string yardages

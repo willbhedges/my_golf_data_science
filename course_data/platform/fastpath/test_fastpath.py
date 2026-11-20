@@ -55,3 +55,82 @@ def test_vintage_fallback_helpers(tmp_path):
     assert FS.package_holes(str(tmp_path)) == 9                   # the card production would pick
     assert FS.package_holes(str(tmp_path / "missing")) == 18
     assert FS.vintage_on() or os.environ.get(FS.VINTAGE_ENV) == "0"     # default on
+
+
+def _fake_vintages(monkeypatch, tmp_path, counts, own=2023, cues=None):
+    """fastscene.vintage_fallback on stubbed imagery: counts {year: hole greens} per single-vintage scene"""
+    import numpy as np
+    import fastscene as FS
+    import fast_imagery as fim
+    (tmp_path / "imagery").mkdir(exist_ok=True)
+    (tmp_path / "imagery" / "georef.json").write_text(json.dumps(dict(imagery=dict(year=own) if own else {})))
+    cur = {}
+
+    class St:
+        def __init__(s):
+            s.a = dict(seg=np.zeros((len(FS.SEG_ORDER), 4, 4), np.uint8))
+            s.meta = dict(grid=dict(crs="EPSG:32616", transform=[1, 0, 0, 0, -1, 0]))
+
+    def unet_probs(pkg_dir, st, uw, keep, naip=None, **k):
+        cur["y"] = (own or 0) if naip is None else int(naip[0].split(os.sep)[-2])
+        return np.zeros((6, 4, 4), np.float32)
+
+    def perceive(st, **k):
+        n = counts[cur["y"]]
+        return dict(summary=dict(greens_hole=n), greens=[dict(kind="hole", centroid=[-90, 40])] * n), None
+    monkeypatch.setattr(FS, "grid_stack", lambda *a, **k: St())
+    monkeypatch.setattr(FS, "unet_probs", unet_probs)
+    monkeypatch.setattr(FS, "perceive", perceive)
+    monkeypatch.setattr(FS, "osm_negative_mask", lambda *a, **k: np.zeros((4, 4), bool))
+    monkeypatch.setattr(FS, "course_mask", lambda *a, **k: np.ones((4, 4), bool))
+    monkeypatch.setattr(fim, "fetch_years", lambda img, k: sorted(y for y in counts if y and y != own))
+    if cues is not None:
+        monkeypatch.setattr(FS, "green_cues", cues)
+    return FS
+
+
+def test_vintage_fallback_review_cases(monkeypatch, tmp_path):
+    import numpy as np
+    dead = lambda *a: dict(turf=0.5, rough=0.1, rough_ring=0.5)          # noqa: E731
+    keep = np.ones((4, 4), bool)
+    # the newest flight wins: no "possibly closed" warning
+    FS = _fake_vintages(monkeypatch, tmp_path, {2023: 12, 2021: 4, 2019: 3, 2017: 2}, cues=dead)
+    sc = FS.vintage_fallback(str(tmp_path), dict(summary=dict(greens_hole=3)), "w", keep, 18)[0]
+    assert sc["fastscene_vintage"]["chosen"] == 2023 and not sc.get("warnings")
+    # one or two greens more than the mean is not enough (margin 3 on 18 holes)
+    FS = _fake_vintages(monkeypatch, tmp_path, {2023: 5, 2021: 4, 2019: 3, 2017: 2}, cues=dead)
+    assert FS.vintage_fallback(str(tmp_path), dict(summary=dict(greens_hole=3)), "w", keep, 18) is None
+    # an old winner with dead recent turf warns; a cue failure keeps the vintage without the warning
+    FS = _fake_vintages(monkeypatch, tmp_path, {2023: 2, 2021: 3, 2019: 4, 2017: 15}, cues=dead)
+    sc = FS.vintage_fallback(str(tmp_path), dict(summary=dict(greens_hole=2)), "w", keep, 18)[0]
+    assert sc["fastscene_vintage"]["chosen"] == 2017 and FS.OUTDATED_WARNING in sc["warnings"][0]
+
+    def boom(*a):
+        raise KeyError("crs")
+    FS = _fake_vintages(monkeypatch, tmp_path, {2023: 2, 2021: 3, 2019: 4, 2017: 15}, cues=boom)
+    sc = FS.vintage_fallback(str(tmp_path), dict(summary=dict(greens_hole=2)), "w", keep, 18)[0]
+    assert sc["fastscene_vintage"]["chosen"] == 2017 and not sc.get("warnings") and "cue_err" in sc["fastscene_vintage"]
+    # missing cues are no evidence of dead turf
+    FS = _fake_vintages(monkeypatch, tmp_path, {2023: 2, 2021: 3, 2019: 4, 2017: 15}, cues=lambda *a: {})
+    sc = FS.vintage_fallback(str(tmp_path), dict(summary=dict(greens_hole=2)), "w", keep, 18)[0]
+    assert not sc.get("warnings")
+    # unknown package year: no warning
+    FS = _fake_vintages(monkeypatch, tmp_path, {0: 12, 2021: 4, 2019: 3, 2017: 2}, own=None, cues=dead)
+    sc = FS.vintage_fallback(str(tmp_path), dict(summary=dict(greens_hole=3)), "w", keep, 18)[0]
+    assert not sc.get("warnings")
+    # counts above n are no better than n: the newer flight that reaches n wins
+    FS = _fake_vintages(monkeypatch, tmp_path, {2023: 18, 2021: 25, 2019: 3, 2017: 2}, cues=dead)
+    sc = FS.vintage_fallback(str(tmp_path), dict(summary=dict(greens_hole=3)), "w", keep, 18)[0]
+    assert sc["fastscene_vintage"]["chosen"] == 2023
+
+
+def test_package_holes_nine_dup(tmp_path):
+    import fastscene as FS
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    y9 = [350, 510, 160, 380, 400, 170, 520, 390, 410]
+    card = dict(par=[4] * 18, tee_sets=dict(B=dict(yards=y9 + [v + 5 for v in y9])))   # the nine twice
+    (raw / "scorecard_web.json").write_text(json.dumps(dict(cards=[dict(source="golfify", card=card)])))
+    few = dict(greens=[dict(kind="hole", p_hole=0.9)] * 9)
+    many = dict(greens=[dict(kind="hole", p_hole=0.9)] * 18)
+    assert FS.package_holes(str(tmp_path), few) == 9 and FS.package_holes(str(tmp_path), many) == 18

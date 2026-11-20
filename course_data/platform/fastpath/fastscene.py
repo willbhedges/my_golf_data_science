@@ -437,10 +437,14 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     keep = course_mask(st, float(os.environ.get("FASTSCENE_KEEP_PAD", KEEP_PAD_M))) & ~neg
     sc, D = perceive(st, paths=paths, T=T, models=objm, keep=keep)
     if P_given is None and uw and vintage_on():
-        n = package_holes(pkg_dir)
+        n = package_holes(pkg_dir, sc)
         if hole_greens(sc) < VINTAGE_MIN * n:            # green-blind scene: the U-Net on each NAIP vintage alone
             t = time.time()
-            got = vintage_fallback(pkg_dir, sc, uw, mask & ~neg, n, paths=paths, labels=labels, models=objm, T=T)
+            try:
+                got = vintage_fallback(pkg_dir, sc, uw, mask & ~neg, n, paths=paths, labels=labels, models=objm, T=T)
+            except Exception as e:                                   # noqa: BLE001  (the mean scene stays)
+                got = None
+                T["vintage_err"] = f"{type(e).__name__}: {e}"[:200]
             if got is not None:
                 sc, D, P, st = got
             lap("vintage_s", t)
@@ -475,9 +479,10 @@ def hole_greens(sc):
     return int(s) if s is not None else sum(1 for g in sc.get("greens") or [] if g.get("kind") == "hole")
 
 
-def package_holes(pkg_dir):
+def package_holes(pkg_dir, scene=None):
     """the hole count the build will route: the request's card file, else the web card production picks
-    (scorecard.choose_card), else 18"""
+    (scorecard.choose_card), else 18; an 18-hole card that repeats its nine on a scene with few greens counts 9
+    (route_scene.route_n, as route_scene.run will route it)"""
     try:
         sys.path.insert(0, PLAT)
         import scorecard as scm
@@ -495,7 +500,15 @@ def package_holes(pkg_dir):
                                     for c in web.get("cards") or [] if c.get("card")])
             card = pick[1] if pick else None
         n = max((len(s.get("yards") or []) for s in (card or {}).get("tee_sets", {}).values()), default=0)
-        return n if n in (9, 18) else 18
+        n = n if n in (9, 18) else 18
+        if n == 18 and card is not None and scene is not None:
+            try:
+                sys.path.insert(0, HERE)
+                import route_scene
+                n = int(route_scene.route_n(card, scene, n))
+            except Exception:                                        # noqa: BLE001
+                pass
+        return n
     except Exception:                                                # noqa: BLE001
         return 18
 
@@ -549,6 +562,39 @@ def green_cues(pkg_dir, naip, P, grid, sc):
     return out
 
 
+def vintage_margin(n):
+    """hole greens a single vintage must add over the mean scene before it replaces it: max(2, 15 % of n), i.e. 2 on
+    9 holes, 3 on 18. One or two greens either way is the spread between flights of a healthy course (Hunter IL:
+    0 -> 1 on its best vintage, no course there), not a scene the mean missed (the bench's wins are +4 to +15)."""
+    return max(2, int(round(0.15 * n)))
+
+
+def _outdated_warning(pkg_dir, scv, kept, tried, yr, k, n):
+    """OUTDATED_WARNING when the chosen vintage is OUTDATED_YEARS or more older than the newest one tried, shows the
+    greens (k >= VINTAGE_MIN x n), no recent flight shows them, and the recent flights show no maintained turf at the
+    chosen greens (green_cues; a cue that could not be measured is no evidence of dead turf). No warning when a year
+    is unknown (0)."""
+    newest = max(tried)
+    if not yr or not newest or newest - yr < OUTDATED_YEARS or k < VINTAGE_MIN * n:
+        return
+    recent = [y for y in tried if newest - y < OUTDATED_YEARS]
+    if not all(tried[y] < VINTAGE_MIN * n for y in recent):          # a recent flight shows the greens
+        return
+    cues = {y: green_cues(pkg_dir, kept[y][0], kept[y][1], kept[y][2], scv) for y in recent}
+    scv["fastscene_vintage"]["cues"] = cues
+    turfs = [c["turf"] for c in cues.values() if c.get("turf") is not None]
+    roughs = [c["rough"] / max(c["rough_ring"], 1e-3) for c in cues.values()
+              if c.get("rough") is not None and c.get("rough_ring") is not None]
+    dead = bool((turfs and max(turfs) < CLOSED_TURF) or (roughs and min(roughs) > CLOSED_ROUGH))
+    scv["fastscene_vintage"].update(recent_turf=round(max(turfs), 3) if turfs else None,
+                                    recent_rough=round(min(roughs), 3) if roughs else None, dead=dead)
+    if dead:
+        scv.setdefault("warnings", []).append(
+            f"{OUTDATED_WARNING}: greens show only on NAIP {yr} ({k} hole greens; the vintages since "
+            f"{newest - OUTDATED_YEARS + 1} show at most {max(tried[y] for y in recent)}): the course may have "
+            "closed or changed since")
+
+
 def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, models=None, T=None):
     """A green-blind scene (hole greens < VINTAGE_MIN x n on the U-Net mean over the package's NAIP and its 2 newest
     other vintages): the U-Net on each vintage alone, newest first (the package's own + up to VINTAGE_MAX - 1 others,
@@ -592,30 +638,21 @@ def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, m
         k = hole_greens(scv)
         tried[yr] = k
         kept[yr] = (naip, Pv, st.meta["grid"])
-        if best is None or k > best[0]:                              # newest first: a tie keeps the newer
-            best = (k, yr, scv, Dv, Pv, st)
+        if best is None or min(k, n) > min(best[0], n):             # newest first: a tie keeps the newer; counts
+            best = (k, yr, scv, Dv, Pv, st)                          # above n are no better (extra blobs)
     k0 = hole_greens(sc0)
     info = dict(n=n, mean=k0, tried=tried, years=[c[0] for c in cands])
-    if best is None or best[0] <= k0:
+    if best is None or min(best[0], n) < k0 + vintage_margin(n):
         if T is not None:
             T["vintage"] = dict(info, chosen=None)
         sc0.setdefault("fastscene_vintage", dict(info, chosen=None))
         return None
     k, yr, scv, Dv, Pv, st = best
-    newest = max(tried)
     scv["fastscene_vintage"] = dict(info, chosen=yr)
-    recent = [y for y in tried if newest - y < OUTDATED_YEARS]
-    cues = {y: green_cues(pkg_dir, kept[y][0], kept[y][1], kept[y][2], scv) for y in recent}
-    scv["fastscene_vintage"]["cues"] = cues
-    turf = max((c.get("turf") or 0.0) for c in cues.values()) if cues else 0.0
-    rough = min((c["rough"] / max(c["rough_ring"], 1e-3) for c in cues.values() if c.get("rough") is not None),
-                default=0.0)
-    dead = turf < CLOSED_TURF or rough > CLOSED_ROUGH             # recent flights show no maintained turf there
-    scv["fastscene_vintage"].update(recent_turf=round(turf, 3), recent_rough=round(rough, 3), dead=bool(dead))
-    if dead and all(tried[y] < VINTAGE_MIN * n for y in recent):  # no recent flight shows the greens either
-        scv.setdefault("warnings", []).append(
-            f"{OUTDATED_WARNING}: greens show only on NAIP {yr} ({k} hole greens; the vintages since {newest - OUTDATED_YEARS + 1} "
-            f"show at most {max(tried[y] for y in recent)}): the course may have closed or changed since")
+    try:
+        _outdated_warning(pkg_dir, scv, kept, tried, yr, k, n)
+    except Exception as e:                                           # noqa: BLE001  (a warning only: the vintage stays)
+        scv["fastscene_vintage"]["cue_err"] = f"{type(e).__name__}: {e}"[:200]
     if T is not None:
         T["vintage"] = dict(info, chosen=yr)
     return scv, Dv, Pv, st

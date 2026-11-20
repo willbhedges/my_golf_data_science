@@ -251,20 +251,34 @@ def sanity(card):
     holes that have yards scores it 1.0 (1 of 1)."""
     if not card:
         return ["no card"]
-    sets = (card.get("tee_sets") or {}).values()
-    n = max([len(card.get("par") or [])] + [len(s.get("yards") or []) for s in sets])
-    if not n:
-        return ["no holes"]
-    fill = max((sum(1 for y in (s.get("yards") or []) if y) / n for s in sets), default=0.0)
-    return [] if fill >= SANE_FILL else [f"no tee set with yardage on {round(100 * SANE_FILL)} % of the {n} holes "
-                                         f"(best {round(100 * fill)} %)"]
+    sets = [x for x in (card.get("tee_sets") or {}).values() if isinstance(x, dict)]
+    rows = [list(x.get("yards") or []) for x in sets]
+    if not any(rows):
+        return ["no tee set with yardage"]
+
+    def _ok(v):
+        try:
+            return float(v) > 0
+        except (TypeError, ValueError):
+            return False
+    # each set against its own length (a 9-hole set under an 18-long par row, or 18-hole sets under a 27-hole par
+    # row, are complete cards, 2026-11-20 review)
+    fill = max((sum(1 for v in r if _ok(v)) / len(r) for r in rows if r), default=0.0)
+    n = max(len(r) for r in rows)
+    return [] if fill >= SANE_FILL else [f"no tee set with yardage on {round(100 * SANE_FILL)} % of its holes "
+                                         f"(best {round(100 * fill)} % of {n})"]
 
 
 def _rows(card, n):
     out = []
     for s in (card.get("tee_sets") or {}).values():
-        y = list(s.get("yards") or [])[:n]
-        if len(y) == n and all(v for v in y):
+        if not isinstance(s, dict):
+            continue
+        try:
+            y = [float(v) if v else 0.0 for v in list(s.get("yards") or [])[:n]]
+        except (TypeError, ValueError):
+            continue
+        if len(y) == n and all(v > 0 for v in y):
             out.append(y)
     return out
 
@@ -334,11 +348,15 @@ def source_vote(pick, ranked, mode=None):
         if len(grp_of[id(top)]) <= len(grp_of[id(pick)]):
             return pick, None
         grp = [c for c in ranked if c in grp_of[id(top)]]
-        how = {"swapped": "with the nines swapped", None: "as another card"}[rel[(id(pick), id(top))]]
+        # 'same' is not transitive (A: Blue; B: Blue + White; C: White): top can outvote a pick it is 'same' as
+        how = {"swapped": "with the nines swapped", "same": "as a card with fewer sources behind it"}.get(
+            rel[(id(pick), id(top))], "as another card")
         why = (f"{', '.join(c[0] for c in grp)} agree on a card {len(grp)} to {len(grp_of[id(pick)])} and list "
                f"{pick[0]}'s {how}")
     ok = [c for c in grp if consistency(c[1])["ok"]]
     new = (ok or grp)[0]
+    if new is pick:                                                  # the majority's best card is the pick itself
+        return pick, None
     return new, f"source vote ({mode}): {why}: {new[0]} taken"
 
 
@@ -360,7 +378,10 @@ def choose_card(cards, notes=None):
     checked = [(c, consistency(c[1])) for c in ranked]
     pick = next((c for c, chk in checked if chk["ok"]), checked[0][0])
     if sanity_on():
-        pick, note = source_vote(pick, ranked)
+        try:
+            pick, note = source_vote(pick, ranked)
+        except Exception as e:                                       # noqa: BLE001  (the vote is advisory)
+            note = f"source vote failed ({type(e).__name__}): reliability pick kept"
         if note and notes is not None:
             notes.append(note)
     return (*pick, consistency(pick[1]))

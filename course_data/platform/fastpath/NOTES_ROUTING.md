@@ -1550,3 +1550,49 @@ Stage `refit` (the shipped recipe, scratch dpad/run.sh mapped onto jobs):
 4. Run `inputs` on all courses. Then compare the Actions-built scenes with the local ones on a sample. The NAIP
    "latest" year can move when a newer flight is published, so the Actions scenes are a new detector version for the
    bench: record the year per course.
+
+## State 2026-11-20 (later): review fixes to the card choice and the per-vintage fallback
+
+A code review confirmed five bugs in the card-sanity and per-vintage commits. Repros are in scratch review/r1.py and
+r3.py. Each fix has a regression test.
+
+1. **scorecard.source_vote raised KeyError 'same'.** nine_order 'same' is not transitive (A lists Blue, B Blue + White,
+   C White: A~B and B~C, but not A~C), so the top-supported card could be 'same' as the pick and miss the lookup. The
+   whole package build would die, because choose_card is called unguarded from pick_scorecard.
+   * Fix: the lookup handles every relation.
+   * When the majority's best card is the pick itself, nothing changes and no note is written.
+   * choose_card wraps source_vote and keeps the reliability pick when the vote fails.
+   * Test: test_source_vote_non_transitive_same_does_not_crash (3 source orders).
+2. **A failure in the vintage fallback or its cues took down the scene build.**
+   * Fix: build() wraps vintage_fallback; on a failure the mean scene stays and seconds.vintage_err records why.
+   * The cue / warning block (_outdated_warning) is guarded separately, so the chosen vintage survives a cue failure
+     (fastscene_vintage.cue_err).
+3. **The "possibly closed" warning could fire wrongly.** It could fire with the newest flight chosen. It treated a
+   missing cue as dead turf (turf 0.0). It could print "NAIP 0" for an unknown year.
+   * Fix: it now needs a known year, newest - chosen >= OUTDATED_YEARS, and the chosen vintage to reach
+     VINTAGE_MIN x n greens.
+   * A cue that could not be measured is no evidence of dead turf.
+   * Effect: Hunter IL no longer warns. Its best vintage, 2021, shows 1 hole green and is 2 years from the newest; it
+     no longer even replaces the mean scene (fix 5). Woodlyn (2017) and great_southern (2020) still warn; Hawk's Point
+     still does not.
+4. **scorecard.sanity divided by the longest row, par row included.** A complete 9-hole set under an 18-long par row
+   scored 50 % and was dropped; 18-hole sets under a 27-long par row scored 67 %.
+   * Fix: fill is computed per tee set against that set's own length. Non-dict sets, None yards and string yardages
+     are also handled (string yardages count; `_rows` converts them).
+   * Test: test_sanity_fill_per_set_length.
+5. **package_holes ignored nine-repeating cards, and the winner was uncapped.** It returned 18 for a 9-hole course
+   whose 18-hole card repeats its nine, so the fallback fired on one missed green. The winner was the vintage with the
+   most "hole" greens, with no cap at n.
+   * Fix: package_holes(pkg_dir, scene) applies route_scene.route_n on the mean scene (nine-dup test plus the
+     <= 12-greens rule; route_scene.py not edited).
+   * Vintages compare on min(greens, n), so a newer flight that reaches n wins over an older one with extra blobs.
+   * The winner must beat the mean scene by `vintage_margin(n)` = max(2, round(0.15 n)): 2 greens on 9 holes, 3 on 18.
+     The bench wins were +4 to +15 greens; Hunter's 0 -> 1 is the kind of flight-to-flight noise the margin keeps out.
+   * On the 18 bench courses the margin changes only Hunter's choice (holes 0 either way). Every other course keeps
+     its earlier vintage, so the bench numbers of the default section stand.
+   * Tests: test_vintage_fallback_review_cases (newest wins without a warning, the margin, an old winner warns, a cue
+     failure keeps the vintage, missing cues, an unknown year, the cap at n) and test_package_holes_nine_dup.
+
+Reach of fixes 1 and 4 on real data: on the bench's web cards (train+big 651 rows; old vs fixed scorecard.py) no
+choose_card call raised, no card's sanity verdict changed, and no course's pick changed. Both bugs are latent on
+today's data and guard future cards.
