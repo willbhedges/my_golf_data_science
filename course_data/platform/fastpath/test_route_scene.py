@@ -123,6 +123,20 @@ def test_gate_card_order_conflict():
     assert not RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0, card_conflict=True), p)["show"]
 
 
+def test_gate_no_card_opt_in(monkeypatch):
+    import route_gate as RG
+    hf = [dict(ref=str(i + 1), margin=9.0, kind=0, card_rel=None, ob=0.0, ph=0.8, cross=0) for i in range(9)]
+    p = dict(w=[5.0] + [0.0] * len(RG.FEATS), threshold=0.5)
+    r = dict(n_holes=9, hole_features=hf, n_miss=0, has_card=False)
+    monkeypatch.delenv(RG.NOCARD_ENV, raising=False)
+    assert not RG.decide(r, p, show_policy="auto")["show"]            # default: no card stays a draft
+    monkeypatch.setenv(RG.NOCARD_ENV, "1")
+    g = RG.decide(r, p, show_policy="auto")
+    assert g["show"] and len(g["approximate"]) == 9 and g["warnings"]  # opt-in: shown, every hole approximate
+    assert not RG.decide(r, p, show_policy="calibrated")["show"]
+    assert not RG.decide(dict(r, n_miss=1), p, show_policy="auto")["show"]
+
+
 def _grid_scene():
     return dict(grid=dict(crs="EPSG:32616", transform=[1.0, 0, 332000.0, 0, -1.0, 4483000.0], width=400, height=300),
                 greens=[])

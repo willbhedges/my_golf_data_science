@@ -372,7 +372,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                 # ROUTE_SHOW_POLICY=auto (default): delivered without golfer confirms. The quality gates that only say
                 # the routing may be wrong (card misfit, long walks, par sum) become warnings; the per-hole P(right)
                 # says where. Broken builds stay drafts: missing holes / no card / shared green / wrong course.
-                soft = [b for b in blocked if b.startswith(SOFT_GATE_PREFIXES)]
+                soft = [b for b in blocked if b.startswith(SOFT_GATE_PREFIXES)] + list(g.get("warnings") or [])
                 blocked = [b for b in blocked if not b.startswith(SOFT_GATE_PREFIXES)]
                 auto_warn = soft
                 refs = [str(h.get("ref")) for h in scene_routed.get("hole_features") or []]

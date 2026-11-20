@@ -340,9 +340,10 @@ def bench_card(scj):
     ROUTE_BENCH_CARD=chosen: scorecard.json's `chosen`, the raw card, as before: for TRAIN-BIG that is
     package.pick_scorecard on raw/summary.json, i.e. card_consensus on the OSM hole lengths the bench hides (45 of
     the 643 courses differ from production's pick; NOTES_ROUTING.md 2026-11-20 "card sanity"). The fits in
-    route_models/v2 were made with `chosen`; cached prep pickles (ROUTE_BENCH_PREP) keep the card they were made with."""
+    route_models/v2 were made with `chosen`; cached prep pickles (ROUTE_BENCH_PREP) keep the card they were made with.
+    ROUTE_BENCH_CARD=none: every card dropped (card-blind routing)."""
     cards = [x for x in (scj or {}).get("cards") or [] if x.get("card")]
-    if not cards:
+    if not cards or os.environ.get("ROUTE_BENCH_CARD") == "none":       # none: card-blind routing of every course
         return None, None
     if os.environ.get("ROUTE_BENCH_CARD", "pick") == "pick":
         import scorecard as scm

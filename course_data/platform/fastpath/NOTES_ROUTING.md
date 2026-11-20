@@ -1138,3 +1138,45 @@ web cards seeded): tb_o_donnell_ca shown (P(all) 0.059, approximate 3, 8), 9 hol
 hole 6 (400 vs 468, warned); qa/e2e.py ok (exit 0, no problems; book 10 pages, 9 aim sheets, wind page).
 tb_cedardell_il shown (P(all) 0.502), 9 holes on the front nine. route_bench.load_course now applies route_n too
 (fresh prepares; cached prep pickles keep n = 18).
+
+## State 2026-11-20 (later): card-blind routing measured; no-card courses shown under auto (opt-in ROUTE_NOCARD_SHOW=1)
+
+Question: Will's goal is to deliver every course, with the unsure holes marked approximate. What would delivering
+the no-card courses look like? Today route_gate.decide hard-blocks a scene routing with no usable card yardages ("no
+scorecard yardages"). That covers no web card at all, and since the card sanity change also a card dropped as broken.
+
+Bench (ROUTE_BENCH_CARD=none: every card dropped on all 643 courses; base solver, route_learn state-fold models,
+out-of-fold; re-ranker / tee step off because their picks were made with cards). Reference: the same pipeline with
+cards (cardfix/all_agree.json; that run spanned 95d5c5500's route_n hook in load_course, so a few 9-hole-card courses
+may mix):
+
+| | choice 443 | never-used 200 | 643 |
+|---|---|---|---|
+| holes right, card-blind | **14.48 %** (all-right 16) | **15.00 %** (8) | **14.64 %** (24) |
+| holes right, with cards (same pipeline) | 85.17 % (143) | 85.61 % (57) | 85.30 % (200) |
+| card-blind: P(all) median / p90 / courses >= 0.5 | 0.000 / 0.008 / 0 | 0.000 / 0.009 / 0 | 0.000 / 0.008 / 0 |
+| card-blind: per-hole P mean, share < 0.5 | 0.54, 57 % | 0.53, 57 % | 0.54, 57 % |
+| shown under auto with ROUTE_NOCARD_SHOW=1 (complete routing) | 357 | 152 | 509 |
+
+Card-blind, the router still finds the holes: 83.9 % of the true holes appear under some number (with cards 89.8 %).
+It numbers only 14.6 % right (green under the right number 16.3 %). Without yardages the hole order is close to a
+guess, and the 24 all-right courses are mostly 9-hole loops. The gate is not calibrated for this (fitted on carded
+routings; card_rel is missing and defaults to 0.3). Its per-hole P reads 0.39 / 0.59 / 0.78 / 0.87 in the bins
+< 0.5 / 0.5-0.7 / 0.7-0.85 / 0.85-0.95, where 14 / 14 / 16 / 23 % of holes are right. Hence the flag caps every hole
+at 0.45, so all are approximate.
+
+Real no-card courses: in the 651 train+big rows, 8 have no web card (outside the 643 card-only bench), plus the 5
+whose only card is now dropped as broken (tb_hillcrest_sc, tb_lakeside_ut, tb_oshkosh_wi, tb_eagle_crest_ny,
+tb_northern_michigan_university_mi). Blind loop: 3 of 20 have no card: Pheasant Ridge (tier A) and The Heights (tier C),
+which route_gate.decide never sees, and Makena North (tier D), which fails before routing (no package). So the flag
+changes nothing in the loop: tiers D 2, 4, 9, 13, 18 re-run with ROUTE_NOCARD_SHOW=1 are identical to the default
+(cardfix/loop_nocard.txt).
+
+Implemented as an opt-in only (default unchanged): `route_gate.nocard_show()` / ROUTE_NOCARD_SHOW=1. Under the auto
+policy a routing with has_card False is no longer blocked for that reason. Every p_hole is capped at NOCARD_P 0.45
+(all approximate), P(all) is the product, and the gate's warnings ("no scorecard yardages: shown with every hole
+approximate") go into the package's auto warnings (fast.py). The other hard blocks stay: missing holes, a hole with
+neither end, card-order conflict, shared green. The calibrated policy is unchanged. Test:
+test_route_scene.test_gate_no_card_opt_in.
+
+Reproduce (scratch cardfix/): run_blind.sh (all_none / all_agree), blind.py, loop_nocard.txt.

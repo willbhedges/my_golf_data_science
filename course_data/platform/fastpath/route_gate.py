@@ -38,6 +38,14 @@ MIN_RATIO = 1.25     # ... and the threshold must sit 25 % above the best-scored
 POLICY_ENV = "ROUTE_SHOW_POLICY"
 APPROX_P = 0.5       # auto policy: a hole whose calibrated P(hole right) is below this is marked "approximate"
 FALLBACK_P = 0.45    # cap on P(hole right) of a hole the shared-green fallback touched (so it is marked approximate)
+NOCARD_ENV = "ROUTE_NOCARD_SHOW"   # opt-in (default off): under the auto policy a routing without card yardages is
+NOCARD_P = 0.45                    # shown, not blocked, with every hole's P(right) capped here (all approximate)
+
+
+def nocard_show():
+    """ROUTE_NOCARD_SHOW=1: the auto policy shows a complete routing that had no card yardages (every hole marked
+    approximate) instead of blocking it ("no scorecard yardages"). Default off (NOTES_ROUTING.md 2026-11-20)."""
+    return os.environ.get(NOCARD_ENV, "0") == "1"
 
 
 def policy():
@@ -124,7 +132,8 @@ def decide(routed, params=None, show_policy=None):
     n = int(routed.get("n_holes") or 0)
     if not routed.get("hole_features"):
         reasons.append("no routing")
-    if routed.get("has_card") is False:
+    nocard = routed.get("has_card") is False
+    if nocard and not (show_policy == "auto" and nocard_show()):
         reasons.append("no scorecard yardages: the hole order is a guess without them")
     if routed.get("card_conflict"):
         reasons.append("the web scorecards disagree on the hole order: the card cannot number the holes")
@@ -133,11 +142,17 @@ def decide(routed, params=None, show_policy=None):
     if len(routed.get("hole_features") or []) < n:
         reasons.append(f"only {len(routed.get('hole_features') or [])} of {n} holes routed")
     p, ph = p_all(routed, params)
+    if nocard and show_policy == "auto" and nocard_show() and ph:
+        ph = [min(v, NOCARD_P) for v in ph]           # no card: every hole approximate
+        p = float(np.prod(ph))
     thr = float(params["threshold"]) if params else 1.1
     approx = [i for i, v in enumerate(ph) if v < APPROX_P]
     if show_policy == "auto":
-        return dict(show=not reasons, p_all=p, threshold=thr, reasons=reasons, p_holes=ph, policy="auto",
-                    approximate=approx)
+        out = dict(show=not reasons, p_all=p, threshold=thr, reasons=reasons, p_holes=ph, policy="auto",
+                   approximate=approx)
+        if nocard and nocard_show():
+            out["warnings"] = ["no scorecard yardages: shown with every hole approximate (ROUTE_NOCARD_SHOW=1)"]
+        return out
     if p is None:
         reasons.append("no calibrated gate (route_gate.json)")
     elif p < thr:
