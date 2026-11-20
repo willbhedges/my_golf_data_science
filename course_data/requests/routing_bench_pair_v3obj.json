@@ -1,0 +1,7 @@
+{"schema": "request/1", "kind": "routing_bench", "stage": "detector_pair",
+ "note": "gate 2: v2 (A: golfseg_own_v2 + objects_unet_v2) against v3 (B: golfseg_own_v3 + objects_unet_v3, 956aff9d6) on all 600 TRAIN-BIG courses",
+ "unet_a": "course_data/segment/models/golfseg_own_v2/model.safetensors",
+ "obj_a": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "unet_b": "course_data/segment/models/golfseg_own_v3/model.safetensors",
+ "obj_b": "course_data/platform/fastpath/fastscene_model/objects_unet_v3",
+ "refetch_b": false, "slugs": "", "nshards": 20, "attempt": 1}
