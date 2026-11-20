@@ -1751,3 +1751,93 @@ are above it too. With the rule opt-in, the default code path is unchanged, so t
 Reproduce (scratch t5/): folds.sh (pick tables in /dev/shm, foldfit), padk_oof (pad files with out-of-fold scores),
 arms.sh (A0 / A1 / B1 / As / Bs / B2), gen_off.sh, on_rows.sh (sc_on.py + gen3), rr_on.py, tg_off.sh, tl_on.py,
 cmp.py.
+
+## State 2026-11-20 (later): gate 2 for golfseg_own_v3, paired v2 / v3 on Actions: FAILS (v3 stays opt-in)
+
+Stage `detector_pair` of .github/workflows/routing_bench.yml (refit/detector_pair.py + refit/pair_merge.py). Per course
+the inputs are rebuilt twice on the same runner with the same code and the same NAIP years. The years are the package
+year + the 2 extra years the v2 bench's scenes used (benchdata/big/pinned_years.json). If the pinned package year is no
+longer served, the first served year above the extra years is used.
+
+Only the U-Net weights and the object models differ between the arms. Both arms are routed the same way:
+* state-fold route_learn scores (ROUTE_BENCH_FOLD_RESCORE=1, benchdata/folds = the rsel fold models, committed);
+* the shipped re-ranker and tee step live;
+* production card pick;
+* FASTSCENE_UNET_MODEL=v2 and FASTSCENE_VINTAGE=0 in both arms.
+
+So the routing fits and thresholds are v2's in both arms: this is v3 scenes under v2-tuned routing, not a v3 refit.
+
+Pool: the 600 TRAIN-BIG courses, 20 shards. The 43 validation courses of choice are excluded (different imagery path).
+Test 28 was not touched.
+
+Runs:
+* 44813097321, noise attempt 1: failed. 12 of 20 courses had an unserved pinned package year; fixed in 2a9775992.
+* **44815560624, noise floor A vs A:** v2 twice, B's imagery refetched, 20 courses (14 choice + 6 never-used). All 20 are
+  identical: holes, fwd, card error, recall, scene counts. Choice is 94.22 % in both arms, never-used 87.96 % in both.
+  The paired delta within one run has zero noise.
+* **44817755394 (run 5):** A = golfseg_own_v2 + objects_unet_v2, B = golfseg_own_v3 + objects_unet_v2.
+* **44823590755 (run 6):** A = golfseg_own_v2 + objects_unet_v2, B = golfseg_own_v3 + objects_unet_v3.
+
+Both 600-course runs: 596 complete pairs.
+
+Run 5 (B = v3 + objects_unet_v2):
+
+| | choice (397, 6570 holes) | never-used (199, 3303) | all (596, 9873) |
+|---|---|---|---|
+| holes right A / B | 87.06 / 86.96 % | 86.74 / 87.01 % | 86.95 / 86.97 % |
+| net change | -7 | +9 | +2 |
+| fwd metric A / B | 88.08 / 88.17 % | 88.37 / 88.47 % | 88.18 / 88.27 % |
+| courses better / worse / same | 88 (+207) / 97 (-214) / 212 | 51 (+103) / 54 (-94) / 94 | 139 (+310) / 151 (-308) / 306 |
+| flips of 5+ holes, up / down | 9 / 8 | 5 / 4 | 14 / 12 |
+| all-right courses A / B | 161 / 147 | 70 / 72 | 231 / 219 |
+| card error median A / B | 6.3 / 6.2 yd | 6.5 / 6.2 yd | 6.4 / 6.2 yd |
+| green recall A / B | 96.21 / 96.83 % | 95.58 / 96.85 % | 96.00 / 96.84 % |
+| tee recall A / B | 87.34 / 88.25 % | 85.92 / 88.01 % | 86.86 / 88.17 % |
+
+Largest flips in run 5:
+* up: soule_park_ca +16, holiday_valley_ny +15, holly_ridge_ma +13;
+* down: pb_dye_md -17, valley_co -13, wilshire_ca -10, belgrade_lakes_me -10.
+
+Run 6 (B = v3 + objects_unet_v3):
+
+| | choice (397, 6570 holes) | never-used (199, 3303) | all (596, 9873) |
+|---|---|---|---|
+| holes right A / B | 87.03 / 86.77 % | 86.47 / 87.01 % | 86.84 / 86.85 % |
+| net change | -17 | +18 | +1 |
+| fwd metric A / B | 88.04 / 87.87 % | 88.13 / 88.59 % | 88.07 / 88.11 % |
+| courses better / worse / same | 84 (+213) / 99 (-230) / 214 | 52 (+122) / 53 (-104) / 94 | 136 (+335) / 152 (-334) / 308 |
+| flips of 5+ holes, up / down | 11 / 12 | 5 / 3 | 16 / 15 |
+| all-right courses A / B | 166 / 162 | 68 / 63 | 234 / 225 |
+| card error median A / B | 6.5 / 6.3 yd | 6.5 / 6.2 yd | 6.5 / 6.2 yd |
+| green recall A / B | 96.24 / 96.85 % | 95.64 / 97.00 % | 96.04 / 96.90 % |
+| tee recall A / B | 87.29 / 89.62 % | 85.92 / 89.10 % | 86.83 / 89.45 % |
+| tee complexes A / B | 8500 / 8760 | 4440 / 4605 | 12940 / 13365 |
+
+Largest flips in run 6:
+* up: hillcrest_sc +18, eagle_crest_ny +17, soule_park_ca +15, holiday_valley_ny +12;
+* down: pb_dye_md -17, texas_rangers_tx -12, creekside_wv -9, hermitage_va -9.
+
+Reading:
+* v3 reshuffles routing course by course (about 290 courses move, 5-18 hole swings both ways), but the net is flat.
+* Recall rises (greens +0.9 pt, tees +1.3 pt, or +2.6 pt with objects_unet_v3) and card error falls 0.2 yd. Neither
+  turns into holes: choice goes down (-7 / -17), never-used up (+9 / +18).
+* objects_unet_v3 was loaded under FASTSCENE_UNET_MODEL=v2. Its models took effect (tee complex counts changed), but
+  any other v3-only setting did not.
+
+Caveats:
+* **Arm A (v2) is not identical between the runs:** 8585 holes in run 5, 8574 in run 6. The code is the same; the only
+  commit between them adds the objects_unet_v3 files, which arm A does not read. So rebuilding on Actions has about 10
+  holes of run-to-run noise in aggregate. Imagery served differently and runner CPU / BLAS are the candidates; this is
+  not yet checked. Compare runs only through their own paired deltas, which share imagery within the run.
+* The same 4 courses failed in both arms of both runs:
+  * woods_fort_mo, windy_acres_wi and rising_star_casino_resort_in: an extra year of 2024 is not served;
+  * buffalo_hill_mt: no NAIP.
+* The package-year pin held on only 146 of 597 courses; the rest used the fallback year. Both arms share this, but the
+  absolute levels are not comparable with the v2 bench.
+
+**Verdict (coordinator): v3 fails gate 2 and stays opt-in** (FASTSCENE_UNET_MODEL=v3). The fair test is a routing refit
+on v3 scenes against a v2 refit on the same rebuilt inputs. The next step is the Actions `refit` stage, built from the
+design above.
+
+Reproduce: course_data/requests/routing_bench_pair_{noise,v3,v3obj}.json; the tables are in each run's pair-merge job
+summary (artifact pair-merged: pair_all.jsonl + pair_tables.txt).

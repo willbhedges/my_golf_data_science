@@ -195,6 +195,11 @@ chaska_wi -2); hole greens more on 7, fewer on 4. Gate 1 passes (tees up, greens
 v2 / v3 on identically rebuilt scenes) runs on GitHub Actions (routing_bench.yml); v3 is not the default until it passes,
 the routing fits are refitted on v3 scenes, and the blind loop and one test-28 read are done.
 
+**Gate 2 result (2026-11-20): fails; v3 stays opt-in.** Paired on 596 TRAIN-BIG courses under v2's routing fits, v3 nets
++2 holes with objects_unet_v2 and +1 with objects_unet_v3 (choice -7 / -17, never-used +9 / +18). Green and tee recall
+rise (tees +1.3 / +2.6 pt). Tables, runs and caveats: NOTES_ROUTING.md, "gate 2 for golfseg_own_v3". Next is a
+routing refit on v3 scenes against a v2 refit on the same rebuilt inputs (the Actions refit stage).
+
 Reproduce: scratch v3/gate1s.sh (streaming: VAL / TRAIN rows then their probabilities deleted, TEST per course: refetch years,
 v3 probs, eval v3, eval v2 on the same views, delete), v3/gate1_pool.py; per-course evals cache/heldout/eval/test_g1v3_<slug>.json,
 test_g1v2pair_<slug>.json; rows cache/v3root/heldout/rows.
