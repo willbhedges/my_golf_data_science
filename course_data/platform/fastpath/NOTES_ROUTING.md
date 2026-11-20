@@ -848,3 +848,23 @@ Reproduce (scratch rsel/): run_gen3.sh (prep + gen3 rows), rr_exp.py / rr_fit.py
 KS=beam,renum,start,end THRS=...), run_w2.sh (tee rows, tee fit, bench), clubsrc.py / clubloop.py (clubhouse source),
 cardscan.py, run_card.sh (tables, foldfit.py, cardalt.py), cardpen.py, run_w1c.sh (bench with ROUTE_CARD_PICKS +
 ROUTE_BENCH_FOLDS), run_card_rt.sh, loop_w2b.sh, teerec/testeval.sh.
+
+## State 2026-11-20 (later): blind loop determinism under machine load
+
+The rsel2 loop (picks / statuses moved on tier A / C / D courses while a test evaluation loaded the machine) was not a
+load effect in any solver: no routing, re-ranker, tee or shot-pick search has a wall-clock limit (beams / Lagrange
+iterations are counted; decide.py's draws are Sobol / numpy seeded; LightGBM predicts are deterministic). That run
+had `FASTPATH_CACHE=cache/v2root` set (the bench env), a cold package cache: every card search ran live and finished
+after the build's card budget (phase 2 at 34-93 s), six courses got no card or another source (Chevy Chase no card ->
+the OSM-nearest-tee fallback; Glenwild / Hawk's Point 91 / 93 s, past loop.py's 90 s wait), so packages differed.
+The one wall-clock path in the fast path is the card budget (fast.CARD_BUDGET_S 15 s / CARD_GRACE_S 1 s, then
+loop.py's wait_card(90)); with cached cards it never fires.
+
+Fix: loop.py waits for a late card search without a time limit (fast.wait_card(None)), so a slow search on a busy
+machine is never rebuilt without its card. Production builds keep their budget (latency), unchanged.
+
+Check (default cache, installed defaults, no env): idle loop (scratch t1/idle1.txt) = rsel3.txt on every course it
+holds; the loop under artificial load (8 busy processes on 4 cores, load average ~11; t1/load1.txt) identical to
+idle on all 20 courses (statuses, picks, flagged picks, approximate holes, p_holes, warnings; only timings differ);
+after the change, an idle loop (t1/post1.txt) identical to idle1 line for line except timings. Hawk's Point
+approximate holes 12 of 18 (4-10, 13, 15-18) in all three.

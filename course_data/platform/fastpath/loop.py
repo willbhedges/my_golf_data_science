@@ -30,7 +30,9 @@ def one(c):
     r["wall"] = round(time.time() - t0, 1)
     if (r.get("timing") or {}).get("card_late"):          # phase 2: the card arrived after the first answer
         t1 = time.time()
-        fast.wait_card(90)
+        # no time limit here: a loop run must not depend on machine load (a 90 s cap let a slow card search on a busy
+        # machine be rebuilt without its card); the card answer is cached after the first run
+        fast.wait_card(None)
         if True:
             with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
                 r2 = fast.build(None, slug=c["slug"], row=c, log=lambda *a: None)

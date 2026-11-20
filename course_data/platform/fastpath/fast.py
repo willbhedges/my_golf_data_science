@@ -125,7 +125,8 @@ def _mark_confidence(package, p_holes, warnings, source, pkg_dir, p_all=None):
 
 
 def wait_card(seconds=60.0):
-    """True when the card search of the last build was still running at its budget and has now finished."""
+    """True when the card search of the last build was still running at its budget and has now finished
+    (seconds=None: wait until it finishes)."""
     t = LATE.get("card")
     if t is None or not t.is_alive():
         return False
