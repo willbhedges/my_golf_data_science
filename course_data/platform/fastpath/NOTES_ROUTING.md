@@ -1409,3 +1409,36 @@ Objective / label variants (single LightGBM ranker, out-of-fold, holes gained ch
 t4/rr_v.py): linear gain trunc 3 (shipped settings) +63 / +64; exponential gain +33 / +61; truncation 10 +63 / +55;
 truncation 30 +68 / +62; rank_xendcg +46 / +34; label + 5 x all-right +69 / +51; exponential + trunc 10 +26 / +35. The
 shipped bagged ranker gives +67 / +67. None is better on both splits: not pursued.
+
+## State 2026-11-20 (later): re-ranker FEATS3 and walk features wx4 (both gated, not the default)
+
+All on the pick-refit baseline (route_models/v2 since 3906f8c15; out-of-fold 643 87.04 % / 233, choice 86.70 % / 166,
+never-used 87.80 % / 67, card 6.1 / 36.3 yd).
+
+FEATS3 (route_rerank.FEATS3, model key feats3; per routing: mean hole-model score and holes under 0.7, holes whose tee
+complex another hole also uses (whole or split half), greens used twice, virtual ends): gen rows + bagged ranker on the
+pick refit's route_learn (scratch t4/run_f3.sh). Re-ranker out-of-fold gain at thr 0.5 +67 / +67 -> +75 / +71; bench
+643 87.18 % / 228 (+14 holes), choice 86.91 % / 163 (36 better / 27 worse, +15), never-used 87.77 % / 65 (14 / 17,
+-1), card 6.1 / 36.2. Never-used not better: not shipped.
+
+Walk model diagnosis (scratch t4/walks.py, wcal.py; all 643 courses, OSM truth): true green -> next tee walks median
+75 yd, p90 161, p99 302 (12.3 % > 150 yd, 2.3 % > 250); the next tee is the green's nearest tee in 73.5 %, second
+19.4 %, third or later 7 %; the re-ranker's walk_back rule fires on 0.5 % of true walks. route_learn's walk and hole
+models are calibrated (by length bin and by probability decile: walk 0-50 yd rate 0.40 / mean pw 0.41, 100-150 0.22 /
+0.22, 200-300 0.028 / 0.029; hole deciles 0.94 -> 0.95); the walk model's weakness is discrimination at short range
+(50-100 yd: true walks mean pw 0.54 vs false 0.34; out-of-fold AUC 0.9685, 0.8434 on pairs <= 200 yd). On the 13
+choice courses where the oracle routing beats the pick by >= 4 holes (renumberings excluded) the oracle's solver cost is
+higher mainly in the walk term (median +1.42, higher on 85 %; total walk +80 yd), not in the hole / card terms; on 1-2
+hole near-ties the difference is spread over card / walk (noise); virtual-end counts barely differ. The suggested scene
+walk cues are mostly in walk_features3 already (wx_cos_out: walk vs the tee's outgoing hole, wx_ahead_tr: trees in
+the next corridor, wx_rk_t / wx_rk_g: distance ranks both ways); the U-Net has no path class and the fast-path scenes
+carry no cart paths (0 of 200 checked); OSM paths were not used (biased; skipped).
+
+wx4 (route_learn.walk_features3 extra columns, tables ROUTE_LEARN_WX4=1, model key wx4: tee-complex axis vs the walk
+and vs its best outgoing hole, the pair's distance over the green's nearest tee / the tee's nearest green), full
+refit under pick (scratch t4/run_wx4.sh): walk AUC 0.9685 -> 0.9700 (short pairs 0.8434 -> 0.8451); re-ranker gain
++58 / +18; bench 643 87.08 % / 231 (+4), choice 87.01 % / 162 (59 better / 50 worse, +23), never-used 87.23 % / 69
+(29 / 26, -19), card 6.2 / 36.8. W1 + FEATS3 (t4/run_w1f3.sh): re-ranker +69 / +18; 643 87.14 % / 234 (+10), choice
+87.11 % / 163 (+30), never-used 87.20 % / 71 (28 better / 29 worse, -20), card 6.1 / 36.7. Both fail never-used: not
+shipped. Both stay in the code gated by their model keys (no effect on route_models/v2); blind loop with the gated code
+(t4/loop_gated.txt) identical to the shipped default's (t4/loop_refit.txt).

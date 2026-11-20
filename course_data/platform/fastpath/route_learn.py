@@ -799,7 +799,28 @@ def walk_features3(d, M):
     tp = M.sample(Tc[:, None, :], "tee")[:, 0] if M.tee is not None else np.full(len(Tc), np.nan)
     pmax = Ph.max(1) if Ph.shape[1] else np.zeros(len(Tc))
     prk = np.argsort(np.argsort(-pmax)).astype(float)
-    return np.c_[_prof(tu, 3), trrun, rk_t, rk_g, cos_out, rel_hole, ahead[wp[:, 1]], tp[wp[:, 1]], prk[wp[:, 1]]]
+    base = np.c_[_prof(tu, 3), trrun, rk_t, rk_g, cos_out, rel_hole, ahead[wp[:, 1]], tp[wp[:, 1]], prk[wp[:, 1]]]
+    if not d.get("_wx4"):
+        return base
+    # wx4 (NOTES_ROUTING.md 2026-11-20 "walk features"): the tee complex's long axis against the walk and against its
+    # best outgoing hole, how much nearer the green's nearest tee / the tee's nearest green is than this pair
+    ax = np.array([t.get("ax") if t.get("ax") is not None else (np.nan, np.nan) for t in co["T"]], float).reshape(-1, 2)
+    an = np.hypot(*ax.T)
+    axu = ax / np.where(an > 0, an, np.nan)[:, None]
+    ax_walk = np.abs(np.sum(axu[wp[:, 1]] * dw, 1))
+    ax_out = np.abs(np.sum(axu * dout, 1))[wp[:, 1]]
+    Dw = Dgt[wp[:, 0], wp[:, 1]]
+    gap_t = Dw / np.maximum(Dgt.min(1)[wp[:, 0]], 1.0)
+    gap_g = Dw / np.maximum(Dgt.min(0)[wp[:, 1]], 1.0)
+    return np.c_[base, ax_walk, ax_out, gap_t, gap_g]
+
+
+WXF4 = ["wx_ax_walk", "wx_ax_out", "wx_gap_t", "wx_gap_g"]
+
+
+def wx4_on():
+    """walk features wx4 in the tables (ROUTE_LEARN_WX4=1); production reads the model key wx4"""
+    return os.environ.get("ROUTE_LEARN_WX4", "0") == "1"
 
 
 LXF3 = ["lp_bld_big", "lp_bld_big_rk", "lp_bld250", "lp_nbld150", "lp_hub200", "lp_hub350", "lp_other", "lp_pmap",
@@ -864,6 +885,7 @@ def x3_table(slug, split, ver=None):
     if Pb is not None:
         M.green, M.tee = Pb[1], Pb[2]
     d["_Y"] = S.card_sets(x["card"], int(x["n"]))
+    d["_wx4"] = wx4_on()
     out = dict(slug=slug, hx3=pair_features3(d, M), wx3=walk_features3(d, M), sx3=loop_features3(d, scene, M, "start"),
                ex3=loop_features3(d, scene, M, "end"))
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -1186,6 +1208,7 @@ def cmd_fit(out_dir, kinds=KINDS):
     ts = load_tables(TRAIN)
     ms = {kind: _fit(ts, kind) for kind in kinds}
     pickle.dump(dict(models=ms, XF=XF + ["t_src"] * tee_pads_on(), WXF=WXF, n_train=len(ts), x3=X3, tsrc=tee_pads_on(),
+                     wx4=wx4_on(),
                      **(dict(XF3=XF3, WXF3=WXF3, LXF3=LXF3) if X3 else {})), open(MODEL, "wb"))
     os.makedirs(out_dir, exist_ok=True)
     for t in load_tables("test"):
@@ -1274,6 +1297,7 @@ def rescore(d, scene, M, card=None, n_holes=None, path=MODEL):
         return False
     d["_Y"] = S.card_sets(card if card is not None else d.get("card"), int(n_holes or d["kind"]))
     d["_tsrc"] = bool(m.get("tsrc"))
+    d["_wx4"] = bool(m.get("wx4"))
     d["_gattr"], d["_tattr"] = obj_attrs(d, scene, M)
     t = dict(hx=d["hx"], hx2=pair_features(d, M), wx=d["wx"], wx2=walk_features(d, M), sx=loop_x(d, "start"),
              ex=loop_x(d, "end"))

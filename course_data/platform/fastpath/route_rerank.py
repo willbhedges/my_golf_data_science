@@ -268,6 +268,10 @@ def features(pr, seq, seq0=None):
 FEATS2 = ("par_out_yd", "par4_bad", "rel_sum", "rel_n08", "rel_n25", "rel_top3", "rel_kset", "len_corr_k",
           "walk_rank_sum", "walk_rank_bad", "walk_back", "walk_med", "loop_close", "club_both", "nine_err",
           "nine_swap_gain", "nine_rel", "x_pairs_near", "ph_min", "ph_n05", "pw_sum", "pw_min")
+# per-hole model aggregates + tee-box consistency (model key feats3=True; NOTES_ROUTING.md 2026-11-20 "re-ranker
+# features 3"): mean hole score and holes under 0.7 over the routing's real holes, holes whose tee complex (whole or a
+# split half) another hole also uses, greens used by two holes, virtual ends
+FEATS3 = ("ph_mean", "ph_n07", "tee_shared", "green_shared", "n_virtual_ends")
 PAR_BAND = {3: (90.0, 260.0), 4: (240.0, 490.0), 5: (430.0, 680.0)}
 
 
@@ -359,6 +363,20 @@ def features2(pr, seq):
     if ph:
         f["ph_min"] = float(np.min(ph))
         f["ph_n05"] = float(np.sum(np.asarray(ph) < 0.5))
+        f["ph_mean"] = float(np.mean(ph))
+        f["ph_n07"] = float(np.sum(np.asarray(ph) < 0.7))
+    else:
+        f["ph_mean"] = f["ph_n07"] = 0.0
+    T = pr.d["co"]["T"]
+    base = [str(T[int(pr.ct[c])].get("id", "")).split("/")[0] if int(pr.ct[c]) >= 0 else None for c in seq]
+    cnt = {}
+    for b in base:
+        if b is not None:
+            cnt[b] = cnt.get(b, 0) + 1
+    f["tee_shared"] = float(sum(1 for b in base if b is not None and cnt[b] > 1))
+    gs = [int(pr.cg[c]) for c in seq if int(pr.cg[c]) >= 0]
+    f["green_shared"] = float(len(gs) - len(set(gs)))
+    f["n_virtual_ends"] = float(sum(1 for c in seq if int(pr.ct[c]) < 0) + sum(1 for c in seq if int(pr.cg[c]) < 0))
     wn = []
     for i in range(N - 1):
         if (i + 1) % L == 0:
@@ -379,7 +397,7 @@ KINDS = ("beam", "renum", "start", "end")
 CLUB_FEATS = ("club_start", "club_end", "club_rank_s", "club_rank_e", "club_both")
 
 
-def row(f, f0, kind, ham, N, f2=None, f20=None, noclub=False, sub2=None):
+def row(f, f0, kind, ham, N, f2=None, f20=None, noclub=False, sub2=None, x3=False):
     """learner input: differences to seq0, a few seq0 levels, the alternative's kind and size (+ FEATS2 differences
     and seq0 levels when given). noclub: the clubhouse-derived features are zeroed (on the bench the clubhouse comes
     from OSM tags / car parks far more often than on unmapped courses, where it is usually absent)"""
@@ -395,6 +413,8 @@ def row(f, f0, kind, ham, N, f2=None, f20=None, noclub=False, sub2=None):
             out += [f2[k] - f20[k] for k in sub2]
         else:
             out += [f2[k] - f20[k] for k in FEATS2] + [f20[k] for k in FEATS2]
+        if x3:
+            out += [f2.get(k, 0.0) - f20.get(k, 0.0) for k in FEATS3] + [f20.get(k, 0.0) for k in FEATS3]
     return out
 
 
@@ -441,7 +461,8 @@ def _rerank(pr, seq0, m):
         if k not in kinds:
             continue
         ham = sum(a != b for a, b in zip(s, seq0))
-        X.append(row(features(pr, s), f0, k, ham, pr.N, features2(pr, s) if x2 else None, f20, nc, sub2))
+        X.append(row(features(pr, s), f0, k, ham, pr.N, features2(pr, s) if x2 else None, f20, nc, sub2,
+                     x3=bool(m.get("feats3"))))
         keep.append((k, s))
     if not X:
         return seq0, dict(n_alts=0)
