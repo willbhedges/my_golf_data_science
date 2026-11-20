@@ -18,6 +18,17 @@ name: routing-bench
 #           (refit/pair_merge.py). Request: {"stage": "detector_pair", "unet_a": ..., "obj_a": ..., "unet_b": ...,
 #           "obj_b": ..., "refetch_b": false, "slugs": [] | "a,b", "sample": {"choice": n, "never_used": m, "seed": s},
 #           "nshards": 20}; slugs and sample empty = all 600 TRAIN-BIG courses (400 choice + 200 never-used).
+#   bench_inputs: the bench's inputs (600 TRAIN-BIG + 51 validation train courses; never test) rebuilt with a named
+#           detector (refit/bench_inputs.py; pinned NAIP years, pinned threads, FASTPERC_IMPL default ref = the numpy /
+#           OpenBLAS U-Net with OPENBLAS_CORETYPE=Haswell, the same arithmetic on every runner CPU), one artifact
+#           inputs-<k> per shard (the FASTPATH_CACHE layout + meta/<slug>.json: NAIP item ids, file hashes, CPU,
+#           U-Net implementation). Twin jobs rebuild a sample again (impl ref and auto) and inputs-check compares the
+#           hashes (determinism; imagery vs arithmetic). Request: {"stage": "bench_inputs", "detector": "v2" | "v3",
+#           "impl": "ref", "nshards": 20, "twins": ["slug", ...], "twin_jobs": {"ref": 1, "auto": 3}}.
+#   refit:  the shipped refit (refit/run_pick.sh via refit/refit_actions.sh) on an inputs run's artifacts
+#           ("inputs_run_id"), step 6 re-run on the same runner (identity check) and, in refit-repeat, on another
+#           runner; "compare_run_id": a previous refit run whose oof.json this one is compared with per split
+#           (refit/oof_compare.py). Request: {"stage": "refit", "inputs_run_id": "...", "tag": "v2", "compare_run_id": ""}.
 # Trigger: commit course_data/requests/routing_bench_<name>.json
 #   {"schema": "request/1", "kind": "routing_bench", "stage": "smoke", "slugs": ""}   (slugs "" = benchdata/smoke)
 # Nothing is committed by this workflow; results are artifacts (30 days).
@@ -31,6 +42,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: routing-bench-smoke-${{ github.ref }}
@@ -48,6 +60,8 @@ jobs:
       shards: ${{ steps.p.outputs.shards }}
       idx: ${{ steps.p.outputs.idx }}
       pair_env: ${{ steps.p.outputs.pair_env }}
+      build: ${{ steps.p.outputs.build }}
+      req: ${{ steps.p.outputs.req }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,6 +72,7 @@ jobs:
             /course_data/requests/
             /course_data/platform/fastpath/benchdata/smoke/slugs.txt
             /course_data/platform/fastpath/benchdata/big/pinned_years.json
+            /course_data/platform/fastpath/benchdata/val/pinned_years.json
             /course_data/platform/fastpath/refit/never_used.txt
       - id: p
         run: |
@@ -70,6 +85,24 @@ jobs:
           r = json.load(open(sys.argv[1]))
           stage = r.get("stage") or "smoke"
           print("stage=" + stage)
+          print("req=" + json.dumps({k: v for k, v in r.items() if k in ("inputs_run_id", "tag", "compare_run_id", "detector", "impl")}))
+          if stage == "bench_inputs":
+              tb = sorted(json.load(open(FP + "/benchdata/big/pinned_years.json")))
+              va = sorted(json.load(open(FP + "/benchdata/val/pinned_years.json")))
+              s = r.get("slugs") or (tb + va)
+              if isinstance(s, str):
+                  s = [x for x in s.split(",") if x]
+              k = max(1, min(int(r.get("nshards") or 20), len(s)))
+              impl = r.get("impl") or "ref"
+              jobs = [dict(name="main-%d" % i, art="inputs-%d" % i, slugs=",".join(s[i::k]), impl=impl) for i in range(k)]
+              tw = r.get("twins") or []
+              for im, n in (r.get("twin_jobs") or {}).items():
+                  jobs += [dict(name="twin-%s-%d" % (im, j), art="twin-%s-%d" % (im, j), slugs=",".join(tw), impl=im)
+                           for j in range(int(n))] if tw else []
+              print("slugs=" + str(len(s))); print("shards=[]"); print("idx=[]"); print("pair_env={}")
+              print("build=" + json.dumps(jobs))
+              sys.exit(0)
+          print("build=[]")
           if stage != "detector_pair":
               s = r.get("slugs") or open(FP + "/benchdata/smoke/slugs.txt").read().strip()
               print("slugs=" + (",".join(s) if isinstance(s, list) else s))
@@ -214,3 +247,174 @@ jobs:
           path: |
             ${{ runner.temp }}/pair_all.jsonl
             ${{ runner.temp }}/pair_tables.txt
+
+  build-inputs:
+    needs: plan
+    if: needs.plan.outputs.stage == 'bench_inputs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.plan.outputs.build) }}
+    env:
+      FASTSCENE_UNET_MODEL: ${{ fromJson(needs.plan.outputs.req).detector || 'v2' }}
+      FASTPERC_IMPL: ${{ matrix.impl }}
+      OPENBLAS_CORETYPE: Haswell
+      OMP_NUM_THREADS: "4"
+      OPENBLAS_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q -r $FP/refit/requirements.txt
+      - name: Rebuild inputs (${{ matrix.name }}, detector ${{ env.FASTSCENE_UNET_MODEL }}, impl ${{ matrix.impl }})
+        run: |
+          python3 -u $FP/refit/bench_inputs.py $RUNNER_TEMP/inputs "${{ matrix.slugs }}"
+          du -sh $RUNNER_TEMP/inputs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: meta-${{ matrix.name }}
+          retention-days: 30
+          path: ${{ runner.temp }}/inputs/meta/
+      - uses: actions/upload-artifact@v4
+        if: always() && startsWith(matrix.name, 'main')
+        with:
+          name: ${{ matrix.art }}
+          retention-days: 30
+          compression-level: 1
+          path: ${{ runner.temp }}/inputs/
+
+  inputs-check:
+    needs: [plan, build-inputs]
+    if: always() && needs.plan.outputs.stage == 'bench_inputs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/platform/fastpath/refit/
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: meta-*
+          path: ${{ runner.temp }}/arts
+      - name: Inputs summary + twin comparison
+        run: |
+          python3 $FP/refit/inputs_check.py $RUNNER_TEMP/arts | tee $RUNNER_TEMP/inputs_check.txt
+          { echo '```'; cat $RUNNER_TEMP/inputs_check.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inputs-check
+          retention-days: 30
+          path: ${{ runner.temp }}/inputs_check.txt
+
+  refit:
+    needs: plan
+    if: needs.plan.outputs.stage == 'refit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      OPENBLAS_CORETYPE: Haswell
+      OMP_NUM_THREADS: "4"
+      OPENBLAS_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+      TAG: ${{ fromJson(needs.plan.outputs.req).tag || 'refit' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q -r $FP/refit/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: inputs-*
+          merge-multiple: true
+          path: ${{ github.workspace }}/course_data/platform/fastpath/cache/v2root
+          run-id: ${{ fromJson(needs.plan.outputs.req).inputs_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Refit (run_pick.sh) + step 6 again on this runner
+        run: |
+          df -h / | tail -1
+          bash $FP/refit/refit_actions.sh $RUNNER_TEMP/work 2>&1 | tee $RUNNER_TEMP/work_refit.log
+          python3 $FP/refit/oof_compare.py $RUNNER_TEMP/work/oof.json | tee $RUNNER_TEMP/work/table.txt
+          { echo '```'; tail -25 $RUNNER_TEMP/work_refit.log; cat $RUNNER_TEMP/work/table.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Pack the refit (fits, picks, out-of-fold scores, oof)
+        if: always()
+        run: |
+          W=$RUNNER_TEMP/work; mkdir -p $RUNNER_TEMP/art
+          cp $RUNNER_TEMP/work_refit.log $W/*.json $W/*.log $W/*.txt $W/done.* $RUNNER_TEMP/art/ 2>/dev/null || true
+          cp -r $W/models $RUNNER_TEMP/art/ 2>/dev/null || true
+          mkdir -p $RUNNER_TEMP/art/sc && cp -r $W/sc/cv $RUNNER_TEMP/art/sc/ 2>/dev/null || true
+          ls -la $RUNNER_TEMP/art; du -sh $RUNNER_TEMP/art
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: refit-${{ env.TAG }}
+          retention-days: 30
+          path: ${{ runner.temp }}/art/
+      - uses: actions/download-artifact@v4
+        if: fromJson(needs.plan.outputs.req).compare_run_id != ''
+        with:
+          pattern: refit-*
+          path: ${{ runner.temp }}/base
+          run-id: ${{ fromJson(needs.plan.outputs.req).compare_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Against the base refit (per split)
+        if: fromJson(needs.plan.outputs.req).compare_run_id != ''
+        run: |
+          python3 $FP/refit/oof_compare.py $(ls $RUNNER_TEMP/base/*/oof.json | head -1) $RUNNER_TEMP/work/oof.json | tee $RUNNER_TEMP/compare.txt
+          { echo '```'; cat $RUNNER_TEMP/compare.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+  refit-repeat:
+    needs: [plan, refit]
+    if: needs.plan.outputs.stage == 'refit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      OPENBLAS_CORETYPE: Haswell
+      OMP_NUM_THREADS: "4"
+      OPENBLAS_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+      TAG: ${{ fromJson(needs.plan.outputs.req).tag || 'refit' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q -r $FP/refit/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: inputs-*
+          merge-multiple: true
+          path: ${{ github.workspace }}/course_data/platform/fastpath/cache/v2root
+          run-id: ${{ fromJson(needs.plan.outputs.req).inputs_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: refit-${{ env.TAG }}
+          path: ${{ runner.temp }}/work
+      - name: Step 6-7 again on another runner, compared with the refit's oof.json
+        run: |
+          W=$RUNNER_TEMP/work
+          mv $W/oof.json $W/oof_refit.json
+          bash $FP/refit/refit_actions.sh $W repeat 2>&1 | tail -8
+          python3 $FP/refit/oof_compare.py $W/oof_refit.json $W/oof.json --identity | tail -4 | tee $RUNNER_TEMP/repeat.txt
+          { echo '```'; cat $RUNNER_TEMP/repeat.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: refit-repeat-${{ env.TAG }}
+          retention-days: 30
+          path: ${{ runner.temp }}/work/oof.json

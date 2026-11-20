@@ -17,6 +17,10 @@ slugs_new1.txt. Results and history are in ../NOTES_ROUTING.md.
 | smoke_bench.sh OUT [INPUT_DIR] / smoke_compare.py REF RUN | the Actions smoke (.github/workflows/routing_bench.yml): the default's out-of-fold protocol on benchdata/smoke's 5 courses; identical per-hole results to benchdata/smoke/ref_oof.json; SMOKE_MODE=fold: fold-model scores + live re-ranker / tee, vs ref_fold.json | new |
 | smoke_scenes.py REF_DIR RUN_DIR | rebuilt vs committed scenes (greens / tees matched) | new |
 | detector_pair.py OUT_DIR SLUGS / pair_merge.py PAIR.jsonl... | paired detector comparison: inputs rebuilt twice with pinned NAIP years (../benchdata/big/pinned_years.json), only the U-Net weights + object models differing; routed with state-fold scores (../benchdata/folds) + live re-ranker / tee; per-split tables | new |
+| bench_inputs.py OUT_DIR SLUGS | Actions stage bench_inputs: TRAIN-BIG + validation train inputs rebuilt with a named detector, pinned NAIP years (../benchdata/{big,val}/pinned_years.json), meta/<slug>.json with NAIP item ids, file hashes, CPU, U-Net implementation | new |
+| inputs_check.py ARTS_DIR | bench_inputs summary + twin rebuild comparison (imagery vs arithmetic) | new |
+| refit_actions.sh WORKDIR [repeat] | Actions stage refit: run_pick.sh on Actions-built inputs, step 6 re-run for identity; repeat = steps 6-7 only | new |
+| oof_compare.py A.json [B.json] [--identity] | per-split table of a bench output; B against A (net, better / worse, flips, card guardrail); identity check | new |
 | build_inputs.py OUT_DIR SLUGS | rebuild TRAIN-BIG scenes / probs / maps from free imagery (route_big's stages without the card search) | new |
 
 ## The shipped recipe (pick refit, 2026-11-20)
