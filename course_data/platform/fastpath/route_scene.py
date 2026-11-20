@@ -851,7 +851,7 @@ def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
     if ROUTER == "v2" and P is not None and np.shape(P)[0] == 6:
         hag = getattr(info.get("stack"), "a", {}).get("hag")
         import route_learn as RL
-        if RL.tee_pads_on() and scene.get("grid"):              # DEM pads (opt-in ROUTE_TEE_PADS=1), off the package DEM
+        if (RL.tee_pads_on() or RL.tee_pads_cond(scene, n_holes)) and scene.get("grid"):   # DEM pads, off the package DEM
             try:
                 scene = dict(scene, dem_pads=RL.dem_pads_file(os.path.join(pkg_dir, "imagery", "dem.tif"), scene["grid"], P))
             except Exception:                                    # noqa: BLE001

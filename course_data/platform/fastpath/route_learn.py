@@ -185,6 +185,7 @@ def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=No
     if peaks and peaks > 0:
         out += _peak_greens(pg, g, have, inv, peaks)
     sc = dict(scene, greens=list(scene.get("greens") or []) + out)
+    pads_on = tee_pads_on() or tee_pads_cond(scene, n_holes)    # counted on the raw scene, before the peaks
     tp = tee_peak_p()
     if tp > 0 and P.shape[0] > CLASSES.index("tee"):
         gx = [(np.array(fwd.transform(*gg["centroid"])), math.sqrt(max(float(gg.get("area_m2") or 300.0), 30.0) / math.pi))
@@ -192,7 +193,7 @@ def augment_scene(scene, P, min_area=AUG_AREA[0], max_area=AUG_AREA[1], peaks=No
         tc = _peak_tees(P[CLASSES.index("tee")], scene, gx, fwd, inv, tp, n_holes or 18)
         if tc:
             sc["tee_complexes"] = list(scene.get("tee_complexes") or []) + tc
-    if tee_pads_on():
+    if pads_on:
         pads = scene.get("dem_pads")
         if pads is None:
             pads = bench_pads(scene)
@@ -226,6 +227,25 @@ _PADM = {}
 
 def tee_pads_on():
     return _DET.route_tee_pads()
+
+
+# Conditional pads (NOTES_ROUTING.md 2026-11-20 "conditional DEM pads"): with the default fits, pads are added only on a
+# tee-blind scene, one whose raw scene tee complexes (before P(tee) peaks; OSM tees in fc not counted) number fewer
+# than PAD_COND_FRAC x n. Peaks fill every scene to 2 n, so the count must be taken before augment_scene adds them.
+# Opt-in ROUTE_PADS_COND=1, not the default: measured fully out of fold it does not raise OOF 643 (choice -6 on 40
+# courses, never-used +5 on 17). Off with every rollback that turns ROUTE_TEE_PADS off, and when ROUTE_TEE_PADS is
+# set (=1: pads everywhere with their own fits; =0: no pads).
+PAD_COND_FRAC = float(os.environ.get("ROUTE_PADS_COND_FRAC", "0.75") or 0.75)
+
+
+def tee_pads_cond(scene, n_holes):
+    """pads on for this (raw) scene under the conditional rule"""
+    if os.environ.get("ROUTE_PADS_COND", "0") != "1" or os.environ.get("ROUTE_TEE_PADS") not in (None, ""):
+        return False
+    if _DET.unet_model() != "v2" or _DET.tee_rollback() or _DET.select_rollback() or _DET.route_tee_peaks() == 0:
+        return False
+    n_real = sum(1 for t in (scene or {}).get("tee_complexes") or [] if not t.get("virtual"))
+    return n_real < PAD_COND_FRAC * float(n_holes or 18)
 
 
 def tee_pad_fill():

@@ -1653,8 +1653,8 @@ Each fix has a regression test in test_route_scene.py or test_fastpath.py.
      files.
 
 Blind loop after the fixes (scratch t5/loop_rev.txt) vs the loop after the card / vintage review fixes
-(vint/loop_fix.txt): identical line for line except timings, on all 20 courses. Hawk's Point: shown, approximate
-holes 15.
+(vint/loop_fix.txt): identical line for line except timings, on all 20 courses. Hawk's Point: shown, 1 approximate
+hole (hole 15).
 
 ## State 2026-11-20 (later): routing bench smoke on GitHub Actions (routing_bench.yml) passes
 
@@ -1688,3 +1688,66 @@ refit/requirements.txt on Python 3.11.18.
     as the new baseline.
 * Wall: checkout about 2.5-3.5 min (full repo); pip about 25 s; bench of 5 courses 8-30 s; rebuild about 5 min for 5
   courses.
+
+## State 2026-11-20 (later): conditional DEM pads measured fully out of fold (opt-in ROUTE_PADS_COND=1, not shipped)
+
+Rule: DEM pad tee complexes are added only on a tee-blind scene, one with fewer than 0.75 x n raw scene tee complexes
+(counted before P(tee) peaks, which fill every scene to 2 n). The production fits are kept (no refit). This fires on 57
+train+big courses: 40 choice, 17 never-used. Code: route_learn.tee_pads_cond (augment_scene) and the DEM hook in
+route_scene.run. Off by default. The pad classifier must be given with ROUTE_PAD_MODEL (route_models/v2_pads); without
+it, pads degrade to none.
+
+The ship rule for this run was relaxed by the coordinator: never-used net positive with more courses better than worse
+(a one-hole loss on one course is inside the refit noise measured earlier), plus OOF 643 up, the blind loop explained
+and the card guardrail.
+
+**The sprint's gain was mostly leakage.** The sprint measured choice +46 / never-used +6 solver-only. Two things in it
+were in-sample:
+* Pad scores came from the production pad classifier, which was trained on these same courses. Out-of-fold pad scores
+  were rebuilt from scratch pads/padfit_oof.pkl (state folds; course order = pads/slugs_tb.txt minus one of the last
+  six slugs, checked by index bounds on all 57 courses and rank correlation 0.83 with the in-sample scores).
+* The route_learn fold models were made with the chosen card. New pick-card fold models (refit/foldfit.py on pick
+  tables): scratch t5/folds_pick.
+
+**Protocol (fully out of fold, all on the 57 courses):**
+* Identity check, which passes exactly: with t5/folds_pick plus the shipped out-of-fold re-ranker / tee picks
+  (t4/P/picks_tb.json, tee_picks.json), the off arm reproduces t4/P/oof.json (choice 368, never-used 139 holes right).
+* Re-ranker rows regenerated: refit/gen3.py over all 643 off courses (t4/P/sc/cv scores) and over the 57 pads courses
+  (out-of-fold fold-model scores with pads, t5/sc_on.py).
+* The shipped re-ranker recipe (rankbag, X2 NC, beam/renum/start/end, thr 0.5) was fitted per state fold on the off rows
+  only, as production keeps its fits, and applied out of fold to the off rows and to the pads rows (t5/rr_on.py). The
+  off picks equal picks_tb.json (240 of 240).
+* Tee: refit/tgen2.py rows for off (picks_tb) and pads (picks_on); the shipped hybrid rule (0.93 / 12 / 0.5) per fold
+  on the off rows only (t5/tl_on.py). The off picks equal tee_picks.json (638 of 638).
+* Bench arm: pads on, ROUTE_RERANK=0 ROUTE_TEE=0 with those picks, fold rescoring (t5/arm_B2.json) vs t5/arm_A0.json.
+
+| arm (holes right on the 57) | choice (40) | never-used (17) |
+| --- | --- | --- |
+| off, out-of-fold re-ranker / tee (= oof.json) | 368 | 139 |
+| **pads, out-of-fold re-ranker / tee** | **362 (-6; 1 better / 5 worse)** | **144 (+5; 3 better / 1 worse)** |
+| off, solver only | 346 | 123 |
+| pads, solver only | 348 (+2; 3 / 2) | 131 (+8; 3 / 2) |
+| off, live production re-ranker / tee (in-sample: these courses are in their training) | 397 | 149 |
+| pads, live production re-ranker / tee | 377 | 144 |
+
+* Per course, out-of-fold: choice creekside 7 -> 10; hansen_park 4 -> 0, indian_trace 10 -> 8, edgebrook 3 -> 2,
+  hickory_knoll 5 -> 4, riverbend 2 -> 1. Never-used stone_creek_ny 6 -> 10, pine_crest_wa 0 -> 2, rockingham 6 -> 7;
+  shady_hills 3 -> 1.
+* OOF 643: 507 -> 506 holes on the 57 courses, the other 586 unchanged by construction: 87.04 % -> 87.03 %. Fails
+  "OOF 643 up". Never-used passes the relaxed rule (+5, 3 / 1).
+* Card residual on the 57 (median / p90 yd): 9.0 / 51.0 off, 9.4 / 48.7 pads.
+* The live production re-ranker / tee are in-sample on every one of these courses: +39 holes over the out-of-fold
+  picks on the off arm. Any comparison with live models on bench courses is unusable.
+* No trigger fraction helps choice. Each course's out-of-fold result does not depend on which other courses trigger
+  (fold models are fitted on off rows only), so subsets of the 57 can be scored directly:
+  < 0.1 n choice +0 (2 courses), < 0.25 -1 (8), < 0.4 -1 (12), < 0.5 -6 (15), < 0.6 -7 (25), < 0.75 -6 (40).
+* A re-ranker refit on rows with pads (off rows for 586 courses + pads rows for the 57; rr_fit.py out of fold) is worse
+  at the row level: choice 6353 -> 6339 holes right, never-used 2951 -> 2952. So a refit does not rescue it either.
+
+Blind loop: no loop course triggers. Hawk's Point's chosen 2017 vintage has 20 raw complexes (trigger < 13.5): pads
+cannot touch its 1 approximate hole (hole 15). Sunset (9 complexes, 9 holes), Remsen (11, 9 holes) and Glenwild (32)
+are above it too. With the rule opt-in, the default code path is unchanged, so the loop was not re-run.
+
+Reproduce (scratch t5/): folds.sh (pick tables in /dev/shm, foldfit), padk_oof (pad files with out-of-fold scores),
+arms.sh (A0 / A1 / B1 / As / Bs / B2), gen_off.sh, on_rows.sh (sc_on.py + gen3), rr_on.py, tg_off.sh, tl_on.py,
+cmp.py.

@@ -274,3 +274,20 @@ def test_bench_multi_site_off_and_without_a_card(monkeypatch):
     assert RB._bench_multi_site(dict(slug="x", card={}, n=18), None) is None
     monkeypatch.setenv("ROUTE_MULTI_SITE", "1")
     assert RB._bench_multi_site(dict(slug="x", card=None, n=18), None) is None
+
+
+def test_conditional_pads_trigger(monkeypatch):
+    import route_learn as RL
+    for k in ("ROUTE_TEE_PADS", "ROUTE_PADS_COND", "ROUTE_TEE_ALL", "ROUTE_SELECT", "ROUTE_TEE_PEAKS"):
+        monkeypatch.delenv(k, raising=False)
+    monkeypatch.setenv("FASTSCENE_UNET_MODEL", "v2")
+    assert not RL.tee_pads_cond(dict(tee_complexes=[]), 18)                          # opt-in: off by default
+    monkeypatch.setenv("ROUTE_PADS_COND", "1")
+    tc = lambda k: dict(tee_complexes=[dict(id=str(i)) for i in range(k)] + [dict(id="v", virtual=True)] * 9)
+    assert RL.tee_pads_cond(tc(13), 18) and not RL.tee_pads_cond(tc(14), 18)       # < 0.75 n raw complexes
+    assert RL.tee_pads_cond(tc(6), 9) and not RL.tee_pads_cond(tc(7), 9)
+    monkeypatch.setenv("ROUTE_PADS_COND", "0")
+    assert not RL.tee_pads_cond(tc(0), 18)
+    monkeypatch.setenv("ROUTE_PADS_COND", "1")
+    monkeypatch.setenv("ROUTE_TEE_PEAKS", "0")                                        # a rollback turns it off
+    assert not RL.tee_pads_cond(tc(0), 18)
