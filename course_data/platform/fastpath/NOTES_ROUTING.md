@@ -934,3 +934,44 @@ box threshold is not cheap: TRAIN-BIG kept only probabilities and scenes (needs 
 Reproduce (scratch pads/, dpad/): padgen.py (DEM -> pads), cover.py / cover2.py / ana.py (coverage), padfit.py (pad
 classifier OOF + bench pad files keyed by scene grid), dpad/run.sh WORKDIR MIN FILL (refit + bench; env ROUTE_TEE_PADS=1
 ROUTE_PADS_DIR ROUTE_PAD_MODEL), parity.py (production vs bench pads), dpad/loop_optin.sh.
+
+## State 2026-11-20 (later): why the router picks a wrong real tee (diagnosis; nothing shipped)
+
+Current default, out-of-fold, choice 443 (scratch t2/tdiag.py, gdiag.py; scorer tolerances: green 20 m, tee within
+40 m of the first 60 % of the true line). 1024 wrong holes: green wrong 696, green right + wrong real tee 309, virtual
+tee wrong 19 (never-used 200: 419 = 229 / 177 / 13).
+
+Green wrong (696; never-used 229): right green routed to another hole (numbering / sequence) 488 (174); right green a
+candidate and unused 128 (37); no router-candidate green within 20 m 80 (18; 9 / 2 of them below the router threshold /
+cap); 81 on virtual greens. 444 of the 696 are on 35 collapse courses (>= 60 % of holes wrong; never-used 78 on 7).
+Outside the collapses: 154 / 82 / 16 (never-used 101 / 35 / 15).
+
+Green right, wrong real tee (309): a right candidate complex exists and no other hole uses it 237, it is used by another
+hole 30, no right candidate 42 (the a1 'tee' bucket of the old default, 103, shrank with the peaks). The chosen tee is
+another hole's start in 44. On the route_tee rows (regenerated on the default, t2/tg_tb; the hybrid rule reproduces
+86.15 % on choice): of 6646 green-right holes 6319 right, 293 wrong with a right candidate among the tee step's
+candidates, 34 without one. Of the 293, ~200 have the right candidate with a much worse card residual (median 0.18 vs
+the chosen 0.03; mostly a shorter box, i.e. a forward / middle box of the right hole), and in 92 the classifier
+already ranks the right one higher: the card penalty overrides it. Where the chosen wrong tee fits the card better by
+> 10 yd (113 holes), the true OSM hole length is itself off the card yardage by a median 18 % (81 over 10 %, 33 over
+25 %): the card number (or set) does not describe the true tee, so card fit pulls the tee off the hole.
+
+Tried (offline, out-of-fold on the tee rows; card proxy = |play length - course set| median / p90, the default rule
+6.5 / 35.2 yd on choice; proxy p90 reads ~2-4 yd under the bench):
+* rule grid tau {0, .9, .93, .95, .97} x lam_r {0..12} x lam_c {0..0.5}: holes-only rules gain up to +149 choice /
+  +105 never-used holes (87.35 %) but at card 34 / 90 yd; within the guardrail the best is tau 0.9, lam_r 8, lam_c 0.5:
+  +72 vs +61 choice, +39 vs +41 never-used (6.5 / 36.3 yd): flat, not benched.
+* card-distance spots (each candidate moved along its line to the card distance as an extra candidate, src 'ext',
+  classifier / ranker refit; t2/tg_ext): card proxy drops to ~2 / 34 yd but holes gain falls (+56 choice at best
+  within the guardrail, never-used +29 vs +41).
+* move the chosen spot to the card distance when it misses by > 10 / 15 / 25 %: loses 19-335 holes (the card
+  distance lands behind the true start or on another line).
+* 'virtual over a far real tee' (idea 2): 19 + 42 holes in reach, and on the tee rows the virtual spot is no better
+  placed (the card ring has the same card-truth mismatch). Tee swaps between holes (idea 3): 30 holes in reach.
+So the tee lever is capped by the card guardrail itself (the guardrail measures the same card fit that pulls the tee
+off), not by missing features: route_tee already has card residuals, used_other, walk, angles, P(tee). The larger
+lever is the green / numbering side (488 renumbered holes, 444 in collapse courses). Code unchanged (the ext spots were
+an experiment in route_tee and are not kept).
+
+Reproduce (scratch t2/): tdiag.py / gdiag.py OOF.json OUT.jsonl, tg.sh (tee rows on the default), tg_ext.sh
+(+ ROUTE_TEE_EXT spots, experiment code not committed), tana.py, tgrid.py, tpost.py (with rsel/tl_exp.py).
