@@ -1,0 +1,7 @@
+{"schema": "request/1", "kind": "routing_bench", "stage": "detector_pair",
+ "note": "gate 2: v2 (A) against v3 (B) U-Net on all 600 TRAIN-BIG courses (400 choice + 200 never-used); objects_unet_v3 not yet fitted, so both arms use objects_unet_v2",
+ "unet_a": "course_data/segment/models/golfseg_own_v2/model.safetensors",
+ "obj_a": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "unet_b": "course_data/segment/models/golfseg_own_v3/model.safetensors",
+ "obj_b": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "refetch_b": false, "slugs": "", "nshards": 20, "attempt": 1}
