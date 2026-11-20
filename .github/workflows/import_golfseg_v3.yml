@@ -1,0 +1,117 @@
+name: import-golfseg-v3
+
+# Copy the tee-targeted fine-tune of golfseg_own_v2 (golfseg_v2_train.yml request rev 5, artifact "golfseg-v2-model"
+# of the run named in the request) into course_data/segment/models/golfseg_own_v3/ (weights + config + train log +
+# README with run id and sha256), and the new courses' training-set index (artifacts golfseg-v2-index-* of the data
+# run) into course_data/segment/train/dataset_index_v3.json. Nothing else. The ariadgolf weights are never imported.
+# Trigger: course_data/requests/import_golfseg_v3.json {"run_id": ..., "data_run_id": ..., "rev": ...}.
+
+on:
+  push:
+    branches:
+      - claude/mozingo-lake-tee-strategy-ef54wl
+    paths:
+      - "course_data/requests/import_golfseg_v3.json"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: import-golfseg-v3
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - id: req
+        run: |
+          echo "run_id=$(python3 -c "import json;print(json.load(open('course_data/requests/import_golfseg_v3.json'))['run_id'])")" >> "$GITHUB_OUTPUT"
+          echo "data_run=$(python3 -c "import json;d=json.load(open('course_data/requests/import_golfseg_v3.json'));print(d.get('data_run_id') or d['run_id'])")" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          name: golfseg-v2-model
+          run-id: ${{ steps.req.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/v3model
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: golfseg-v2-index-*
+          run-id: ${{ steps.req.outputs.data_run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/v3index
+      - name: Copy weights, README, index
+        env:
+          RUN_ID: ${{ steps.req.outputs.run_id }}
+          DATA_RUN: ${{ steps.req.outputs.data_run }}
+        run: |
+          set -e
+          ls -la /tmp/v3model
+          D=course_data/segment/models/golfseg_own_v3
+          mkdir -p "$D"
+          for f in model.safetensors config.json preprocessor_config.json train_log.json; do cp "/tmp/v3model/$f" "$D/"; done
+          python3 - "$D" "$RUN_ID" "$DATA_RUN" <<'PY'
+          import glob, hashlib, json, os, sys
+          d, run, data_run = sys.argv[1], sys.argv[2], sys.argv[3]
+          rows = {}
+          for p in sorted(glob.glob("/tmp/v3index/**/index_*.json", recursive=True)):
+              rows.update(json.load(open(p))["courses"])
+          ok = {k: v for k, v in rows.items() if "file" in v}
+          assert ok, "no training-set index found"
+          idx = dict(courses=rows, n_ok=len(ok), n_tried=len(rows), source="course_data/segment/train/v3_courses.json (pick_v3.py, --tee-quality)",
+                     labels="OpenStreetMap contributors (ODbL 1.0)", imagery="USDA NAIP via Planetary Computer",
+                     canopy="Meta / WRI high-resolution canopy height (CC BY 4.0), tree masks only (chm_add.py)",
+                     classes=["background", "green", "tee", "fairway", "bunker", "water"], ignore=255, run_id=int(data_run))
+          json.dump(idx, open("course_data/segment/train/dataset_index_v3.json", "w"), indent=0)
+          w = os.path.join(d, "model.safetensors")
+          sha = hashlib.sha256(open(w, "rb").read()).hexdigest()
+          log = json.load(open(os.path.join(d, "train_log.json")))
+          st = log["state"]
+          ev, iv = log.get("exported_val") or {}, log.get("init_val") or {}
+          fmt = lambda v: ", ".join(f"{k} {x}" for k, x in (v.get("iou") or {}).items())
+          jobs = "; ".join(f"steps {j['start_step']}-{j['end_step']} in {j['minutes']} min" for j in st["jobs"])
+          open(os.path.join(d, "README.md"), "w").write(f"""# golfseg_own_v3: our NAIP golf-feature U-Net, tee-targeted fine-tune of v2
+
+          * Source: GitHub Actions run {run} (`.github/workflows/golfseg_v2_train.yml`, request rev 5, CPU runners, two
+            chained jobs: {jobs}), artifact `golfseg-v2-model`; copied by `.github/workflows/import_golfseg_v3.yml`.
+          * File: `model.safetensors`, {os.path.getsize(w)} bytes, sha256 `{sha}`.
+          * Architecture and input: unchanged from `../golfseg_own` / `../golfseg_own_v2` (same normalisation), so
+            `fastc/perception/unet.py` runs it as is.
+          * Initialisation: `../golfseg_own_v2`. Training: `course_data/segment/train/train_v2.py` with
+            `--tee-focus {log.get('tee_focus')}` (tee crop centres on small / wooded tees, course picks on par-3 / exec /
+            short courses), `--tee-min {log.get('tee_min')}`, `--select {log.get('select')}`; {st['step']} of {st['total']} planned
+            steps, lr {log['lr']}. Exported: step {log['exported_step']} (best validation IoU of the --select classes).
+          * Training data: the v2 set (data run 44408172242, `dataset_index_v2.json`) + {len(ok)} new courses built of
+            {len(rows)} drawn (`pick_v3.py`: v2's draw with v2_courses.json also excluded, 1.5 km buffer;
+            `dataset_index_v3.json`, data run {data_run}); {log['courses_train']} training courses in all. Labels
+            OpenStreetMap (ODbL 1.0), imagery USDA NAIP (public domain), tree masks Meta / WRI canopy height (CC BY 4.0).
+          * Validation ({len(log['courses_val'])} held-out courses, 512 px tiles), IoU: init (v2) {fmt(iv)}; exported {fmt(ev)}.
+          * Licence: ours (trained by this project). The ariadgolf/golf-course-segmentation weights are a different model
+            and are not in this repository.
+          * Used by: `course_data/platform/fastpath/fastscene.py` when FASTSCENE_UNET_MODEL=v3 (opt-in).
+          """.replace("\n          ", "\n"))
+          PY
+          cat "$D/README.md"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/segment/models/golfseg_own_v3 course_data/segment/train/dataset_index_v3.json
+          if git diff --cached --quiet; then echo "Nothing to commit"; exit 0; fi
+          printf '%s\n' \
+            "segment: tee-targeted fine-tune of our NAIP U-Net (Actions run ${{ steps.req.outputs.run_id }}) into course_data/segment/models/golfseg_own_v3 + training index" \
+            "" \
+            "Co-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>" \
+            "Claude-Session: https://claude.ai/code/session_011rKvZuUcU769YfPfktPsds" > /tmp/msg.txt
+          git commit -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${{ github.ref_name }}" && \
+              git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            echo "push attempt $i failed; retrying"; sleep $((i * 10))
+          done
+          exit 1
