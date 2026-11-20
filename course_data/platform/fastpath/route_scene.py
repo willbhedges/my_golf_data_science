@@ -686,7 +686,20 @@ def route_v2(fc, scene, card, n_holes, P, hag=None, params=None):
     walk scores from route_learn's models (real-candidate fit, fairway / turf / tree features along each line),
     solve2 with V2_PARAMS. -> (route result, candidate info, the augmented scene)"""
     import route_learn as RL
+    scene0 = scene
     scene, n_aug = RL.augment_scene(scene, P, n_holes=n_holes)
+    r, ci = _route_v2_on(fc, scene, card, n_holes, P, hag, params)
+    ci = dict(ci, greens_map=n_aug)
+    ms = _multi_site(fc, scene0, scene, card, n_holes, P, hag, params)
+    if ms is not None:
+        r, ci2, scene = ms
+        ci = dict(ci2, greens_map=n_aug)
+    return r, ci, scene
+
+
+def _route_v2_on(fc, scene, card, n_holes, P, hag=None, params=None):
+    """route_v2 on an already augmented scene -> (route result, candidate info)"""
+    import route_learn as RL
     co, ci = candidates(fc, scene, n_holes=n_holes)
     d, _ = prepare(fc, scene, card, n_holes, co=co, version="v2")
     M = RL.corridor_maps(P, scene["grid"], hag=hag).bind(co["pj"])
@@ -695,8 +708,69 @@ def route_v2(fc, scene, card, n_holes, P, hag=None, params=None):
         d["co"]["maps"] = M
     r = route(fc, scene, card, n_holes, version="v2" if learned else "v1",
               params=dict(V2_PARAMS, **(params or {})) if learned else params, prepared=(d, {}))
-    ci = dict(ci, greens_map=n_aug, learned_scores=learned)
-    return r, ci, scene
+    return r, dict(ci, learned_scores=learned)
+
+
+# 27 / 36-hole sites (NOTES_ROUTING.md 2026-11-20 "27 / 36-hole sites"): on a scene with >= MULTI_GREENS x n candidate
+# greens (the raw scene) the router can mix the courses of a site. The candidates are split by k-means on the green
+# centroids (k = 2, 3; tee complexes and every green go to the nearest centre); each cluster holding >= 0.9 n of the
+# candidate greens is routed alone, and the cluster routing with the lowest solver cost (re-ranker off for the
+# comparison) replaces the whole-scene routing when it is cheaper than the whole scene's. ROUTE_MULTI_SITE=0 turns it off.
+MULTI_GREENS = float(os.environ.get("ROUTE_MULTI_GREENS", "1.5"))
+
+
+def _n_cand_greens(scene):
+    return sum(1 for g in (scene or {}).get("greens") or [] if g.get("kind") != "practice"
+               and float(g.get("p_hole", g.get("p", 0))) >= P_GREEN)
+
+
+def cluster_scenes(scene, n_holes, ks=(2, 3)):
+    """[(k, j, scene restricted to cluster j)] for the k-means clusters holding >= 0.9 n candidate greens"""
+    from sklearn.cluster import KMeans
+    G = [g for g in scene.get("greens") or [] if g.get("kind") != "practice"
+         and float(g.get("p_hole", g.get("p", 0))) >= P_GREEN]
+    if len(G) < 2 * 0.9 * n_holes:
+        return []
+    lat0 = float(np.mean([g["centroid"][1] for g in G]))
+    kx = math.cos(math.radians(lat0)) * 111320.0
+
+    def xy(ll):
+        return np.array([ll[0] * kx, ll[1] * 110950.0])
+    Z = np.array([xy(g["centroid"]) for g in G])
+    out = []
+    for k in ks:
+        C = KMeans(k, n_init=10, random_state=0).fit(Z).cluster_centers_
+
+        def lab(ll):
+            return int(np.argmin(np.hypot(*(C - xy(ll)).T)))
+        for j in range(k):
+            keepg = [g for g in scene["greens"] if lab(g["centroid"]) == j]
+            if sum(1 for g in keepg if any(g is h for h in G)) < 0.9 * n_holes:
+                continue
+            keept = [t for t in scene.get("tee_complexes") or [] if lab(t["centroid"]) == j]
+            out.append((k, j, dict(scene, greens=keepg, tee_complexes=keept)))
+    return out
+
+
+def _multi_site(fc, scene0, scene, card, n_holes, P, hag, params):
+    """-> (route result, candidate info, cluster scene) when a cluster routing is cheaper, else None"""
+    if os.environ.get("ROUTE_MULTI_SITE", "1") == "0" or _n_cand_greens(scene0) < MULTI_GREENS * int(n_holes):
+        return None
+    cmp_p = dict(params or {}, rerank=0, tee=0, alts=0, no_margins=True)
+    try:
+        full, _ = _route_v2_on(fc, scene, card, n_holes, P, hag, cmp_p)
+        best = None
+        for k, j, sc in cluster_scenes(scene, int(n_holes)):
+            rr, _ = _route_v2_on(fc, sc, card, n_holes, P, hag, cmp_p)
+            if rr.get("cost") is not None and (best is None or rr["cost"] < best[0]):
+                best = (float(rr["cost"]), k, j, sc)
+    except Exception:                                                # noqa: BLE001
+        return None
+    if best is None or full.get("cost") is None or not best[0] < float(full["cost"]):
+        return None
+    r, ci = _route_v2_on(fc, best[3], card, n_holes, P, hag, params)
+    r["multi_site"] = dict(k=best[1], cluster=best[2], cost=round(best[0], 3), cost_full=round(float(full["cost"]), 3))
+    return r, ci, best[3]
 
 
 # Card selection (NOTES_ROUTING.md 2026-11-20 "card selection"): the web cards can disagree (a card of the sister

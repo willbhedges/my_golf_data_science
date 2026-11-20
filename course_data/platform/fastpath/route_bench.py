@@ -371,6 +371,9 @@ def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
     elif scene_kind == "fast":
         p = scene_path(c["slug"], ver)
         scene = rd(p)
+        if router == "v2" and scene is not None:     # a 9-hole course with an 18-hole card repeating its nine (route_n)
+            import route_scene as RS
+            n = RS.route_n(card, scene, n)
         Pb = bench_probs(c["slug"], (ver or scene_version()).split("_", 1)[1]) if router == "v2" else None
         if router == "v2" and scene is not None and Pb is not None:
             import route_learn as RL                     # greens the U-Net map holds but the scene left out

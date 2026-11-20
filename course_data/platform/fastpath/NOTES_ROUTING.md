@@ -998,7 +998,7 @@ identical to today's idle baseline (t1/idle1.txt) line for line except timings: 
 Hawk's Point approximate 12 of 18 (unchanged). The bench's own n is set in route_bench.load_course; the one-line hook
 (n = route_scene.route_n(card, raw scene, n)) waits for the other route_bench.py work to land.
 
-### 27 / 36-hole sites (measured, not shipped yet)
+### 27 / 36-hole sites: cluster routing on scenes with many greens (default; ROUTE_MULTI_SITE=0 rollback)
 
 Truth sites (OSM hole ways with duplicate refs or >= 5 extra ways): choice 7 (62 / 126 right: hermitage 0,
 rtj_hampton_cove 1, mississippi_national 7, spring_lake_ny 9, toscana 12, falmouth 16, wellesley 17), never-used 1
@@ -1101,3 +1101,40 @@ test_package.py::test_black_package_uses_the_joint_tee_stage fails with or witho
 
 Reproduce (scratch cardfix/): count2.py (picks per variant), run.sh MODE base|live (switched courses; modes chosen /
 par0 / new / agree), run_def.sh (default OOF with hole_acc_fwd), cmp.py base (tables), loop.sh, testeval.sh.
+
+Rule (route_scene._multi_site, from route_v2, so also inside card selection): when the raw scene holds >= 1.5 x n
+candidate greens (MULTI_GREENS), the augmented candidates are split by k-means on the green centroids (k = 2 and 3,
+sklearn, fixed seed; every green / tee complex to the nearest centre); each cluster holding >= 0.9 n candidate greens is
+routed alone; the cluster routing with the lowest solver cost (re-ranker / tee steps off for the comparison) replaces
+the whole-scene routing when its cost is lower than the whole scene's; the chosen scene is then routed with the normal
+steps. route_scene.json records multi_site = dict(k, cluster, cost, cost_full). The 1.5 x n flag threshold was picked
+looking at detection counts on both splits (choice and never-used: 1.4 / 1.5 / 1.7 / 2.0 / 2.5 x n catch 7 / 7 / 5 /
+5 / 1 of the 8 truth sites with 7 / 5 / 3 / 2 / 0 single courses flagged); never-used outcomes are unchanged.
+
+Bench (scratch t2/multi_run.py: route_bench.load_course monkeypatched to the cluster scene, route_learn fold models for
+out-of-fold scores, re-ranker / tee steps off in every arm): 12 courses flagged on train+big (7 of the 8 truth sites +
+whisper_rock, silver_lakes, buffalo_hill, rebsamen, trump_national); 2 switch: tb_robert_trent_jones_hampton_cove_al
+1 -> 8 (k 2, cost -41.5 vs -36.3), tb_whisper_rock_az 14 -> 18 (k 2, -50.3 vs -44.9), both choice; the other 10 keep
+the whole-scene routing (every cluster routing costlier), including both never-used courses (buffalo_hill 16, revere
+18) and the single-course false positives. With the n = 9 rule and these two replaced in the default's out-of-fold
+results: train+big 643 86.59 % / 230 -> **86.69 % / 231**, choice 443 86.23 % / 162 -> **86.38 % / 163** (card 6.0 /
+35.8 yd), never-used 200 87.38 % / 68 unchanged. Not flagged: any test 28 course (test stays 89.23 %, not re-read),
+any blind-20 course.
+
+Under the bench's new card convention (ROUTE_BENCH_CARD=pick, commit 4ab2004b7; same runners, fresh prep): the same 2
+courses switch with the same results (+11); hermitage's whole-scene routing is 11 / 18 under pick (0 under chosen) and
+its clusters are costlier, so it is kept. n = 9 under pick: cedardell 8 -> 9, o_donnell 0 -> 7; nevada_mo's picked
+card is already a 9-hole card (8 / 9 either way): +8.
+
+Blind loop with both rules (t2/loop_multi.txt, default env, on top of 4ab2004b7) is identical to today's idle
+baseline (t1/idle1.txt) line for line except timings; Hawk's Point approximate 12 of 18. Cost: the rule routes the
+scene 1 + (number of clusters) + 1 times on a flagged course: route_v2 22-30 s -> 57-62 s on whisper_rock / RTJ
+(+35-40 s), nothing elsewhere. The routing stage has no time limit or timeout path (the only wall-clock budget in the
+fast path is the card search, fast.CARD_BUDGET_S), so a flagged course just takes longer.
+
+End-to-end check of the n = 9 rule (scratch t2/e2e9.py: real fast.build with the OSM golf features dropped, the bench's
+web cards seeded): tb_o_donnell_ca shown (P(all) 0.059, approximate 3, 8), 9 holes on raw/scene_card.json (nine_of
+18), yardages / pars = the front nine (312 357 130 207 125 468 197 504 301; total 2601), measured within 1 yd except
+hole 6 (400 vs 468, warned); qa/e2e.py ok (exit 0, no problems; book 10 pages, 9 aim sheets, wind page).
+tb_cedardell_il shown (P(all) 0.502), 9 holes on the front nine. route_bench.load_course now applies route_n too
+(fresh prepares; cached prep pickles keep n = 18).
