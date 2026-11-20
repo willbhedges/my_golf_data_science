@@ -1374,3 +1374,38 @@ Glenwild 0.265 -> 0.261, Remsen 0.531 -> 0.569, **Hawk's Point approximate 12 ->
 Shipped: route_models/v2 = the refit; the previous fits are route_models/v2_chosen (ROUTE_SELECT=chosen). The
 ROUTE_SELECT=0 / w1e rollbacks (v2_pk, v2_w1e) now carry their own copy of the previous route_learn fit, so they load
 exactly the fit sets they were made with.
+
+## State 2026-11-20 (later): numbering / green-choice diagnosis, per-hole combination, re-ranker misses (nothing shipped)
+
+Numbering on healthy courses (> 60 % of holes right, not all; old default out-of-fold, scratch t2/ndiag.py): choice 235
+courses / 470 wrong holes, never-used 117 / 262. Oracles on the routed lines: best single swap of two lines +50 / +41,
+best contiguous segment shift or reversal +27 / +19, optimal renumbering of all lines +67 / +55: only ~14 % of the
+wrong holes are a routed line that matches another truth hole (offsets +2: 14, +-9 nine swaps: 17, -1: 8, +1: 5; 35
+of 97 green-on-another-hole pairs touch hole 9 / 10). 'Right green present and unused' (choice 128, 82 on healthy
+courses): the chosen green is a median 209 m from the true one, only 29 have the right tee, 11 the wrong green within
+60 m (never-used 35 healthy / 13 right tee): whole-hole errors inside a disrupted stretch, not green swaps.
+
+Per-hole combination across the re-ranker's alternatives (scratch t4/combo.py / combo2.py on the pick-refit gen rows,
+out-of-fold bagged ranker scores, route_struct hole labels; choice 7164 holes): seq0 87.74 / never-used 88.03 %, shipped
+whole-routing pick 88.68 / 90.08 %, oracle whole routing 92.36 / 92.67 %, oracle per hole (no consistency) 95.70 /
+95.97 %. Vote per hole weighted by exp(score / T): T 0.5 without repair 88.87 / 90.20 % but adds duplicated greens
+(6 / 2 routings; a hard 'share a green' block in production); a strict no-shared-end repair loses (87.7-87.9 %: the
+solver itself shares tees, seq0 has 113 duplicate ends); a green-only repair (fall back to the whole pick's option where
+the vote creates a duplicated green) 88.82 / 90.17 % (choice 11 better / 6 worse courses): about +10 / +3 holes. Not
+shipped (too small for the plumbing).
+
+Re-ranker misses (oracle whole routing > pick, choice, pick-refit rows): 103 of 431 courses, 264 holes; 63 courses miss
+by 1 hole and 18 by 2 (near-ties among ~247 alternatives, the oracle's score rank median 7); oracle kind beam 40, start
+28, seq0 13, renum 11, end 11; 54 of the missed courses stay on seq0. Never-used: 49 of 197, 85 holes. Courses with a
+>= 4-hole gap (scratch t4/bigmiss.py): 7 are renumberings whose oracle fits the card worse (lincolnshire_fields, pb_dye,
+valley_co 0 -> 18, belgrade_lakes 9 -> 18, woods_fort 8 -> 17, woodlyn_hills, outdoor_resort): the card disagrees with
+OSM (nine swap / misnumbered card), unwinnable by routing features (card nine-order is the card side's work); the
+other ~18 are start / beam / end alternatives the ranker scores ~15th, with mixed feature differences (start-loop
+score, walk-back, reuse, ends, virtual counts) and no single separating signal. Most of the suggested per-routing
+features (weakest hole score / count below 0.5, par-band misses, walk sums, crossings, clubhouse at the ends) are in
+FEATS2 already.
+
+Objective / label variants (single LightGBM ranker, out-of-fold, holes gained choice / never-used at thr 0.5; scratch
+t4/rr_v.py): linear gain trunc 3 (shipped settings) +63 / +64; exponential gain +33 / +61; truncation 10 +63 / +55;
+truncation 30 +68 / +62; rank_xendcg +46 / +34; label + 5 x all-right +69 / +51; exponential + trunc 10 +26 / +35. The
+shipped bagged ranker gives +67 / +67. None is better on both splits: not pursued.
