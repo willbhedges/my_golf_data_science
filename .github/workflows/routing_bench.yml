@@ -12,6 +12,12 @@ name: routing-bench
 #           refit/smoke_scenes.py, routing in the scene-independent fold-model protocol (SMOKE_MODE=fold:
 #           route_learn state-fold models in benchdata/smoke/folds, re-ranker + tee step live).
 #   The bench job also runs the fold protocol on the committed inputs (identity vs benchdata/smoke/ref_fold.json).
+#   detector_pair: per TRAIN-BIG course the inputs rebuilt twice with pinned NAIP years (benchdata/big/pinned_years.json),
+#           only the U-Net weights + object models differing (refit/detector_pair.py), both routed with state-fold
+#           route_learn scores + the live re-ranker / tee step; pair-merge prints the per-split tables
+#           (refit/pair_merge.py). Request: {"stage": "detector_pair", "unet_a": ..., "obj_a": ..., "unet_b": ...,
+#           "obj_b": ..., "refetch_b": false, "slugs": [] | "a,b", "sample": {"choice": n, "never_used": m, "seed": s},
+#           "nshards": 20}; slugs and sample empty = all 600 TRAIN-BIG courses (400 choice + 200 never-used).
 # Trigger: commit course_data/requests/routing_bench_<name>.json
 #   {"schema": "request/1", "kind": "routing_bench", "stage": "smoke", "slugs": ""}   (slugs "" = benchdata/smoke)
 # Nothing is committed by this workflow; results are artifacts (30 days).
@@ -38,6 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       slugs: ${{ steps.p.outputs.slugs }}
+      stage: ${{ steps.p.outputs.stage }}
+      shards: ${{ steps.p.outputs.shards }}
+      idx: ${{ steps.p.outputs.idx }}
+      pair_env: ${{ steps.p.outputs.pair_env }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,17 +57,47 @@ jobs:
           sparse-checkout: |
             /course_data/requests/
             /course_data/platform/fastpath/benchdata/smoke/slugs.txt
+            /course_data/platform/fastpath/benchdata/big/pinned_years.json
+            /course_data/platform/fastpath/refit/never_used.txt
       - id: p
         run: |
           F=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'course_data/requests/routing_bench_*.json' 2>/dev/null | tail -1)
           [ -n "$F" ] && [ -f "$F" ] || F=$(ls course_data/requests/routing_bench_*.json | tail -1)
           echo "request: $F"; cat "$F"
-          S=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get('slugs') or '')" "$F")
-          [ -n "$S" ] || S=$(cat $FP/benchdata/smoke/slugs.txt)
-          echo "slugs=$S" >> "$GITHUB_OUTPUT"
+          python3 - "$F" >> "$GITHUB_OUTPUT" <<'PY'
+          import json, os, random, sys
+          FP = os.environ["FP"]
+          r = json.load(open(sys.argv[1]))
+          stage = r.get("stage") or "smoke"
+          print("stage=" + stage)
+          if stage != "detector_pair":
+              s = r.get("slugs") or open(FP + "/benchdata/smoke/slugs.txt").read().strip()
+              print("slugs=" + (",".join(s) if isinstance(s, list) else s))
+              print("shards=[]"); print("idx=[]"); print("pair_env={}")
+              sys.exit(0)
+          pool = sorted(json.load(open(FP + "/benchdata/big/pinned_years.json")))          # the 600 TRAIN-BIG courses
+          new = set(open(FP + "/refit/never_used.txt").read().strip().split(","))
+          s = r.get("slugs") or []
+          if isinstance(s, str):
+              s = [x for x in s.split(",") if x]
+          if not s:
+              smp = r.get("sample") or {}
+              rng = random.Random(int(smp.get("seed", 0)))
+              ch = [x for x in pool if x not in new]
+              nu = [x for x in pool if x in new]
+              s = (rng.sample(ch, min(int(smp["choice"]), len(ch))) if smp.get("choice") is not None else ch) + \
+                  (rng.sample(nu, min(int(smp["never_used"]), len(nu))) if smp.get("never_used") is not None else nu)
+          k = max(1, min(int(r.get("nshards") or 20), len(s)))
+          print("slugs=" + str(len(s)))
+          print("shards=" + json.dumps([",".join(s[i::k]) for i in range(k)]))
+          print("idx=" + json.dumps(list(range(k))))
+          print("pair_env=" + json.dumps(dict(PAIR_UNET_A=r["unet_a"], PAIR_OBJ_A=r["obj_a"], PAIR_UNET_B=r["unet_b"],
+                                              PAIR_OBJ_B=r["obj_b"], PAIR_REFETCH_B="1" if r.get("refetch_b") else "0")))
+          PY
 
   bench:
     needs: plan
+    if: needs.plan.outputs.stage == 'smoke'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -85,6 +125,7 @@ jobs:
 
   inputs:
     needs: plan
+    if: needs.plan.outputs.stage == 'smoke'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -111,3 +152,65 @@ jobs:
           name: routing-bench-smoke-inputs
           retention-days: 30
           path: ${{ runner.temp }}/inputs/
+
+  pair:
+    needs: plan
+    if: needs.plan.outputs.stage == 'detector_pair'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJson(needs.plan.outputs.idx) }}
+    env: ${{ fromJson(needs.plan.outputs.pair_env) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q -r $FP/refit/requirements.txt
+      - name: Paired rebuild + route (shard ${{ matrix.shard }})
+        run: |
+          python3 -u $FP/refit/detector_pair.py $RUNNER_TEMP/pair "${{ fromJson(needs.plan.outputs.shards)[matrix.shard] }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pair-${{ matrix.shard }}
+          retention-days: 30
+          path: |
+            ${{ runner.temp }}/pair/pair.jsonl
+            ${{ runner.temp }}/pair/bench_*.json
+
+  pair-merge:
+    needs: [plan, pair]
+    if: always() && needs.plan.outputs.stage == 'detector_pair'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/platform/fastpath/refit/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pair-*
+          path: ${{ runner.temp }}/pairs
+      - name: Tables
+        run: |
+          PAIR_OUT=$RUNNER_TEMP/pair_all.jsonl python3 $FP/refit/pair_merge.py $(find $RUNNER_TEMP/pairs -name pair.jsonl) | tee $RUNNER_TEMP/pair_tables.txt
+          { echo '```'; cat $RUNNER_TEMP/pair_tables.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pair-merged
+          retention-days: 30
+          path: |
+            ${{ runner.temp }}/pair_all.jsonl
+            ${{ runner.temp }}/pair_tables.txt

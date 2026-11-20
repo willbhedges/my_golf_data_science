@@ -1,0 +1,7 @@
+{"schema": "request/1", "kind": "routing_bench", "stage": "detector_pair",
+ "note": "noise floor: v2 against v2, B's imagery refetched; 20 TRAIN-BIG courses, seeded sample",
+ "unet_a": "course_data/segment/models/golfseg_own_v2/model.safetensors",
+ "obj_a": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "unet_b": "course_data/segment/models/golfseg_own_v2/model.safetensors",
+ "obj_b": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "refetch_b": true, "slugs": "", "sample": {"choice": 14, "never_used": 6, "seed": 20261120}, "nshards": 4}

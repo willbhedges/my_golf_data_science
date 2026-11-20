@@ -16,6 +16,7 @@ slugs_new1.txt. Results and history are in ../NOTES_ROUTING.md.
 | link_benchdata.sh | on a fresh checkout, links cache/big/{courses,manifest.json,status} to ../benchdata/big | new |
 | smoke_bench.sh OUT [INPUT_DIR] / smoke_compare.py REF RUN | the Actions smoke (.github/workflows/routing_bench.yml): the default's out-of-fold protocol on benchdata/smoke's 5 courses; identical per-hole results to benchdata/smoke/ref_oof.json; SMOKE_MODE=fold: fold-model scores + live re-ranker / tee, vs ref_fold.json | new |
 | smoke_scenes.py REF_DIR RUN_DIR | rebuilt vs committed scenes (greens / tees matched) | new |
+| detector_pair.py OUT_DIR SLUGS / pair_merge.py PAIR.jsonl... | paired detector comparison: inputs rebuilt twice with pinned NAIP years (../benchdata/big/pinned_years.json), only the U-Net weights + object models differing; routed with state-fold scores (../benchdata/folds) + live re-ranker / tee; per-split tables | new |
 | build_inputs.py OUT_DIR SLUGS | rebuild TRAIN-BIG scenes / probs / maps from free imagery (route_big's stages without the card search) | new |
 
 ## The shipped recipe (pick refit, 2026-11-20)
