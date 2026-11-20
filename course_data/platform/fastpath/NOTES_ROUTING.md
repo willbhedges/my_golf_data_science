@@ -1655,3 +1655,36 @@ Each fix has a regression test in test_route_scene.py or test_fastpath.py.
 Blind loop after the fixes (scratch t5/loop_rev.txt) vs the loop after the card / vintage review fixes
 (vint/loop_fix.txt): identical line for line except timings, on all 20 courses. Hawk's Point: shown, approximate
 holes 15.
+
+## State 2026-11-20 (later): routing bench smoke on GitHub Actions (routing_bench.yml) passes
+
+The workflow is .github/workflows/routing_bench.yml. It fires only on course_data/requests/routing_bench_*.json, and its
+concurrency group is routing-bench-smoke-<ref> (golfseg_v2_train's is golfseg-v2-train-rev2). The smoke uses 5
+TRAIN-BIG courses (benchdata/smoke/slugs.txt: abenakee, rattlewood, costa_del_sol, broad_run, valley), with
+refit/requirements.txt on Python 3.11.18.
+
+* Run 44808833923 (attempt 1): bench out-of-fold protocol PASS. Its informational bench on rebuilt scenes used the
+  out-of-fold picks, which index the committed scenes' candidates, so 2 courses raised IndexError. Hence attempt 2,
+  which adds a scene-independent protocol.
+* **Run 44810603606 (attempt 2): PASS.** On the committed inputs (benchdata/smoke/big, copies of the local bench
+  cache), the per-hole results and routed lines are identical to the local references on all 5 courses, under both
+  protocols:
+  * out-of-fold (picks + ROUTE_BENCH_SC; matches the local w2_0.5 OOF per hole);
+  * fold-model (ROUTE_BENCH_FOLD_RESCORE with benchdata/smoke/folds, re-ranker + tee step live).
+
+  The local references were made on a clean export of HEAD's code (other agents' uncommitted edits excluded).
+* **Inputs rebuilt on Actions** (refit/build_inputs.py: NAIP + 3DEP + canopy + U-Net + fastscene, about 1 min a
+  course):
+  * Scenes: 4 of 5 match the committed ones green for green (hole greens matched 9/9, 19/19, 19/19, 22/22; tee
+    complexes equal, one 25 vs 26).
+  * costa_del_sol differs: the package year moved (U-Net years [2022, 2023] then, [2019, 2022] now), giving 9 hole
+    greens vs 6.
+  * Routing on the rebuilt inputs (fold protocol), holes vs local: 9 / 16 / 18 the same; costa 17 -> 16; valley
+    13 -> 0. Valley is the nine-swapped-card course that flips on small score changes.
+  * Routed lines differ on every course, even where the greens match: the probabilities differ slightly (local U-Net
+    path vs the runner's C fp32 path), so tee spots move.
+  * So a bench on Actions-rebuilt inputs is a new input version, not the local bench. For like-for-like numbers, either
+    ship the local caches (as benchdata/smoke does for 5 courses) or rebuild all 643 courses on Actions and treat that
+    as the new baseline.
+* Wall: checkout about 2.5-3.5 min (full repo); pip about 25 s; bench of 5 courses 8-30 s; rebuild about 5 min for 5
+  courses.
