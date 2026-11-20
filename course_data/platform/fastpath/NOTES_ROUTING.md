@@ -1596,3 +1596,12 @@ r3.py. Each fix has a regression test.
 Reach of fixes 1 and 4 on real data: on the bench's web cards (train+big 651 rows; old vs fixed scorecard.py) no
 choose_card call raised, no card's sanity verdict changed, and no course's pick changed. Both bugs are latent on
 today's data and guard future cards.
+
+Blind loop after the review fixes (defaults; scratch vint/loop_fix.txt):
+* Hawk's Point still falls back to NAIP 2017 with no warning (recent turf 0.801, not dead): shown, approximate holes
+  only 15, P(all) 0.012.
+* Compared with the loop before the fixes (vint/loop_def.txt, 06:52), tier D courses 2, 4, 13 and 18 differ in
+  p_holes / picks / pad counts. That comes from the routing refit committed since (3906f8c15: fits under the bench's
+  production card pick; 99ebbee2f), not from these fixes.
+* Courses 2, 4 and 18 re-run with FASTSCENE_VINTAGE=0 on the same code are identical to the default line for line
+  (vint/loop_fix_off.txt), and only Hawk's Point changes with the fallback.
