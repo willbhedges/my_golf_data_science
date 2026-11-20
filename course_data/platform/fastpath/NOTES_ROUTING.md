@@ -975,3 +975,35 @@ an experiment in route_tee and are not kept).
 
 Reproduce (scratch t2/): tdiag.py / gdiag.py OOF.json OUT.jsonl, tg.sh (tee rows on the default), tg_ext.sh
 (+ ROUTE_TEE_EXT spots, experiment code not committed), tana.py, tgrid.py, tpost.py (with rsel/tl_exp.py).
+
+## State 2026-11-20 (later): 9-hole courses with an 18-hole card routed as n = 9 (default; ROUTE_NINE_DUP=0 rollback)
+
+Many 9-hole cards list the nine twice (holes 10-18 = 1-9 from other tees); the router then routes 18 distinct holes
+on a 9-hole scene (tb_o_donnell_ca 0 of 9 right). Rule (route_scene.route_n / nine_dup / front_nine, applied in
+route_scene.run on web cards only): an 18-hole card whose best complete set has back-nine yardages within 5 % of the
+front nine (median per hole, NINE_DUP_TOL) on a scene with <= 12 candidate greens (p_hole >= 0.35, the raw scene,
+NINE_MAX_GREENS) is routed as 9 holes on the front nine; fast.py then builds the package on the front-nine card
+(raw/scene_card.json, as card selection does), so the course is delivered as the 9 holes it has. The card test alone
+also fires on real 18-hole courses (royal_manchester, green_oaks, wuskowhan: 18-23 scene greens), hence the green cap.
+
+Prevalence (train+big, 643): the rule switches 3 courses, all choice: tb_cedardell_il, tb_o_donnell_ca,
+tb_nevada_mo (truth 9 holes each); none on never-used (tb_highland_ma, a truth 9-hole course at 8 / 9, has a 6 %
+nine difference and stays at 18; tb_harry_mussatto_wiu_il 9 / 9 likewise); none on test 28 (so test stays 89.23 %, not
+re-read). Bench (scratch t2/nine_run.py: route_bench.load_course monkeypatched with route_n, the route_learn fold
+models for out-of-fold scores, re-ranker / tee steps off in both arms since the out-of-fold picks were made for 18):
+cedardell 8 -> 9, o_donnell 0 -> 7, nevada 6 -> 8 of 9. With those three replaced in the default's out-of-fold
+results: train+big 643 86.49 % / 229 -> **86.59 % / 230**, choice 443 86.09 % / 161 -> **86.23 % / 162** (card 6.1 /
+36.2 -> 6.0 / 35.7 yd), never-used 200 87.38 % / 68 unchanged (no course affected). Blind loop (t2/loop_nine.txt) is
+identical to today's idle baseline (t1/idle1.txt) line for line except timings: no blind-20 course triggers the rule.
+Hawk's Point approximate 12 of 18 (unchanged). The bench's own n is set in route_bench.load_course; the one-line hook
+(n = route_scene.route_n(card, raw scene, n)) waits for the other route_bench.py work to land.
+
+### 27 / 36-hole sites (measured, not shipped yet)
+
+Truth sites (OSM hole ways with duplicate refs or >= 5 extra ways): choice 7 (62 / 126 right: hermitage 0,
+rtj_hampton_cove 1, mississippi_national 7, spring_lake_ny 9, toscana 12, falmouth 16, wellesley 17), never-used 1
+(revere 18 / 18). The course boundary (course.json) encloses every course of the site on all of them, and more than
+one golf_course polygon over 15 ha flags 2 of the 7 plus 38 single courses, so neither separates the courses. Raw
+scene greens >= 1.5 x n flags 7 of the 8 sites and 5 single courses (101 / 126 right on 1.4 x n: 7). The truth
+itself takes one way per duplicated ref (routing.truth_from_fc: the par-tagged one), which mixes courses on hermitage
+(3 truth walks > 400 yd, up to 1884 yd) and toscana (1066 yd).

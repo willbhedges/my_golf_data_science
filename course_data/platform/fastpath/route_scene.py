@@ -611,6 +611,58 @@ def scene_features(scene, kinds=("green", "tee", "fairway", "bunker", "water"), 
     return out
 
 
+# 9-hole course with an 18-hole card (NOTES_ROUTING.md 2026-11-20 "n = 9"): many 9-hole cards list the nine twice
+# (holes 10-18 = 1-9 from other tees). When the back nine's yardages are within NINE_DUP_TOL of the front nine's
+# (median over the holes, the set that matches best) and the scene holds at most NINE_MAX_GREENS candidate greens,
+# the course is routed as 9 holes on the front nine's yardages; the caller repeats them as 10-18.
+# ROUTE_NINE_DUP=0 turns it off.
+NINE_DUP_TOL = float(os.environ.get("ROUTE_NINE_DUP_TOL", "0.05"))
+NINE_MAX_GREENS = int(os.environ.get("ROUTE_NINE_MAX_GREENS", "12"))
+
+
+def nine_dup(card):
+    """median per-hole |front - back| / max over the card's complete 18-hole sets (the best set), None without one"""
+    best = None
+    for t in ((card or {}).get("tee_sets") or {}).values():
+        y = t.get("yards") or []
+        if len(y) == 18 and all(v and v > 0 for v in y):
+            d = float(np.median([abs(a - b) / max(a, b) for a, b in zip(y[:9], y[9:])]))
+            best = d if best is None else min(best, d)
+    return best
+
+
+def route_n(card, scene, n):
+    """the number of holes to route: 9 for an 18-hole card that repeats its nine on a scene with few greens, else n"""
+    if os.environ.get("ROUTE_NINE_DUP", "1") == "0" or int(n) != 18:
+        return int(n)
+    d = nine_dup(card)
+    if d is None or d > NINE_DUP_TOL:
+        return int(n)
+    ng = sum(1 for g in (scene or {}).get("greens") or [] if g.get("kind") != "practice"
+             and float(g.get("p_hole", g.get("p", 0))) >= P_GREEN)
+    return 9 if ng <= NINE_MAX_GREENS else int(n)
+
+
+def front_nine(card):
+    """the card cut to its first nine holes (every tee set, par / handicap rows), marked nine_of=18"""
+    import copy
+    c = copy.deepcopy(card)
+    for k in ("par", "handicap"):
+        if isinstance(c.get(k), list) and len(c[k]) == 18:
+            c[k] = c[k][:9]
+    for t in (c.get("tee_sets") or {}).values():
+        for k in ("yards", "par", "handicap"):
+            if isinstance(t.get(k), list) and len(t[k]) == 18:
+                t[k] = t[k][:9]
+        if t.get("yards"):
+            t["total"] = int(sum(v or 0 for v in t["yards"]))
+            t.pop("total_stated", None)
+    if isinstance(c.get("facility"), dict):
+        c["facility"] = dict(c["facility"], numberOfHoles=9)
+    c["nine_of"] = 18
+    return c
+
+
 def needs_perception(fc, n_holes):
     """True when OSM cannot be routed on its own: < 3 hole lines and greens or tee boxes short of the hole count
     (tiers C / D). Courses with (nearly) every line, or with greens + tees for route_joint, keep their paths."""
@@ -703,6 +755,10 @@ def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
     scene, info = FS.build(pkg_dir)
     T["scene"] = info["seconds"]
     t1 = time.time()
+    nine = None
+    if card_select and card and route_n(card, scene, n_holes) != int(n_holes):   # 9 holes, 18-hole card repeating them
+        nine = card = front_nine(card)
+        n_holes = 9
     P = info.get("P")
     if ROUTER == "v2" and P is not None and np.shape(P)[0] == 6:
         hag = getattr(info.get("stack"), "a", {}).get("hag")
@@ -720,6 +776,8 @@ def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
         co, ci = candidates(fc, scene, n_holes=n_holes)
         r = route(fc, scene, card, n_holes, co=co, version="v1" if ROUTER == "v2" else ROUTER)
     r.update(ci)
+    if nine is not None:
+        r["nine_card"] = nine
     try:                                         # web cards that disagree on the hole order (route_gate blocks)
         import json as _json
         import route_gate

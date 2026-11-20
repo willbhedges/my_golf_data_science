@@ -243,6 +243,12 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
             req["scorecard"] = p
             pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
         cs.pop("card", None)
+        if r.get("nine_card") and not cs.get("switched"):   # a 9-hole course with a card repeating its nine: 9 holes
+            p = os.path.join(raw, "scene_card.json")
+            pc.write_json(p, r.pop("nine_card"))
+            req["scorecard"] = p
+            pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
+        r.pop("nine_card", None)
         if r.get("n_holes") and any((f.get("properties") or {}).get("golf") == "hole" for f in sup):
             p = os.path.join(raw, "scene_holes.geojson")
             pc.write_json(p, {"type": "FeatureCollection", "features": sup})
