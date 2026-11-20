@@ -198,3 +198,79 @@ def test_route_n_nine_repeated():
     assert RS.route_n(other, g(10), 18) == 18
     f = RS.front_nine(card)
     assert f["tee_sets"]["B"]["yards"] == y9 and len(f["par"]) == 9 and f["tee_sets"]["B"]["total"] == sum(y9)
+
+
+def _two_course_scene():
+    """two copies of the synthetic 9-hole chain about 2.5 km apart, one scene grid over both (a 27 / 36-hole site)"""
+    import numpy as np
+    from pyproj import Transformer
+    sc, yards, truth = _chain(9)
+    sc2, _, truth2 = _chain(9)
+
+    def sh(p):
+        return [p[0] + 0.03, p[1]]
+    for g in sc2["greens"]:
+        sc["greens"].append(dict(g, id="B" + g["id"], centroid=sh(g["centroid"]), polygon=[sh(p) for p in g["polygon"]]))
+    for t in sc2["tee_complexes"]:
+        sc["tee_complexes"].append(dict(t, id="B" + t["id"], centroid=sh(t["centroid"]),
+                                        boxes=[dict(centroid=sh(b["centroid"]), polygon=[sh(p) for p in b["polygon"]])
+                                               for b in t["boxes"]]))
+    for f in sc2["fairways"]:
+        sc["fairways"].append(dict(f, id="B" + f["id"], polygon=[sh(p) for p in f["polygon"]]))
+    allp = [p for t in truth for p in t] + [sh(p) for t in truth2 for p in t]
+    tr = Transformer.from_crs("EPSG:4326", "EPSG:32616", always_xy=True)
+    xs, ys = tr.transform([p[0] for p in allp], [p[1] for p in allp])
+    x0, y1 = int(min(xs)) - 300, int(max(ys)) + 300
+    W, H = int(max(xs)) + 300 - x0, y1 - (int(min(ys)) - 300)
+    sc["grid"] = dict(crs="EPSG:32616", transform=[1.0, 0, float(x0), 0, -1.0, float(y1)], width=W, height=H)
+    return sc, dict(par=[4, 4, 3, 5, 4, 4, 3, 4, 4], tee_sets=dict(Blue=dict(yards=yards))), np.zeros((6, H, W), np.uint8)
+
+
+def test_multi_site_final_routing_failure_keeps_the_whole_scene_routing(monkeypatch):
+    import route_scene as RS
+    sc, card, P = _two_course_scene()
+    orig = RS._route_v2_on
+
+    def flaky(fc, scene, card, n, P, hag=None, params=None):
+        if len(scene["greens"]) < len(sc["greens"]) and not (params or {}).get("no_margins"):
+            raise RuntimeError("re-ranker / tee step failed on the cluster scene")
+        return orig(fc, scene, card, n, P, hag, params)
+    monkeypatch.setattr(RS, "_route_v2_on", flaky)
+    r, ci, s2 = RS.route_v2({"features": []}, sc, card, 9, P, params=dict(beam=500))
+    assert r.get("multi_site") is None and len(r["features"]) == 9
+
+
+def test_cluster_scenes_skips_objects_without_a_centroid():
+    import route_scene as RS
+    sc, card, P = _two_course_scene()
+    sc3 = dict(sc, tee_complexes=sc["tee_complexes"] + [dict(id="x", p=0.9, boxes=[])],
+               greens=sc["greens"] + [dict(id="gx", p_hole=0.9)])
+    out = RS.cluster_scenes(sc3, 9)
+    assert out and all(all(t.get("centroid") for t in s["tee_complexes"]) for _, _, s in out)
+
+
+def test_front_nine_drops_the_18_hole_aggregates():
+    import route_scene as RS
+    y9 = [312, 357, 130, 207, 125, 468, 197, 504, 301]
+    card = dict(par=[4] * 18, tee_sets=dict(B=dict(yards=y9 + y9, par=[4] * 18, rating=68.4, slope=118, par_total=72,
+                                                   total=5202, total_stated=5202)))
+    f = RS.front_nine(card)["tee_sets"]["B"]
+    assert "rating" not in f and "slope" not in f and f["par_total"] == 36 and f["total"] == sum(y9)
+    assert card["tee_sets"]["B"]["rating"] == 68.4                     # the input card is not changed
+    c2 = dict(par=[4] * 18, tee_sets=dict(B=dict(yards=y9 + y9, rating=68.4, par_total=72)))
+    assert RS.front_nine(c2)["tee_sets"]["B"]["par_total"] == 36       # from the card-level par row
+
+
+def test_nine_dup_ignores_malformed_sets():
+    import route_scene as RS
+    for bad in (dict(tee_sets=dict(B=dict(yards=["300"] * 18))), dict(tee_sets=dict(B=None)),
+                dict(tee_sets=dict(B=dict(yards=[300.0] * 9 + [float("nan")] * 9)))):
+        assert RS.nine_dup(bad) is None and RS.route_n(bad, dict(greens=[]), 18) == 18
+
+
+def test_bench_multi_site_off_and_without_a_card(monkeypatch):
+    import route_bench as RB
+    monkeypatch.setenv("ROUTE_MULTI_SITE", "0")
+    assert RB._bench_multi_site(dict(slug="x", card={}, n=18), None) is None
+    monkeypatch.setenv("ROUTE_MULTI_SITE", "1")
+    assert RB._bench_multi_site(dict(slug="x", card=None, n=18), None) is None

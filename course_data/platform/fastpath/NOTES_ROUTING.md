@@ -1605,3 +1605,53 @@ Blind loop after the review fixes (defaults; scratch vint/loop_fix.txt):
   production card pick; 99ebbee2f), not from these fixes.
 * Courses 2, 4 and 18 re-run with FASTSCENE_VINTAGE=0 on the same code are identical to the default line for line
   (vint/loop_fix_off.txt), and only Hawk's Point changes with the fallback.
+
+## State 2026-11-20 (later): review fixes to multi-site routing, the nine-hole rule and test isolation
+
+A code review of the 27/36-hole cluster routing (95d5c5500) and the nine-hole rule (f16e7a026) found five problems.
+Each fix has a regression test in test_route_scene.py or test_fastpath.py.
+
+1. **_multi_site: the final routing on the chosen cluster ran outside the try.** A failure in the re-ranker / tee step
+   on the cluster scene took down route_v2.
+   * Fix: that call and the multi_site record are inside the try; on any failure the whole-scene routing stands.
+   * Test: test_multi_site_final_routing_failure_keeps_the_whole_scene_routing (two synthetic 9-hole courses 2.5 km
+     apart; the final cluster call raises).
+2. **route_bench never ran _multi_site,** so the production default was not covered by the bench.
+   * Fix: route_bench._bench_multi_site runs after RS.route on courses with >= MULTI_GREENS x n raw candidate greens
+     (ROUTE_MULTI_SITE=0 turns it off). It calls route_v2 with the production fits, so a switched course is scored
+     with those fits, not with out-of-fold picks.
+   * Bench, defaults, pick card, re-ranked final routing (holes right / 18, multi_site off -> on):
+     tb_robert_trent_jones_hampton_cove_al 0 -> 4 (k 2, cost -1.21 vs 0.74; card set White -> Teal),
+     tb_whisper_rock_az 14 -> 17 (k 2, cost -0.05 vs 6.06). The earlier solver-only numbers were 1 -> 8 and 14 -> 18.
+     Both are choice courses. Routing time on the two: 52 / 82 s -> 87 / 137 s on the bench (route + route_v2 again).
+   * Test: test_bench_multi_site_off_and_without_a_card.
+3. **cluster_scenes raised KeyError on a green or tee complex without "centroid".**
+   * Fix: .get, and the object is left out of every cluster.
+   * Not fixed, noted in the code: OSM greens and tees in fc stay in every cluster scene and are not counted by the
+     trigger (it counts scene candidate greens only).
+   * Test: test_cluster_scenes_skips_objects_without_a_centroid.
+4. **Nine-hole rule.**
+   * front_nine kept the 18-hole rating, slope and par_total. It now drops rating / slope / course_rating /
+     slope_rating / bogey_rating per set (no nine-hole value can be derived) and recomputes par_total from the set's
+     or the card's 9-hole par row. Test: test_front_nine_drops_the_18_hole_aggregates.
+   * nine_dup raised on string yardages, a None set or NaN yardages; such sets are now skipped (no evidence).
+     Test: test_nine_dup_ignores_malformed_sets.
+   * fast.py wrote raw/scene_card.json even when the routing produced no holes. It now writes it only when holes were
+     routed.
+   * The comment said the caller repeats holes as 10-18; nothing does. It now says the course is delivered as a
+     9-hole course on the front-nine card.
+   * The bench applied route_n with the 18-hole card. It now routes front_nine(card), as production does for web
+     cards (bench cards are web cards).
+5. **Test isolation.** test_fastpath.py did `import solve`, which registered fastpath/solve.py as sys.modules["solve"]
+   and shadowed zero_tap/joint/solve.py for test_route_scene.py in the same process. CI hit it (run 44803923250:
+   AttributeError: module 'solve' has no attribute 'raster_lie_at').
+   * Fix: test_fastpath.py and test_solve_c.py load fastpath/solve.py by path as "fastpath_solve" (solve_c looks it
+     up by that name).
+   * Test: test_fastpath_solve_does_not_shadow_the_joint_solver. The three files pass together in either order (25).
+   * Full `pytest course_data/platform`: 319 passed, 1 failed. The failure is
+     test_package.py::test_black_package_uses_the_joint_tee_stage, which CI already fails and which is outside these
+     files.
+
+Blind loop after the fixes (scratch t5/loop_rev.txt) vs the loop after the card / vintage review fixes
+(vint/loop_fix.txt): identical line for line except timings, on all 20 courses. Hawk's Point: shown, approximate
+holes 15.

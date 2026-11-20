@@ -373,8 +373,10 @@ def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
         p = scene_path(c["slug"], ver)
         scene = rd(p)
         if router == "v2" and scene is not None:     # a 9-hole course with an 18-hole card repeating its nine (route_n)
-            import route_scene as RS
-            n = RS.route_n(card, scene, n)
+            import route_scene as RS                 # (bench cards are web cards, as production applies it to)
+            n2 = RS.route_n(card, scene, n)
+            if n2 != n:
+                card, n = RS.front_nine(card), n2
         Pb = bench_probs(c["slug"], (ver or scene_version()).split("_", 1)[1]) if router == "v2" else None
         if router == "v2" and scene is not None and Pb is not None:
             import route_learn as RL                     # greens the U-Net map holds but the scene left out
@@ -539,6 +541,9 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
             if tk is not None:
                 prm["tee_fix"] = tk
             r = RS.route(x["fc"], x["scene"], x["card"], x["n"], version=router, params=prm, prepared=pd)
+            ms = _bench_multi_site(x, ver) if router == "v2" else None
+            if ms is not None:
+                r = ms
     except Exception as e:                                           # noqa: BLE001
         out.update(error=repr(e)[:300], seconds=round(time.time() - t, 2))
         return out
@@ -561,6 +566,29 @@ def run_one(c, scene_kind, router="v0", seed=0, ver=None, prep=False):
                                                  green=f["properties"].get("green_src")) for f in feats}
     out["gate_v0"] = gate_v0(r, feats, x)
     return out
+
+
+def _bench_multi_site(x, ver):
+    """route_scene's 27 / 36-hole cluster rule (route_v2 / _multi_site) on the bench: a course whose raw scene holds
+    >= MULTI_GREENS x n candidate greens is routed through route_v2 (production path: route_learn rescoring with
+    ROUTE_LEARN_MODEL, re-ranker and tee step on); its result replaces the bench routing only when a cluster routing
+    was chosen (route['multi_site'] set). Those courses are therefore scored with the production fits, not out-of-fold
+    picks. ROUTE_MULTI_SITE=0 turns it off here as in production."""
+    import route_scene as RS
+    if os.environ.get("ROUTE_MULTI_SITE", "1") == "0" or x.get("card") is None:
+        return None
+    raw = rd(scene_path(x["slug"], ver))
+    if raw is None or RS._n_cand_greens(raw) < RS.MULTI_GREENS * int(x["n"]):
+        return None
+    pv = (ver or scene_version()).split("_", 1)[1]
+    Pb = bench_probs(x["slug"], pv)
+    if Pb is None:
+        return None
+    import route_learn as RL
+    M = RL.bench_maps(x["slug"], raw, pv)
+    hag = np.where(np.asarray(M.tree) > 0, 254, 0).astype(np.uint8)    # the bench's tree map as the canopy layer
+    r, _, _ = RS.route_v2(x["fc"], raw, x["card"], x["n"], Pb, hag=hag)
+    return r if r.get("multi_site") else None
 
 
 def gate_v0(r, feats, x):

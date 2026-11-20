@@ -7,7 +7,14 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fast
-import solve
+import importlib.util as _ilu
+# fastpath/solve.py under its own module name: a plain `import solve` would register it as sys.modules["solve"] and
+# shadow zero_tap/joint/solve.py, which route_scene imports as `solve` (pytest runs every platform test in one process)
+_spec = _ilu.spec_from_file_location("fastpath_solve", os.path.join(os.path.dirname(os.path.abspath(__file__)), "solve.py"))
+solve = sys.modules.get("fastpath_solve") or _ilu.module_from_spec(_spec)
+sys.modules["fastpath_solve"] = solve
+if not hasattr(solve, "raster_lie_at"):
+    _spec.loader.exec_module(solve)
 
 
 def hole(green, card, meas):
@@ -134,3 +141,9 @@ def test_package_holes_nine_dup(tmp_path):
     few = dict(greens=[dict(kind="hole", p_hole=0.9)] * 9)
     many = dict(greens=[dict(kind="hole", p_hole=0.9)] * 18)
     assert FS.package_holes(str(tmp_path), few) == 9 and FS.package_holes(str(tmp_path), many) == 18
+
+
+def test_fastpath_solve_does_not_shadow_the_joint_solver():
+    # zero_tap/joint/solve.py is imported as `solve` by route_scene; fastpath/solve.py must not take that name
+    m = sys.modules.get("solve")
+    assert m is None or not hasattr(m, "raster_lie_at")

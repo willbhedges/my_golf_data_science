@@ -18,7 +18,12 @@ def _load(slug):
     p = os.path.join(HERE, "cache", "packages", slug, "package.json")
     if not os.path.exists(p):
         pytest.skip(f"{slug} not built")
-    import solve as SV
+    import importlib.util as _ilu                # fastpath/solve.py by path: `import solve` can be zero_tap's
+    spec = _ilu.spec_from_file_location("fastpath_solve", os.path.join(HERE, "solve.py"))
+    SV = sys.modules.get("fastpath_solve") or _ilu.module_from_spec(spec)
+    sys.modules["fastpath_solve"] = SV           # solve_c finds the raster's module by name
+    if not hasattr(SV, "EB"):
+        spec.loader.exec_module(SV)
     EB = SV.EB
     pkg = json.load(open(p))
     C = EB.PK().load(p, pkg.get("tee_set"))

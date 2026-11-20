@@ -614,7 +614,8 @@ def scene_features(scene, kinds=("green", "tee", "fairway", "bunker", "water"), 
 # 9-hole course with an 18-hole card (NOTES_ROUTING.md 2026-11-20 "n = 9"): many 9-hole cards list the nine twice
 # (holes 10-18 = 1-9 from other tees). When the back nine's yardages are within NINE_DUP_TOL of the front nine's
 # (median over the holes, the set that matches best) and the scene holds at most NINE_MAX_GREENS candidate greens,
-# the course is routed as 9 holes on the front nine's yardages; the caller repeats them as 10-18.
+# the course is routed as 9 holes on the front nine's yardages and delivered as a 9-hole course on the front-nine card
+# (fast.py writes it as raw/scene_card.json); holes 10-18 are not built.
 # ROUTE_NINE_DUP=0 turns it off.
 NINE_DUP_TOL = float(os.environ.get("ROUTE_NINE_DUP_TOL", "0.05"))
 NINE_MAX_GREENS = int(os.environ.get("ROUTE_NINE_MAX_GREENS", "12"))
@@ -624,10 +625,12 @@ def nine_dup(card):
     """median per-hole |front - back| / max over the card's complete 18-hole sets (the best set), None without one"""
     best = None
     for t in ((card or {}).get("tee_sets") or {}).values():
-        y = t.get("yards") or []
-        if len(y) == 18 and all(v and v > 0 for v in y):
-            d = float(np.median([abs(a - b) / max(a, b) for a, b in zip(y[:9], y[9:])]))
-            best = d if best is None else min(best, d)
+        y = t.get("yards") if isinstance(t, dict) else None
+        if not isinstance(y, list) or len(y) != 18 or \
+                not all(isinstance(v, (int, float)) and np.isfinite(v) and v > 0 for v in y):
+            continue                             # malformed or incomplete set: no evidence either way
+        d = float(np.median([abs(a - b) / max(a, b) for a, b in zip(y[:9], y[9:])]))
+        best = d if best is None else min(best, d)
     return best
 
 
@@ -651,12 +654,19 @@ def front_nine(card):
         if isinstance(c.get(k), list) and len(c[k]) == 18:
             c[k] = c[k][:9]
     for t in (c.get("tee_sets") or {}).values():
+        if not isinstance(t, dict):
+            continue
         for k in ("yards", "par", "handicap"):
             if isinstance(t.get(k), list) and len(t[k]) == 18:
                 t[k] = t[k][:9]
         if t.get("yards"):
             t["total"] = int(sum(v or 0 for v in t["yards"]))
             t.pop("total_stated", None)
+        for k in ("rating", "slope", "par_total", "course_rating", "slope_rating", "bogey_rating"):
+            t.pop(k, None)                       # 18-hole aggregates: no nine-hole value can be derived from them
+        par = t.get("par") if isinstance(t.get("par"), list) else c.get("par")
+        if isinstance(par, list) and len(par) == 9:
+            t["par_total"] = int(sum(v or 0 for v in par))
     if isinstance(c.get("facility"), dict):
         c["facility"] = dict(c["facility"], numberOfHoles=9)
     c["nine_of"] = 18
@@ -716,6 +726,8 @@ def _route_v2_on(fc, scene, card, n_holes, P, hag=None, params=None):
 # centroids (k = 2, 3; tee complexes and every green go to the nearest centre); each cluster holding >= 0.9 n of the
 # candidate greens is routed alone, and the cluster routing with the lowest solver cost (re-ranker off for the
 # comparison) replaces the whole-scene routing when it is cheaper than the whole scene's. ROUTE_MULTI_SITE=0 turns it off.
+# Only scene objects are clustered: OSM greens / tees in fc (tier C / D courses with a few mapped objects) stay in every
+# cluster and are not counted by the trigger; scene objects without a centroid are left out of every cluster.
 MULTI_GREENS = float(os.environ.get("ROUTE_MULTI_GREENS", "1.5"))
 
 
@@ -727,7 +739,7 @@ def _n_cand_greens(scene):
 def cluster_scenes(scene, n_holes, ks=(2, 3)):
     """[(k, j, scene restricted to cluster j)] for the k-means clusters holding >= 0.9 n candidate greens"""
     from sklearn.cluster import KMeans
-    G = [g for g in scene.get("greens") or [] if g.get("kind") != "practice"
+    G = [g for g in scene.get("greens") or [] if g.get("kind") != "practice" and g.get("centroid")
          and float(g.get("p_hole", g.get("p", 0))) >= P_GREEN]
     if len(G) < 2 * 0.9 * n_holes:
         return []
@@ -744,10 +756,10 @@ def cluster_scenes(scene, n_holes, ks=(2, 3)):
         def lab(ll):
             return int(np.argmin(np.hypot(*(C - xy(ll)).T)))
         for j in range(k):
-            keepg = [g for g in scene["greens"] if lab(g["centroid"]) == j]
+            keepg = [g for g in scene.get("greens") or [] if g.get("centroid") and lab(g["centroid"]) == j]
             if sum(1 for g in keepg if any(g is h for h in G)) < 0.9 * n_holes:
                 continue
-            keept = [t for t in scene.get("tee_complexes") or [] if lab(t["centroid"]) == j]
+            keept = [t for t in scene.get("tee_complexes") or [] if t.get("centroid") and lab(t["centroid"]) == j]
             out.append((k, j, dict(scene, greens=keepg, tee_complexes=keept)))
     return out
 
@@ -764,13 +776,15 @@ def _multi_site(fc, scene0, scene, card, n_holes, P, hag, params):
             rr, _ = _route_v2_on(fc, sc, card, n_holes, P, hag, cmp_p)
             if rr.get("cost") is not None and (best is None or rr["cost"] < best[0]):
                 best = (float(rr["cost"]), k, j, sc)
+        if best is None or full.get("cost") is None or not best[0] < float(full["cost"]):
+            return None
+        r, ci = _route_v2_on(fc, best[3], card, n_holes, P, hag, params)
+        if not r.get("features"):
+            return None
+        r["multi_site"] = dict(k=best[1], cluster=best[2], cost=round(best[0], 3), cost_full=round(float(full["cost"]), 3))
+        return r, ci, best[3]
     except Exception:                                                # noqa: BLE001
-        return None
-    if best is None or full.get("cost") is None or not best[0] < float(full["cost"]):
-        return None
-    r, ci = _route_v2_on(fc, best[3], card, n_holes, P, hag, params)
-    r["multi_site"] = dict(k=best[1], cluster=best[2], cost=round(best[0], 3), cost_full=round(float(full["cost"]), 3))
-    return r, ci, best[3]
+        return None                                                  # the whole-scene routing stands
 
 
 # Card selection (NOTES_ROUTING.md 2026-11-20 "card selection"): the web cards can disagree (a card of the sister
