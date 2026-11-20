@@ -1442,3 +1442,111 @@ refit under pick (scratch t4/run_wx4.sh): walk AUC 0.9685 -> 0.9700 (short pairs
 87.11 % / 163 (+30), never-used 87.20 % / 71 (28 better / 29 worse, -20), card 6.1 / 36.7. Both fail never-used: not
 shipped. Both stay in the code gated by their model keys (no effect on route_models/v2); blind loop with the gated code
 (t4/loop_gated.txt) identical to the shipped default's (t4/loop_refit.txt).
+
+## Design 2026-11-20: routing bench and refit on GitHub Actions (not built yet)
+
+Why: the local machine (4 cores, about 1.9 GB of free disk, shared by several agents) limits every routing
+experiment. A full refit needs about 1.5 GB of scratch and about 2 h wall.
+
+### How the inputs were built (all local, none on Actions)
+
+TRAIN-BIG (600 courses, route_big.py; rebuilt for the v2 U-Net by scratch segv2/rebuild_big.py), per course:
+* `fetch_stage`: OSM via osm_api, then card search (fetch_package.fetch_scorecards), then NAIP (latest year + the 2
+  newest others), 3DEP DEM and Meta canopy.
+* `perceive_stage`: fastscene.build, then cache/big/{scenes/<slug>.json.gz, probs/<slug>/d0+yall.npz (P(green) and
+  P(tee) only), maps/<slug>.npz (corridor maps from the full 6-class P + CHM)}.
+* The package is deleted after; courses/<slug>/ keeps osm_golf.geojson.gz, course.json and scorecard.json.
+
+Validation (82 courses = 51 train + 31 test):
+* heldout.py fetch builds the packages in cache/heldout/<slug> (the NAIP / DEM imagery has since been deleted locally;
+  raw/ and canopy/ remain).
+* perc_bench.py probs gives cache/heldout/probs/<slug>/{d0, y<year>}.npz (6-class uint8).
+* route_bench.py scenes builds cache/val/scenes/v2seg_d0+yall/<slug>.json, and route_learn.bench_maps writes
+  cache/val/maps/....
+
+No workflow builds these. golfseg_v2_train.yml builds U-Net training data (NAIP + OSM labels), not bench scenes;
+routing_v2_eval.yml routes the old committed generalize cache.
+
+### What a bench shard needs, and where it lives
+
+| input | size | in git? |
+|---|---|---|
+| route code (route_*.py, fastscene.py, zero_tap/joint ...) | small | yes |
+| route_models/<v>/ fits | about 40 MB | yes |
+| U-Net weights (segment/models/golfseg_own_v2/model.safetensors) | - | yes |
+| validation truth + cards (generalize/courses/<slug>/osm_golf.geojson, scorecard.json; 679 files) | 49 MB | yes |
+| TRAIN-BIG truth + cards (cache/big/courses/<slug>/{osm_golf.geojson.gz, course.json, scorecard.json}) | 58 MB | **no** (local only) |
+| TRAIN-BIG scenes / probs / maps (cache/v2root/big) | 49 + 201 + 808 MB | no |
+| validation scenes / maps / probs (cache/v2root/val/scenes, val/maps, heldout/probs) | 33 + 108 + 156 MB | no |
+| heldout raw/ + canopy/ (validation maps use the CHM) | about 15 MB | no |
+| out-of-fold state folds, learn tables, the refit's own scripts (scratch rsel/gen3.py, gen.py, rr_fit.py, tgen2.py, tl_exp.py, tl_fit.py, foldfit.py, segv2/summ3.py) | - | **no** (scratch only) |
+
+* **Refetchable:** NAIP / DEM / canopy (Planetary Computer, 3DEP, Meta: free, about 15 MB a course).
+* **Not refetchable reproducibly:** OSM truth and the web cards. OSM has been edited since 2026-11-17, the card sites
+  change, and TRAIN-BIG's `chosen` card was made on the OSM ground (see "card sanity"). So the 58 MB of
+  cache/big/courses must be frozen: commit them, e.g. under course_data/platform/fastpath/bench_data/big_courses/,
+  rather than refetch.
+* Library versions must match the pickled fits: scikit-learn 1.9.1, lightgbm 4.7.0, numpy 2.4.x, scipy 1.17,
+  opencv 5.0, rasterio 1.4.4, pyproj 3.7.2, shapely 2.2. The U-Net runs through fastc / numpy, with no torch locally.
+  The workflow pins these.
+
+### Workflow shape (one file, routing_bench.yml; request-file trigger as golfseg_v2_train.yml)
+
+Request file: course_data/requests/routing_bench_<name>.json, e.g.
+`{"schema": "request/1", "kind": "routing_bench", "stage": "inputs" | "bench" | "refit", "inputs_run_id": "",
+"slugs": [] (empty = all 643 + test 31), "nshards": 20, "env": {...}, "models": "route_models/v2", "commit_models": ""}`.
+
+Stage `inputs` (once per detector / U-Net change):
+* A plan job writes the slug list, a matrix of 20 shards.
+* Each shard job checks out the repo (sparse: code + models + bench_data), pip-installs the pinned versions, then per
+  course:
+  * TRAIN-BIG: route_big.fetch_stage minus the card search (truth and card from bench_data), then perceive_stage.
+  * validation: heldout.py fetch, then perc_bench.py probs d0 + years, then route_bench scenes.
+* It uploads artifact `bench-inputs-<k>`: the cache/v2root layout restricted to the shard's courses; packages are
+  deleted per course.
+* Size about 1.7 MB a course (scene 80 KB, probs 330 KB, maps 1.3 MB), so about 1.2 GB in total, about 60 MB a shard.
+* Wall: about 2.5 min a course (3 NAIP years plus the U-Net on a 4-vCPU runner), about 34 courses a shard, about
+  85 min a shard, 20 in parallel.
+* Artifacts expire (90 days at most; golfseg uses 30). The request names `inputs_run_id`, as golfseg's `data_run_id`;
+  re-run `inputs` when it expires. Alternative that does not expire: a merge job tars the shards into a GitHub
+  release asset (under 2 GB; GITHUB_TOKEN with contents: write).
+
+Stage `bench` (an out-of-fold bench of the current models, or of `models`):
+* Each of 8 shards downloads `bench-inputs-*` (actions/download-artifact with run-id), merges them into
+  FASTPATH_CACHE, and runs `route_bench.py eval --scene fast --router v2 --card-only --prep --ver v2seg_d0+yall
+  --split train+big --slugs <shard>`. Out-of-fold picks / scores come from the request's `oof_run_id` (artifacts of a
+  refit), or production models when absent.
+* A merge job runs summ3 / cerr (holes right, all-right, card error and hole_acc_fwd per split: 643 / choice 443 /
+  never-used 200) into the run summary and a results artifact.
+* Wall: 643 courses x about 2.5 s with prep plus about 3 s prepare is about 1 h of CPU, so about 8 min per 8-way shard
+  plus about 3 min of artifact download.
+
+Stage `refit` (the shipped recipe, scratch dpad/run.sh mapped onto jobs):
+
+| local step | job | parallel | wall (est.) | output artifact |
+|---|---|---|---|---|
+| prep: route_bench eval --prep, ROUTE_RERANK=0 ROUTE_TEE=0 | prep-k | 8 shards (--slugs) | 10 min | prep pickles (about 340 MB in all) |
+| route_learn table / x3 | tables | 1 (or 8 if table gets --slugs; it reads the prep) | 25 min | learn tables |
+| route_learn cv + fit (state folds), foldfit.py | learn | 1 | 15 min | sc/cv, route_learn_model.pkl, folds |
+| gen3.py re-ranker rows (already takes a slug-file argument) | gen-k | 8 | 15 min | gen3 rows |
+| rr_fit.py (bagged ranker, thr 0.5) | rerank | 1 | 10 min | route_rerank_model.pkl, picks_tb.json |
+| tgen2.py tee rows | tgen-k | 8 (needs a slug-file argument like gen3) | 10 min | tee rows |
+| tl_exp.py + tl_fit.py (hybrid rule 0.93 / 12 / 0.5) | tee | 1 | 10 min | route_tee_model.pkl, tee_picks.json |
+| out-of-fold bench (ROUTE_RERANK=0 ROUTE_TEE=0 with picks, ROUTE_BENCH_SC) | oof-k | 8 | 10 min | per-shard oof json |
+| merge + route_gate fit + summary | gate | 1 | 5 min | route_models/<name>/ (4 files), oof.json, summary |
+
+* End to end about 1 h 50 min of jobs, about 1 h 15 min wall with the 8-way shards; nothing on the local disk.
+* Optional `commit_models: "route_models/<name>"`: the gate job commits the 4 fits (contents: write).
+* Test 28 stays a separate stage (`test`) that must be requested explicitly, never part of a refit, to keep its
+  read-once rule.
+
+### Work needed before the first run (not done in this session)
+1. Commit cache/big/courses (58 MB) as frozen bench data.
+2. Move the refit scripts from scratch into the repo (a new course_data/platform/fastpath/refit/ dir, one per step),
+   with a --slugs file argument where missing (tgen2, the route_learn table step through a wrapper).
+3. Write the workflow and test `inputs` on 5 courses, then `bench` on those 5 against local numbers. The pass
+   criterion is identical hole_ok to the local OOF on the same courses: same inputs, same pins. A mismatch would most
+   likely come from the U-Net or LightGBM threads; set num_threads and deterministic mode.
+4. Run `inputs` on all courses. Then compare the Actions-built scenes with the local ones on a sample. The NAIP
+   "latest" year can move when a newer flight is published, so the Actions scenes are a new detector version for the
+   bench: record the year per course.
