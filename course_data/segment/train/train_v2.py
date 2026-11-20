@@ -410,12 +410,15 @@ def main():
     vset = {r["osm"] for r in val_rows}
     tr_rows = [r for r in rows if r["osm"] not in vset and not is_val(r["osm"], a.val_share)]
     if a.tee_min > 0:
-        def tee_ok(r):
+        def tee_ok(r):                          # rows without polygon counts (no --quality info) are kept
+            n = ((r.get("quality") or {}).get("n") or {}).get("tee")
             q = r.get("quality") or {}
-            return (q.get("n") or {}).get("tee", 0) >= a.tee_min * (q.get("holes") or r.get("holes") or 18)
+            return n is None or n >= a.tee_min * (q.get("holes") or r.get("holes") or 18)
         n0 = len(tr_rows)
         tr_rows = [r for r in tr_rows if tee_ok(r)]
         log(f"--tee-min {a.tee_min}: {n0} -> {len(tr_rows)} training courses")
+        if not tr_rows:
+            raise SystemExit("--tee-min left no training courses")
     freq = np.zeros(len(CLASSES))
     for r in tr_rows:
         px = r.get("pixels") or {}
