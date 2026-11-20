@@ -1,4 +1,10 @@
-{"schema": "request/1", "kind": "golfseg_v2_train", "rev": 3, "data_run_id": "44408172242",
- "model": "fine-tune of golfseg_own (U-Net / ResNet-34, NAIP RGBN 0.6 m, OSM labels) on a national course set",
- "courses": "course_data/segment/train/v2_courses.json (pick_v2.py: 1500 drawn, all lower-48 states; validation set, blind20 / TEST-40, perception pools, TRAIN-BIG manifest excluded with a 1.5 km buffer)",
- "requested": "2026-11-18T19:40Z"}
+{"schema": "request/1", "kind": "golfseg_v2_train", "rev": 4, "data_run_id": "", "nshards": 20,
+ "model": "v3: tee-targeted fine-tune of golfseg_own_v2 on the v2 data (run 44408172242) + about 1.4k new courses",
+ "courses": "course_data/segment/train/v3_courses.json",
+ "build_args": "--tee-quality",
+ "base_data_run_id": "44408172242",
+ "chm": "1",
+ "init": "course_data/segment/models/golfseg_own_v2",
+ "train_args": "--lr 1e-4 --tee-focus small=2,wood=4,exec=2.5,short=1.5 --tee-min 1 --select green,tee --max-val 120 --init-note init_v2",
+ "total_min": "630", "job_min": "315",
+ "requested": "2026-11-20T11:47Z"}

@@ -53,6 +53,8 @@ def is_val(osm, share=0.04):
 def read_index(data):
     """merged index rows of every index*.json under data (one per shard) -> list of dict(osm, file, image, pixels..)"""
     rows = {}
+    chm = {os.path.basename(p)[:-len("_chm.npz")]: p
+           for p in glob.glob(os.path.join(data, "**", "*_chm.npz"), recursive=True)}       # chm_add.py (v3)
     for p in sorted(glob.glob(os.path.join(data, "**", "index*.json"), recursive=True)):
         d = json.load(open(p))
         base = os.path.dirname(p)
@@ -60,12 +62,96 @@ def read_index(data):
             if "file" not in c:
                 continue
             c = dict(c, osm=k, dir=base)
+            if c.get("image") and c["image"][:-4] in chm:
+                c["chm"] = chm[c["image"][:-4]]
             if os.path.exists(os.path.join(base, c["file"])):
                 rows[k] = c
     return list(rows.values())
 
 
-def load_course(c):
+TREE_WIN = 51            # px at 0.6 m: +-15 m, the bench's "tree cover within 15 m"
+SMALL_PX = 100 / 0.36    # 100 m2
+
+
+TREE_LR = ([3.801, -1.346, 1.133, 5.906, 0.362, -2.216], 1.296)
+
+
+def tree_map(img):
+    """NAIP-only tree pixels (the training tiles carry no canopy model): logistic model on NDVI, brightness, 7 px local
+    std of brightness / NIR, NIR, green share (relative to the scene's medians), fitted against Meta CHM >= 3 m on
+    30 local heldout packages (pixel AUC 0.79); p > 0.5"""
+    from scipy import ndimage as ndi
+    r, g, b, n = (img[i].astype(np.float32) for i in range(4))
+    v = img.any(0)
+    if v.sum() < 1000:
+        return np.zeros(v.shape, bool)
+    ndvi = (n - r) / np.maximum(n + r, 1.0)
+    br = (r + g + b) / 3
+    med = max(1.0, float(np.median(br[v & (ndvi > 0.2)])) if (v & (ndvi > 0.2)).sum() > 1000 else float(np.median(br[v])))
+    nmed = max(1.0, float(np.median(n[v])))
+
+    def lstd(x):
+        m = ndi.uniform_filter(x, 7)
+        return np.sqrt(np.maximum(ndi.uniform_filter(x * x, 7) - m * m, 0))
+    co, b0 = TREE_LR
+    z = b0 + co[0] * ndvi + co[1] * br / med + co[2] * lstd(br) / med + co[3] * lstd(n) / nmed + co[4] * n / nmed \
+        + co[5] * g / np.maximum(br, 1.0)
+    return (z > 0) & v
+
+
+def tee_context(img, lab, tree=None):
+    """v3 (--tee-focus): per OSM tee component (8-connected lab == 2): tree cover within 15 m (tree_map() as a fraction
+    of a 51 px window, averaged over the component) and its area. -> dict(comps=[(tree, area_m2, slices, flat idx)])"""
+    from scipy import ndimage as ndi
+    tf = ndi.uniform_filter((tree_map(img) if tree is None else tree).astype(np.float32), TREE_WIN)
+    cl, k = ndi.label(lab == 2, structure=np.ones((3, 3)))
+    comps = []
+    for i, sl in enumerate(ndi.find_objects(cl), 1):
+        if sl is None:
+            continue
+        m = cl[sl] == i
+        yy, xx = np.nonzero(m)
+        idx = (yy + sl[0].start) * lab.shape[1] + (xx + sl[1].start)
+        comps.append((float(tf.ravel()[idx].mean()), float(m.sum() * 0.36), sl, idx))
+    return dict(comps=comps)
+
+
+def tee_weights(c, img, lab, focus, tree=None):
+    """per-pixel sampling weight of the tee crop centres c['pts'][2]: 1, x focus['small'] for components < 100 m2,
+    x focus['wood'] for components with tree cover > 0.5 within 15 m (both multiply)"""
+    if 2 not in c["pts"]:
+        return None, dict(tees=0)
+    ctx = tee_context(img, lab, tree)
+    wpx = np.ones(lab.size, np.float32)
+    ns = nw = 0
+    for tc, area, _, idx in ctx["comps"]:
+        f = 1.0
+        if area < 100:
+            f *= focus.get("small", 1.0)
+            ns += 1
+        if tc > 0.5:
+            f *= focus.get("wood", 1.0)
+            nw += 1
+        wpx[idx] = f
+    w = wpx[c["pts"][2]]
+    return w / w.sum(), dict(tees=len(ctx["comps"]), small=ns, wooded=nw, chm=int(tree is not None))
+
+
+def course_kind(c):
+    """par-3 / exec / short from the index row: median OSM hole-line length (v3 builds store it) or else the outline
+    area per hole (v2 rows): par3/exec < 200 yd or < 2.0 ha a hole, short < 300 yd or < 2.6 ha"""
+    q = c.get("quality") or {}
+    holes = q.get("holes") or c.get("holes") or 18
+    L = q.get("hole_len_median_m")
+    ha = c.get("inside", 0) * 0.36 / 1e4 / max(1, holes)
+    if (L is not None and L < 183) or (L is None and ha < 2.0):
+        return "exec"
+    if (L is not None and L < 274) or (L is None and ha < 2.6):
+        return "short"
+    return "regular"
+
+
+def load_course(c, focus=None):
     z = np.load(os.path.join(c["dir"], c["file"]))
     lab = z["lab"]
     if "img" in z.files:
@@ -82,14 +168,23 @@ def load_course(c):
         idx = np.flatnonzero(lab.ravel() == k)
         if len(idx) >= 50:
             pts[k] = rng.choice(idx, min(len(idx), 4000), replace=False)
-    return dict(osm=c["osm"], img=img, lab=lab, pts=pts)
+    out = dict(osm=c["osm"], img=img, lab=lab, pts=pts)
+    if focus:
+        tree = None
+        if c.get("chm"):
+            from chm_add import load_tree
+            tree = load_tree(c["chm"], lab.shape)
+        out["tee_w"], out["tee_info"] = tee_weights(out, img, lab, focus, tree)
+        out["kind"] = course_kind(c)
+    return out
 
 
 class Pool:
     """resident decoded courses; a thread swaps one every swap_s seconds"""
 
-    def __init__(self, rows, n, swap_s, seed):
-        self.rows, self.n, self.swap_s = rows, min(n, len(rows)), swap_s
+    def __init__(self, rows, n, swap_s, seed, focus=None):
+        self.rows, self.n, self.swap_s, self.focus = rows, min(n, len(rows)), swap_s, focus
+        self.stats = dict(exec=0, short=0, regular=0, tees=0, small=0, wooded=0, chm=0)
         self.rng = random.Random(seed)
         self.order = list(range(len(rows)))
         self.rng.shuffle(self.order)
@@ -112,8 +207,12 @@ class Pool:
         if self.next % len(self.order) == 0:
             self.rng.shuffle(self.order)
         try:
-            c = load_course(r)
+            c = load_course(r, self.focus)
             self.loaded += 1
+            if self.focus:
+                self.stats[c["kind"]] += 1
+                for k, v in c["tee_info"].items():
+                    self.stats[k] += v
             H, W = c["lab"].shape
             if H < 400 or W < 400 or (c["lab"] != 255).sum() < 10000:
                 return None
@@ -132,7 +231,10 @@ class Pool:
 
     def pick(self, rng):
         with self.lock:
-            return self.items[rng.integers(len(self.items))]
+            if not self.focus:
+                return self.items[rng.integers(len(self.items))]
+            w = np.array([self.focus.get(c["kind"], 1.0) for c in self.items], np.float64)
+            return self.items[rng.choice(len(self.items), p=w / w.sum())]
 
 
 def sampler(pool, size, rng, class_p):
@@ -145,7 +247,10 @@ def sampler(pool, size, rng, class_p):
             ks = [k for k in c["pts"]]
             p = np.array([class_p[k - 1] for k in ks], np.float64)
             k = ks[rng.choice(len(ks), p=p / p.sum())]
-            i = c["pts"][k][rng.integers(len(c["pts"][k]))]
+            if k == 2 and c.get("tee_w") is not None:
+                i = c["pts"][k][rng.choice(len(c["pts"][k]), p=c["tee_w"])]
+            else:
+                i = c["pts"][k][rng.integers(len(c["pts"][k]))]
             cy, cx = divmod(int(i), W)
             cy += int(rng.integers(-size // 3, size // 3 + 1))
             cx += int(rng.integers(-size // 3, size // 3 + 1))
@@ -282,7 +387,20 @@ def main():
     ap.add_argument("--max-val", type=int, default=60, help="validation courses")
     ap.add_argument("--val-share", type=float, default=0.04)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--tee-focus", default="", help="v3 oversampling, e.g. small=2,wood=3,exec=2,short=1.5: tee crop "
+                    "centres on small (< 100 m2) / wooded (tree proxy > 0.5) tee components and course picks of par-3 / "
+                    "exec / short courses weighted by these factors (empty = off: the v2 recipe, same random stream)")
+    ap.add_argument("--tee-min", type=float, default=0.0, help="v3: drop training courses whose OSM tee polygons < "
+                    "this x holes (index quality counts; 0 = off)")
+    ap.add_argument("--init-note", default="init (v1 weights)")
+    ap.add_argument("--select", default="mean", help="exported checkpoint: best validation 'mean' IoU (v2) or the mean "
+                    "IoU of the listed classes, e.g. green,tee (v3)")
     a = ap.parse_args()
+    def score(v):
+        if a.select == "mean":
+            return v["mean"]
+        return float(np.mean([v[c] or 0.0 for c in a.select.split(",")]))
+    focus = {k: float(v) for k, v in (kv.split("=") for kv in a.tee_focus.split(",") if kv)} or None
     import torch
     torch.set_num_threads(os.cpu_count() or 4)
     pre = json.load(open(os.path.join(a.init, "preprocessor_config.json")))
@@ -291,6 +409,13 @@ def main():
     val_rows = sorted([r for r in rows if is_val(r["osm"], a.val_share)], key=lambda r: r["osm"])[:a.max_val]
     vset = {r["osm"] for r in val_rows}
     tr_rows = [r for r in rows if r["osm"] not in vset and not is_val(r["osm"], a.val_share)]
+    if a.tee_min > 0:
+        def tee_ok(r):
+            q = r.get("quality") or {}
+            return (q.get("n") or {}).get("tee", 0) >= a.tee_min * (q.get("holes") or r.get("holes") or 18)
+        n0 = len(tr_rows)
+        tr_rows = [r for r in tr_rows if tee_ok(r)]
+        log(f"--tee-min {a.tee_min}: {n0} -> {len(tr_rows)} training courses")
     freq = np.zeros(len(CLASSES))
     for r in tr_rows:
         px = r.get("pixels") or {}
@@ -323,10 +448,10 @@ def main():
     log(len(tiles), "validation tiles")
     if state["step"] == 0:
         v0 = evaluate(model, tiles, mean, std)
-        state["val"].append(dict(step=0, iou=v0, note="init (v1 weights)"))
+        state["val"].append(dict(step=0, iou=v0, note=a.init_note))
         log("val init", v0)
-    pool = Pool(tr_rows, a.pool, a.swap_s, a.seed + state["step"])
-    log("pool ready", len(pool.items), "courses")
+    pool = Pool(tr_rows, a.pool, a.swap_s, a.seed + state["step"], focus)
+    log("pool ready", len(pool.items), "courses", ("tee focus " + json.dumps(focus) + " " + json.dumps(pool.stats)) if focus else "")
 
     def lr_at(step):
         T = state["total"]
@@ -372,13 +497,13 @@ def main():
         if step % 50 == 0:
             state["steps"].append([step, round(run, 4), round(time.time() - t0)])
             log(f"step {step}/{state['total']} loss {run:.4f} lr {lr_at(step):.2e} {time.time() - t0:.0f}s "
-                f"(pool loads {pool.loaded})")
+                f"(pool loads {pool.loaded})" + (f" {pool.stats}" if focus and step % 1000 == 0 else ""))
         if step % a.eval_every == 0 or step == state["total"]:
             v = evaluate(model, tiles, mean, std)
             state["val"].append(dict(step=step, iou=v))
             log("val", step, v)
-            if v["mean"] > state["best_iou"]:
-                state["best_iou"], state["best"] = v["mean"], step
+            if score(v) > state["best_iou"]:
+                state["best_iou"], state["best"] = score(v), step
                 best_sd = {k: t.detach().clone() for k, t in model.state_dict().items()}
         if time.time() - last_ck > a.ckpt_min * 60:
             save_ckpt()
@@ -391,8 +516,8 @@ def main():
         v = evaluate(model, tiles, mean, std)
         state["val"].append(dict(step=state["step"], iou=v))
         log("val", state["step"], v)
-        if v["mean"] > state["best_iou"]:
-            state["best_iou"], state["best"] = v["mean"], state["step"]
+        if score(v) > state["best_iou"]:
+            state["best_iou"], state["best"] = score(v), state["step"]
             best_sd = {k: t.detach().clone() for k, t in model.state_dict().items()}
     job.update(end_step=state["step"], minutes=round((time.time() - t0) / 60, 1))
     state["jobs"].append(job)
@@ -403,13 +528,17 @@ def main():
         exp, _ = build_model(a.init)
         exp.load_state_dict(best_sd)
     pre2 = dict(pre)
-    pre2["licence"] = ("ours (course_data/segment/train, v2 fine-tune of golfseg_own); labels OpenStreetMap contributors "
+    src = os.path.basename(os.path.normpath(a.init))
+    head = ("ours (course_data/segment/train, v2 fine-tune of golfseg_own); labels" if src == "golfseg_own" else
+            f"ours (course_data/segment/train, fine-tune of {src}); labels")
+    pre2["licence"] = (head + " OpenStreetMap contributors "
                        "ODbL 1.0; imagery USDA NAIP; encoder init torchvision ImageNet ResNet weights (BSD-3)")
     log_d = dict(state=dict((k, v) for k, v in state.items()), final=final, exported_step=state["best"] or state["step"],
                  exported_val=next((v for v in state["val"] if v["step"] == state["best"]), None),
                  init_val=state["val"][0] if state["val"] else None, mean=mean, std=std, class_weights=w.tolist(),
                  class_p=class_p, size=a.size, bs=a.bs, lr=a.lr, pool=a.pool, courses_train=len(tr_rows),
-                 courses_val=sorted(vset), states_train=states, init=os.path.basename(os.path.normpath(a.init)))
+                 courses_val=sorted(vset), states_train=states, init=os.path.basename(os.path.normpath(a.init)),
+                 tee_focus=focus, tee_min=a.tee_min, select=a.select, pool_stats=pool.stats if focus else None)
     export(exp, a.out, pre2, log_d, names)
 
 

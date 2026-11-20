@@ -9,6 +9,10 @@ name: golfseg-v2-train
 # 3. train-a, train-b: train_v2.py resumable, each < 6 h (checkpoint passed as an artifact); the model export
 #    (artifact golfseg-v2-model) is what gets imported into course_data/segment/models/golfseg_own_v2/.
 # Nothing is committed by this workflow.
+# v3 (optional request fields; every default is the v2 recipe): courses (list for the data build), build_args (extra
+# build_dataset.py flags, e.g. --tee-quality), base_data_run_id (an earlier run whose golfseg-v2-data-* artifacts are
+# trained on as well), chm ("1": Meta canopy tree masks via chm_add.py for the new and the base data), init (model dir
+# to fine-tune), train_args (extra train_v2.py flags), total_min / job_min.
 
 on:
   push:
@@ -35,6 +39,14 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       data_run: ${{ steps.p.outputs.data_run }}
+      courses: ${{ steps.p.outputs.courses }}
+      build_args: ${{ steps.p.outputs.build_args }}
+      base_run: ${{ steps.p.outputs.base_run }}
+      chm: ${{ steps.p.outputs.chm }}
+      init: ${{ steps.p.outputs.init }}
+      train_args: ${{ steps.p.outputs.train_args }}
+      total_min: ${{ steps.p.outputs.total_min }}
+      job_min: ${{ steps.p.outputs.job_min }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +56,19 @@ jobs:
           D=$(python3 -c "import json;print(json.load(open('course_data/requests/golfseg_v2_train.json')).get('data_run_id') or '')")
           echo "data_run=$D" >> "$GITHUB_OUTPUT"
           echo "data run: '${D}'"
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json
+          r = json.load(open("course_data/requests/golfseg_v2_train.json"))
+          d = dict(courses="course_data/segment/train/v2_courses.json", build_args="", base_run="", chm="",
+                   init="course_data/segment/models/golfseg_own", train_args="", total_min="630", job_min="315")
+          d["base_run"] = str(r.get("base_data_run_id") or "")
+          for k in ("courses", "build_args", "chm", "init", "train_args", "total_min", "job_min"):
+              if r.get(k) not in (None, ""):
+                  d[k] = str(r[k])
+          for k, v in d.items():
+              print(f"{k}={v}")
+          PY
+          cat "$GITHUB_OUTPUT"
 
   data:
     needs: plan
@@ -72,8 +97,11 @@ jobs:
         run: |
           mkdir -p /home/runner/segdata
           python -u course_data/segment/train/build_dataset.py --out /home/runner/segdata \
-            --courses course_data/segment/train/v2_courses.json --shard ${{ matrix.shard }} --nshards $NSHARDS \
-            --quality --max 1000 --minutes 130 || echo "build failed"
+            --courses ${{ needs.plan.outputs.courses }} --shard ${{ matrix.shard }} --nshards $NSHARDS \
+            --quality ${{ needs.plan.outputs.build_args }} --max 1000 --minutes 130 || echo "build failed"
+          if [ "${{ needs.plan.outputs.chm }}" = "1" ]; then
+            python -u course_data/segment/train/chm_add.py --data /home/runner/segdata --minutes 30 || echo "chm failed"
+          fi
           mv /home/runner/segdata/index.json /home/runner/segdata/index_${{ matrix.shard }}.json || true
           ls /home/runner/segdata | wc -l; du -sh /home/runner/segdata
       - uses: actions/upload-artifact@v4
@@ -90,7 +118,46 @@ jobs:
           path: /home/runner/segdata/index_${{ matrix.shard }}.json
           retention-days: 90
 
+  chm-base:
+    needs: plan
+    if: needs.plan.outputs.base_run != '' && needs.plan.outputs.chm == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy rasterio
+      - uses: actions/download-artifact@v4
+        with:
+          name: golfseg-v2-data-${{ matrix.shard }}
+          path: /home/runner/base
+          run-id: ${{ needs.plan.outputs.base_run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tree masks for the base data
+        run: |
+          python -u course_data/segment/train/chm_add.py --data /home/runner/base --out /home/runner/chm/s${{ matrix.shard }} \
+            --minutes 60 || echo "chm failed"
+          ls /home/runner/chm/s${{ matrix.shard }} | wc -l; du -sh /home/runner/chm || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: golfseg-v3-chm-base-${{ matrix.shard }}
+          path: /home/runner/chm
+          retention-days: 30
+
   smoke:
+    needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -104,13 +171,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio scipy
       - name: Smoke test
-        run: python -u course_data/segment/train/smoke_v2.py
+        run: |
+          python -u course_data/segment/train/smoke_v2.py
+          if [ -n "${{ needs.plan.outputs.train_args }}" ]; then
+            python -u course_data/segment/train/smoke_v2.py --init ${{ needs.plan.outputs.init }} ${{ needs.plan.outputs.train_args }}
+          fi
 
   train-a:
-    needs: [plan, data, smoke]
-    if: always() && needs.smoke.result == 'success' && (needs.data.result == 'success' || needs.data.result == 'skipped' || needs.data.result == 'failure')
+    needs: [plan, data, chm-base, smoke]
+    if: always() && needs.smoke.result == 'success' && (needs.data.result == 'success' || needs.data.result == 'skipped' || needs.data.result == 'failure') && needs.chm-base.result != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 355
     steps:
@@ -131,17 +202,30 @@ jobs:
           path: /mnt/seg/data
           run-id: ${{ needs.plan.outputs.data_run || github.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.base_run != ''
+        with:
+          pattern: golfseg-v2-data-*
+          path: /mnt/seg/data/base
+          run-id: ${{ needs.plan.outputs.base_run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.base_run != '' && needs.plan.outputs.chm == '1'
+        continue-on-error: true
+        with:
+          pattern: golfseg-v3-chm-base-*
+          path: /mnt/seg/data/chm_base
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio scipy
       - name: Train (job a)
         run: |
           du -sh /mnt/seg/data; ls /mnt/seg/data | head -20; free -g; nproc
           python -u course_data/segment/train/train_v2.py --data /mnt/seg/data --out /mnt/seg/model \
-            --init course_data/segment/models/golfseg_own --ckpt /mnt/seg/ckpt/ck.pt \
-            --minutes $JOB_MIN --total-minutes $TOTAL_MIN > /tmp/train.txt 2>&1 && rc=0 || rc=$?
+            --init ${{ needs.plan.outputs.init }} --ckpt /mnt/seg/ckpt/ck.pt ${{ needs.plan.outputs.train_args }} \
+            --minutes ${{ needs.plan.outputs.job_min }} --total-minutes ${{ needs.plan.outputs.total_min }} > /tmp/train.txt 2>&1 && rc=0 || rc=$?
           grep -v "^[0-9:]* step " /tmp/train.txt | tail -100 || true
           grep " step " /tmp/train.txt | awk 'NR % 10 == 0' | tail -30 || true
           exit $rc
@@ -187,6 +271,19 @@ jobs:
           run-id: ${{ needs.plan.outputs.data_run || github.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.base_run != ''
+        with:
+          pattern: golfseg-v2-data-*
+          path: /mnt/seg/data/base
+          run-id: ${{ needs.plan.outputs.base_run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        if: needs.plan.outputs.base_run != '' && needs.plan.outputs.chm == '1'
+        continue-on-error: true
+        with:
+          pattern: golfseg-v3-chm-base-*
+          path: /mnt/seg/data/chm_base
+      - uses: actions/download-artifact@v4
         with:
           name: golfseg-v2-ckpt-a
           path: /mnt/seg/ckpt
@@ -194,12 +291,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio
+          pip install "huggingface_hub>=0.24" safetensors segmentation-models-pytorch timm numpy rasterio scipy
       - name: Train (job b, resumed)
         run: |
           python -u course_data/segment/train/train_v2.py --data /mnt/seg/data --out /mnt/seg/model \
-            --init course_data/segment/models/golfseg_own --ckpt /mnt/seg/ckpt/ck.pt --resume \
-            --minutes $JOB_MIN --total-minutes $TOTAL_MIN > /tmp/train.txt 2>&1 && rc=0 || rc=$?
+            --init ${{ needs.plan.outputs.init }} --ckpt /mnt/seg/ckpt/ck.pt --resume ${{ needs.plan.outputs.train_args }} \
+            --minutes ${{ needs.plan.outputs.job_min }} --total-minutes ${{ needs.plan.outputs.total_min }} > /tmp/train.txt 2>&1 && rc=0 || rc=$?
           grep -v "^[0-9:]* step " /tmp/train.txt | tail -100 || true
           grep " step " /tmp/train.txt | awk 'NR % 10 == 0' | tail -30 || true
           exit $rc

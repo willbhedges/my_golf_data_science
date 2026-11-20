@@ -4,6 +4,7 @@ Computer, ~20 s per course).
     python course_data/segment/train/build_dataset.py --out /tmp/golfseg_data [--states IA MO] [--max 160]
     python course_data/segment/train/build_dataset.py --out /tmp/d --courses course_data/segment/train/v2_courses.json \
         --shard 3 --nshards 12 --quality            (v2: the national list from pick_v2.py, one shard per job)
+    ... --courses course_data/segment/train/v3_courses.json --quality --tee-quality      (v3: pick_v3.py, tee filter)
 
 Courses: course_data/packages/_survey/<STATE>.json rows with >= 9 greens and >= 7 fairways (bunkers >= 3),
 minus the evaluation courses (Spirit Hollow, Veenker, Mozingo Lake: never trained on). Per course:
@@ -66,6 +67,37 @@ def from_list(path, shard, nshards, max_n):
     return rows[shard::nshards][:max_n]
 
 
+TEE_AREA = (15.0, 4000.0)       # m2: plausible tee box polygons (a 3 x 5 m box .. a merged complex)
+
+
+def tee_quality(feats, tr, holes):
+    """v3 tee-label filter (--tee-quality) from the OSM tee polygons: tees >= holes, median tee area 40-1500 m2, >= 85 %
+    of the tee polygons within TEE_AREA (drops courses that map a whole tee area as one polygon, tee points blown up,
+    or tees drawn as fairway-sized shapes). -> (ok, info)"""
+    from shapely.geometry import shape
+    from shapely.ops import transform as stransform
+    A = []
+    for f in feats:
+        g = f["geometry"]
+        if f["properties"].get("golf") == "tee" and g["type"] in ("Polygon", "MultiPolygon"):
+            try:
+                A.append(stransform(tr, shape(g)).buffer(0).area)
+            except Exception:                                   # noqa: BLE001
+                pass
+    info = dict(tees=len(A), holes=holes)
+    if len(A) < holes:
+        return False, dict(info, why="tees < holes")
+    med = float(np.median(A))
+    share = float(np.mean([TEE_AREA[0] <= a <= TEE_AREA[1] for a in A]))
+    info.update(tee_area_median=round(med, 1), tee_area_ok=round(share, 3),
+                tees_small=int(sum(a < 100 for a in A)))
+    if not 40 <= med <= 1500:
+        return False, dict(info, why="tee area median implausible")
+    if share < 0.85:
+        return False, dict(info, why="tee areas implausible")
+    return True, info
+
+
 def quality(feats, tr, holes):
     """label completeness from the OSM polygons (projected with tr): bunkers >= 3; with golf=hole ways for >= 80 % of
     the holes, hole ends near a green polygon (25 m) >= 80 %, starts near a tee polygon (30 m) >= 70 %, par 4 / 5
@@ -89,6 +121,8 @@ def quality(feats, tr, holes):
                 pass
     n = {c: len(v) for c, v in P.items()}
     info = dict(n=n, hole_ways=len(lines), holes=holes)
+    if lines:
+        info["hole_len_median_m"] = round(float(np.median([l.length for l, _ in lines])), 1)
     if n["bunker"] < 3:
         return False, dict(info, why="bunkers < 3")
     if len(lines) >= 0.8 * holes:
@@ -170,7 +204,7 @@ def feature_class(p):
     return None
 
 
-def build_one(row, out_dir, cat, v2=False, check=False):
+def build_one(row, out_dir, cat, v2=False, check=False, tee_check=False):
     import rasterio
     import rasterio.features
     from pyproj import Transformer
@@ -189,6 +223,12 @@ def build_one(row, out_dir, cat, v2=False, check=False):
                             int(row.get("holes") or 18))
         if not ok:
             return dict(error="quality: " + qinfo["why"], quality=qinfo)
+    if tee_check:
+        ok, tinfo = tee_quality(feats, Transformer.from_crs("EPSG:4326", g1.crs, always_xy=True).transform,
+                                int(row.get("holes") or 18))
+        qinfo = dict(qinfo or {}, tee=tinfo)
+        if not ok:
+            return dict(error="quality: " + tinfo["why"], quality=qinfo)
     with tempfile.TemporaryDirectory() as td:
         meta = {}
         FA.fetch_naip(cat, g1, td, meta, n_years=1, res=0.6)
@@ -224,7 +264,7 @@ def build_one(row, out_dir, cat, v2=False, check=False):
         np.savez_compressed(os.path.join(out_dir, name + ".npz"), lab=lab)
     else:
         np.savez_compressed(os.path.join(out_dir, name + ".npz"), img=img, lab=lab)
-    return dict(file=name + ".npz", image=(name + ".tif") if v2 else None, quality=qinfo,
+    return dict(file=name + ".npz", image=(name + ".tif") if v2 else None, quality=qinfo, holes=row.get("holes"),
                 shape=[H, W], naip_year=ys[0]["year"], naip_items=ys[0]["items"],
                 counts=counts, pixels={k: int((lab == v).sum()) for k, v in CODE.items()},
                 inside=int((lab != 255).sum()))
@@ -240,6 +280,7 @@ def main():
     ap.add_argument("--shard", type=int, default=0)
     ap.add_argument("--nshards", type=int, default=1)
     ap.add_argument("--quality", action="store_true", help="drop courses whose polygons miss holes (quality())")
+    ap.add_argument("--tee-quality", action="store_true", help="v3: drop courses with implausible tee polygons")
     a = ap.parse_args()
     import fetch_any as FA
     os.makedirs(a.out, exist_ok=True)
@@ -259,7 +300,7 @@ def main():
         if str(index["courses"].get(r["osm"], {}).get("error", "")).startswith("quality"):
             continue
         try:
-            res = build_one(r, a.out, cat, v2=bool(a.courses), check=a.quality)
+            res = build_one(r, a.out, cat, v2=bool(a.courses), check=a.quality, tee_check=a.tee_quality)
         except Exception as e:  # noqa: BLE001
             res = dict(error=f"{type(e).__name__}: {e}"[:300], tb=traceback.format_exc()[-600:])
         res.update(name=r["name"], state=r["state"], osm=r["osm"])
