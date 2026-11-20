@@ -36,7 +36,13 @@ def fetch(slug, pkg):
     pin = PIN[slug]
     img = os.path.join(pkg, "imagery")
     t = time.time()
-    fim.fetch(course["bbox"], img, None, str(pin["pkg"]), label=course.get("name"))
+    b = course["bbox"]                         # [W, S, E, N]
+    have = sorted(y["year"] for y in fim.list_years((b[1], b[0], b[3], b[2])) if y["coverage"] > 0.9 and y["year"] >= 2012)
+    want = pin["pkg"]
+    if want not in have:                      # the recorded package year is not served (any more) for this box: the
+        # gate-2 rule (segv2/rebuild_big.py): the first served year above the extra years, else the newest served
+        want = next((y for y in have if y > max(pin["extra"])), have[-1] if have else want)
+    fim.fetch(course["bbox"], img, None, str(want), label=course.get("name"))
     fim.to_06(img)
     g = json.load(open(os.path.join(img, "georef.json")))
     padded = tuple(g["padded_bbox_wgs84_snwe"])
@@ -49,7 +55,8 @@ def fetch(slug, pkg):
         json.dump(dict(imagery=im), open(os.path.join(o, "georef.json"), "w"), indent=1)
         fim.to_06(o)
     canopy.fetch(course["bbox"], os.path.join(pkg, "canopy"))
-    return dict(fetch_s=round(time.time() - t, 1), pkg_year=(g.get("imagery") or {}).get("year"), extra=pin["extra"])
+    return dict(fetch_s=round(time.time() - t, 1), pkg_year=(g.get("imagery") or {}).get("year"), pinned_pkg=pin["pkg"],
+                pkg_pin_kept=want == pin["pkg"], extra=pin["extra"])
 
 
 def perceive(slug, pkg, root, unet, obj):

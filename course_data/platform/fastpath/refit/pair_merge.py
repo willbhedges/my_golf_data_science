@@ -13,7 +13,13 @@ if os.environ.get("PAIR_OUT"):
             fh.write(json.dumps(r) + "\n")
 ok = [r for r in rows if "error" not in r and "right" in (r.get("A") or {}) and "right" in (r.get("B") or {})]
 bad = [r["slug"] for r in rows if r not in ok]
-print("courses: %d, complete pairs: %d, failed: %d %s" % (len(rows), len(ok), len(bad), bad[:12]))
+print("courses: %d, complete pairs: %d, failed: %d" % (len(rows), len(ok), len(bad)))
+for r in rows:
+    if r not in ok:
+        print("  failed %s: %s" % (r["slug"], (r.get("error") or r.get("A", {}).get("route_error") or r.get("B", {}).get("route_error") or "?")[:200]))
+kept = [r for r in rows if "fetch" in r]
+print("package year pin kept on %d of %d courses (others: the first served year above the extra years)" % (
+    sum(bool(r["fetch"].get("pkg_pin_kept", True)) for r in kept), len(kept)))
 if ok:
     r0 = ok[0]
     print("A = %s + %s | B = %s + %s | B imagery %s" % (r0["unet"]["A"], r0["objects"]["A"], r0["unet"]["B"], r0["objects"]["B"],
