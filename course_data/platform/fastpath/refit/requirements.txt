@@ -1,0 +1,19 @@
+# Versions the shipped routing fits (route_models/v2, pickled scikit-learn / LightGBM) were made and read with
+# (Python 3.11.18, 2026-11-20). Mismatched scikit-learn / lightgbm versions may not unpickle the fits, or may predict
+# differently.
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.9.1
+lightgbm==4.7.0
+opencv-python-headless==5.0.0.93
+rasterio==1.4.4
+pyproj==3.7.2
+shapely==2.2.0
+networkx==3.6.1
+scikit-image==0.26.0
+Pillow==13.0.0
+requests==2.34.2
+# imagery fetch (scene / input rebuilds only)
+pystac==1.16.0
+pystac-client==0.9.1
+planetary-computer==1.0.0
