@@ -373,6 +373,12 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                 # the routing may be wrong (card misfit, long walks, par sum) become warnings; the per-hole P(right)
                 # says where. Broken builds stay drafts: missing holes / no card / shared green / wrong course.
                 soft = [b for b in blocked if b.startswith(SOFT_GATE_PREFIXES)] + list(g.get("warnings") or [])
+                try:                             # fastscene's per-vintage fallback: greens only on old NAIP flights
+                    import fastscene
+                    scw = (json.load(open(os.path.join(pkg_dir, "scene.json"))).get("warnings") or [])
+                    soft += [w for w in scw if str(w).startswith(fastscene.OUTDATED_WARNING)]
+                except Exception:                                    # noqa: BLE001
+                    pass
                 blocked = [b for b in blocked if not b.startswith(SOFT_GATE_PREFIXES)]
                 auto_warn = soft
                 refs = [str(h.get("ref")) for h in scene_routed.get("hole_features") or []]

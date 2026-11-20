@@ -1180,3 +1180,99 @@ neither end, card-order conflict, shared green. The calibrated policy is unchang
 test_route_scene.test_gate_no_card_opt_in.
 
 Reproduce (scratch cardfix/): run_blind.sh (all_none / all_agree), blind.py, loop_nocard.txt.
+
+## State 2026-11-20 (later): per-vintage NAIP fallback for green-blind scenes (opt-in FASTSCENE_VINTAGE=1, not the default)
+
+Cause E of the collapse diagnosis: scenes with almost no greens. Six courses on the bench have fewer scene greens
+than 0.5 x n, or have less than half their true greens visible in the U-Net map: black_desert, hunter, woodlyn_hills,
+great_southern, stoner_creek, and shady_hills (never-used). They hold 94 wrong holes.
+
+Diagnosis:
+* The fetcher (fast_imagery.list_years, Planetary Computer STAC) reaches every NAIP year with full coverage: 5 to 13
+  vintages per course, 2010-2025. TRAIN-BIG scenes average the U-Net over the package year and the 2 newest other
+  years.
+* No opening or renovation year is available: OSM tags, golf_course boundaries and card sources carry none.
+* What the imagery shows (2.4 m mosaics, scratch vint/sheet_<slug>.jpg):
+  * black_desert: under construction on the newest Utah NAIP (2021; the course opened 2023). Not fixable with NAIP,
+    and Sentinel-2 at 10 m cannot resolve greens.
+  * hunter: no playable course on any of 2020-2023.
+  * woodlyn and great_southern: greens on the 2017-2020 flights, brown or overgrown on 2021-2023.
+  * stoner_creek: fairways bare in 2020 (a renovation flight).
+  * shady_hills: a working course; the U-Net misses it on the 2022 flight.
+* A 3-vintage mean can bury greens that one flight shows (0.9 / 0.1 / 0.1 averages to 0.37).
+
+Rule (`fastscene.vintage_fallback`, called from `fastscene.build` when the U-Net probabilities are computed there,
+i.e. in production):
+* Trigger: scene hole greens < VINTAGE_MIN (0.5) x n, where n comes from `package_holes` (the request's card file,
+  else the web card `scorecard.choose_card` picks, else 18).
+* The U-Net runs on each NAIP vintage alone: the package's own plus up to 5 others, newest first (fetched into
+  imagery/years/ and cached there). Each is perceived; the scene with the most hole greens wins, ties go to the newer
+  flight, and the mean scene stays unless a vintage beats it.
+* If no vintage less than 3 years older than the newest reaches 0.5 x n greens, the scene carries "possibly closed /
+  imagery outdated: greens show only on NAIP <year> ...". fast.py adds it to the package's auto warnings. Nothing is
+  blocked.
+* Cost on a triggered course: about 20-50 s and 10-15 MB of NAIP (Hawk's Point 39 -> 89 s).
+
+Bench evaluation:
+* Packages for the triggered courses were rebuilt in scratch (OSM, card, NAIP latest + 2, 3DEP, Meta canopy) and
+  deleted after. 19 bench courses trigger (scene hole greens < 0.5 x n, counted on the bench scenes). Black_desert is
+  left out (unfixable); 4 of the other 18 do not trigger on the rebuilt mean scene.
+* Each course was built twice from the same package: A = the mean, as production does by default; B = with the
+  fallback. Each scene was routed with the base solver and route_learn state-fold models (out-of-fold), on
+  production's card pick.
+* Truth greens found by the scene, A -> B: stoner 3 -> 9 (of 9), woodlyn 3 -> 18, shady 4 -> 18,
+  great_southern 2 -> 17, jones_creek 3 -> 18, grandote 6 -> 17, outdoor_resort 2 -> 10, hunter 0 -> 1.
+
+Holes right, A -> B (default OOF in brackets):
+
+| course | split | A -> B | vintage chosen | warning |
+|---|---|---|---|---|
+| great_southern_ms | ch | 5 -> 16 /17 (1) | 2020 | yes |
+| tb_woodlyn_hills_ia | ch | 4 -> 12 /18 (0) | 2017 | yes |
+| tb_blue_hill_me | ch | 2 -> 8 /9 (6) | 2023 | - |
+| tb_jones_creek_ga | ch | 12 -> 16 /18 (18) | 2017 | - |
+| tb_lakeview_springs_ky / tb_merriland_farm_me | ch | +1 / +1 | 2016 / 2021 | yes / - |
+| tb_stoner_creek_ky / tb_hunter_il / tb_grandote_peaks_co (nu) | | 9 -> 9 / 0 -> 0 / 17 -> 17 | 2018 / 2021 / 2023 | - / yes / - |
+| tb_outdoor_resort_palm_springs_ca | ch | 5 -> 0 /18 | 2016 | yes |
+| tb_mount_kineo_me / tb_el_rio_fl / tb_riverbend_evunbreth_wv | ch | -2 / -2 / -1 | 2015 / 2023 / 2022 | yes / - / - |
+| **tb_shady_hills_in** | **nu** | **4 -> 2 /18** | 2018 | - |
+
+* Choice: +21 holes (6 courses better, 4 worse / -10).
+* Never-used: -2 holes (shady_hills, the only never-used course where the scene changes). Its greens go from 4 to 18,
+  but its card fits the true holes badly (16.9 %), and the numbering stays wrong either way (green under the right
+  number 0.22 -> 0.11).
+* The rebuilt mean scene (A) differs from the bench's stored scene (other package-year choice at TRAIN-BIG time), so
+  the gains are measured A -> B on the same package, not against the bench's out-of-fold result.
+* Fails the ship rule (never-used down), so it is opt-in. The rule was not tuned on these 18 courses further.
+
+Warnings:
+* Fired on hunter, woodlyn and great_southern (the three that look closed) but not on stoner or shady (open; a recent
+  flight shows greens).
+* Also fired on Hawk's Point, mount_kineo, lakeview_springs and outdoor_resort. I have not checked those against the
+  imagery: on Hawk's Point the U-Net finds greens only on 2017, while the package's green_visibility check calls
+  18/18 greens turf on NAIP 2023. So the warning can be a false alarm where the U-Net is weak on recent flights.
+
+Blind loop:
+* FASTSCENE_VINTAGE=0 (the default) is identical to the previous loop (cardfix/loop_on.txt) on all 20 courses.
+* With FASTSCENE_VINTAGE=1 only Hawk's Point (tier D) changes: still shown, P(all) 0.000 -> 0.015, approximate holes
+  12 -> 1, yardage misfits 3 -> 0, plus the outdated-imagery warning (2017 chosen; 2023 shows 8 of 18 greens).
+* The extra years the fallback cached in the loop package do not change the default build (re-run of course 13 with
+  the flag off: identical).
+* Test 28 not read (nothing ships).
+
+Does the 3-vintage mean hurt healthy courses?
+* Only 19 validation choice courses still have per-vintage U-Net probabilities on disk (cache/heldout/probs: d0 + 2
+  y<year>.npz). TRAIN-BIG kept only the mean. That is short of the 40 asked; nothing was refetched.
+* On those 19 (322 true greens):
+
+| U-Net probabilities | P-visible greens | scene greens found | false scene greens |
+|---|---|---|---|
+| mean (production) | 321 | 303 | 39 |
+| per-pixel max | 322 | 303 | 50 |
+| mean without the dormant vintage (lowest turf P) | 321 | 301 | 40 |
+
+* The mean does not bury greens on healthy courses. Max adds false greens. Dropping the dormant vintage changes
+  nothing.
+
+Reproduce (scratch vint/): rebuild.py SLUG... (package -> vroot_A / vroot_B + vint_<slug>.json; deletes the package),
+route.sh ROOT OUT SLUGS, widen.py, sheet_*.jpg, loop_voff.txt / loop_von.txt.

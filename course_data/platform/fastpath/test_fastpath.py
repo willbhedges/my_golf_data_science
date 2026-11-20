@@ -1,4 +1,5 @@
 """Fast path: the extra publish gate and the lie raster."""
+import json
 import os
 import sys
 
@@ -41,3 +42,16 @@ def test_unnumbered_hole_lines_are_detected_only_when_refs_are_missing():
     assert len(route_joint.unnumbered_lines({"features": [way() for _ in range(18)]}, 18)) == 18      # Brookhaven CC
     assert route_joint.unnumbered_lines({"features": [way(str(i + 1)) for i in range(18)]}, 18) is None  # numbered: OSM's own
     assert route_joint.unnumbered_lines({"features": [way() for _ in range(6)]}, 18) is None           # too few lines
+
+
+def test_vintage_fallback_helpers(tmp_path):
+    import fastscene as FS
+    assert FS.hole_greens(dict(summary=dict(greens_hole=4))) == 4
+    assert FS.hole_greens(dict(greens=[dict(kind="hole"), dict(kind="practice")])) == 1
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    card = dict(par=[4] * 9, tee_sets=dict(B=dict(yards=[350] * 9)))
+    (raw / "scorecard_web.json").write_text(json.dumps(dict(cards=[dict(source="golfify", card=card)])))
+    assert FS.package_holes(str(tmp_path)) == 9                   # the card production would pick
+    assert FS.package_holes(str(tmp_path / "missing")) == 18
+    assert not FS.vintage_on() or os.environ.get(FS.VINTAGE_ENV) == "1"   # opt-in

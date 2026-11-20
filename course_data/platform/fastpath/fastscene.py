@@ -411,6 +411,7 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     model = model or load_model()
     if model is None:
         raise FileNotFoundError("no fastscene pixel model (train_pixel.py)")
+    P_given = P
     t = time.time()
     st = grid_stack(pkg_dir, labels=labels)
     st.meta["package"] = os.path.basename(os.path.normpath(pkg_dir))
@@ -433,8 +434,16 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
         t = lap("classify", t)
         fill_seg(st, P, model)
         objm = object_models(model)
-    sc, D = perceive(st, paths=paths, T=T, models=objm,
-                     keep=course_mask(st, float(os.environ.get("FASTSCENE_KEEP_PAD", KEEP_PAD_M))) & ~neg)
+    keep = course_mask(st, float(os.environ.get("FASTSCENE_KEEP_PAD", KEEP_PAD_M))) & ~neg
+    sc, D = perceive(st, paths=paths, T=T, models=objm, keep=keep)
+    if P_given is None and uw and vintage_on():
+        n = package_holes(pkg_dir)
+        if hole_greens(sc) < VINTAGE_MIN * n:            # green-blind scene: the U-Net on each NAIP vintage alone
+            t = time.time()
+            got = vintage_fallback(pkg_dir, sc, uw, mask & ~neg, n, paths=paths, labels=labels, models=objm, T=T)
+            if got is not None:
+                sc, D, P, st = got
+            lap("vintage_s", t)
     T["total"] = round(time.time() - t0, 2)
     sc["fastscene"] = dict(model=os.path.basename(os.path.dirname(model["path"])), seconds=T,
                            pixel_model=model.get("meta", {}).get("id"))
@@ -442,6 +451,112 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
         out = out or pkg_dir
         json.dump(sc, open(os.path.join(out, "scene.json"), "w"), separators=(",", ":"))
     return sc, dict(seconds=T, stack=st, D=D, P=P)
+
+
+VINTAGE_ENV = "FASTSCENE_VINTAGE"   # 1: per-vintage fallback for green-blind scenes (opt-in; NOTES_ROUTING.md 2026-11-20)
+VINTAGE_MIN = 0.5           # a scene with fewer hole greens than this x the hole count is green-blind
+VINTAGE_MAX = 6             # NAIP vintages the fallback tries (the package's own + the newest others, from 2012)
+OUTDATED_YEARS = 3          # greens only on a vintage this many years older than the newest: "possibly closed"
+OUTDATED_WARNING = "possibly closed / imagery outdated"
+
+
+def vintage_on():
+    """FASTSCENE_VINTAGE=1 turns the per-vintage fallback on. Off by default: on the bench it gains on choice but
+    loses 2 holes on the one never-used course it touches (NOTES_ROUTING.md 2026-11-20 "per-vintage fallback")."""
+    return os.environ.get(VINTAGE_ENV, "0") == "1"
+
+
+def hole_greens(sc):
+    s = (sc.get("summary") or {}).get("greens_hole")
+    return int(s) if s is not None else sum(1 for g in sc.get("greens") or [] if g.get("kind") == "hole")
+
+
+def package_holes(pkg_dir):
+    """the hole count the build will route: the request's card file, else the web card production picks
+    (scorecard.choose_card), else 18"""
+    try:
+        sys.path.insert(0, PLAT)
+        import scorecard as scm
+        req = {}
+        p = os.path.join(pkg_dir, "package_request.json")
+        if os.path.exists(p):
+            req = json.load(open(p))
+        card = None
+        if req.get("scorecard") and os.path.exists(str(req["scorecard"])):
+            card = scm.normalise(json.load(open(req["scorecard"])))
+        if card is None:
+            p = os.path.join(pkg_dir, "raw", "scorecard_web.json")
+            web = json.load(open(p)) if os.path.exists(p) else {}
+            pick = scm.choose_card([(c["source"], scm.normalise(c["card"]), c.get("url"))
+                                    for c in web.get("cards") or [] if c.get("card")])
+            card = pick[1] if pick else None
+        n = max((len(s.get("yards") or []) for s in (card or {}).get("tee_sets", {}).values()), default=0)
+        return n if n in (9, 18) else 18
+    except Exception:                                                # noqa: BLE001
+        return 18
+
+
+def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, models=None, T=None):
+    """A green-blind scene (hole greens < VINTAGE_MIN x n on the U-Net mean over the package's NAIP and its 2 newest
+    other vintages): the U-Net on each vintage alone, newest first (the package's own + up to VINTAGE_MAX - 1 others,
+    fetched into imagery/years/ like unet_probs_years' and cached there), each perceived; the scene with the most
+    hole greens wins (ties: the newer; the mean scene stays unless a vintage beats it). A mean can bury greens that
+    one flight shows (0.9 on one, 0.1 on two: 0.37 < 0.5), and a course closed or renovated recently shows greens
+    only on older flights. When no vintage less than OUTDATED_YEARS older than the newest one tried reaches
+    VINTAGE_MIN x n hole greens (only older flights show the course), the scene carries the warning OUTDATED_WARNING (fast.py puts it in the package's warnings; nothing is blocked).
+    -> (scene, D, P, stack) or None when no vintage beats the mean scene."""
+    img = os.path.join(pkg_dir, "imagery")
+    try:
+        g = json.load(open(os.path.join(img, "georef.json")))
+        own = int((g.get("imagery") or {}).get("year") or 0)
+    except Exception:                                                # noqa: BLE001
+        own = 0
+    try:
+        sys.path.insert(0, HERE)
+        import fast_imagery as fim
+        ys = fim.fetch_years(img, VINTAGE_MAX - 1)
+    except Exception:                                                # noqa: BLE001
+        ys = sorted(int(x) for x in os.listdir(os.path.join(img, "years")) if x.isdigit()) \
+            if os.path.isdir(os.path.join(img, "years")) else []
+    cands = [(own, None)] + [(int(y), (os.path.join(img, "years", str(y), "naip_rgb.tif"),
+                                       os.path.join(img, "years", str(y), "naip_nir.tif"))) for y in ys if int(y) != own]
+    cands.sort(key=lambda c: -c[0])
+    cands = cands[:VINTAGE_MAX]
+    tried, best = {}, None
+    for yr, naip in cands:
+        try:
+            st = grid_stack(pkg_dir, labels=labels)
+            Pv = unet_probs(pkg_dir, st, uw, keep_unet, naip=naip)
+            for i, c in enumerate(SEG_ORDER):
+                st.a["seg"][i] = np.clip(np.round(Pv[CLASSES.index(c)] * 255), 0, 255).astype(np.uint8)
+            st.meta["seg_source"] = "unet"
+            neg = osm_negative_mask(st, pkg_dir)
+            scv, Dv = perceive(st, paths=paths, models=models,
+                               keep=course_mask(st, float(os.environ.get("FASTSCENE_KEEP_PAD", KEEP_PAD_M))) & ~neg)
+        except Exception:                                            # noqa: BLE001
+            continue
+        k = hole_greens(scv)
+        tried[yr] = k
+        if best is None or k > best[0]:                              # newest first: a tie keeps the newer
+            best = (k, yr, scv, Dv, Pv, st)
+    k0 = hole_greens(sc0)
+    info = dict(n=n, mean=k0, tried=tried, years=[c[0] for c in cands])
+    if best is None or best[0] <= k0:
+        if T is not None:
+            T["vintage"] = dict(info, chosen=None)
+        sc0.setdefault("fastscene_vintage", dict(info, chosen=None))
+        return None
+    k, yr, scv, Dv, Pv, st = best
+    newest = max(tried)
+    scv["fastscene_vintage"] = dict(info, chosen=yr)
+    recent = [y for y in tried if newest - y < OUTDATED_YEARS]
+    if all(tried[y] < VINTAGE_MIN * n for y in recent):           # no recent flight shows the greens either
+        scv.setdefault("warnings", []).append(
+            f"{OUTDATED_WARNING}: greens show only on NAIP {yr} ({k} hole greens; the vintages since {newest - OUTDATED_YEARS + 1} "
+            f"show at most {max(tried[y] for y in recent)}): the course may have closed or changed since")
+    if T is not None:
+        T["vintage"] = dict(info, chosen=yr)
+    return scv, Dv, Pv, st
 
 
 UNET_GSD_M = 0.6
