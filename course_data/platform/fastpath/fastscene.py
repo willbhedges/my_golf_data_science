@@ -869,10 +869,9 @@ def objects2_dir():
     """FASTSCENE_OBJECTS2: unset -> fastscene_model/objects_unet (our second-stage models, perc_objects.py) when it
     exists; '0' -> off (perception's models); 'features' -> the extra candidate features only (row collection);
     a directory -> its green / tee_box / tee_complex models; a .json -> {package: dir} (cross-fitted folds)"""
-    d = os.path.join(MODEL_DIR, "objects_unet")
-    if _DET.unet_model() != "v1" and os.path.isdir(d + "_" + _DET.unet_model()):   # fitted on that U-Net's candidates
-        d = d + "_" + _DET.unet_model()
-    v = os.environ.get("FASTSCENE_OBJECTS2", d if os.path.isdir(d) else "")
+    v = os.environ.get("FASTSCENE_OBJECTS2")
+    if v is None:                       # fitted on that U-Net's candidates (detector.objects_dir: v3 falls back to v2's)
+        v = _DET.objects_dir(MODEL_DIR) or ""
     return v if v and v != "0" else None
 
 
