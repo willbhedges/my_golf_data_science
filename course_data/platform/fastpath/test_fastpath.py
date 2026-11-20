@@ -54,4 +54,4 @@ def test_vintage_fallback_helpers(tmp_path):
     (raw / "scorecard_web.json").write_text(json.dumps(dict(cards=[dict(source="golfify", card=card)])))
     assert FS.package_holes(str(tmp_path)) == 9                   # the card production would pick
     assert FS.package_holes(str(tmp_path / "missing")) == 18
-    assert not FS.vintage_on() or os.environ.get(FS.VINTAGE_ENV) == "1"   # opt-in
+    assert FS.vintage_on() or os.environ.get(FS.VINTAGE_ENV) == "0"     # default on

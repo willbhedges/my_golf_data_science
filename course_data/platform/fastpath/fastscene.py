@@ -453,17 +453,21 @@ def build(pkg_dir, model=None, out=None, impl="auto", paths=False, log=None, lab
     return sc, dict(seconds=T, stack=st, D=D, P=P)
 
 
-VINTAGE_ENV = "FASTSCENE_VINTAGE"   # 1: per-vintage fallback for green-blind scenes (opt-in; NOTES_ROUTING.md 2026-11-20)
+VINTAGE_ENV = "FASTSCENE_VINTAGE"   # 0: no per-vintage fallback (rollback; NOTES_ROUTING.md 2026-11-20)
 VINTAGE_MIN = 0.5           # a scene with fewer hole greens than this x the hole count is green-blind
 VINTAGE_MAX = 6             # NAIP vintages the fallback tries (the package's own + the newest others, from 2012)
 OUTDATED_YEARS = 3          # greens only on a vintage this many years older than the newest: "possibly closed"
 OUTDATED_WARNING = "possibly closed / imagery outdated"
+CLOSED_TURF = 0.75          # ... and only when, at the chosen greens on every recent flight, the U-Net turf P(green +
+CLOSED_ROUGH = 0.25         # fairway + tee) stays below this, or the NIR roughness of the green over its 15-30 m ring
+                            # stays above this (maintained greens are smooth): calibrated on 7 courses checked by eye
+                            # (closed: hunter, woodlyn_hills, great_southern; open: Hawk's Point, mount_kineo,
+                            # lakeview_springs, outdoor_resort; NOTES_ROUTING.md 2026-11-20)
 
 
 def vintage_on():
-    """FASTSCENE_VINTAGE=1 turns the per-vintage fallback on. Off by default: on the bench it gains on choice but
-    loses 2 holes on the one never-used course it touches (NOTES_ROUTING.md 2026-11-20 "per-vintage fallback")."""
-    return os.environ.get(VINTAGE_ENV, "0") == "1"
+    """On by default (2026-11-20); FASTSCENE_VINTAGE=0 is the rollback (the 3-vintage mean only)."""
+    return os.environ.get(VINTAGE_ENV, "1") != "0"
 
 
 def hole_greens(sc):
@@ -496,6 +500,55 @@ def package_holes(pkg_dir):
         return 18
 
 
+def green_cues(pkg_dir, naip, P, grid, sc):
+    """at the hole greens of scene sc, on one vintage (naip None = the package's own): median U-Net turf
+    P(green + fairway + tee) within 8 m of each green, and on the NAIP pixels median NDVI and NIR roughness (std / mean
+    within 6 m) of the green vs a 15-30 m ring round it -> dict"""
+    import rasterio
+    import pyproj
+    out = {}
+    gs = [g["centroid"] for g in sc.get("greens") or [] if g.get("kind") == "hole"]
+    if not gs:
+        return out
+    tf = pyproj.Transformer.from_crs("EPSG:4326", grid["crs"], always_xy=True)
+    a, _, x0, _, e, y0 = grid["transform"]
+    turf = []
+    for lon, lat in gs:
+        x, y = tf.transform(lon, lat)
+        c, r = int((x - x0) / a), int((y - y0) / e)
+        w = P[:, max(0, r - 8):r + 9, max(0, c - 8):c + 9]
+        if w.size:
+            turf.append(float((w[1] + w[2] + w[3]).mean()))
+    out["turf"] = round(float(np.median(turf)), 3) if turf else None
+    try:
+        src = find_inputs(pkg_dir)
+        rgb, nir = naip if naip else (src["rgb"], src["nir"])
+        with rasterio.open(rgb) as dr, rasterio.open(nir) as dn:
+            red, ni = dr.read(1).astype(np.float32), dn.read(1).astype(np.float32)
+            tr, crs = dr.transform, dr.crs
+        t2 = pyproj.Transformer.from_crs("EPSG:4326", crs, always_xy=True)
+        res = abs(tr.a)
+        nd, rough, ndr, roughr = [], [], [], []
+        yy, xx = np.mgrid[-50:51, -50:51] * res
+        dd = np.hypot(yy, xx)
+        for lon, lat in gs:
+            x, y = t2.transform(lon, lat)
+            c, r = int((x - tr.c) / tr.a), int((y - tr.f) / tr.e)
+            if not (50 <= r < red.shape[0] - 50 and 50 <= c < red.shape[1] - 50):
+                continue
+            R_, N_ = red[r - 50:r + 51, c - 50:c + 51], ni[r - 50:r + 51, c - 50:c + 51]
+            ndvi = (N_ - R_) / np.maximum(N_ + R_, 1)
+            g_, ring = dd <= 6, (dd >= 15) & (dd <= 30)
+            nd.append(float(np.median(ndvi[g_]))); ndr.append(float(np.median(ndvi[ring])))
+            rough.append(float(N_[g_].std() / max(N_[g_].mean(), 1))); roughr.append(float(N_[ring].std() / max(N_[ring].mean(), 1)))
+        if nd:
+            out.update(ndvi=round(float(np.median(nd)), 3), ndvi_ring=round(float(np.median(ndr)), 3),
+                       rough=round(float(np.median(rough)), 3), rough_ring=round(float(np.median(roughr)), 3))
+    except Exception as ex:                                          # noqa: BLE001
+        out["err"] = repr(ex)[:80]
+    return out
+
+
 def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, models=None, T=None):
     """A green-blind scene (hole greens < VINTAGE_MIN x n on the U-Net mean over the package's NAIP and its 2 newest
     other vintages): the U-Net on each vintage alone, newest first (the package's own + up to VINTAGE_MAX - 1 others,
@@ -503,7 +556,8 @@ def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, m
     hole greens wins (ties: the newer; the mean scene stays unless a vintage beats it). A mean can bury greens that
     one flight shows (0.9 on one, 0.1 on two: 0.37 < 0.5), and a course closed or renovated recently shows greens
     only on older flights. When no vintage less than OUTDATED_YEARS older than the newest one tried reaches
-    VINTAGE_MIN x n hole greens (only older flights show the course), the scene carries the warning OUTDATED_WARNING (fast.py puts it in the package's warnings; nothing is blocked).
+    VINTAGE_MIN x n hole greens (only older flights show the course) and those recent flights show no maintained turf
+    at the chosen greens (green_cues: CLOSED_TURF / CLOSED_ROUGH), the scene carries the warning OUTDATED_WARNING (fast.py puts it in the package's warnings; nothing is blocked).
     -> (scene, D, P, stack) or None when no vintage beats the mean scene."""
     img = os.path.join(pkg_dir, "imagery")
     try:
@@ -522,7 +576,7 @@ def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, m
                                        os.path.join(img, "years", str(y), "naip_nir.tif"))) for y in ys if int(y) != own]
     cands.sort(key=lambda c: -c[0])
     cands = cands[:VINTAGE_MAX]
-    tried, best = {}, None
+    tried, best, kept = {}, None, {}
     for yr, naip in cands:
         try:
             st = grid_stack(pkg_dir, labels=labels)
@@ -537,6 +591,7 @@ def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, m
             continue
         k = hole_greens(scv)
         tried[yr] = k
+        kept[yr] = (naip, Pv, st.meta["grid"])
         if best is None or k > best[0]:                              # newest first: a tie keeps the newer
             best = (k, yr, scv, Dv, Pv, st)
     k0 = hole_greens(sc0)
@@ -550,7 +605,14 @@ def vintage_fallback(pkg_dir, sc0, uw, keep_unet, n, paths=False, labels=None, m
     newest = max(tried)
     scv["fastscene_vintage"] = dict(info, chosen=yr)
     recent = [y for y in tried if newest - y < OUTDATED_YEARS]
-    if all(tried[y] < VINTAGE_MIN * n for y in recent):           # no recent flight shows the greens either
+    cues = {y: green_cues(pkg_dir, kept[y][0], kept[y][1], kept[y][2], scv) for y in recent}
+    scv["fastscene_vintage"]["cues"] = cues
+    turf = max((c.get("turf") or 0.0) for c in cues.values()) if cues else 0.0
+    rough = min((c["rough"] / max(c["rough_ring"], 1e-3) for c in cues.values() if c.get("rough") is not None),
+                default=0.0)
+    dead = turf < CLOSED_TURF or rough > CLOSED_ROUGH             # recent flights show no maintained turf there
+    scv["fastscene_vintage"].update(recent_turf=round(turf, 3), recent_rough=round(rough, 3), dead=bool(dead))
+    if dead and all(tried[y] < VINTAGE_MIN * n for y in recent):  # no recent flight shows the greens either
         scv.setdefault("warnings", []).append(
             f"{OUTDATED_WARNING}: greens show only on NAIP {yr} ({k} hole greens; the vintages since {newest - OUTDATED_YEARS + 1} "
             f"show at most {max(tried[y] for y in recent)}): the course may have closed or changed since")

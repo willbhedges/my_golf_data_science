@@ -1276,3 +1276,60 @@ Does the 3-vintage mean hurt healthy courses?
 
 Reproduce (scratch vint/): rebuild.py SLUG... (package -> vroot_A / vroot_B + vint_<slug>.json; deletes the package),
 route.sh ROOT OUT SLUGS, widen.py, sheet_*.jpg, loop_voff.txt / loop_von.txt.
+
+## State 2026-11-20 (later): per-vintage fallback ON by default (coordinator override); "possibly closed" warning tightened
+
+Override of the ship rule, recorded at the coordinator's decision. FASTSCENE_VINTAGE now defaults to on (rollback
+FASTSCENE_VINTAGE=0) although never-used loses 2 holes. The reasons given:
+* Never-used has a single affected course (tb_shady_hills_in), and its scene clearly improves (truth greens found
+  4 -> 18). The hole loss comes from its card, which fits the true holes badly (16.9 %), not from the fallback. This
+  is the small-sample exception already applied to the other agent's work.
+* Choice gains +21 holes.
+* The blind loop's worst tier D course, Hawk's Point, goes from 12 approximate holes to 1.
+
+Warning tightened. The "possibly closed / imagery outdated" warning now also needs the recent flights (less than 3
+years older than the newest tried) to show no maintained turf at the chosen scene's hole greens (`fastscene.green_cues`).
+Either of these is enough:
+* the U-Net turf P(green + fairway + tee) within 8 m of the greens stays below CLOSED_TURF 0.75 on every recent
+  flight;
+* the NIR roughness of the green (std / mean within 6 m) over that of its 15-30 m ring stays above CLOSED_ROUGH 0.25
+  on every recent flight (maintained greens are smooth).
+
+The package's own green_visibility check was not used: it compares each green's NDVI with the course's other greens,
+so a course that is overgrown everywhere still passes it.
+
+Calibrated on 7 courses checked by eye on the NAIP mosaics (scratch vint/sheet_*.jpg; a small sample, read as such):
+
+| course | looks | recent turf max | rough ratio min | warning |
+|---|---|---|---|---|
+| tb_hunter_il | closed | 0.677 | 0.05 | yes |
+| tb_woodlyn_hills_ia | closed | 0.718 | 0.34 | yes |
+| great_southern_ms | closed | 0.352 | 0.23 | yes |
+| Hawk's Point (loop) | open | 0.801 | 0.09 | no (was yes) |
+| tb_mount_kineo_me | open (mowing patterns in 2021) | 0.781 | 0.12 | no (was yes) |
+| tb_lakeview_springs_ky | open (greens visible in 2022) | 0.908 | 0.08 | no (was yes) |
+| tb_outdoor_resort_palm_springs_ca | open (lush in 2022) | 0.858 | 0.01 | no (was yes) |
+
+Stoner and shady never reach the warning: a recent flight shows enough greens.
+
+Blind loop with the default on (scratch vint/loop_def.txt vs vint/loop_voff.txt): 19 of 20 courses are identical. The
+one change is Hawk's Point (tier D): still shown, P(all) 0.000 -> 0.015, approximate holes 12 -> 1, yardage misfits
+3 -> 0, and no warning now.
+
+Test 28 (read once):
+* Only jato_highlands_me triggers: 0 hole greens. It was already a "prepare failed" error in the test bench.
+* Rebuilt from its heldout package, no vintage shows any green (2023 / 2021 / 2018 / 2015: 0 each), so the mean
+  scene stays.
+* The other 27 test scenes do not trigger, so the test is unchanged: 89.23 % / 11 (431 / 483 holes).
+
+Bench caveats:
+* The cached bench scenes (validation and TRAIN-BIG) were built with precomputed U-Net probabilities. The fallback
+  only runs when fastscene.build computes P itself (production), so the bench's stored scenes and numbers do not move.
+  The effect was measured on scratch-rebuilt packages (previous section: choice +21, never-used -2 holes).
+* Cache key: fastscene.py is one of route_bench.DET_PATHS, so commits to it change detector_version(). Bench runs
+  that omit --ver look for scenes under cache/val/scenes/<new hash>_<probs>/ and rebuild them (perceive only, with
+  cached probabilities, so no fallback). Runs that pass `--ver v2seg_d0+yall`, as every routing experiment in these
+  notes does, read the same cached scenes as before and stay comparable.
+
+Reproduce (scratch vint/): cues.py (per-vintage green cues; packages rebuilt and deleted), loop_def.txt,
+rebuild_jato.log.
