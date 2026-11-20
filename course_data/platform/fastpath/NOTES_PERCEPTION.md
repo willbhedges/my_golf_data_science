@@ -133,3 +133,68 @@ TEST-40 (production path: AMX, stride 448, d0+yall), P / R; v1 = test_speedgate_
 TEST-40 was read twice (before / after the object-model refit; nothing tuned on it). Tee complexes trade recall for
 precision (the refitted tee-complex threshold is 0.40 vs 0.325); for routing the lost complexes are the next lever
 (NOTES_ROUTING.md). Probabilities: cache/v2root/heldout/probs (perc_bench PERC_PROBS_DIR; PERC_ROWS_DIR for rows).
+
+## 2026-11-20: tee-targeted fine-tune golfseg_own_v3 (opt-in FASTSCENE_UNET_MODEL=v3; v2 stays the default)
+
+Why: the learning curve (v1 130 -> v2 1329 courses) moved green IoU 0.647 -> 0.689 but tee IoU only 0.331 -> 0.352,
+and the routing bench recall is weakest on wooded tees (tree cover > 0.5 within 15 m: 79 %), small tees (< 100 m2: 86 %),
+par-3 / exec (88 %) and short courses (85 %). v3 fine-tunes v2 with more courses, a tee-label filter and oversampling
+of those groups. Expected routing gain was modest (+10-40 bench holes).
+
+Data (`segment/train/pick_v3.py` -> `v3_courses.json`): v2's draw and label filter with the 1500 v2 courses also excluded
+(id and 1.5 km, as for every evaluation set and TRAIN-BIG); no per-state cap (with 60 a state only 1021 courses / 26 states
+were left): 1510 drawn, 26 states. `build_dataset.py --quality --tee-quality` (tees >= holes, median tee polygon 40-1500 m2,
+>= 85 % of tee polygons 15-4000 m2; passed 36 of 40 local heldout courses, the 4 rejects had tees < holes) kept 1404
+(`dataset_index_v3.json`, data run 44730428783). Trained on v2's data + these: 2661 training courses.
+
+Tree cover for the wooded-tee weight: a NAIP-only proxy was tried first and is useless per tee (vs Meta CHM >= 3 m
+within 15 m: corr 0.25 rule-based, 0.31 logistic; pixel AUC 0.79-0.85), so `segment/train/chm_add.py` warps the Meta / WRI
+canopy height COGs (free, CC BY 4.0) onto every training image grid (tree = >= 3 m, the bench's rule; 1.7 s a course,
+99.98 % agreement with the package chm_meta.tif).
+
+Training (`train_v2.py`, all new flags default off so the v2 recipe is unchanged): init golfseg_own_v2, lr 1e-4,
+`--tee-focus small=2,wood=4,exec=2.5,short=1.5` (tee crop centres on small / wooded tee components, course picks on
+par-3 / exec and short courses), `--tee-min 1`, `--select green,tee` (export the checkpoint with the best mean green +
+tee validation IoU, chosen before training), `--max-val 120`. Fine-tune from v2 on v2 data + new data rather than new data
+alone: keeps what v2 learned, the oversampling only shifts emphasis, and the hash-based validation split equals v2's, so
+v2's step 0 is a direct comparison. Actions: data 44730428783 (smoke failed there: --tee-min dropped the synthetic courses,
+fixed in 489f21b01), training 44731500659 (8467 steps in 2 jobs, exported step 4500), import 44811363124
+(`segment/models/golfseg_own_v3`, README with sha256). Pool loads: 44 exec / 115 short / 1352 regular courses; 82 090
+tee components, 37 231 small, 2 387 wooded; 1 511 loads with a canopy mask.
+
+Validation IoU (120 held-out national courses), v2 (step 0) -> v3 (step 4500): green 0.702 -> 0.719, tee 0.360 -> 0.383,
+fairway 0.707 -> 0.714, bunker 0.512 -> 0.526, water 0.752 -> 0.763, mean 0.607 -> 0.621. Noisy along the run (step 1500:
+tee 0.329; last step 8467: tee 0.372, mean 0.622).
+
+Second-stage object models `fastscene_model/objects_unet_v3` (956aff9d6): v2's recipe on v3's d0 candidates of the same
+114 courses (TRAIN 63 + VAL 51); rows green 2121 / tee box 8342 / tee complex 3140 (v2 2093 / 8724 / 3251); thresholds tee
+box 0.35 (v2 0.425), tee complex 0.40 (= v2). detector.objects_dir: v3 without its folder falls back to objects_unet_v2
+(stderr note).
+
+Gate 1, TEST-40 (read once, production path d0+yall, stride 448). The TEST packages' extra NAIP year tifs had been
+deleted locally; refetched per course (heldout_refetch_years.py) and deleted again. Six newest years are no longer in the
+catalogue (b20_crow_canyon 2024; b20_chevy_chase, b20_cedar_glen, b20_kittansett, b20_falls_village, b20_twisted_pine 2025),
+so v2 is scored on exactly the views v3 has (its cached probabilities, linked; v2's own original read was 0.941 / 0.765 tee
+complexes and 0.939 / 0.917 greens, within 0.002 of the paired reference). Verified on a 5-course dry run with v2 weights
+standing in for v3: probabilities bit-identical, per-course scores identical. P / R (F1):
+
+| element | v2 (paired, objects_unet_v2) | **v3 (objects_unet_v3)** |
+|---|---|---|
+| hole greens | 0.939 / 0.917 (0.928) | **0.936 / 0.929 (0.932)** |
+| greens any | 0.974 / 0.869 (0.919) | 0.968 / 0.897 (0.931) |
+| tee complexes | 0.942 / 0.763 (0.843) | **0.933 / 0.811 (0.868)** |
+| tee boxes | 0.863 / 0.674 (0.757) | **0.859 / 0.709 (0.777)** |
+| fairways | 0.881 / 0.829 (0.854) | 0.857 / 0.843 (0.850) |
+| bunkers | 0.922 / 0.895 (0.908) | 0.930 / 0.895 (0.912) |
+| water | 0.732 / 0.479 (0.579) | 0.724 / 0.482 (0.579) |
+
+Regressions: hole-green precision -0.3 pt, tee-complex precision -0.9 pt, fairway precision -2.4 pt (F1 -0.004). Per course:
+tee complexes found more on 21, fewer on 6 (largest green_harbor_ma +5, kingwood_ga +4, b20_zintel_creek +4, elmcrest_ma +3,
+arrowhead_pointe_ga +3, willowbend_ma +3, woods_hole_ma +2 (a v2 test-28 routing loss traced to lost complexes);
+chaska_wi -2); hole greens more on 7, fewer on 4. Gate 1 passes (tees up, greens not worse). Gate 2 (routing bench, paired
+v2 / v3 on identically rebuilt scenes) runs on GitHub Actions (routing_bench.yml); v3 is not the default until it passes,
+the routing fits are refitted on v3 scenes, and the blind loop and one test-28 read are done.
+
+Reproduce: scratch v3/gate1s.sh (streaming: VAL / TRAIN rows then their probabilities deleted, TEST per course: refetch years,
+v3 probs, eval v3, eval v2 on the same views, delete), v3/gate1_pool.py; per-course evals cache/heldout/eval/test_g1v3_<slug>.json,
+test_g1v2pair_<slug>.json; rows cache/v3root/heldout/rows.
