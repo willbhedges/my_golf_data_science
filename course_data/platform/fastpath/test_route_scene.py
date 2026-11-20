@@ -105,7 +105,10 @@ def test_gate_hard_blocks():
     hf = [dict(ref=str(i + 1), margin=9.0, kind=0, card_rel=0.02, ob=0.0, ph=0.8, cross=0) for i in range(9)]
     assert RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0), p)["show"]
     assert not RG.decide(dict(n_holes=9, hole_features=hf[:8], n_miss=1), p)["show"]
-    assert not RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0), dict(p, threshold=1.1))["show"]
+    # the P(all) threshold blocks under the 'calibrated' policy only; 'auto' (default since 2026-11-17) shows every
+    # complete routing and marks its unsure holes approximate
+    assert not RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0), dict(p, threshold=1.1), show_policy="calibrated")["show"]
+    assert RG.decide(dict(n_holes=9, hole_features=hf, n_miss=0), dict(p, threshold=1.1), show_policy="auto")["show"]
 
 
 def test_gate_card_order_conflict():
