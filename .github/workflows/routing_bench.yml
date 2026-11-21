@@ -45,7 +45,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: routing-bench-smoke-${{ github.ref }}
+  group: routing-bench-${{ github.ref }}-${{ github.sha }}   # one run per request commit: runs of different requests overlap
   cancel-in-progress: false
 
 env:
