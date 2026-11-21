@@ -5,20 +5,22 @@
  "hand_checked": false,
  "main_which": "auto",
  "slug": "eagle_bend",
- "sub": "Lawrence, KS \u00b7 automatic page \u00b7 Blue 6,542 / Gold 7,052 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "sub": "Lawrence, KS \u00b7 automatic page \u00b7 Blue 6,542 / White 5,989 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
  "event": "",
  "package": "course_data/library/eagle_bend/package.json",
  "truth_package": "course_data/library/eagle_bend/package.json",
  "tees": "Blue",
  "alt_bases": {
-  "Gold": "auto_b"
+  "White": "auto_b"
  },
  "sets": [
   "Blue",
+  "White",
   "Gold"
  ],
  "colors": {
   "Blue": "#2a5bd7",
+  "White": "#f2f2f2",
   "Gold": "#d4a017"
  },
  "days": [
@@ -40,25 +42,28 @@
  "forecast": "course_data/library/eagle_bend/weather.json",
  "weather_kind": "forecast",
  "climate": {
-  "temp_lo": 42.1,
+  "temp_lo": 38.5,
   "temp_hi": 69.4,
-  "wind_mph": 13.7,
-  "wind_from": 345,
+  "wind_mph": 13.3,
+  "wind_from": 347,
   "source": "Open-Meteo hourly forecast"
  },
  "grid_prune": true,
- "bases_why": "tee sets of interest + the longest other set (Gold)",
+ "bases_why": "the request's bases; Gold moved along the line",
  "request": "course_data/requests/course_page_eagle_bend.json",
- "rev": 4,
- "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from course_data/library/eagle_bend/card_fix.json, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Blue, Gold. See qa_report.md for the hole-by-hole checks.",
- "built": "2026-11-21T04:10Z",
+ "rev": 5,
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from course_data/library/eagle_bend/card_fix.json, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Blue, White; Gold move the Blue tee along the line. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-11-21T16:22Z",
  "offsets": {
   "auto": [
-   0
+   0,
+   20,
+   60,
+   80
   ],
   "auto_b": [
    0
   ]
  },
- "imagery_display": "2021-07-29"
+ "imagery_display": "NAIP Plus"
 }

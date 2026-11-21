@@ -1,6 +1,6 @@
 # Eagle Bend Golf Course (Lawrence, KS) - Blue tees
 
-Built 2026-11-21T04:08:52Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
+Built 2026-11-21T16:22:39Z. OSM way/151983193. Scorecard: file (course_data/library/eagle_bend/card_fix.json). Tee set: name.
 
 ## Coverage
 
