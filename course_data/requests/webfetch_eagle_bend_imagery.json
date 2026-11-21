@@ -1,0 +1,10 @@
+{
+ "name": "eagle_bend_imagery",
+ "rev": 1,
+ "note": "Eagle Bend (Lawrence KS, 38.9227 N, 95.319 W): which photos USGS NAIP Plus serves here (dates, resolution), and a 0.3 m sample of hole 1 to judge sharpness and turf colour before rebuilding the page with it.",
+ "urls": [
+  "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer/identify?geometry=%7B%22x%22%3A-95.319%2C%22y%22%3A38.9227%2C%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%7D&geometryType=esriGeometryPoint&returnGeometry=false&returnCatalogItems=true&f=pjson",
+  "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer/query?geometry=%7B%22x%22%3A-95.319%2C%22y%22%3A38.9227%2C%22spatialReference%22%3A%7B%22wkid%22%3A4326%7D%7D&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=false&f=pjson",
+  "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPPlus/ImageServer/exportImage?bbox=-95.3240,38.9215,-95.3195,38.9240&bboxSR=4326&imageSR=26915&size=1300,920&format=jpg&bandIds=0,1,2&interpolation=RSP_CubicConvolution&f=image"
+ ]
+}
