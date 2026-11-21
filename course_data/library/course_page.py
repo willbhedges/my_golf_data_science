@@ -8,6 +8,9 @@ Request (course_data/requests/course_page_<slug>.json, schema course_page/1):
    "agent_layers": "course_data/mapper/<slug>/" (optional: the mapper agent's layers, course_data/mapper/BRIEF.md;
                                               applied by platform/package.py after vision + OB),
    "tees": ["Blue", "White"]                 (optional tee sets of interest; default: the two longest sets),
+   "bases": ["Blue", "White"]                (optional: the two sets solved from their own boxes, first = main set;
+                                              other "tees" move the main tee along the line),
+   "display_year": "naipplus" | 2023         (optional: the photo for the hole pictures; "naipplus" = USGS NAIP Plus),
    "days": ["2026-11-07", "2026-11-08"]       (optional event days; default the next Saturday + Sunday),
    "tee_hour": 9.0, "slug": "...", "group": "library" | "gate", "compute": {"draws": 48, "swings": 2500},
    "rev": 1}
@@ -194,6 +197,16 @@ def is_combo(name):
     return bool(re.search(r"/|combo|hybrid|\bmix|-\s*\w+\s*$|&", name, re.I))
 
 
+def match_set(pkg, w):
+    """A tee-set name or colour from a request -> the card's set name, or None."""
+    sets = {s: v for s, v in (pkg.get("tee_sets") or {}).items() if v.get("total")}
+    w0 = str(w).strip().lower()
+    for s, v in sets.items():
+        if s.lower() == w0 or (v.get("colour") or "").lower() == w0 or w0 in [a.lower() for a in v.get("aliases") or []]:
+            return s
+    return None
+
+
 def choose_bases(pkg, want):
     """-> (bases [longest first, at most 2], extra sets, note). want = tee sets of interest (names or colours)."""
     sets = {s: v for s, v in (pkg.get("tee_sets") or {}).items() if v.get("total")}
@@ -327,6 +340,12 @@ def configure(q):
             shutil.copy(os.path.join(raw, f), out_dir(q, "raw", f))
     check_imagery(q, pkg)
     bases, extra, why = choose_bases(pkg, q.get("tees"))
+    if q.get("bases"):                          # request "bases": the solved sets, in this order (the first is the page's
+        named = list(dict.fromkeys(m for m in (match_set(pkg, w) for w in q["bases"]) if m))[:2]   # main set); other
+        if named:                                                                                  # "tees" move its tee
+            rest = list(dict.fromkeys(m for m in (match_set(pkg, w) for w in q.get("tees") or []) if m and m not in named))
+            bases, extra = named, rest
+            why = "the request's bases" + (f"; {', '.join(rest)} moved along the line" if rest else "")
     days = q.get("days") or next_weekend(dt.date.today())
     c = pkg["course"]
     lon, lat = c["center"]
@@ -364,6 +383,8 @@ def configure(q):
     sharp = sharp_choice(pkg)
     g = rj(os.path.join(CD, "packages", slug, "imagery", "georef.json")) or {}
     bbox = g.get("padded_bbox_wgs84_snwe")
+    if q.get("display_year"):                   # request "display_year": "naipplus" (USGS NAIP Plus, 0.3 m) or a NAIP year
+        sharp = dict(year=str(q["display_year"]), reason="the request's display_year (hole pictures only)")
     wj(out_dir(q, "sharp.json"), dict(sharp or {}, bbox=bbox, use=bool(sharp and bbox)))
     log(f"{slug}: bases {bases} ({why}); extra {extra}; days {days}; weather {w['kind']}; temps {temps}; sharp {sharp}")
     print("SHARP_YEAR=" + (str(sharp["year"]) if sharp and bbox else ""))

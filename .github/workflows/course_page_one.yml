@@ -182,8 +182,13 @@ jobs:
         if: steps.pkg.outputs.ok == '1' && steps.cfg.outputs.SHARP_YEAR != ''
         continue-on-error: true
         run: |
-          python course_data/imagery/fetch_imagery.py --bbox ${{ steps.cfg.outputs.SHARP_BBOX }} --margin 0 \
-            --year ${{ steps.cfg.outputs.SHARP_YEAR }} --lo-res 0.3 --no-dem --name "$S" --out /tmp/sharp
+          # request "display_year": "naipplus" -> USGS NAIP Plus 0.3 m (display_imagery.py; its own fallback year on failure)
+          if [ "${{ steps.cfg.outputs.SHARP_YEAR }}" = "naipplus" ]; then
+            python course_data/imagery/display_imagery.py fetch --slug "$S" --year naipplus --dir /tmp/sharp
+          else
+            python course_data/imagery/fetch_imagery.py --bbox ${{ steps.cfg.outputs.SHARP_BBOX }} --margin 0 \
+              --year ${{ steps.cfg.outputs.SHARP_YEAR }} --lo-res 0.3 --no-dem --name "$S" --out /tmp/sharp
+          fi
       - name: Prepare the solved bases (course module, hole pictures, elevation)
         if: steps.pkg.outputs.ok == '1'
         run: |
