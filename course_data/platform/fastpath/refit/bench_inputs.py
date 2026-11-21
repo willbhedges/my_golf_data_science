@@ -2,7 +2,7 @@
 (.github/workflows/routing_bench.yml stage `inputs`), for TRAIN-BIG courses (tb_*) and the validation-set train courses.
 Same NAIP years as the local bench: benchdata/big/pinned_years.json / benchdata/val/pinned_years.json (package year +
 the extra years its scenes used). A pinned package year no longer served -> the first served year above the extra
-years, else the newest served; an extra year equal to the package year or not served is dropped, and fastscene's
+years, else (no extra years, or none above them) the newest served; an extra year equal to the package year or not served is dropped, and fastscene's
 fetch_years tops the extra years up to its k with the newest other served years (as a fresh build would).
 Detector: the environment (FASTSCENE_UNET_MODEL, or FASTSCENE_UNET / FASTSCENE_OBJECTS2), FASTSCENE_VINTAGE=0.
 Writes the cache layout route_bench / route_learn read (FASTPATH_CACHE=OUT_DIR):
@@ -81,7 +81,7 @@ def fetch(slug, pkg):
     extra = list(pin.get("extra") or [])
     want = pin["pkg"]
     if want not in have:
-        want = next((y for y in have if y > max(extra or [0])), have[-1] if have else want)
+        want = next((y for y in have if y > max(extra)), have[-1]) if extra and have else (have[-1] if have else want)
     fim.fetch(course["bbox"], img, None, str(want), label=course.get("name"))
     fim.to_06(img)
     g = json.load(open(os.path.join(img, "georef.json")))
@@ -176,7 +176,15 @@ def main():
         rec = dict(slug=slug, cpu=c, env=env)
         pkg = os.path.join(root, slug)
         try:
-            rec["fetch"] = fetch(slug, pkg)
+            for k in range(4):                 # Planetary Computer's token endpoint answers 429 under load
+                try:
+                    rec["fetch"] = fetch(slug, pkg)
+                    break
+                except Exception as e:                               # noqa: BLE001
+                    if "429" not in repr(e) or k == 3:
+                        raise
+                    shutil.rmtree(pkg, ignore_errors=True)
+                    time.sleep(60 * (k + 1))
             rec.update(perceive(slug, pkg, out))
             rec["imagery"], rec["files"] = imagery_record(pkg)
         except Exception as e:                                       # noqa: BLE001
