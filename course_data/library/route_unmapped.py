@@ -79,12 +79,33 @@ def main(req):
     os.makedirs(out, exist_ok=True)
     if ok:
         shutil.copy(sup, os.path.join(out, "routed_holes.geojson"))
-        card = os.path.join(d, "raw", "scene_card.json")
-        if os.path.exists(card):
-            shutil.copy(card, os.path.join(out, "routed_card.json"))
+        card = routed_card(d)
+        if card:
+            json.dump(card, open(os.path.join(out, "routed_card.json"), "w"), indent=1)
+            info["card"] = card.get("source")
     json.dump(info, open(os.path.join(out, "routing.json"), "w"), indent=1)
     print("route_unmapped:", r.get("status"), "|", (r.get("why") or "")[:300], "| supplement", "written" if ok else "none")
     return 0 if ok else 1
+
+
+def routed_card(d):
+    """The scorecard the routed build used, as a card file for the page's package. The page's own card search runs
+    after the routed lines exist and checks each web card against their lengths; routed lines often start at a
+    forward tee, so it would reject the very card the routing was fitted to and build the page without yardages."""
+    p = os.path.join(d, "raw", "scene_card.json")              # the router switched cards / a 9-hole repeating card
+    if os.path.exists(p):
+        return json.load(open(p))
+    pj, web = os.path.join(d, "package.json"), os.path.join(d, "raw", "scorecard_web.json")
+    if not (os.path.exists(pj) and os.path.exists(web)):
+        return None
+    sc = json.load(open(pj)).get("scorecard") or {}
+    for c in json.load(open(web)).get("cards") or []:
+        if c.get("card") and c.get("source") == sc.get("source") and (not sc.get("url") or c.get("url") == sc.get("url")):
+            card = dict(c["card"])
+            if c.get("url") and not isinstance(card.get("source"), str):
+                card["source"] = c["url"]
+            return card
+    return None
 
 
 if __name__ == "__main__":
