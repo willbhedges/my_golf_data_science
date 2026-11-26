@@ -226,12 +226,15 @@ def card_agreement(a, b):
 
 def card_corroboration(card, web_cards):
     """number of web scorecards from another source that agree with `card` (the one the routing used). web_cards:
-    scorecard_web.json's [{source, url, card}]. A web card with the same tee sets is `card` itself."""
+    scorecard_web.json's [{source, url, card}]. The first web card with the same tee sets is `card` itself; a
+    second site carrying the very same numbers does count (the rule was measured that way)."""
     mine = _sets(card)
     if not mine:
         return 0
-    own = {c.get("source") for c in web_cards or [] if c.get("card") and _sets(c["card"]) == mine}
-    return sum(1 for c in web_cards or [] if c.get("card") and c.get("source") not in own
+    cards = [c for c in web_cards or [] if c.get("card")]
+    own = next((c for c in cards if _sets(c["card"]) == mine), None)
+    src = own.get("source") if own else None
+    return sum(1 for c in cards if c is not own and (src is None or c.get("source") != src)
                and card_agreement(card, c["card"]) >= CORROBORATE_SHARE)
 
 

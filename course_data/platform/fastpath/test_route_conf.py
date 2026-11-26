@@ -53,6 +53,8 @@ def test_card_corroboration_counts_other_sources_only():
     other = dict(source="opengolfapi", card=dict(tee_sets={"Back": dict(yards=[v + 5 for v in y])}))
     wrong = dict(source="allsquare", card=dict(tee_sets={"Back": dict(yards=y[::-1])}))
     assert RC.card_corroboration(card, [same]) == 0
+    assert RC.card_corroboration(card, [same, dict(source="allsquare", card=card)]) == 1   # same numbers, other site
+    assert RC.card_corroboration(card, [same, dict(source="golfify", card=card)]) == 0
     assert RC.card_corroboration(card, [same, other, wrong]) == 1
     assert RC.verified(dict(p_id={"1": 0.99, "2": 0.9}), card, [same, other]) == (["1"], 1)
     assert RC.verified(dict(p_id={"1": 0.99}), card, [same, wrong]) == ([], 0)
