@@ -1,6 +1,6 @@
 # Lake of the Woods Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-26T10:47:46Z. OSM way/387184389. Scorecard: file (course_data/library/lake_of_the_woods_como/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-26T12:01:44Z. OSM way/387184389. Scorecard: file (course_data/library/lake_of_the_woods_como/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
