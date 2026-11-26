@@ -1,10 +1,15 @@
 {
- "fetched_utc": "2026-10-30T11:40:14Z",
+ "fetched_utc": "2026-11-26T07:37:01Z",
  "tried": [
   {
    "source": "golfify",
    "ok": true,
    "info": "https://www.golfify.io/courses/brown-deer-golf-club"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: brown-deer-golf-club: state WI != IA; the-brown-deer-golf-club: HTTP 404; brown-deer-golf-course: HTTP 404; brown-deer-country-club: HTTP 404"
   },
   {
    "source": "club_site",
@@ -554,5 +559,33 @@
     }
    }
   }
- ]
+ ],
+ "consensus": {
+  "base": "golfify",
+  "base_url": "https://www.golfify.io/courses/brown-deer-golf-club",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "golfify https://www.golfify.io/courses/brown-deer-golf-club": {
+    "holes": 0,
+    "fit": 0,
+    "share": null,
+    "mean_err": null,
+    "all_sets": 0.0,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 1
+   },
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/b4f01ddb-0dd8-4d94-a4dd-a5e66f72049f": {
+    "holes": 0,
+    "fit": 0,
+    "share": null,
+    "mean_err": null,
+    "all_sets": 0.0,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 1
+   }
+  }
+ }
 }
