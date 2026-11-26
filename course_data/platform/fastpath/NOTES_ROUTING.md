@@ -1954,3 +1954,9 @@ Refit: python3 route_conf.py fit_id ../../research/artifacts/pair_v3/44817755394
 * picture_checks.TEE_TOL 3 -> 8 yds: 52 mapped library holes failed only by a marker 4-8 yds off the tee polygon.
   Of 507 failing mapped holes, 249 fail on the tee-box check alone; the rest of those are walkback / lidar-pad tees
   30-40 yds from any mapped box (the card yardage matches no mapped tee), which stay unverified.
+* Tier C (route_joint) verified holes, `route_conf.verified_joint`: `route_bench.py joint --split train+big` rerun
+  (631 courses per mode). Lines mode (OSM's hole lines without refs) 97.2 % numbered right; margin >= 4 and a
+  corroborated card: 56 % of holes, 99.6 % right (23 wrong); margin >= 4 alone 98.7 %. Osm mode (greens and tees
+  only) 81 % right and no margin / card-fit / corroboration rule passes 96 %: never verified (Brown Deer, Glen Mills).
+* build_holes.build: a way with no ref took number len(out) + 1, which replaced Ironhorse's hole 17 (hole 4's green
+  and par) once OSM lost a hole way; it now takes a number above every mapped one.

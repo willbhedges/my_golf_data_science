@@ -98,6 +98,17 @@ def main(req):
         info.update(router=x.get("version"), ensemble={k: v for k, v in e.items() if k not in ("p", "p_id")},
                     verified=e.get("verified") or [], p_id=e.get("p_id"), card_corroborated=e.get("card_corroborated"), gate=(x.get("gate") or {}).get("reasons"),
                     card_select={k: v for k, v in (x.get("card_select") or {}).items() if k != "card"})
+    rj = os.path.join(d, "route_joint.json")
+    if os.path.exists(rj) and not os.path.exists(rs) and os.path.exists(sup):
+        # OSM's own hole lines, numbered by the joint solver: verified where the numbering is clear-cut
+        try:
+            import route_conf
+            web = json.load(open(os.path.join(d, "raw", "scorecard_web.json"))).get("cards") or []
+            v, nc = route_conf.verified_joint(json.load(open(sup)).get("features"), json.load(open(rj)),
+                                              routed_card(d), web)
+            info.update(verified=v, card_corroborated=nc)
+        except Exception as e:                                   # noqa: BLE001
+            logs.append(f"verified_joint: {type(e).__name__}: {e}"[:200])
     pj = os.path.join(d, "package.json")
     if os.path.exists(pj):
         P = json.load(open(pj))

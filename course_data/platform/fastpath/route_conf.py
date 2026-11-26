@@ -246,6 +246,24 @@ def verified(pk, card, web_cards):
     return sorted(v, key=lambda r: (not str(r).isdigit(), int(r) if str(r).isdigit() else 0)), n
 
 
+JOINT_VERIFY_MARGIN = 4.0
+
+
+def verified_joint(features, routed, card, web_cards):
+    """-> (sorted refs verified, corroborating cards) for a route_joint routing of OSM's own unnumbered hole lines
+    (routed["mode"] set; features: its golf=hole ways with `margin`). Verified: the numbering margin >= 4, no hole
+    without a tee or green, and a second scorecard source agrees. route_bench joint, train+big 631 courses, lines
+    mode: 56 % of holes, 99.6 % numbered right (23 wrong); without the second card 98.7 %. With greens and tees only
+    (no lines) no rule passes 96 %, so nothing is verified there."""
+    n = card_corroboration(card, web_cards)
+    if not n or not (routed or {}).get("mode") or (routed or {}).get("n_virtual"):
+        return [], n
+    v = [str(f["properties"]["ref"]) for f in features or []
+         if (f.get("properties") or {}).get("golf") == "hole" and f["properties"].get("ref") is not None
+         and float(f["properties"].get("margin") or 0.0) >= JOINT_VERIFY_MARGIN]
+    return sorted(v, key=lambda r: (not r.isdigit(), int(r) if r.isdigit() else 0)), n
+
+
 # ---------------------------------------------------------------------------------------------------------- fit
 
 def _runs(dirs):

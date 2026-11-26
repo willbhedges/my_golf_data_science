@@ -58,3 +58,16 @@ def test_card_corroboration_counts_other_sources_only():
     assert RC.card_corroboration(card, [same, other, wrong]) == 1
     assert RC.verified(dict(p_id={"1": 0.99, "2": 0.9}), card, [same, other]) == (["1"], 1)
     assert RC.verified(dict(p_id={"1": 0.99}), card, [same, wrong]) == ([], 0)
+
+
+def test_verified_joint_needs_lines_margin_and_a_second_card():
+    import route_conf as RC
+    y = [400, 150, 520, 380, 410, 170, 390, 505, 360]
+    card = dict(tee_sets={"Blue": dict(yards=y)})
+    web = [dict(source="golfify", card=card), dict(source="allsquare", card=card)]
+    fs = [dict(properties=dict(golf="hole", ref=str(i + 1), margin=m)) for i, m in enumerate([9.0, 3.9, 4.0])]
+    lines = dict(mode="unnumbered OSM hole lines ordered", n_virtual=0)
+    assert RC.verified_joint(fs, lines, card, web) == (["1", "3"], 1)
+    assert RC.verified_joint(fs, lines, card, web[:1]) == ([], 0)
+    assert RC.verified_joint(fs, dict(n_virtual=0), card, web) == ([], 1)              # greens and tees only
+    assert RC.verified_joint(fs, dict(lines, n_virtual=1), card, web) == ([], 1)
