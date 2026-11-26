@@ -465,10 +465,13 @@ def build(fc, tee_tag=None, lengths=None, extra_layers=(), only=None, world=None
     # numbered hole missing is a real hole's number: Ironhorse's unnumbered spare line became, and replaced, hole 17)
     taken = {str(h["props"]["ref"]) for h in holes if h["props"].get("ref")}
     spare = max([int(r) for r in taken if r.isdigit()] + [0])
+    numbered = len(taken) * 2 >= len(holes)
     for hole in holes:
         p = hole["props"]
         if p.get("ref"):
             ref = str(p["ref"])
+        elif numbered and not hole.get("inferred"):
+            continue        # a spare / practice line on a course whose holes are numbered: not a hole
         else:
             spare = max(spare, len(out)) + 1
             ref = str(spare)
