@@ -351,3 +351,18 @@ def test_s2_stage_before_the_rebuild_and_committed():
     fin = {s.get("name"): s for s in wf["jobs"]["finish"]["steps"]}
     assert "vision_any/s2/$S/" in fin["S2 stack fetched by the package job (commit it with the course data)"]["run"]
     assert "vision_any/s2/$S/s2_stack.npz" in fin["Commit"]["run"]
+
+
+def test_verified_holes_mapped_and_routed():
+    pkg = dict(pipeline=dict(profile=dict(card=True), holes=dict(method="osm")), scorecard=dict(kind="web", flags=["x"]),
+               holes={"1": {}, "2": {}, "3": {}})
+    ck = lambda st: dict(course=dict(pars_ok=True), holes={k: dict(status=v) for k, v in zip("123", st)})   # noqa: E731
+    checks = dict(auto=ck(["PASS", "CHECK", "PASS"]), alt=ck(["PASS", "PASS", "PASS"]))
+    assert cp.verified_holes(pkg, checks, {}, None, None) == ["1", "3"]
+    assert cp.verified_holes(pkg, checks, {2: ["bad"]}, None, None) == ["1"]
+    assert cp.verified_holes(pkg, checks, {}, None, None, blocked=True) == []
+    assert cp.verified_holes(pkg, checks, {}, dict(verified=["1", "2", "3"]), ["3"]) == ["1"]
+    assert cp.verified_holes(pkg, checks, {}, dict(verified=[]), []) == []
+    pkg["pipeline"]["holes"]["method"] = "v2+structure"
+    assert cp.verified_holes(pkg, checks, {}, None, None) == []
+    assert cp.span_text(["1", "2", "3", "5", "9", "10"]) == "1-3, 5, 9-10"

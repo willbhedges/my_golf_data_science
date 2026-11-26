@@ -944,6 +944,15 @@ def _ensemble(pkg_dir, fc, card, n_holes, r, ci, scene):
             os.environ.pop(k, None) if v is None else os.environ.__setitem__(k, v)
     pk.update(model="pair", second=os.path.basename(os.path.dirname(RC.SECOND_UNET)), seconds=round(time.time() - t, 1),
               right_a=None, right_b=None)
+    try:                                 # verified holes: P(identity) >= VERIFY_P and a second card source agrees
+        import json as _json
+        web = _json.load(open(os.path.join(pkg_dir, "raw", "scorecard_web.json"))).get("cards") or []
+    except Exception:                                                # noqa: BLE001
+        web = []
+    try:
+        pk["verified"], pk["card_corroborated"] = RC.verified(pk, card, web)
+    except Exception as e:                                           # noqa: BLE001
+        pk["verified"], pk["verify_error"] = [], f"{type(e).__name__}: {e}"[:200]
     if pk["use"] == "b":
         for k in ("card_select",):                                   # the card choice was made on the first routing
             if k in r:

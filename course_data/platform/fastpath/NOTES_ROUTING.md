@@ -1888,3 +1888,45 @@ Test 28 was not read (no paired routings exist for it).
 Same day, tee placement on routed courses (platform/package.py, platform/sanity.py, 033421131): the far cap is off when
 the tee boxes are detections, and a tee straight behind the line start is not sent back for standing beside another
 hole's tee. Card misfits over 15 yd on the right holes of the 4 builds: 7 -> 0.
+
+## State 2026-11-26 (later): verified holes (route_conf 'pair_id' model + card corroboration)
+
+Goal: holes the page can show as right with no human check. Out of fold by course (8 folds) on the paired 594 TRAIN-BIG
+courses, routing A scored against B.
+
+Ceiling of the shipped P(hole right): at P >= 0.97 the holes are 97.0 % right and no threshold passes 98.6 %. What the
+confident wrong holes are (P >= 0.97, forward-tee label, 110 of 4,714):
+
+| | holes |
+|---|---|
+| green right, tee more than 40 yd off the mapped centre line | 61 |
+| a real hole under another number (nine swap 20, other 13) | 33 |
+| green matches no mapped hole end | 14 |
+| another hole's green | 2 |
+
+* The tee cases are mostly a forward box beside the mapped line, on the right hole, with the card fitting within 5 yd.
+  Label `identity_ok` (route_conf.py): green within 20 yd and the tee within 90 yd of the first 60 % of the hole's line
+  with no other hole's line nearer. Holes right 88.3 % -> 89.5 %.
+* The number cases cluster in a few courses whose card sequence is not the map's (Lincolnshire Fields 16 holes, Spring
+  Lake 8, Burlington 6, Jersey Meadow 5): one card source, no second source agreeing.
+* A third routing (arm C) as extra features: no gain (98.3 -> 98.5 % at half the holes).
+
+Rule (truth-free): VERIFIED = P_id >= 0.98 (model 'pair_id', fitted on identity_ok) and at least one scorecard from
+another source agreeing with the card used on 80 % of the holes within 12 yd (route_conf.card_corroboration).
+
+| | holes verified | tee and green right | green and number right |
+|---|---|---|---|
+| all 594 | 31.7 % | 99.14 % (27 wrong of 3,124) | 99.65 % |
+| never-used 198 | 29.7 % | 99.18 % | 99.80 % |
+| choice 396 | 32.7 % | 99.12 % | 99.58 % |
+
+322 of 594 courses get at least one verified hole (median 9.5), 22 get all 18. Threshold 0.97: 39.1 % at 98.96 %.
+The threshold and the rule were chosen on these same out-of-fold predictions; the never-used split is the check.
+
+Wired: route_scene._ensemble -> r["ensemble"] p_id / verified / card_corroborated; library/route_unmapped.py ->
+routing.json; library/course_page.py verified_holes: a routed hole must also pass every picture check on every solved
+set and not be approximate. On a fully OSM-mapped course every hole that passes its checks with a matched card is
+verified. status.json `verified_holes`, the page subtitle and each hole's `verified`. Library backfill from the stored
+qa.json files (mapped pages only): 1,071 of 1,791 holes verified, 48 of 100 courses with 14 or more.
+
+Refit: python3 route_conf.py fit_id ../../research/artifacts/pair_v3/44817755394 ../../research/artifacts/pair_v3/44823590755

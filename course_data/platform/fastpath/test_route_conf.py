@@ -43,3 +43,16 @@ def test_single_model_scores_a_routing_alone():
     a = _course("A")
     p = RC.score(a)
     assert set(p) == {h["ref"] for h in a["route"]["hole_features"]} and all(0.0 <= v <= 1.0 for v in p.values())
+
+
+def test_card_corroboration_counts_other_sources_only():
+    import route_conf as RC
+    y = [400, 150, 520, 380, 410, 170, 390, 505, 360]
+    card = dict(tee_sets={"Blue": dict(yards=y), "Red": dict(yards=[v - 60 for v in y])})
+    same = dict(source="golfify", card=card)
+    other = dict(source="opengolfapi", card=dict(tee_sets={"Back": dict(yards=[v + 5 for v in y])}))
+    wrong = dict(source="allsquare", card=dict(tee_sets={"Back": dict(yards=y[::-1])}))
+    assert RC.card_corroboration(card, [same]) == 0
+    assert RC.card_corroboration(card, [same, other, wrong]) == 1
+    assert RC.verified(dict(p_id={"1": 0.99, "2": 0.9}), card, [same, other]) == (["1"], 1)
+    assert RC.verified(dict(p_id={"1": 0.99}), card, [same, wrong]) == ([], 0)

@@ -95,7 +95,8 @@ def main(req):
     if os.path.exists(rs):
         x = json.load(open(rs))
         e = x.get("ensemble") or {}
-        info.update(router=x.get("version"), ensemble={k: v for k, v in e.items() if k != "p"}, gate=(x.get("gate") or {}).get("reasons"),
+        info.update(router=x.get("version"), ensemble={k: v for k, v in e.items() if k not in ("p", "p_id")},
+                    verified=e.get("verified") or [], p_id=e.get("p_id"), card_corroborated=e.get("card_corroborated"), gate=(x.get("gate") or {}).get("reasons"),
                     card_select={k: v for k, v in (x.get("card_select") or {}).items() if k != "card"})
     pj = os.path.join(d, "package.json")
     if os.path.exists(pj):

@@ -192,8 +192,55 @@ def pick(a, b):
     sa, sb = sum(pa.values()), sum(pb.values())
     use = "b" if pb and sb > sa + PICK_MARGIN else "a"
     ag = [f["x_dg"] <= 20 for _, f in cross_rows(a, b) if np.isfinite(f["x_dg"])]
-    return dict(use=use, p=pb if use == "b" else pa, sum_a=round(sa, 2), sum_b=round(sb, 2),
-                agree=round(float(np.mean(ag)), 3) if ag else None)
+    out = dict(use=use, p=pb if use == "b" else pa, sum_a=round(sa, 2), sum_b=round(sb, 2),
+               agree=round(float(np.mean(ag)), 3) if ag else None)
+    if "pair_id" in _load():
+        rows = cross_rows(b, a) if use == "b" else cross_rows(a, b)
+        out["p_id"] = {ref: round(float(v), 4) for (ref, _), v in zip(rows, _predict(rows, "pair_id"))}
+    return out
+
+
+# ------------------------------------------------------------------------------------------------- verified holes
+# A hole is VERIFIED (shown as right with no human check) when the 'pair_id' model gives it P(the green is this hole's
+# and the tee stands on this hole) >= VERIFY_P and a second scorecard source agrees with the card the routing used.
+# Out of fold by course on the 594 paired TRAIN-BIG courses (NOTES_ROUTING.md 2026-11-26, verified holes): 31.7 % of
+# holes verified, 99.1 % of them right (never-used split: 29.7 %, 99.2 %); green and number right 99.65 %.
+VERIFY_P = 0.98
+CORROBORATE_YD = 12.0          # two cards agree on a hole within this
+CORROBORATE_SHARE = 0.8        # ... on this share of the holes, in their best pair of tee sets
+
+
+def _sets(card):
+    return [list(v.get("yards") or []) for v in ((card or {}).get("tee_sets") or {}).values()]
+
+
+def card_agreement(a, b):
+    """share of holes on which two cards' yardages agree, in their best-matching pair of tee sets (0 when none pairs)"""
+    best = 0.0
+    for ya in _sets(a):
+        for yb in _sets(b):
+            if ya and len(ya) == len(yb):
+                best = max(best, float(np.mean([bool(x and z and abs(x - z) <= CORROBORATE_YD) for x, z in zip(ya, yb)])))
+    return best
+
+
+def card_corroboration(card, web_cards):
+    """number of web scorecards from another source that agree with `card` (the one the routing used). web_cards:
+    scorecard_web.json's [{source, url, card}]. A web card with the same tee sets is `card` itself."""
+    mine = _sets(card)
+    if not mine:
+        return 0
+    own = {c.get("source") for c in web_cards or [] if c.get("card") and _sets(c["card"]) == mine}
+    return sum(1 for c in web_cards or [] if c.get("card") and c.get("source") not in own
+               and card_agreement(card, c["card"]) >= CORROBORATE_SHARE)
+
+
+def verified(pk, card, web_cards):
+    """-> (sorted refs verified, number of corroborating cards) for a pick() result"""
+    n = card_corroboration(card, web_cards)
+    pid = pk.get("p_id") or {}
+    v = [r for r, p in pid.items() if p >= VERIFY_P] if n else []
+    return sorted(v, key=lambda r: (not str(r).isdigit(), int(r) if str(r).isdigit() else 0)), n
 
 
 # ---------------------------------------------------------------------------------------------------------- fit
@@ -241,7 +288,65 @@ def fit(dirs, out=MODEL, seeds=5):
     print("wrote", out, round(os.path.getsize(out) / 1e6, 2), "MB")
 
 
+def identity_ok(truth, line):
+    """The verified-hole label: the routed green within 20 yd of the mapped hole's end, and the routed tee within 90 yd
+    of the first 60 % of its mapped line with no other hole's line nearer. (routing.score's 40 yd tee tolerance calls a
+    forward box beside the centre line wrong: 61 of the 110 wrong holes at P >= 0.97 were such tees.)"""
+    from routing import Proj, _seg_dist
+
+    def one(ref):
+        ln, t = line.get(ref), truth.get(ref)
+        if not t or not ln or not ln.get("co"):
+            return False
+        pr = Proj(*t["green_ll"])
+        if math.hypot(*pr.fwd(*ln["co"][-1])) > 20:
+            return False
+        p = np.asarray(pr.fwd(*ln["co"][0]))
+
+        def dist(tt, frac):
+            xy = pr.ring(tt["line"])
+            cum = np.r_[0, np.cumsum(np.hypot(*np.diff(xy, axis=0).T))]
+            return _seg_dist(p, xy[: max(2, int(np.searchsorted(cum, frac * cum[-1])) + 1)])
+        own = dist(t, 0.6)
+        return own <= 90 and all(dist(tt, 1.0) >= own for k, tt in truth.items() if k != ref)
+    return one
+
+
+def fit_id(dirs, out=MODEL, seeds=5):
+    """Add the 'pair_id' model (the verified-hole label, identity_ok or the bench's forward-tee hole_ok_fwd) to the
+    fitted file; the other models are left as they are. Needs the bench courses' OSM truth (route_bench.course_files)."""
+    import sys
+    import lightgbm as lgb
+    sys.path.insert(0, os.path.dirname(HERE))
+    import route_bench as RB
+    import routing as R
+    Rn = _runs(dirs)
+    arms = sorted({k for v in Rn.values() for k in v if not k.startswith("A") or k == "A"})
+    rows = []
+    for s, v in sorted(Rn.items()):
+        truth = {k: t for k, t in R.truth_from_fc(RB.course_files(s)[0]).items() if int(k) <= 18}
+        for x in arms:
+            if x not in v:
+                continue
+            ok = identity_ok(truth, v[x].get("lines") or {})
+            fwd = v[x].get("hole_ok_fwd") or v[x]["hole_ok"]
+            for y in arms:
+                if y != x and y in v:
+                    rows += [(s, bool(fwd.get(ref, False)) or ok(ref), f) for ref, f in cross_rows(v[x], v[y])]
+    d = json.load(open(out))
+    prm = d["params"]
+    cols = sorted({k for r in rows for k in r[2]})
+    X = np.array([[float(r[2].get(c, NAN)) for c in cols] for r in rows], float)
+    y = np.array([r[1] for r in rows])
+    bs = [lgb.LGBMClassifier(random_state=sd, **prm).fit(X, y).booster_.model_to_string() for sd in range(seeds)]
+    d["models"]["pair_id"] = dict(cols=cols, boosters=bs, rows=len(y), courses=len({r[0] for r in rows}), right=round(float(y.mean()), 4))
+    json.dump(d, open(out, "w"))
+    print("pair_id", X.shape, "right", round(float(y.mean()), 4), "wrote", out, round(os.path.getsize(out) / 1e6, 2), "MB")
+
+
 if __name__ == "__main__":
     import sys
     if sys.argv[1] == "fit":
         fit(sys.argv[2:])
+    elif sys.argv[1] == "fit_id":
+        fit_id(sys.argv[2:])

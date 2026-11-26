@@ -823,6 +823,48 @@ def run_qa_page(q, page, sets, cfg_set="page"):
     return out
 
 
+def verified_holes(pkg, checks, page_bad, routed, approximate, blocked=False):
+    """The holes shown as right with no human check, sorted. A hole qualifies when
+      * a web or file scorecard is matched, and the page is not blocked;
+      * it passes every picture check (tee on a tee box, yardage within 10 of the card, par, tee-shot pick, aim) on
+        every solved tee set, and the page QA found nothing on it;
+      * its line is OpenStreetMap's (a fully mapped course), or the routing verified it (route_conf.verified: P(the
+        hole is this one) >= 0.98 and two scorecard sources agree; 99.1 % right out of fold) and did not mark it
+        approximate."""
+    pl, sc = pkg.get("pipeline") or {}, pkg.get("scorecard") or {}
+    # the card's course-level flags (one hole of another set out of order, totals 20 yds off the source's) do not
+    # count against a hole: its own yardage check compares the solved sets to the ground
+    card_ok = bool((pl.get("profile") or {}).get("card")) and sc.get("kind") not in (None, "none", "typed")
+    if blocked or not card_ok or not checks or any(not c for c in checks.values()):
+        return []
+    if routed:
+        cand = {str(r) for r in routed.get("verified") or []} - {str(a) for a in approximate or []}
+    elif (pl.get("holes") or {}).get("method") == "osm":
+        cand = {str(k) for k in (pkg.get("holes") or {})}
+    else:
+        return []
+    order = [str(k) for k in (pkg.get("holes") or {})]
+    bad = {order[i] for i in (page_bad or {}) if isinstance(i, int) and i < len(order)}
+    for c in checks.values():
+        if not c["course"].get("pars_ok", True):
+            return []
+        cand &= {str(r) for r, h in c["holes"].items() if h["status"] == "PASS"}
+    return sorted(cand - bad, key=lambda r: (not r.isdigit(), int(r) if r.isdigit() else 0, r))
+
+
+def span_text(refs):
+    """'1-4, 6, 9-12' for a sorted list of hole numbers"""
+    nums = [int(r) for r in refs if str(r).isdigit()]
+    out, i = [], 0
+    while i < len(nums):
+        j = i
+        while j + 1 < len(nums) and nums[j + 1] == nums[j] + 1:
+            j += 1
+        out.append(str(nums[i]) if i == j else f"{nums[i]}-{nums[j]}")
+        i = j + 1
+    return ", ".join(out + [str(r) for r in refs if not str(r).isdigit()])
+
+
 def card_misfit(c):
     """{hole: (measured, card)} for the holes of one set's picture checks measuring 40+ yds and 12 %+ off the card"""
     out = {}
@@ -1156,6 +1198,14 @@ def finish(q, parts):
                     hd["note"] = ((hd.get("note") or "") + " Approximate: placed from aerial photos, and the app is not "
                                   "sure this is hole " + k + (f" ({round(100 * p)} % confident)" if p is not None else "")
                                   + ". Check the picture against the course before trusting the pick.").strip()
+    ver = verified_holes(pkg, checks, page_bad, routed, (ap if routed else None), blocked=bool(blocks))
+    n_h = len(pkg.get("holes") or {})
+    if status != "blocked":
+        data["sub"] = data["sub"] + (f" · {len(ver)} of {n_h} holes verified automatically" +
+                                     (f" ({span_text(ver)})" if ver and len(ver) < n_h else ""))
+        for hs in [data["holes"]] + list((data.get("alt") or {}).values()):
+            for hd in hs:
+                hd["verified"] = str(hd.get("key")) in ver
     if not has_card(pkg, cfg):
         label_no_card(data, cfg["tees"])
     open(page, "w").write(pack_page(head, data, code, tail))
@@ -1171,8 +1221,10 @@ def finish(q, parts):
             for s, r in qa.items()}
     wj(out_dir(q, "qa.json"), dict(checks=checks, page=summ))
     st = status_record(q, cfg, pkg, status, reasons, check_holes, page_rel, size)
+    st["verified_holes"] = [int(r) if r.isdigit() else r for r in ver]
     if routed:
-        st["routed"] = {k: routed.get(k) for k in ("source", "approximate", "approx_below", "p_holes", "ensemble", "warnings")}
+        st["routed"] = {k: routed.get(k) for k in ("source", "approximate", "approx_below", "p_holes", "p_id", "verified",
+                                                   "card_corroborated", "ensemble", "warnings")}
     wj(out_dir(q, "status.json"), st)
     log(json.dumps(st, indent=1))
 
