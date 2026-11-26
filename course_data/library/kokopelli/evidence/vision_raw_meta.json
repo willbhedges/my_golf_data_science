@@ -1,0 +1,171 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "kokopelli",
+ "course": "Kokopelli Golf Club",
+ "bbox_snwe": [
+  37.748281,
+  -88.970928,
+  37.760831,
+  -88.951057
+ ],
+ "grid": {
+  "crs": "EPSG:32616",
+  "res_m": 1.0,
+  "width": 2022,
+  "height": 1672,
+  "bounds": [
+   326238,
+   4179558,
+   328260,
+   4181230
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   326238.0,
+   0.0,
+   -1.0,
+   4181230.0
+  ],
+  "ll_bbox_wsen": [
+   -88.97266663194237,
+   37.74683806856688,
+   -88.94932840732972,
+   37.76228126051512
+  ]
+ },
+ "fetched_utc": "2026-11-26T07:36:37Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "IL_SalineRiver_2010-hag-2m-2-6",
+     "when": "2010-12-01T00:00:00.000000Z",
+     "cells": 3378816,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "IL_SalineRiver_2010",
+      "end_datetime": "2010-12-01T00:00:00.000000Z",
+      "start_datetime": "2010-09-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9994178865020658,
+   "file": "hag.tif",
+   "mb": 0.99,
+   "frac_gt_2_5m": 0.23584914031774878
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "IL_SalineRiver_2010-dtm-2m-2-6",
+     "when": "2010-12-01T00:00:00.000000Z",
+     "cells": 844505,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "IL_SalineRiver_2010",
+      "end_datetime": "2010-12-01T00:00:00.000000Z",
+      "start_datetime": "2010-09-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9991824381563567,
+   "mb": 2.03
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "IL_SalineRiver_2010-classification-2m-2-4",
+     "when": "2010-12-01T00:00:00.000000Z",
+     "cells": 750576,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "IL_SalineRiver_2010",
+      "end_datetime": "2010-12-01T00:00:00.000000Z",
+      "start_datetime": "2010-09-01T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "IL_SalineRiver_2010-classification-2m-2-3",
+     "when": "2010-12-01T00:00:00.000000Z",
+     "cells": 2569028,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "IL_SalineRiver_2010",
+      "end_datetime": "2010-12-01T00:00:00.000000Z",
+      "start_datetime": "2010-09-01T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.38,
+   "counts": {
+    "0": 61180,
+    "1": 958808,
+    "2": 1764996,
+    "6": 56308,
+    "11": 539492
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "032000203"
+  ],
+  "mb": 0.44,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W090",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 845196,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.03
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2025,
+    "file": "naip_2025.tif",
+    "mb": 12.46,
+    "items": [
+     "il_m_3708817_nw_16_060_20250818",
+     "il_m_3708809_sw_16_060_20250818"
+    ],
+    "acquired": [
+     "2025-08-18"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 15.08,
+    "items": [
+     "il_m_3708817_nw_16_030_20230817_20240201",
+     "il_m_3708809_sw_16_030_20230817_20240201"
+    ],
+    "acquired": [
+     "2023-08-17"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
