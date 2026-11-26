@@ -125,7 +125,8 @@ jobs:
           print("shards=" + json.dumps([",".join(s[i::k]) for i in range(k)]))
           print("idx=" + json.dumps(list(range(k))))
           print("pair_env=" + json.dumps(dict(PAIR_UNET_A=r["unet_a"], PAIR_OBJ_A=r["obj_a"], PAIR_UNET_B=r["unet_b"],
-                                              PAIR_OBJ_B=r["obj_b"], PAIR_REFETCH_B="1" if r.get("refetch_b") else "0")))
+                                              PAIR_OBJ_B=r["obj_b"], PAIR_REFETCH_B="1" if r.get("refetch_b") else "0",
+                                              PAIR_KEEP_OSM_A=r.get("keep_osm_a") or "", PAIR_KEEP_OSM_B=r.get("keep_osm_b") or "")))
           PY
 
   bench:

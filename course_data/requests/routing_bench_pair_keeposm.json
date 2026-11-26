@@ -1,0 +1,8 @@
+{"schema": "request/1", "kind": "routing_bench", "stage": "detector_pair",
+ "note": "partly mapped courses on the scene router: same detector both arms (golfseg_own_v2 + objects_unet_v2); A is given every OSM golf feature but the hole ways, B only the OSM greens and tee boxes. Baseline (nothing given) is pair_v3 arm A; the joint solver on the same inputs is 81 % (route_bench joint, osm mode).",
+ "unet_a": "course_data/segment/models/golfseg_own_v2/model.safetensors",
+ "obj_a": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "unet_b": "course_data/segment/models/golfseg_own_v2/model.safetensors",
+ "obj_b": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "keep_osm_a": "all", "keep_osm_b": "green,tee",
+ "refetch_b": false, "slugs": "", "nshards": 20, "attempt": 1}

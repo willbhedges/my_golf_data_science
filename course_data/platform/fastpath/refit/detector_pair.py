@@ -112,13 +112,14 @@ def setup_root(root):
             os.symlink(os.path.join(BD, x), p)
 
 
-def route(root, slugs, out):
+def route(root, slugs, out, keep=""):
     env = dict(os.environ, FASTPATH_CACHE=root, ROUTE_BENCH_PREP=os.path.join(root, "prep"), ROUTE_BENCH_CARD="pick",
                ROUTE_BENCH_PROBS="d0+yall", ROUTE_LEARN_VER="v2seg_d0+yall", ROUTE_P_TEE="0.0", ROUTE_TEE_PEAKS="0.1",
                ROUTE_TEE_PEAK_FILL="2", ROUTE_BENCH_FOLD_RESCORE="1",
                ROUTE_BENCH_FOLDS=os.path.join(FP, "benchdata", "folds"), ROUTE_RERANK="1", ROUTE_TEE="1")
     for k in ("ROUTE_BENCH_SC", "ROUTE_RERANK_PICKS", "ROUTE_TEE_PICKS", "FASTSCENE_UNET", "FASTSCENE_OBJECTS2"):
         env.pop(k, None)
+    env["ROUTE_BENCH_KEEP_OSM"] = keep or ""        # PAIR_KEEP_OSM_A / _B: OSM golf features the router is given
     r = subprocess.run([sys.executable, os.path.join(FP, "route_bench.py"), "eval", "--scene", "fast", "--router", "v2",
                         "--card-only", "--prep", "--ver", "v2seg_d0+yall", "--split", "train+big", "--slugs",
                         ",".join(slugs), "--procs", str(os.cpu_count() or 2), "--out", out], cwd=FP, env=env,
@@ -159,7 +160,7 @@ def main():
     ok = [s for s, r in recs.items() if "error" not in r]
     for k in ("A", "B"):
         t = time.time()
-        res = route(roots[k], ok, os.path.join(out, "bench_%s.json" % k)) if ok else {}
+        res = route(roots[k], ok, os.path.join(out, "bench_%s.json" % k), os.environ.get("PAIR_KEEP_OSM_" + k, "")) if ok else {}
         for s in ok:
             c = res.get(s) or {}
             res_ = [abs(v) for v in (c.get("card_resid") or {}).values()]

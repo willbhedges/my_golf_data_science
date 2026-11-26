@@ -83,7 +83,16 @@ def course_files(slug):
 
 
 def strip_golf(fc):
-    return dict(fc, features=[f for f in fc.get("features", []) if not (f.get("properties") or {}).get("golf")])
+    """the course as the router sees it: no golf features (an unmapped course). ROUTE_BENCH_KEEP_OSM keeps some, to
+    bench a partly mapped course: "all" = every golf feature but the hole ways (greens, tees, fairways, bunkers
+    mapped, lines not), or a comma list of golf kinds ("green,tee")."""
+    keep = os.environ.get("ROUTE_BENCH_KEEP_OSM", "")
+    kinds = {k for k in keep.split(",") if k}
+
+    def kept(f):
+        g = (f.get("properties") or {}).get("golf")
+        return not g or (g != "hole" and (keep == "all" or g in kinds))
+    return dict(fc, features=[f for f in fc.get("features", []) if kept(f)])
 
 
 # ----------------------------------------------------------------------------- detector version + scene cache
