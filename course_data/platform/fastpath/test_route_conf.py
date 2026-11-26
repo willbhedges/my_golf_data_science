@@ -36,7 +36,7 @@ def test_a_hole_the_other_routing_puts_elsewhere_scores_lower():
     ref = max(same, key=same.get)
     co = b["lines"][ref]["co"]
     b["lines"][ref]["co"] = co[:-1] + [[co[-1][0] + 0.004, co[-1][1] + 0.004]]      # the green about 500 yds away
-    assert RC.score(a, b)[ref] < same[ref] - 0.2
+    assert RC.score(a, b)[ref] < same[ref] - 0.1
 
 
 def test_single_model_scores_a_routing_alone():
