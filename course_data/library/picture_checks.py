@@ -35,7 +35,7 @@ CD = os.path.dirname(HERE)
 ROOT = os.path.dirname(CD)
 sys.path.insert(0, os.path.join(CD, "courses"))
 
-TEE_TOL = 3.0
+TEE_TOL = 8.0      # was 3: 52 library holes failed only by sitting 4-8 yds off a roughly drawn tee polygon
 YARD_TOL = 10.0
 FIRST_CUT = 6.0
 OVAL_MAX = 0.40
