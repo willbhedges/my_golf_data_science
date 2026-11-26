@@ -823,6 +823,18 @@ def run_qa_page(q, page, sets, cfg_set="page"):
     return out
 
 
+def card_misfit(c):
+    """{hole: (measured, card)} for the holes of one set's picture checks measuring 40+ yds and 12 %+ off the card"""
+    out = {}
+    for k, h in ((c or {}).get("holes") or {}).items():
+        m = re.search(r"measured (\d+) vs card (\d+)", str(((h.get("checks") or {}).get("yardage") or {}).get("why") or ""))
+        if m:
+            a, b = int(m.group(1)), int(m.group(2))
+            if abs(a - b) >= max(40, 0.12 * b):
+                out[str(k)] = (a, b)
+    return out
+
+
 def routed_info(q):
     """routing.json of a course routed on aerial photos in this build (route_unmapped.py), when the package used it"""
     r = rj(out_dir(q, "routing.json"))
@@ -1119,6 +1131,10 @@ def finish(q, parts):
         # carries an "approximate" note and counts as a hole to confirm
         ap = [str(a) for a in routed.get("approximate") or []]
         ph = routed.get("p_holes") or {}
+        # a routed hole that measures far from the card on the longest solved set is a wrong tee or green more often
+        # than a forward tee (Lake of the Woods 9: 367 measured, 495 on the card): approximate whatever the router said
+        off = card_misfit(checks.get("auto"))
+        ap += [k for k in off if k not in ap]
         reasons.insert(0, "holes placed from aerial photos (OpenStreetMap does not map them all): " +
                        (f"{len(ap)} marked approximate ({', '.join(ap)})" if ap else "none marked approximate"))
         check_holes = sorted(set(check_holes) | {int(a) if a.isdigit() else a for a in ap}, key=lambda x: (isinstance(x, str), x))
@@ -1131,7 +1147,11 @@ def finish(q, parts):
         for hs in [data["holes"]] + list((data.get("alt") or {}).values()):
             for hd in hs:
                 k = str(hd.get("key"))
-                if k in ap:
+                if k in off:
+                    hd["note"] = ((hd.get("note") or "") + f" Approximate: placed from aerial photos, and it measures "
+                                  f"{off[k][0]} yds against {off[k][1]} on the card, so the tee or the green is probably "
+                                  "wrong. Check the picture against the course before trusting the pick.").strip()
+                elif k in ap:
                     p = ph.get(k)
                     hd["note"] = ((hd.get("note") or "") + " Approximate: placed from aerial photos, and the app is not "
                                   "sure this is hole " + k + (f" ({round(100 * p)} % confident)" if p is not None else "")
