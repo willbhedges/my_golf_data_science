@@ -1986,3 +1986,16 @@ candidates. `pair_keeposm2` (both detectors, OSM given) is the refit's input.
 
 Ruled out: OpenGolfAPI's per-hole tee_coords / green centre / green_polygon fields are null on every course tried
 (Lake Shawnee, Gaylord Springs, Pebble Beach, Glen Mills, Brown Deer).
+
+route_conf refit on photos-only and OSM-given routings (`pair_keeposm2`, run 45897110413: both detectors, every OSM
+golf feature but the hole ways given). `route_conf.py fit / fit_id <pair_v3 runs> -- <pair_keeposm2 run>` ("--"
+separates experiments: arms pair only within one). Out-of-fold by course (scratch oof6.py), P(id) >= 0.98 and a
+corroborated card:
+
+| fitted on | photos: holes verified / right | OSM given: holes verified / right |
+|---|---|---|
+| pair_v3 only (shipped until now) | 32.4 % / 99.09 % (29 wrong) | 0.5 % / 100 % |
+| pair_v3 + pair_keeposm2 | 31.9 % / 99.27 % (23 wrong) | 27.0 % / 99.22 % (20 wrong) |
+
+Never-used courses: 29.1 % / 99.27 % and 26.7 % / 99.29 %. OSM-given routings are 91.9 % identity-right, 89.3 % tee
+and green right (two-detector run). The threshold stays 0.98.
