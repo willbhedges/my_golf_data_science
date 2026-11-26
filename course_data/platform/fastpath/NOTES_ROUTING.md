@@ -1841,3 +1841,50 @@ design above.
 
 Reproduce: course_data/requests/routing_bench_pair_{noise,v3,v3obj}.json; the tables are in each run's pair-merge job
 summary (artifact pair-merged: pair_all.jsonl + pair_tables.txt).
+
+## State 2026-11-26: two routings per course, route_conf picks one and scores every hole (default; ROUTE_ENSEMBLE=0 rollback)
+
+Problem (Ridges, 2026-11-20): wrong holes are not flagged. On the default out-of-fold bench (t2/x/P/oof.json, 643
+courses) route_gate's P < 0.5 marks 4.6 % of holes and catches 24 % of the wrong ones.
+
+Data: the per-course routings of the paired detector runs 44817755394 and 44823590755 (594 TRAIN-BIG courses, each
+routed on the v2 scene (A), the v3 scene with objects_unet_v2 (B) and v3 with objects_unet_v3 (C)), copied into the repo
+by .github/workflows/artifact_fetch.yml (course_data/research/artifacts/pair_v3).
+
+Finding: A and B are equally accurate (87.1 %) but differ on half the courses. Where they put a hole's green in the
+same place (within 20 yd: 92 % of holes) the hole is right 92.4 % of the time; where they do not, 29 %.
+
+route_conf.py: LightGBM on route_gate's per-hole features, the neighbouring holes, course statistics and the distance
+of the hole's green / tee to the other routing's. Out of fold by course (8 folds), second routing B:
+
+| | all 594 | choice 396 | never-used 198 |
+|---|---|---|---|
+| holes right, routing A | 87.11 % | 87.18 % | 86.98 % |
+| picked routing (B must lead by 0.5 predicted holes) | 88.24 % (+111 holes, 102 switch) | 88.31 % (+74) | 88.10 % (+37) |
+| best of the two per course (oracle) | 90.26 % | 90.34 % | 90.10 % |
+
+Flags on the picked routing: P < 0.65 marks 9.1 % of holes, 65.5 % of them wrong, and catches 50.8 % of the wrong
+holes; unflagged holes are 93.6 % right. route_gate on routing A at its 0.5: 5.6 % marked, 30.6 % caught, unflagged
+90.5 % right. (The paired runs' level is not the out-of-fold bench's: the re-ranker and tee step are live there.)
+
+Not shipped, measured: a third routing (C) with the pick over three gives 88.74 %; taking each hole number from the
+routing with the higher P (ignoring consistency) gives 88.87 % with two routings, 88.92 % with three, with 99 / 116
+shared-green conflicts over the 594 courses. Per-hole oracle of three: 92.3 %.
+
+Wired: route_scene.run -> _ensemble (second fastscene.build with FASTSCENE_UNET = golfseg_own_v3, route_v2 with the
+same card, route_conf.pick). r["ensemble"] = use / p / sum_a / sum_b / agree / seconds. fast.py marks holes with
+route_conf's P (approximate below route_conf.APPROX_P = 0.65; routing_confidence.source = route_conf); a hole
+route_gate holds at or under FALLBACK_P keeps the lower of the two. The second scene failing leaves routing A with the
+single-routing model (41 % of wrong holes caught at 0.5 on A). Cost: 10-105 s per course (the second U-Net pass).
+
+Real builds (e2e/run1.py, 4 never-used courses): Ridges 10 -> 13 of 18 (routing B kept), Split Rock 9 / 9, Bailey
+Creek 18 / 18, Revere 18 / 18 unchanged (A kept), no hole marked approximate on the three right courses. Ridges'
+5 remaining wrong holes (3, 4, 6, 7, 12) are not flagged (P 0.94-0.96): both routings agree and fit the card within
+3 yd, but the card's yardages are not the truth holes' (card 268 / 367 / 432 / 474 / 291 against 350 / 466 / 287 /
+350 / 214): a wrong-card case, not a routing one.
+
+Test 28 was not read (no paired routings exist for it).
+
+Same day, tee placement on routed courses (platform/package.py, platform/sanity.py, 033421131): the far cap is off when
+the tee boxes are detections, and a tee straight behind the line start is not sent back for standing beside another
+hole's tee. Card misfits over 15 yd on the right holes of the 4 builds: 7 -> 0.

@@ -105,22 +105,23 @@ def extra_gate(package):
     return out
 
 
-def _mark_confidence(package, p_holes, warnings, source, pkg_dir, p_all=None):
+def _mark_confidence(package, p_holes, warnings, source, pkg_dir, p_all=None, approx_p=None):
     """auto policy: per-hole calibrated P(hole right) into package.json (holes[ref].p_right / approximate, and
     routing_confidence), rewritten in place"""
     import package as pk
     import route_gate
+    approx_p = route_gate.APPROX_P if approx_p is None else approx_p
     for ref, pr in p_holes.items():
         h = (package.get("holes") or {}).get(str(ref))
         if isinstance(h, dict):
             h["p_right"] = pr
-            h["approximate"] = bool(pr < route_gate.APPROX_P)
+            h["approximate"] = bool(pr < approx_p)
     if p_all is None and p_holes:
         import math
         p_all = float(math.prod(p_holes.values()))
     package["routing_confidence"] = dict(policy="auto", source=source, p_all=p_all, p_holes=dict(p_holes),
-                                         approximate=[str(r) for r, p in p_holes.items() if p < route_gate.APPROX_P],
-                                         approx_below=route_gate.APPROX_P, warnings=list(warnings))
+                                         approximate=[str(r) for r, p in p_holes.items() if p < approx_p],
+                                         approx_below=approx_p, warnings=list(warnings))
     pk.write(package, pkg_dir)
 
 
@@ -383,8 +384,17 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                 blocked = [b for b in blocked if not b.startswith(SOFT_GATE_PREFIXES)]
                 auto_warn = soft
                 refs = [str(h.get("ref")) for h in scene_routed.get("hole_features") or []]
-                _mark_confidence(package, dict(zip(refs, g.get("p_holes") or [])), soft, "route_scene", pkg_dir,
-                                 p_all=g.get("p_all"))
+                ph, pall, ap, src = dict(zip(refs, g.get("p_holes") or [])), g.get("p_all"), None, "route_scene"
+                ens = scene_routed.get("ensemble") or {}
+                if ens.get("p") and set(ens["p"]) >= set(refs):
+                    # route_conf: P(hole right) from the two routings' agreement (or its single-routing model). The
+                    # gate's caps stay: a hole route_gate holds under its own line (shared-green fallback, no card)
+                    # is not raised above it
+                    import math
+                    import route_conf
+                    ph = {k: (min(ens["p"][k], v) if v <= route_gate.FALLBACK_P else ens["p"][k]) for k, v in ph.items()}
+                    pall, ap, src = float(math.prod(ph.values())), route_conf.APPROX_P, "route_conf"
+                _mark_confidence(package, ph, soft, src, pkg_dir, p_all=pall, approx_p=ap)
         else:
             import route_joint
             if scene_routed.get("min_margin", 0.0) < route_joint.MIN_MARGIN or scene_routed.get("n_virtual") \

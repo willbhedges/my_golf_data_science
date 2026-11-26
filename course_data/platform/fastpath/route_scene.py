@@ -863,6 +863,8 @@ def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
     else:
         co, ci = candidates(fc, scene, n_holes=n_holes)
         r = route(fc, scene, card, n_holes, co=co, version="v1" if ROUTER == "v2" else ROUTER)
+    if ROUTER == "v2" and P is not None and np.shape(P)[0] == 6:
+        r, ci, scene = _ensemble(pkg_dir, fc, card, n_holes, r, ci, scene)
     r.update(ci)
     if nine is not None:
         r["nine_card"] = nine
@@ -887,6 +889,68 @@ def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
         f["properties"]["origin"] = "fastscene"
     T["total"] = round(time.time() - t, 2)
     return {k: v for k, v in r.items() if k != "features"}, sup, T
+
+
+def _ensemble(pkg_dir, fc, card, n_holes, r, ci, scene):
+    """route_conf (NOTES_ROUTING.md 2026-11-26): the course is routed a second time on the scene of the other detector
+    (golfseg_own_v3; same routing fits and card), route_conf's model scores every hole of both routings from their
+    agreement and the routing with more predicted right holes is kept. r['ensemble'] = dict(use 'a' | 'b', p {ref:
+    P(hole right)} of the kept routing, sum_a, sum_b, agree, seconds). The second scene failing leaves the first
+    routing with the single-routing model's p. ROUTE_ENSEMBLE=0 turns it off (route_gate's p)."""
+    import time
+    import route_conf as RC
+    if not RC.on() or not any((f.get("properties") or {}).get("golf") == "hole" for f in r.get("features") or []):
+        return r, ci, scene
+    t = time.time()
+    cs = (r.get("card_select") or {})
+    card = cs.get("card") if cs.get("switched") and cs.get("card") else card
+    try:
+        a = RC.record(r, card, n_holes)
+    except Exception as e:                                           # noqa: BLE001
+        r["ensemble"] = dict(use="a", error=f"{type(e).__name__}: {e}"[:200])
+        return r, ci, scene
+    keep = {k: os.environ.get(k) for k in ("FASTSCENE_UNET",)}
+    try:
+        import fastscene as FS
+        import route_learn as RL
+        os.environ["FASTSCENE_UNET"] = RC.SECOND_UNET
+        scene_b, info = FS.build(pkg_dir, out=False)
+        Pb = info.get("P")
+        hag = getattr(info.get("stack"), "a", {}).get("hag")
+        if (RL.tee_pads_on() or RL.tee_pads_cond(scene_b, n_holes)) and scene_b.get("grid"):
+            try:
+                scene_b = dict(scene_b, dem_pads=RL.dem_pads_file(os.path.join(pkg_dir, "imagery", "dem.tif"), scene_b["grid"], Pb))
+            except Exception:                                        # noqa: BLE001
+                scene_b = dict(scene_b, dem_pads=[])
+        rb, cib, scene_b2 = route_v2(fc, scene_b, card, n_holes, Pb, hag)
+        b = RC.record(rb, card, n_holes)
+        pk = RC.pick(a, b)
+    except Exception as e:                                           # noqa: BLE001  (the first routing stays)
+        try:
+            p = RC.score(a)
+        except Exception:                                            # noqa: BLE001
+            p = None
+        r["ensemble"] = dict(use="a", p=p, model="single", error=f"{type(e).__name__}: {e}"[:200],
+                             seconds=round(time.time() - t, 1))
+        return r, ci, scene
+    finally:
+        for k, v in keep.items():
+            os.environ.pop(k, None) if v is None else os.environ.__setitem__(k, v)
+    pk.update(model="pair", second=os.path.basename(os.path.dirname(RC.SECOND_UNET)), seconds=round(time.time() - t, 1),
+              right_a=None, right_b=None)
+    if pk["use"] == "b":
+        for k in ("card_select",):                                   # the card choice was made on the first routing
+            if k in r:
+                rb[k] = r[k]
+        rb["ensemble"] = pk
+        try:                                                         # the package's scene is the kept routing's
+            import json as _json
+            _json.dump(scene_b, open(os.path.join(pkg_dir, "scene.json"), "w"), separators=(",", ":"))
+        except Exception:                                            # noqa: BLE001
+            pass
+        return rb, cib, scene_b2
+    r["ensemble"] = pk
+    return r, ci, scene
 
 
 def _card_select(pkg_dir, fc, scene0, card, n_holes, P, hag, cur):
