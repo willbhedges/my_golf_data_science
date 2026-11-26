@@ -5,37 +5,104 @@
  "city": "Columbia",
  "state": "MO",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package: osm: 137 features; {'cartpath': 22, 'bunker': 3} scorecards: [{\"source\": \"golfify\", \"ok\": true, \"info\": \"https://www.golfify.io/courses/lake-of-the-woods-golf-course\"}, {\"source\": \"club_site\", \"ok\": false, \"info\": \"club site: no parsable scorecard in 21 pages\"}, {\"source\": \"opengolfapi\", \"ok\": false, \"info\": \"opengolfapi: no tees / holes_data for Lake of the Woods Golf Course (opengolfapi: Lake of"
+  "holes placed from aerial photos (OpenStreetMap maps none): none marked approximate",
+  "scorecard not matched (source None, flags [])",
+  "18 holes built vs the card's 0",
+  "pars sum to 71, card None",
+  "18 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
+ "check_holes": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18
+ ],
+ "tee_sets": [
+  {
+   "name": "osm_back",
+   "yards": null,
+   "par": null,
+   "rating": null,
+   "slope": null,
+   "colour": null,
+   "on_page": "solved"
+  }
+ ],
+ "solved_sets": [
+  "osm_back"
+ ],
+ "page": "course_data/library/lake_of_the_woods_como/page.html",
+ "page_bytes": 1342239,
+ "qa_report": "course_data/library/lake_of_the_woods_como/qa_report.md",
+ "center": [
+  38.9670342,
+  -92.2352194
+ ],
+ "osm": "way/387184389",
+ "holes": 18,
+ "days": [
+  "2026-11-28",
+  "2026-11-29"
+ ],
+ "weather": "forecast",
+ "built": "2026-11-26T06:30Z",
  "request": "course_data/requests/course_page_lake_of_the_woods_como.json",
- "resolve": {
-  "status": "ok",
-  "candidates": [
-   {
-    "name": "Lake of the Woods Golf Course",
-    "town": "Columbia",
-    "holes": 0,
-    "osm": {
-     "type": "way",
-     "id": 387184389
-    }
-   },
-   {
-    "name": "Woods Fort Golf Course",
-    "town": "Troy",
-    "holes": 18,
-    "osm": {
-     "type": "relation",
-     "id": 9392550
-    }
-   }
-  ]
+ "native": {
+  "holes": [],
+  "tee_set": "osm_back",
+  "note": "0 asked of 14 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%))"
  },
- "built": "2026-10-30T04:23Z"
+ "routed": {
+  "source": "route_conf",
+  "approximate": [],
+  "approx_below": 0.65,
+  "p_holes": {
+   "1": 0.9722,
+   "2": 0.9805,
+   "3": 0.8889,
+   "4": 0.985,
+   "5": 0.9536,
+   "6": 0.89,
+   "7": 0.9797,
+   "8": 0.9687,
+   "9": 0.8748,
+   "10": 0.9741,
+   "11": 0.9709,
+   "12": 0.9737,
+   "13": 0.9575,
+   "14": 0.942,
+   "15": 0.9325,
+   "16": 0.9408,
+   "17": 0.9819,
+   "18": 0.9524
+  },
+  "ensemble": {
+   "use": "a",
+   "sum_a": 17.12,
+   "sum_b": 16.96,
+   "agree": 1.0,
+   "model": "pair",
+   "second": "golfseg_own_v3",
+   "seconds": 23.3,
+   "right_a": null,
+   "right_b": null
+  },
+  "warnings": []
+ }
 }

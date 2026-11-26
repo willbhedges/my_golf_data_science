@@ -1,0 +1,170 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "lake_of_the_woods_como",
+ "course": "Lake of the Woods Golf Course",
+ "bbox_snwe": [
+  38.961818,
+  -92.242454,
+  38.972251,
+  -92.227985
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1506,
+  "height": 1410,
+  "bounds": [
+   565502,
+   4312692,
+   567008,
+   4314102
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   565502.0,
+   0.0,
+   -1.0,
+   4314102.0
+  ],
+  "ll_bbox_wsen": [
+   -92.24397606363274,
+   38.96062958143266,
+   -92.22645710432525,
+   38.973448447931816
+  ]
+ },
+ "fetched_utc": "2026-11-26T06:23:35Z",
+ "lidar": {
+  "hag": {
+   "source": "planetary-computer 3dep-lidar-hag",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_BooneCo_2015_LAS_2017-hag-2m-3-4",
+     "when": "2015-03-12T00:00:00.000000Z",
+     "cells": 2081124,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_BooneCo_2015_LAS_2017",
+      "end_datetime": "2015-03-12T00:00:00.000000Z",
+      "start_datetime": "2015-01-30T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9800627278121556,
+   "file": "hag.tif",
+   "mb": 0.91,
+   "frac_gt_2_5m": 0.5093898637129967
+  },
+  "dtm": {
+   "source": "planetary-computer 3dep-lidar-dtm",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_BooneCo_2015_LAS_2017-dtm-2m-3-4",
+     "when": "2015-03-12T00:00:00.000000Z",
+     "cells": 520089,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_BooneCo_2015_LAS_2017",
+      "end_datetime": "2015-03-12T00:00:00.000000Z",
+      "start_datetime": "2015-01-30T00:00:00.000000Z"
+     }
+    }
+   ],
+   "valid": 0.9797010539402673,
+   "mb": 1.32
+  },
+  "classification": {
+   "source": "planetary-computer 3dep-lidar-classification",
+   "items": [
+    {
+     "id": "USGS_LPC_MO_BooneCo_2015_LAS_2017-classification-2m-3-4",
+     "when": "2015-03-12T00:00:00.000000Z",
+     "cells": 2058776,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "USGS_LPC_MO_BooneCo_2015_LAS_2017",
+      "end_datetime": "2015-03-12T00:00:00.000000Z",
+      "start_datetime": "2015-01-30T00:00:00.000000Z"
+     }
+    },
+    {
+     "id": "MO_BooneCo_2009-classification-2m-4-4",
+     "when": "2009-03-19T00:00:00.000000Z",
+     "cells": 7630,
+     "props": {
+      "datetime": null,
+      "3dep:usgs_id": "MO_BooneCo_2009",
+      "end_datetime": "2009-03-19T00:00:00.000000Z",
+      "start_datetime": "2009-03-18T00:00:00.000000Z"
+     }
+    }
+   ],
+   "mb": 0.24,
+   "counts": {
+    "0": 57054,
+    "1": 664292,
+    "2": 1193510,
+    "9": 2064,
+    "10": 516,
+    "17": 206024
+   }
+  }
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "023111122"
+  ],
+  "mb": 0.35,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N36W093",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 530865,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2024,
+    "file": "naip_2024.tif",
+    "mb": 9.73,
+    "items": [
+     "mo_m_3809207_NW_15_30_20241002"
+    ],
+    "acquired": [
+     "2024-10-02"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 6.49,
+    "items": [
+     "mo_m_3809207_nw_15_060_20220620"
+    ],
+    "acquired": [
+     "2022-06-20"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
