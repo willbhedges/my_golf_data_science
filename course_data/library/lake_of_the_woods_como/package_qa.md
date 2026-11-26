@@ -1,6 +1,6 @@
 # Lake of the Woods Golf Course (Columbia, MO) - Blue tees
 
-Built 2026-11-26T12:01:44Z. OSM way/387184389. Scorecard: file (course_data/library/lake_of_the_woods_como/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
+Built 2026-11-26T16:00:05Z. OSM way/387184389. Scorecard: file (course_data/library/lake_of_the_woods_como/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red**
 
@@ -11,43 +11,43 @@ Built 2026-11-26T12:01:44Z. OSM way/387184389. Scorecard: file (course_data/libr
 | holes_built | 18 |
 | holes_mapped | 18 |
 | greens_found | 18 |
-| tee_boxes | 47 |
+| tee_boxes | 48 |
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.31 |
-| mean_confidence | 0.835 |
+| mean_landing_osm_share | 0.309 |
+| mean_confidence | 0.839 |
 | osm_score | 0.862 |
 
-OSM features inside the course: buildings 7, golf=bunker 3, golf=cartpath 22, golf=fairway 21, golf=green 18, golf=hole 18, golf=tee 47, golf=water_hazard 2, holes_with_par 18, water_lines 3, water_polygons 4
+OSM features inside the course: buildings 7, golf=bunker 3, golf=cartpath 22, golf=fairway 21, golf=green 18, golf=hole 18, golf=tee 48, golf=water_hazard 2, holes_with_par 18, water_lines 3, water_polygons 4
 
 ## Holes
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 398 / 392 | 162 | 0.80 | check the flags | 38% | 21% | 41% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 1 | 4 | 398 / 392 | 161 | 0.80 | check the flags | 38% | 21% | 41% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 2 | 3 | 181 / 181 | 233 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
 | 3 | 4 | 357 / 353 | 286 | 0.75 | check the flags | 18% | 25% | 57% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 4 | 4 | 298 / 297 | 5 | 0.79 | check the flags | 20% | 40% | 40% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 5 | 4 | 360 / 359 | 3 | 0.84 | auto | 32% | 32% | 36% | tee stage: Blue tee_centroid |  |
 | 6 | 4 | 430 / 430 | 153 | 0.81 | auto | 38% | 27% | 35% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 7 | 3 | 210 / 205 | 310 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 8 | 4 | 365 / 365 | 134 | 0.83 | auto | 35% | 43% | 22% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 9 | 5 | 495 / 367 | 345 | 0.79 | check the flags | 37% | 20% | 43% | tee stage: Blue tee_axis_capped | tee: tee stage: Blue tee_axis_capped |
+| 8 | 4 | 365 / 365 | 134 | 0.83 | auto | 34% | 43% | 22% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 9 | 5 | 495 / 367 | 345 | 0.80 | check the flags | 38% | 20% | 42% | tee stage: Blue tee_axis_capped | tee: tee stage: Blue tee_axis_capped |
 | 10 | 3 | 150 / 150 | 349 | 0.96 | auto | 100% | 0% | 0% | tee stage: Blue tee_centroid |  |
-| 11 | 5 | 575 / 573 | 92 | 0.77 | check the flags | 27% | 56% | 16% | tee stage: Blue lidar_pad | tee: tee stage: Blue lidar_pad; Blue tee on a lidar pad (no OSM box at 575 yds) |
+| 11 | 5 | 575 / 571 | 94 | 0.84 | auto | 26% | 59% | 15% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 12 | 4 | 352 / 353 | 262 | 0.85 | auto | 38% | 45% | 17% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 13 | 4 | 468 / 467 | 174 | 0.77 | check the flags | 34% | 11% | 55% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 14 | 4 | 377 / 304 | 29 | 0.72 | check the flags | 14% | 17% | 68% | tee stage: Blue tee_axis_capped | tee: tee stage: Blue tee_axis_capped |
 | 15 | 4 | 311 / 306 | 73 | 0.83 | auto | 22% | 60% | 18% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 16 | 5 | 516 / 511 | 228 | 0.85 | auto | 45% | 35% | 20% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 16 | 5 | 516 / 511 | 228 | 0.84 | auto | 44% | 35% | 21% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 17 | 3 | 165 / 103 | 219 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis_capped | tee: tee stage: Blue tee_axis_capped |
 | 18 | 4 | 370 / 369 | 346 | 0.84 | auto | 36% | 29% | 35% | tee stage: Blue tee_centroid |  |
 
 ## Stages
 
 - **resolve**: ok: way/387184389 Lake of the Woods Golf Course (Columbia, MO)
-- **osm**: ok: 252 features
+- **osm**: ok: 253 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
 - **scorecard**: ok: file (course_data/library/lake_of_the_woods_como/routed_card.json)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)

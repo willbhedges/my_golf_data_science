@@ -352,12 +352,12 @@
      "par": 5,
      "checks": {
       "tee": {
-       "ok": false,
-       "why": "tee marker not on an OSM tee box (lidar_pad; 43 yds from the nearest OSM tee box)"
+       "ok": true,
+       "why": "0 yds from the nearest OSM tee box"
       },
       "yardage": {
        "ok": true,
-       "why": "measured 573 vs card 575 (-2)"
+       "why": "measured 571 vs card 575 (-4)"
       },
       "par": {
        "ok": true,
@@ -365,7 +365,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Long iron +18 lands 227 yds out in fairway"
+       "why": "Long iron +12 lands 227 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -374,15 +374,13 @@
      },
      "pick": {
       "club": "Long iron",
-      "aim": 17.5,
+      "aim": 12.5,
       "along": 227.3,
       "lie": "fairway",
       "tie": false
      },
-     "status": "CHECK",
-     "reasons": [
-      "tee: tee marker not on an OSM tee box (lidar_pad; 43 yds from the nearest OSM tee box)"
-     ]
+     "status": "PASS",
+     "reasons": []
     },
     "12": {
      "par": 4,
@@ -469,7 +467,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "4-wood -39 lands 263 yds out in rough (4 yds from fairway)"
+       "why": "4-wood -38 lands 263 yds out in rough (4 yds from fairway)"
       },
       "oval": {
        "ok": true,
@@ -478,7 +476,7 @@
      },
      "pick": {
       "club": "4-wood",
-      "aim": -39.0,
+      "aim": -38.5,
       "along": 262.6,
       "lie": "rough",
       "tie": false
@@ -992,8 +990,8 @@
      "par": 5,
      "checks": {
       "tee": {
-       "ok": false,
-       "why": "tee marker not on an OSM tee box (lidar_pad; 31 yds from the nearest OSM tee box)"
+       "ok": true,
+       "why": "0 yds from the nearest OSM tee box"
       },
       "yardage": {
        "ok": true,
@@ -1005,7 +1003,7 @@
       },
       "aim": {
        "ok": true,
-       "why": "Long iron +16 lands 228 yds out in fairway"
+       "why": "Long iron +12 lands 228 yds out in fairway"
       },
       "oval": {
        "ok": true,
@@ -1014,15 +1012,13 @@
      },
      "pick": {
       "club": "Long iron",
-      "aim": 16.5,
-      "along": 228.3,
+      "aim": 11.5,
+      "along": 228.1,
       "lie": "fairway",
       "tie": false
      },
-     "status": "CHECK",
-     "reasons": [
-      "tee: tee marker not on an OSM tee box (lidar_pad; 31 yds from the nearest OSM tee box)"
-     ]
+     "status": "PASS",
+     "reasons": []
     },
     "12": {
      "par": 4,
@@ -1045,7 +1041,7 @@
       },
       "oval": {
        "ok": true,
-       "why": "landing pattern 13% trees / water / OB (recovery 13%)"
+       "why": "landing pattern 14% trees / water / OB (recovery 14%)"
       }
      },
      "pick": {
@@ -1226,10 +1222,10 @@
      "box": {
       "lat": [
        -4.5,
-       4.8
+       5.0
       ],
       "dep": [
-       -1.8,
+       -2.0,
        -0.8
       ]
      },
