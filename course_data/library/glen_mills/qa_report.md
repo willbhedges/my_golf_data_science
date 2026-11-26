@@ -1,8 +1,8 @@
 # The Golf Course at Glen Mills: automatic page QA
 
-**Status: needs confirm** — confirm holes 4, 5, 6, 9, 12, 13, 18
+**Status: needs confirm** — confirm holes 4, 6, 11, 12, 17, 18
 
-* page: `course_data/library/glen_mills/page.html` (3.2 MB); request `course_data/requests/course_page_glen_mills.json`; built 2026-11-26T17:13Z
+* page: `course_data/library/glen_mills/page.html` (3.2 MB); request `course_data/requests/course_page_glen_mills.json`; built 2026-11-26T22:11Z
 * course: The Golf Course at Glen Mills (Thornbury Township, PA), OSM way/284570622; holes: osm (tier mapped_card); card: course_data/library/glen_mills/routed_card.json (file)
 * solved tee sets: Black, Blue (the two longest sets on the card (combination sets skipped)); page sets: Black, Blue
 * weather: forecast for 2026-11-28, 2026-11-29; grid temperatures [35, 45, 55] F; calm-day picks with 48 prior draws
@@ -13,8 +13,8 @@
 
 Course-level reasons:
 
-* holes placed from aerial photos (OpenStreetMap does not map them all): 2 marked approximate (5, 9)
-* 7 hole(s) with a CHECK
+* holes placed from aerial photos (OpenStreetMap does not map them all): 3 marked approximate (17, 18, 12)
+* 4 hole(s) with a CHECK
 
 Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
 
@@ -22,45 +22,45 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | PASS | Driver +5 |  |
-| 2 | 4 | PASS | Driver -23 |  |
-| 3 | 4 | PASS | 4-wood -0 |  |
-| 4 | 5 | PASS | Driver -5 |  |
-| 5 | 3 | CHECK |  | yardage: measured 296 vs card 181 (+115) |
-| 6 | 5 | CHECK | Driver -34 | tee: tee marker not on an OSM tee box (lidar_pad; 20 yds from the nearest OSM tee box) |
+| 1 | 4 | PASS | Driver -4 |  |
+| 2 | 4 | PASS | Driver -24 |  |
+| 3 | 4 | PASS | 4-wood +1 |  |
+| 4 | 5 | PASS | Driver -4 |  |
+| 5 | 3 | PASS |  |  |
+| 6 | 5 | CHECK | Driver -35 | tee: tee marker not on an OSM tee box (lidar_pad; 19 yds from the nearest OSM tee box) |
 | 7 | 3 | PASS |  |  |
-| 8 | 4 | PASS | Driver +13 |  |
-| 9 | 4 | CHECK | 4-wood -0 | yardage: measured 374 vs card 433 (-59) |
+| 8 | 4 | PASS | Driver +14 |  |
+| 9 | 4 | PASS | Driver +1 |  |
 | 10 | 3 | PASS |  |  |
-| 11 | 4 | PASS | 4-wood +12 (tie) |  |
-| 12 | 4 | CHECK | Driver +60 | wide_aim: 2-wood aim +64 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
-| 13 | 4 | CHECK | Driver -26 | tee: tee marker not on an OSM tee box (lidar_pad; 12 yds from the nearest OSM tee box) |
+| 11 | 4 | CHECK | 4-wood +4 | tee: tee marker not on an OSM tee box (lidar_pad; 19 yds from the nearest OSM tee box) |
+| 12 | 4 | CHECK | 4-wood +8 | yardage: measured 277 vs card 339 (-62) |
+| 13 | 4 | PASS | Driver -23 |  |
 | 14 | 3 | PASS |  |  |
 | 15 | 5 | PASS | Driver -40 |  |
 | 16 | 3 | PASS |  |  |
-| 17 | 5 | PASS | Driver +8 |  |
-| 18 | 4 | PASS | Driver +6 |  |
+| 17 | 5 | PASS | Driver +2 |  |
+| 18 | 4 | PASS | Driver -7 |  |
 
 ## Blue tees
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | PASS | Driver +8 |  |
+| 1 | 4 | PASS | Driver -0 |  |
 | 2 | 4 | PASS | Driver -22 |  |
-| 3 | 4 | PASS | Driver -12 |  |
+| 3 | 4 | PASS | Driver -11 |  |
 | 4 | 5 | CHECK | Driver -10 | aim: Driver -10 lands 308 yds out in rough (12 yds from fairway) |
-| 5 | 3 | CHECK |  | yardage: measured 296 vs card 171 (+125) |
-| 6 | 5 | PASS | Driver -26 |  |
+| 5 | 3 | PASS |  |  |
+| 6 | 5 | PASS | Driver -27 |  |
 | 7 | 3 | PASS |  |  |
 | 8 | 4 | PASS | Driver +14 |  |
-| 9 | 4 | PASS | 4-wood -0 |  |
+| 9 | 4 | PASS | 4-wood -1 |  |
 | 10 | 3 | PASS |  |  |
-| 11 | 4 | PASS | 4-wood +14 |  |
-| 12 | 4 | CHECK | 2-wood +60 (tie) | wide_aim: 2-wood aim +64 yds is more than 40 yds right of the tee line (dog-leg corner, wider aim bound): confirm the line on the map |
+| 11 | 4 | PASS | Long iron +6 (tie) |  |
+| 12 | 4 | PASS | Driver +27 |  |
 | 13 | 4 | PASS | Driver -22 |  |
 | 14 | 3 | PASS |  |  |
 | 15 | 5 | PASS | Driver -40 |  |
 | 16 | 3 | PASS |  |  |
-| 17 | 5 | PASS | Driver +5 |  |
-| 18 | 4 | CHECK | Driver +2 | yardage: measured 509 vs card 427 (+82) |
+| 17 | 5 | PASS | Driver +1 |  |
+| 18 | 4 | PASS | Driver -8 |  |
 
