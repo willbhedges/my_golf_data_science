@@ -1,6 +1,6 @@
 # Brown Deer Golf Club (Coralville, IA) - osm_back tees
 
-Built 2026-11-26T09:27:00Z. OSM way/191258543. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-26T17:33:08Z. OSM way/191258543. Scorecard: None (None). Tee set: no scorecard.
 
 ## Coverage
 
@@ -8,14 +8,14 @@ Built 2026-11-26T09:27:00Z. OSM way/191258543. Scorecard: None (None). Tee set: 
 |---|---|
 | holes_built | 18 |
 | holes_mapped | 18 |
-| greens_found | 17 |
+| greens_found | 18 |
 | tee_boxes | 62 |
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 12 |
 | of_par4_5 | 13 |
 | mean_landing_osm_share | 0.304 |
 | mean_confidence | 0.663 |
-| osm_score | 0.837 |
+| osm_score | 0.845 |
 
 OSM features inside the course: buildings 5, built_up_landuse 2, golf=bunker 38, golf=cartpath 21, golf=clubhouse 1, golf=driving_range 1, golf=fairway 17, golf=green 19, golf=hole 18, golf=lateral_water_hazard 10, golf=path 1, golf=tee 62, golf=water_hazard 2, holes_with_par 18, trees_polygons 7, water_lines 2, water_polygons 12
 
@@ -23,7 +23,7 @@ OSM features inside the course: buildings 5, built_up_landuse 2, golf=bunker 38,
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 551 / 551 | 352 | 0.63 | check the flags | 50% | 6% | 44% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 1 | 4 | 391 / 391 | 350 | 0.63 | check the flags | 50% | 8% | 42% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
 | 2 | 5 | 555 / 555 | 334 | 0.65 | check the flags | 52% | 4% | 43% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
 | 3 | 4 | 323 / 323 | 331 | 0.60 | needs review | 32% | 9% | 59% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
 | 4 | 5 | 501 / 501 | 109 | 0.61 | check the flags | 42% | 2% | 56% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
@@ -48,7 +48,6 @@ OSM features inside the course: buildings 5, built_up_landuse 2, golf=bunker 38,
 - **osm**: ok: 544 features
 - **card_order**: reject: card did not match the mapped holes: the OSM holes 1-18 walk as a round (longest green-to-next-tee 257 yds), and in that order the card's par or length is off on 8 holes (1, 6, 7, 8, 9, 10, 16, 18); card not used
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **green_overrides**: ok: hole 1: green moved 184 yds, line re-drawn start -> green
 - **card_overrides**: ok: yardage_overrides on 1 hole(s) not applied: no card (lengths are measured)
 - **scorecard**: missing
 - **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
@@ -60,7 +59,7 @@ OSM features inside the course: buildings 5, built_up_landuse 2, golf=bunker 38,
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **green_auto**: not needed: every hole has a mapped green
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 31 polygons (property_line 31); mode replace
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings+parcels; 30 polygons (property_line 30); mode replace
 - **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
 
 ## Warnings

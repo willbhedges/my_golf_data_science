@@ -2,7 +2,7 @@
 
 **Status: needs confirm** — confirm holes 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18
 
-* page: `course_data/library/brown_deer/page.html` (2.6 MB); request `course_data/requests/course_page_brown_deer.json`; built 2026-11-26T09:27Z
+* page: `course_data/library/brown_deer/page.html` (2.6 MB); request `course_data/requests/course_page_brown_deer.json`; built 2026-11-26T17:34Z
 * course: Brown Deer Golf Club (Coralville, IA), OSM way/191258543; holes: osm (tier mapped_nocard); card: None (None)
 * solved tee sets: osm_back (no scorecard: the package's own tee set); page sets: osm_back
 * weather: forecast for 2026-11-28, 2026-11-29; grid temperatures [35, 45, 55] F; calm-day picks with 48 prior draws
@@ -25,7 +25,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | CHECK | 4-wood -28 | yardage: no card yardage for osm_back; par: no card par |
+| 1 | 4 | CHECK | 4-wood -18 | yardage: no card yardage for osm_back; par: no card par |
 | 2 | 5 | CHECK | Driver -8 | yardage: no card yardage for osm_back; par: no card par |
 | 3 | 4 | CHECK | Driver -16 | yardage: no card yardage for osm_back; par: no card par; aim: Driver -16 lands 305 yds out in rough (6 yds from fairway) |
 | 4 | 5 | CHECK | Driver -0 | yardage: no card yardage for osm_back; par: no card par |
