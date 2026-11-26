@@ -1930,3 +1930,27 @@ verified. status.json `verified_holes`, the page subtitle and each hole's `verif
 qa.json files (mapped pages only): 1,071 of 1,791 holes verified, 48 of 100 courses with 14 or more.
 
 Refit: python3 route_conf.py fit_id ../../research/artifacts/pair_v3/44817755394 ../../research/artifacts/pair_v3/44823590755
+
+## State 2026-11-26 (evening): verified holes, first real builds and fixes
+
+* First builds with the rule: gaylord_springs 1 verified (9, 10 routed-verified; 9 has a CHECK), lake_shawnee and
+  lake_of_the_woods_como 0. Lake Shawnee was a bug: `card_corroboration` dropped every web card whose tee sets equal
+  the used card's, so three sites with the very same numbers gave 0. The measured rule (oof5.py) counts every other
+  card, identical or not; only the used card itself is now excluded. Lake of the Woods is right to get none (no
+  second card; the one card misfits the map on 3 holes).
+* Uncorroborated holes cannot be verified at any threshold: P(id) >= 0.98 / 0.99 / 0.992 are 97.1 / 97.4 / 97.1 %
+  right (only >= 0.995, 2 % of holes, reaches 99 %). The misses are card-order conflicts the features cannot see.
+  40 % of benchmark holes sit on courses with no second card, so a new card source is the lever for coverage;
+  bluegolf and golfpass never return a card (their lookup goes through a web search that answers runners with a
+  bot page).
+* Partly mapped courses (hole method v2 / structure / v2+structure): the holes OpenStreetMap draws itself (no
+  `routing` on the package hole) now verify like a fully mapped course's. Holes the old routing stage numbered do
+  not: its unflagged holes are 89 % right (pipeline_eval.json 31 test courses 0.893, pipeline_select.json 51
+  train 0.897).
+* Scorecard plausibility at multi-course sites: the OSM summary lists every hole in the area, so Pinehurst No. 2
+  (57 holes, refs like "10 - #2"), Gamble Sands and Forest Dunes (a short course repeating 1-18) rejected the right
+  card. `fetch_package.hole_lengths` now gives each number the list of its mapped lengths and no hole count when
+  numbers repeat; `scorecard.plausible` compares with the nearest.
+* picture_checks.TEE_TOL 3 -> 8 yds: 52 mapped library holes failed only by a marker 4-8 yds off the tee polygon.
+  Of 507 failing mapped holes, 249 fail on the tee-box check alone; the rest of those are walkback / lidar-pad tees
+  30-40 yds from any mapped box (the card yardage matches no mapped tee), which stay unverified.
