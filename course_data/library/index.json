@@ -1,12 +1,12 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-26T09:07Z",
+ "updated": "2026-11-26T09:36Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 93,
-  "failed": 3,
+  "needs confirm": 94,
+  "failed": 2,
   "unsupported": 2,
   "blocked": 8
  },
@@ -4286,6 +4286,62 @@
    "group": "library"
   },
   {
+   "slug": "theodore_wirth",
+   "name": "Theodore Wirth Golf Course",
+   "city": "Minneapolis",
+   "state": "MN",
+   "status": "needs confirm",
+   "check_holes": [
+    4,
+    13,
+    18
+   ],
+   "reasons": [
+    "scorecard not matched (source opengolfapi, flags ['Blue: holes sum to 6164 but the source says 6475 (-311): mixed card versions', 'White: holes sum to 5053 but the source says 6179 (-1126): mixed card versions'])",
+    "3 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "Blue",
+     "yards": 6164,
+     "par": 72,
+     "rating": 71.8,
+     "slope": 131,
+     "colour": "blue",
+     "on_page": "solved"
+    },
+    {
+     "name": "White",
+     "yards": 5053,
+     "par": 72,
+     "rating": 70.5,
+     "slope": 128,
+     "colour": "white",
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "Blue",
+    "White"
+   ],
+   "page": "course_data/library/theodore_wirth/page.html",
+   "page_bytes": 5707212,
+   "qa_report": "course_data/library/theodore_wirth/qa_report.md",
+   "center": [
+    44.992457200000004,
+    -93.3254311
+   ],
+   "osm": "relation/20146766",
+   "holes": 18,
+   "days": [
+    "2026-11-28",
+    "2026-11-29"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-26T08:47Z",
+   "group": "library"
+  },
+  {
    "slug": "gustin",
    "name": "A. L. Gustin Golf Course",
    "city": "Columbia",
@@ -8349,29 +8405,6 @@
    "group": "library"
   },
   {
-   "slug": "theodore_wirth",
-   "name": "Theodore Wirth Golf Course",
-   "city": "Minneapolis",
-   "state": "MN",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package:     elif r.get(\"method\") == \"walkback\" and back is not None and alongs[back] > max_forward:                                                                 ~~~~~~^^^^^^ KeyError: 125.0 "
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-31T02:11Z",
-   "group": "library"
-  },
-  {
    "slug": "anchorage",
    "name": "Anchorage Golf Course",
    "city": "Anchorage",
@@ -8568,18 +8601,19 @@
    "reasons": [
     "16 holes built, the card has 18: holes are missing or mis-routed",
     "built pars sum to 64, the card's to 72 (more than 2 apart): holes or pars are wrong",
+    "holes out of order: green-to-next-tee walks up to 1315 yds, 1 over 500 (in order: under 800, at most 3 over 500); longest: 9->10 1315, 14->15 192, 16->17 124",
     "resolved to 'Cabot Citrus Farms' 2.9 km from the request's near point with match score 0.38 (< 0.5): probably not the requested course",
     "holes not all mapped in OSM (hole method: v2+structure)",
     "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 1 Yellow(W) 300 < Green(M) 334'])",
     "16 holes built vs the card's 18",
     "pars sum to 64, card 72",
-    "11 hole(s) with a CHECK"
+    "12 hole(s) with a CHECK"
    ],
    "page": "course_data/library/world_woods/page.html",
    "qa_report": "course_data/library/world_woods/qa_report.md",
    "holes": 16,
    "osm": "way/410646892",
-   "built": "2026-11-03T00:13Z"
+   "built": "2026-11-26T08:27Z"
   }
  ]
 }
