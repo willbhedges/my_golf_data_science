@@ -1,10 +1,15 @@
 {
- "fetched_utc": "2026-10-30T03:37:57Z",
+ "fetched_utc": "2026-11-26T07:36:59Z",
  "tried": [
   {
    "source": "golfify",
    "ok": false,
-   "info": "golfify: no matching page (11 URLs tried)"
+   "info": "golfify: no matching page (10 URLs tried)"
+  },
+  {
+   "source": "allsquare",
+   "ok": false,
+   "info": "allsquare: the-jayhawk-club: HTTP 404; jayhawk-club: HTTP 404; jayhawk-golf-course: HTTP 404; jayhawk-golf-club: HTTP 404"
   },
   {
    "source": "club_site",
@@ -242,5 +247,23 @@
     }
    }
   }
- ]
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/608f30b6-7f7f-4e74-9f67-4cbbc7916e1e",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/608f30b6-7f7f-4e74-9f67-4cbbc7916e1e": {
+    "holes": 2,
+    "fit": 0,
+    "share": 0.0,
+    "mean_err": 50.5,
+    "all_sets": 0.0,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
 }
