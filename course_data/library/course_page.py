@@ -205,10 +205,11 @@ def pkgreq(q):
             r["note"] += "; review fixes left out, written before the routing: " + ", ".join(stale)
         if (rj(out_dir(q, "routing.json")) or {}).get("ignore_osm_holes"):     # the routing replaced OSM's hole lines
             r["ignore_osm_holes"] = True
-        if (rj(out_dir(q, "routing.json")) or {}).get("no_osm_course") and r.get("near"):
-            r["no_osm_ok"] = True                         # not in OSM as a course: build around the request's point
         if os.path.exists(out_dir(q, "routed_card.json")) and "scorecard" not in r and "typed_card" not in r:
             r["scorecard"] = os.path.join(q["out"], "routed_card.json")
+    if (rj(out_dir(q, "routing.json")) or {}).get("no_osm_course") and r.get("near"):
+        r["no_osm_ok"] = True                             # not in OSM as a course: build around the request's point
+        r["note"] += "; no golf_course element in OpenStreetMap: built around the request's point"
     wj(out_dir(q, "package_request.json"), r)
     print(q["slug"])
 

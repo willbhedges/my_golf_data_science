@@ -128,7 +128,8 @@ jobs:
             python3 -m venv /tmp/rv && /tmp/rv/bin/pip install -q -r course_data/platform/fastpath/refit/requirements.txt matplotlib
             timeout 45m /tmp/rv/bin/python -u course_data/library/route_unmapped.py "$R" 2>&1 | tail -n 40 | tee /tmp/route_unmapped.log
             rr=${PIPESTATUS[0]}; set -e
-            if [ "$rr" = 0 ] && [ -f "$O/routed_holes.geojson" ]; then
+            # (a course with no golf_course element whose holes OSM does draw needs no routed holes, only the point)
+            if { [ "$rr" = 0 ] && [ -f "$O/routed_holes.geojson" ]; } || grep -q '"no_osm_course": true' "$O/routing.json" 2>/dev/null; then
               python3 course_data/library/course_page.py pkgreq "$R"
               set +e
               OSM_SOURCE=$SRC timeout 40m python course_data/platform/package.py run "$O/package_request.json" 2>&1 | tee /tmp/pkg_v0.log
