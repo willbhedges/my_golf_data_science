@@ -1,0 +1,66 @@
+name: artifact-fetch
+
+# Copy small artifacts of earlier workflow runs into the repo (the sandbox cannot reach the artifact store).
+# Trigger: push course_data/requests/artifactfetch_<name>.json
+#   {"name": "pair_v3", "runs": ["44817755394"], "pattern": "pair-*", "rev": n}
+# Output: course_data/research/artifacts/<name>/<run>/<artifact>/<file>.gz (each file gzipped; total capped at 40 MB).
+on:
+  push:
+    paths:
+      - "course_data/requests/artifactfetch_*.json"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/requests/
+            /course_data/research/artifacts/
+      - name: Fetch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          B="${{ github.event.before }}"
+          if git cat-file -e "$B^{commit}" 2>/dev/null; then
+            RS=$(git diff --name-only "$B" "${{ github.sha }}" -- 'course_data/requests/artifactfetch_*.json')
+          else
+            RS=$(git diff --name-only HEAD~1 HEAD -- 'course_data/requests/artifactfetch_*.json')
+          fi
+          [ -n "$RS" ] || RS=$(ls -t course_data/requests/artifactfetch_*.json | head -1)
+          for R in $RS; do
+            [ -f "$R" ] || continue
+            NAME=$(python3 -c "import json,sys,re; n=json.load(open(sys.argv[1]))['name']; assert re.fullmatch(r'[A-Za-z0-9_]+', n); print(n)" "$R")
+            PAT=$(python3 -c "import json,sys,re; p=json.load(open(sys.argv[1])).get('pattern','*'); assert re.fullmatch(r'[A-Za-z0-9_*.-]+', p); print(p)" "$R")
+            for RUN in $(python3 -c "import json,sys; print(' '.join(str(int(r)) for r in json.load(open(sys.argv[1]))['runs']))" "$R"); do
+              OUT="course_data/research/artifacts/$NAME/$RUN"
+              mkdir -p "$OUT"
+              gh run download "$RUN" -R "${{ github.repository }}" -p "$PAT" -D "$OUT" || echo "download failed for $RUN"
+            done
+            find "course_data/research/artifacts/$NAME" -type f ! -name '*.gz' -exec gzip -9 -f {} +
+            du -sk "course_data/research/artifacts/$NAME"
+            [ "$(du -sk "course_data/research/artifacts/$NAME" | cut -f1)" -lt 40000 ] || { echo "over 40 MB"; exit 1; }
+          done
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add course_data/research/artifacts
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          printf '%s\n' "artifact-fetch: run artifacts for analysis (GitHub Actions run ${{ github.run_id }})" > /tmp/msg.txt
+          git commit -q -F /tmp/msg.txt
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin "${{ github.ref_name }}" && git push origin "HEAD:${{ github.ref_name }}" && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
