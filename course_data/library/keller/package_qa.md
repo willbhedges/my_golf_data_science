@@ -1,6 +1,6 @@
-# Keller Golf Course (Saint Paul, MN) - osm_back tees
+# Keller Golf Course (Maplewood, MN) - Black tees
 
-Built 2026-11-26T11:01:41Z. OSM way/242402746. Scorecard: None (None). Tee set: no scorecard.
+Built 2026-11-26T12:21:54Z. OSM none/0. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
@@ -9,57 +9,60 @@ Built 2026-11-26T11:01:41Z. OSM way/242402746. Scorecard: None (None). Tee set: 
 | holes_built | 18 |
 | holes_mapped | 18 |
 | greens_found | 18 |
-| tee_boxes | 22 |
+| tee_boxes | 56 |
 | tees_with_colour | 0 |
 | holes_with_trees_or_long_grass_in_landing_zone | 14 |
 | of_par4_5 | 14 |
-| mean_landing_osm_share | 0.298 |
-| mean_confidence | 0.663 |
-| osm_score | 0.821 |
+| mean_landing_osm_share | 0.513 |
+| mean_confidence | 0.85 |
+| osm_score | 0.903 |
 
-OSM features inside the course: buildings 2, golf=bunker 34, golf=cartpath 22, golf=driving_range 1, golf=fairway 18, golf=green 19, golf=hole 18, golf=pin 18, golf=tee 22, golf=water_hazard 3, holes_with_handicap 18, holes_with_par 18, trees_polygons 1, water_polygons 4
+OSM features inside the course: buildings 137, built_up_landuse 1, golf=bunker 55, golf=cartpath 26, golf=driving_range 1, golf=fairway 17, golf=green 19, golf=hole 18, golf=pin 18, golf=rough 3, golf=tee 56, golf=water_hazard 4, holes_with_handicap 18, holes_with_par 18, long_grass_polygons 2, single_trees 576, trees_polygons 11, water_lines 4, water_polygons 36
 
 ## Holes
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 334 / 334 | 162 | 0.59 | needs review | 27% | 12% | 61% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 2 | 4 | 329 / 329 | 351 | 0.62 | check the flags | 19% | 40% | 40% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 3 | 3 | 188 / 188 | 360 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 4 | 5 | 479 / 479 | 182 | 0.65 | check the flags | 33% | 31% | 36% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 5 | 4 | 327 / 327 | 291 | 0.60 | check the flags | 26% | 20% | 55% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 6 | 4 | 351 / 351 | 8 | 0.63 | check the flags | 34% | 22% | 44% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 7 | 4 | 401 / 401 | 3 | 0.69 | check the flags | 49% | 34% | 18% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 8 | 3 | 136 / 136 | 188 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 9 | 4 | 318 / 318 | 126 | 0.62 | check the flags | 26% | 30% | 44% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 10 | 4 | 338 / 338 | 82 | 0.67 | check the flags | 26% | 56% | 18% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 11 | 5 | 477 / 477 | 183 | 0.63 | check the flags | 34% | 23% | 44% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 12 | 3 | 154 / 154 | 185 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 13 | 4 | 342 / 342 | 355 | 0.67 | check the flags | 50% | 20% | 31% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 14 | 4 | 367 / 367 | 359 | 0.64 | check the flags | 26% | 39% | 35% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 15 | 4 | 337 / 337 | 210 | 0.62 | check the flags | 26% | 27% | 47% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 16 | 3 | 152 / 152 | 298 | 0.77 | check the flags | 100% | 0% | 0% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 17 | 4 | 386 / 386 | 14 | 0.65 | check the flags | 30% | 38% | 32% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
-| 18 | 4 | 287 / 287 | 255 | 0.58 | needs review | 14% | 24% | 62% | tee nearest the hole-line start | tee: tee nearest the hole-line start |
+| 1 | 4 | 332 / 332 | 150 | 0.81 | auto | 41% | 6% | 54% | tee stage: Black tee_centroid |  |
+| 2 | 4 | 393 / 393 | 153 | 0.87 | auto | 64% | 5% | 31% | tee stage: Black tee_centroid |  |
+| 3 | 5 | 502 / 503 | 266 | 0.82 | auto | 51% | 15% | 34% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 4 | 3 | 150 / 150 | 264 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 5 | 4 | 371 / 372 | 68 | 0.79 | check the flags | 43% | 10% | 46% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 6 | 3 | 223 / 224 | 281 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 7 | 4 | 420 / 421 | 107 | 0.82 | auto | 46% | 4% | 50% | tee stage: Black tee_centroid |  |
+| 8 | 4 | 385 / 386 | 298 | 0.82 | auto | 47% | 19% | 34% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 9 | 4 | 400 / 400 | 321 | 0.84 | auto | 52% | 6% | 42% | tee stage: Black tee_centroid |  |
+| 10 | 5 | 503 / 503 | 146 | 0.87 | auto | 56% | 13% | 31% | tee stage: Black tee_centroid |  |
+| 11 | 4 | 382 / 382 | 320 | 0.79 | check the flags | 43% | 10% | 48% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 12 | 5 | 519 / 519 | 211 | 0.82 | auto | 56% | 10% | 34% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 13 | 3 | 148 / 148 | 66 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 14 | 4 | 378 / 378 | 214 | 0.83 | auto | 58% | 9% | 33% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 15 | 3 | 195 / 195 | 86 | 0.93 | auto | 100% | 0% | 0% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 16 | 5 | 557 / 557 | 43 | 0.82 | auto | 52% | 12% | 36% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 17 | 4 | 376 / 376 | 195 | 0.82 | auto | 58% | 2% | 40% | tee stage: Black tee_axis | tee: tee stage: Black tee_axis |
+| 18 | 4 | 441 / 441 | 13 | 0.84 | auto | 52% | 5% | 43% | tee stage: Black tee_centroid |  |
 
 ## Stages
 
-- **resolve**: ok: way/242402746 Keller Golf Course (Saint Paul, MN)
-- **osm**: ok: 1043 features
+- **resolve**: ok: none/0 Keller Golf Course (Maplewood, MN)
+- **osm**: ok: 1557 features
 - **routing**: not needed: OSM has a golf=hole way for every hole
-- **scorecard**: missing
-- **tees**: fallback: OSM tee nearest the hole-line start (no yardages)
-- **geometry**: ok: geometry/build_holes.py (18 holes, 1 tee set(s))
-- **imagery**: ok: course_data/packages/keller/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2025)
-- **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2025
+- **scorecard**: ok: golfify (golfify)
+- **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 4 sets; lidar pads: 45 candidate pads near hole starts (5 on buildings / off the course dropped)
+- **geometry**: ok: geometry/build_holes.py (18 holes, 4 tee set(s))
+- **imagery**: ok: course_data/packages/keller/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2021)
+- **green_visibility**: ok: 18/18 greens visible as turf on NAIP 2021
 - **elevation**: ok: course_data/packages/keller/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
 - **fairway_fill**: not needed: every par-4/5 landing corridor has a fairway
 - **green_auto**: not needed: every hole has a mapped green
-- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 16 polygons (outside 16); mode replace
-- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
+- **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 0 polygons (); mode replace
+- **native_auto**: none: no S2 native P for this course (vision_any/s2/<slug>/s2_stack.npz)
 
 ## Warnings
 
-- no scorecard (request yardages, card file, golfify, club site all missing): tee = the OSM tee box nearest each hole-line start (usually the back tee); lengths are measured
+- hole 3 White: CHECK, tee was put 88 yds from this hole's start, at hole 8's tee, to fit the card yardage: kept at the hole line's start (the card yardage does not fit this hole)
+- hole 16 Blue: CHECK, tee was put 61 yds from this hole's start, at hole 5's tee, to fit the card yardage: kept at the hole line's start (the card yardage does not fit this hole)
+- hole 16 White: CHECK, tee was put 155 yds from this hole's start, at hole 5's tee, to fit the card yardage: kept at the hole line's start (the card yardage does not fit this hole)
