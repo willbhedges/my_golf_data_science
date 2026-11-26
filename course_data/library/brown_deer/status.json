@@ -7,48 +7,62 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "holes placed from aerial photos (OpenStreetMap does not map them all): 5 marked approximate (1, 7, 8, 9, 10)",
-  "scorecard not matched (source None, flags [])",
-  "18 holes built vs the card's 0",
-  "pars sum to 71, card None",
-  "18 hole(s) with a CHECK"
+  "holes placed from aerial photos (OpenStreetMap does not map them all): 5 marked approximate (9, 13, 15, 18, 16)",
+  "5 hole(s) with a CHECK"
  ],
  "check_holes": [
   1,
-  2,
   3,
-  4,
-  5,
-  6,
-  7,
-  8,
   9,
-  10,
-  11,
-  12,
   13,
-  14,
   15,
   16,
-  17,
   18
  ],
  "tee_sets": [
   {
-   "name": "osm_back",
-   "yards": null,
-   "par": null,
-   "rating": null,
-   "slope": null,
-   "colour": null,
+   "name": "Gold",
+   "yards": 6315,
+   "par": 71,
+   "rating": 71,
+   "slope": 126,
+   "colour": "gold",
    "on_page": "solved"
+  },
+  {
+   "name": "Blue",
+   "yards": 5853,
+   "par": 71,
+   "rating": 69.2,
+   "slope": 123,
+   "colour": "blue",
+   "on_page": "solved"
+  },
+  {
+   "name": "White",
+   "yards": 5367,
+   "par": 71,
+   "rating": 66.4,
+   "slope": 116,
+   "colour": "white",
+   "on_page": null
+  },
+  {
+   "name": "Red",
+   "yards": 4634,
+   "par": 71,
+   "rating": 66.2,
+   "slope": 112,
+   "colour": "red",
+   "on_page": null
   }
  ],
  "solved_sets": [
-  "osm_back"
+  "Gold",
+  "Blue"
  ],
  "page": "course_data/library/brown_deer/page.html",
- "page_bytes": 2600938,
+ "page_bytes": 5087902,
  "qa_report": "course_data/library/brown_deer/qa_report.md",
  "center": [
   41.70095015,
@@ -61,50 +75,81 @@
   "2026-11-29"
  ],
  "weather": "forecast",
- "built": "2026-11-26T17:34Z",
+ "built": "2026-11-26T22:15Z",
  "request": "course_data/requests/course_page_brown_deer.json",
  "native": {
-  "holes": [],
-  "tee_set": "osm_back",
-  "note": "0 asked of 13 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%))"
+  "holes": [
+   "3",
+   "8"
+  ],
+  "tee_set": "Gold",
+  "note": "2 asked of 13 framed holes (priors: native_auto p; automatic band off: course gate shut: 4% of sides >= 0.675 (< 25%)); 2 kept on the page's own picks"
  },
  "verified_holes": [],
  "routed": {
-  "source": "route_joint",
+  "source": "route_conf",
   "approximate": [
-   "1",
-   "7",
-   "8",
    "9",
-   "10"
+   "13",
+   "15",
+   "18"
   ],
-  "approx_below": 0.5,
+  "approx_below": 0.65,
   "p_holes": {
-   "1": 0.2452,
-   "2": 0.9277,
-   "3": 0.9228,
-   "4": 0.8939,
-   "5": 0.9239,
-   "6": 0.808,
-   "7": 0.2409,
-   "8": 0.2289,
-   "9": 0.1813,
-   "10": 0.2632,
-   "11": 0.8767,
-   "12": 0.762,
-   "13": 0.9071,
-   "14": 0.8694,
-   "15": 0.8859,
-   "16": 0.7044,
-   "17": 0.8386,
-   "18": 0.5154
+   "1": 0.664,
+   "2": 0.7046,
+   "3": 0.8978,
+   "4": 0.8523,
+   "5": 0.771,
+   "6": 0.895,
+   "7": 0.9353,
+   "8": 0.6657,
+   "9": 0.6381,
+   "10": 0.691,
+   "11": 0.7456,
+   "12": 0.7738,
+   "13": 0.6457,
+   "14": 0.7916,
+   "15": 0.4503,
+   "16": 0.7791,
+   "17": 0.7073,
+   "18": 0.324
   },
-  "p_id": null,
-  "verified": null,
-  "card_corroborated": null,
-  "ensemble": null,
-  "warnings": [
-   "joint routing min margin 0.2 (< 4.0), 0 holes without a tee or green"
-  ]
+  "p_id": {
+   "1": 0.7366,
+   "2": 0.8697,
+   "3": 0.9596,
+   "4": 0.8893,
+   "5": 0.8758,
+   "6": 0.9439,
+   "7": 0.978,
+   "8": 0.786,
+   "9": 0.8117,
+   "10": 0.7758,
+   "11": 0.8475,
+   "12": 0.8772,
+   "13": 0.7199,
+   "14": 0.8541,
+   "15": 0.6231,
+   "16": 0.8989,
+   "17": 0.8008,
+   "18": 0.291
+  },
+  "verified": [],
+  "card_corroborated": 1,
+  "ensemble": {
+   "use": "a",
+   "sum_a": 12.95,
+   "sum_b": 12.77,
+   "agree": 1.0,
+   "model": "pair",
+   "second": "golfseg_own_v3",
+   "seconds": 45.4,
+   "right_a": null,
+   "right_b": null,
+   "verified": [],
+   "card_corroborated": 1
+  },
+  "warnings": []
  }
 }
