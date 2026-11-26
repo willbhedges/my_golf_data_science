@@ -5,51 +5,58 @@
  "hand_checked": false,
  "main_which": "auto",
  "slug": "gamble_sands",
- "sub": "Okanogan County, WA \u00b7 automatic page \u00b7 osm_back \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "sub": "Brewster, WA \u00b7 automatic page \u00b7 Medal 7,227 / Back 6,664 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
  "event": "",
  "package": "course_data/library/gamble_sands/package.json",
  "truth_package": "course_data/library/gamble_sands/package.json",
- "tees": "osm_back",
- "alt_bases": {},
+ "tees": "Medal",
+ "alt_bases": {
+  "Back": "auto_b"
+ },
  "sets": [
-  "osm_back"
+  "Medal",
+  "Back"
  ],
  "colors": {
-  "osm_back": "#111"
+  "Medal": "#7b3fc4",
+  "Back": "#e07a3a"
  },
  "days": [
-  "2026-11-07",
-  "2026-11-08"
+  "2026-11-28",
+  "2026-11-29"
  ],
  "day_labels": [
-  "Sat 11/7",
-  "Sun 11/8"
+  "Sat 11/28",
+  "Sun 11/29"
  ],
  "tee_hour": 9.0,
  "temps": [
-  35,
-  50,
-  60
+  25,
+  40,
+  50
  ],
  "draws": 48,
  "swings": 2500,
  "forecast": "course_data/library/gamble_sands/weather.json",
  "weather_kind": "forecast",
  "climate": {
-  "temp_lo": 38.0,
-  "temp_hi": 52.2,
-  "wind_mph": 1.9,
-  "wind_from": 207,
+  "temp_lo": 33.3,
+  "temp_hi": 43.8,
+  "wind_mph": 2.3,
+  "wind_from": 288,
   "source": "Open-Meteo hourly forecast"
  },
  "grid_prune": true,
- "bases_why": "no scorecard: the package's own tee set",
+ "bases_why": "the two longest sets on the card (combination sets skipped)",
  "request": "course_data/requests/course_page_gamble_sands.json",
- "rev": 1,
- "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from no card, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: osm_back. See qa_report.md for the hole-by-hole checks.",
- "built": "2026-11-02T03:03Z",
+ "rev": 2,
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from golfify, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Medal, Back. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-11-26T17:19Z",
  "offsets": {
   "auto": [
+   0
+  ],
+  "auto_b": [
    0
   ]
  },

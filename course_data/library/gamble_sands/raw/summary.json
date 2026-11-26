@@ -19,31 +19,33 @@
   },
   "other_candidates": []
  },
- "n_features": 320,
+ "n_features": 333,
  "golf_tag_counts": {
-  "bunker": 83,
+  "bunker": 70,
   "cartpath": 46,
+  "tee": 33,
   "hole": 32,
   "green": 31,
-  "tee": 19,
-  "fairway": 16,
+  "fairway": 14,
   "rough": 8,
-  "lateral_water_hazard": 2
+  "lateral_water_hazard": 2,
+  "driving_range": 1
  },
  "golf_tag_counts_inside_course": {
-  "bunker": 82,
+  "bunker": 69,
   "cartpath": 44,
   "green": 18,
   "hole": 18,
-  "fairway": 15,
+  "tee": 18,
+  "fairway": 13,
   "rough": 7,
-  "tee": 4,
-  "lateral_water_hazard": 1
+  "lateral_water_hazard": 1,
+  "driving_range": 1
  },
  "land_cover_inside_course": {
-  "natural=sand": 76,
-  "landuse=grass": 17,
-  "waterway=river": 1,
+  "natural=sand": 79,
+  "landuse=grass": 16,
+  "waterway=stream": 1,
   "natural=water": 1
  },
  "holes": [
@@ -55,7 +57,7 @@
    "name": null,
    "geometry": "LineString",
    "nodes": 3,
-   "length_yd": 513,
+   "length_yd": 510,
    "extra_tags": {},
    "osm_id": 947409626
   },
@@ -127,7 +129,7 @@
    "name": null,
    "geometry": "LineString",
    "nodes": 2,
-   "length_yd": 183,
+   "length_yd": 182,
    "extra_tags": {},
    "osm_id": 947409628
   },
@@ -151,7 +153,7 @@
    "name": null,
    "geometry": "LineString",
    "nodes": 4,
-   "length_yd": 531,
+   "length_yd": 506,
    "extra_tags": {},
    "osm_id": 947409629
   },
@@ -223,7 +225,7 @@
    "name": null,
    "geometry": "LineString",
    "nodes": 3,
-   "length_yd": 317,
+   "length_yd": 307,
    "extra_tags": {},
    "osm_id": 947409632
   },
@@ -295,7 +297,7 @@
    "name": null,
    "geometry": "LineString",
    "nodes": 4,
-   "length_yd": 430,
+   "length_yd": 437,
    "extra_tags": {},
    "osm_id": 947439680
   },
@@ -403,7 +405,7 @@
    "name": null,
    "geometry": "LineString",
    "nodes": 2,
-   "length_yd": 230,
+   "length_yd": 218,
    "extra_tags": {},
    "osm_id": 947440596
   },
@@ -427,7 +429,7 @@
    "name": null,
    "geometry": "LineString",
    "nodes": 4,
-   "length_yd": 626,
+   "length_yd": 629,
    "extra_tags": {},
    "osm_id": 947440597
   }
@@ -471,11 +473,15 @@
  "holes_with_handicap": 14,
  "hole_centrelines": 32,
  "tees": {
-  "count": 19,
+  "count": 33,
   "with_colour_or_ref": 0,
   "items": [
    {
     "osm_id": 946566259,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 946929821,
     "geometry": "Polygon"
    },
    {
@@ -549,6 +555,58 @@
    {
     "osm_id": 1551442935,
     "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723884,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723885,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723886,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723887,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723888,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723889,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723890,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723891,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723892,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723893,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723894,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723895,
+    "geometry": "Polygon"
+   },
+   {
+    "osm_id": 1574723896,
+    "geometry": "Polygon"
    }
   ]
  },
@@ -560,23 +618,23 @@
   48.07748,
   -119.641242
  ],
- "fetched_utc": "2026-11-02T02:58:40Z",
+ "fetched_utc": "2026-11-26T17:09:03Z",
  "osm_attribution": "(c) OpenStreetMap contributors, ODbL 1.0",
  "osm_source": {
-  "source": "overpass",
+  "source": "geofabrik",
   "reason": "complete",
-  "mirror": "https://overpass-api.de/api/interpreter",
-  "osm_base": "2026-11-02T02:57:23Z",
+  "mirror": "geofabrik:WA",
+  "osm_base": "2026-11-25T21:22:46Z",
   "counts": {
    "hole": 32,
    "green": 31,
-   "tee": 19,
+   "tee": 33,
    "pin": 0,
-   "bunker": 83,
-   "fairway": 16
+   "bunker": 70,
+   "fairway": 14
   },
   "mirrors_tried": [
-   "https://overpass-api.de/api/interpreter"
+   "geofabrik:WA"
   ]
  }
 }
