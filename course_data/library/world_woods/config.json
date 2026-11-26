@@ -31,27 +31,27 @@
  ],
  "tee_hour": 9.0,
  "temps": [
-  50,
-  60,
+  55,
+  65,
   75
  ],
  "draws": 48,
  "swings": 2500,
  "forecast": "course_data/library/world_woods/weather.json",
- "weather_kind": "forecast",
+ "weather_kind": "climate normals",
  "climate": {
-  "temp_lo": 57.6,
-  "temp_hi": 67.2,
-  "wind_mph": 4.8,
-  "wind_from": 118,
-  "source": "Open-Meteo hourly forecast"
+  "temp_lo": 56.3,
+  "temp_hi": 72.1,
+  "wind_mph": 6.5,
+  "wind_from": 50.0,
+  "source": "PLACEHOLDER: climate normals for these dates (ERA5 reanalysis via the Open-Meteo archive, 10 years 2016-2025, event days +/- 7 days, mean per hour; wind direction is the prevailing one). Rebuild insid"
  },
  "grid_prune": true,
  "bases_why": "the two longest sets on the card (combination sets skipped)",
  "request": "course_data/requests/course_page_world_woods.json",
  "rev": 5,
  "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from golfify, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: Black, Silver. See qa_report.md for the hole-by-hole checks.",
- "built": "2026-11-26T08:27Z",
+ "built": "2026-11-26T12:20Z",
  "offsets": {
   "auto": [
    0
