@@ -194,6 +194,8 @@ def pkgreq(q):
     if os.path.exists(out_dir(q, "routed_holes.geojson")) and "osm_supplement" not in r:
         r["osm_supplement"] = os.path.join(q["out"], "routed_holes.geojson")
         r["note"] += "; holes routed on aerial photos (library/route_unmapped.py)"
+        if (rj(out_dir(q, "routing.json")) or {}).get("ignore_osm_holes"):     # the routing replaced OSM's hole lines
+            r["ignore_osm_holes"] = True
         if os.path.exists(out_dir(q, "routed_card.json")) and "scorecard" not in r and "typed_card" not in r:
             r["scorecard"] = os.path.join(q["out"], "routed_card.json")
     wj(out_dir(q, "package_request.json"), r)

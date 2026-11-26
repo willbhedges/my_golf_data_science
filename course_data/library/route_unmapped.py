@@ -47,19 +47,42 @@ def main(req):
         print("route_unmapped: the course is not in the national index")
         return 1
     logs = []
+    OK = ("shown", "ok", "confirm")
+
+    def routed(r):
+        return r.get("status") in OK and bool(r.get("p_holes") or (r.get("timing") or {}).get("perception"))
+
+    def build(slug, extra=None):
+        say = lambda *a: logs.append(" ".join(str(x) for x in a))    # noqa: E731
+        r = fast.build(None, slug=slug, row=row, extra=extra, log=say)
+        if (r.get("timing") or {}).get("card_late") or r.get("status") not in OK:
+            # the web-card search runs beside the imagery fetch and the first build does not wait for it: let it
+            # finish (it lands in the cache) and build once more with the card
+            logs.append("card search still running after the first build: waiting for it, then building again")
+            try:
+                fast.wait_card(240)
+            except Exception:                                        # noqa: BLE001
+                pass
+            r = fast.build(None, slug=slug, row=row, extra=extra, log=say)
+        return r
     slug = "routed_" + q["slug"]
-    r = fast.build(None, slug=slug, row=row, log=lambda *a: logs.append(" ".join(str(x) for x in a)))
-    if (r.get("timing") or {}).get("card_late") or r.get("status") not in ("shown", "ok", "confirm"):
-        # the web-card search runs beside the imagery fetch and the first build does not wait for it: let it finish
-        # (it lands in the cache) and build once more with the card
-        logs.append("card search still running after the first build: waiting for it, then building again")
-        try:
-            fast.wait_card(240)
-        except Exception:                                            # noqa: BLE001
-            pass
-        r = fast.build(None, slug=slug, row=row, log=lambda *a: logs.append(" ".join(str(x) for x in a)))
+    r = build(slug)
+    dropped = False
+    if r.get("status") not in OK:
+        # a partly mapped course whose few OSM hole lines do not fit the routing (renumbered or rebuilt course:
+        # Jayhawk Club, 10 of 18 mapped, routed holes sharing greens with them): route every hole from the photos
+        logs.append(f"first routing {r.get('status')}: {(r.get('why') or '')[:200]}; routing again without the OSM hole lines")
+        r2 = build(slug + "_all", dict(ignore_osm_holes=True))
+        if r2.get("status") in OK:
+            r, slug, dropped = r2, slug + "_all", True
     d = r.get("dir") or os.path.join(fast.pc.PACKAGES, slug)
+    # the routed holes: the supplement the routed build's own request ended with (the perception scene's holes, or
+    # the joint solver's when OSM has the greens and tees but not the lines)
     sup = os.path.join(d, "raw", "scene_holes.geojson")
+    try:
+        sup = json.load(open(os.path.join(d, "package_request.json"))).get("osm_supplement") or sup
+    except (OSError, ValueError):
+        pass
     info = dict(schema="routing/1", status=r.get("status"), why=r.get("why"), holes=r.get("holes"),
                 p_holes=r.get("p_holes"), approximate=r.get("approximate"), timing=r.get("timing"), log_tail=logs[-12:])
     rs = os.path.join(d, "route_scene.json")
@@ -75,6 +98,7 @@ def main(req):
         info.update(p_holes=rc.get("p_holes") or info["p_holes"], approximate=rc.get("approximate") or info["approximate"],
                     approx_below=rc.get("approx_below"), source=rc.get("source"), warnings=rc.get("warnings"),
                     imagery_year=(P.get("imagery") or {}).get("year"))
+    info["ignore_osm_holes"] = dropped
     ok = os.path.exists(sup) and r.get("status") in ("shown", "ok", "confirm") and bool(info.get("p_holes"))
     os.makedirs(out, exist_ok=True)
     if ok:
