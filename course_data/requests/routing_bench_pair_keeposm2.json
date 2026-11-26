@@ -1,0 +1,8 @@
+{"schema": "request/1", "kind": "routing_bench", "stage": "detector_pair",
+ "note": "partly mapped courses as production routes them since the tier C switch: both detectors (A golfseg_own_v2 + objects_unet_v2, B golfseg_own_v3 + objects_unet_v3), each given every OSM golf feature but the hole ways. For the route_conf pair / pair_id refit on OSM-given routings (the shipped model verifies only 0.7 % of their holes).",
+ "unet_a": "course_data/segment/models/golfseg_own_v2/model.safetensors",
+ "obj_a": "course_data/platform/fastpath/fastscene_model/objects_unet_v2",
+ "unet_b": "course_data/segment/models/golfseg_own_v3/model.safetensors",
+ "obj_b": "course_data/platform/fastpath/fastscene_model/objects_unet_v3",
+ "keep_osm_a": "all", "keep_osm_b": "all",
+ "refetch_b": false, "slugs": "", "nshards": 20, "attempt": 1}

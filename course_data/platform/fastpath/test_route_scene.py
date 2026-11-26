@@ -20,7 +20,7 @@ def test_needs_perception():
     assert not RS.needs_perception(full, 9)
     mapped = {"features": [_f("green", _sq(-90 + i * 0.003, 40)) for i in range(9)]
               + [_f("tee", _sq(-90 + i * 0.003, 40.002)) for i in range(9)]}
-    assert not RS.needs_perception(mapped, 9)
+    assert RS.needs_perception(mapped, 9)            # greens and tees without lines: the scene router (pair_keeposm)
     assert RS.needs_perception({"features": []}, 18)
     assert RS.needs_perception({"features": mapped["features"][:7]}, 9)
 

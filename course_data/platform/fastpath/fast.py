@@ -182,8 +182,10 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
                               prefetch=prefetch)
             T.update(ti)
         T["imagery"] = round(time.time() - t, 2)
-    def route_no_lines():
-        """OSM maps greens + tees but not the hole lines: joint routing (route_joint.py) -> golf=hole ways"""
+    def route_no_lines(osm_mode=True):
+        """OSM maps greens + tees but not the hole lines: joint routing (route_joint.py) -> golf=hole ways.
+        osm_mode False: only OSM's own unnumbered hole lines are ordered (97 % of holes right); greens and tees
+        with no lines go to the scene router first (89.4 % against this solver's 80.8 %, pair_keeposm bench)."""
         nonlocal fc, summ
         n_lines = sum(1 for f in fc["features"] if (f.get("properties") or {}).get("golf") == "hole"
                       and f["properties"].get("inside_course") is not False)
@@ -195,7 +197,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
         card, _ = pk.pick_scorecard(req, raw, fc)
         n = len(next(iter(card["tee_sets"].values()))["yards"]) if card and card.get("tee_sets") else (row.get("holes") or 18)
         lines = route_joint.unnumbered_lines(fc, n)
-        if lines is None and (n_lines >= 3 or n_green < 7 or n_tee < 5):
+        if lines is None and (not osm_mode or n_lines >= 3 or n_green < 7 or n_tee < 5):
             return None
         try:
             r = route_joint.route_lines(fc, lines, card, n) if lines is not None else route_joint.route(fc, card, n)
@@ -296,9 +298,14 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     routed = None
     scene_routed = None
     if not tc.is_alive():
-        routed = route_no_lines()
+        scene_first = imagery and os.environ.get("FASTPATH_PERCEPTION", "1") != "0"
+        routed = route_no_lines(osm_mode=not scene_first)
         if routed is None:
             scene_routed = route_perception()
+            if scene_first and not (scene_routed or {}).get("n_holes"):
+                routed = route_no_lines()            # no scene routing: the joint solver on OSM's greens and tees
+                if routed is not None:
+                    scene_routed = None
     t0 = time.time()
     import package as pk
     try:

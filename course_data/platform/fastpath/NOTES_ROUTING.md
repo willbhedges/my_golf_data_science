@@ -1960,3 +1960,29 @@ Refit: python3 route_conf.py fit_id ../../research/artifacts/pair_v3/44817755394
   only) 81 % right and no margin / card-fit / corroboration rule passes 96 %: never verified (Brown Deer, Glen Mills).
 * build_holes.build: a way with no ref took number len(out) + 1, which replaced Ironhorse's hole 17 (hole 4's green
   and par) once OSM lost a hole way; it now takes a number above every mapped one.
+
+## State 2026-11-26 (night): greens and tees mapped, lines not -> the scene router
+
+`pair_keeposm` (routing_bench run 45881895609, artifacts research/artifacts/pair_keeposm): the 600 TRAIN-BIG courses
+routed by the scene router (detector v2, fold models, re-ranker and tee step live) with OSM golf features given back
+(`ROUTE_BENCH_KEEP_OSM`, route_bench.strip_golf; `keep_osm_a` / `keep_osm_b` in the request). Holes right (tee and
+green), 586 courses in every arm:
+
+| input | all | never-used 197 | courses all right |
+|---|---|---|---|
+| photos only (pair_v3 arm A) | 87.3 % | 87.0 % | 39.4 % |
+| + every OSM golf feature but the hole ways | 89.4 % | 89.7 % | 42.7 % |
+| + OSM greens and tees only | 89.5 % | 89.6 % | |
+| route_joint on the same OSM objects (osm mode) | 80.8 % | 80.9 % | 21.0 % |
+
+Shipped: fast.py sends a course with < 3 hole lines to the scene router whatever OSM maps of its greens and tees
+(route_scene.needs_perception), route_joint's osm mode only when that gives no holes (or no imagery). route_joint
+still orders OSM's own unnumbered lines first. Mapped greens add only 2 points to photos alone: the misses are the
+numbering, not the objects.
+
+route_conf on those routings (shipped model, A against B of pair_keeposm, a same-detector pair): P(id) >= 0.98 and a
+corroborated card is right on every hole it passes but passes 0.7 % of holes; the model was fitted on photo-only
+candidates. `pair_keeposm2` (both detectors, OSM given) is the refit's input.
+
+Ruled out: OpenGolfAPI's per-hole tee_coords / green centre / green_polygon fields are null on every course tried
+(Lake Shawnee, Gaylord Springs, Pebble Beach, Glen Mills, Brown Deer).

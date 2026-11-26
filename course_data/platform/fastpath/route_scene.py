@@ -674,8 +674,10 @@ def front_nine(card):
 
 
 def needs_perception(fc, n_holes):
-    """True when OSM cannot be routed on its own: < 3 hole lines and greens or tee boxes short of the hole count
-    (tiers C / D). Courses with (nearly) every line, or with greens + tees for route_joint, keep their paths."""
+    """True when OSM does not draw the holes: < 3 hole lines (tiers C / D). Since the pair_keeposm bench (600
+    courses, OSM greens and tees given, lines hidden: scene router 89.4 % of holes right, route_joint 80.8 %) that
+    includes courses with every green and tee mapped; route_joint keeps OSM's own unnumbered lines, and is the
+    fallback when the scene routing fails."""
     lines = green = tee = 0
     for f in (fc or {}).get("features", []):
         p = f.get("properties") or {}
@@ -685,7 +687,7 @@ def needs_perception(fc, n_holes):
         lines += g == "hole" and (f.get("geometry") or {}).get("type") == "LineString"
         green += g == "green"
         tee += g == "tee"
-    return lines < 3 and (green < 0.8 * n_holes or tee < 0.8 * n_holes)
+    return lines < 3
 
 
 V2_PARAMS = dict(c_vt=3.0, c_vg=4.0, tee_box="geom", w_x=3.0, w_s=0.75, refine=1)   # route_bench tune on train (v2 scores)
