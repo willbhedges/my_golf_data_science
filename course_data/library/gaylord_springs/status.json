@@ -5,18 +5,21 @@
  "city": "Nashville",
  "state": "TN",
  "group": "library",
- "status": "blocked",
+ "status": "needs confirm",
  "reasons": [
-  "3 holes built, the card has 18: holes are missing or mis-routed",
-  "built pars sum to 12, the card's to 72 (more than 2 apart): holes or pars are wrong",
-  "holes not all mapped in OSM (hole method: structure)",
-  "3 holes built vs the card's 18",
-  "pars sum to 12, card 72",
-  "2 hole(s) with a CHECK"
+  "holes placed from aerial photos (OpenStreetMap does not map them all): 1 marked approximate (3)",
+  "8 hole(s) with a CHECK"
  ],
  "check_holes": [
-  2,
-  3
+  3,
+  4,
+  5,
+  7,
+  9,
+  11,
+  12,
+  14,
+  15
  ],
  "tee_sets": [
   {
@@ -70,36 +73,65 @@
   "Gold"
  ],
  "page": "course_data/library/gaylord_springs/page.html",
- "page_bytes": 406303,
+ "page_bytes": 4582048,
  "qa_report": "course_data/library/gaylord_springs/qa_report.md",
  "center": [
   36.21956435,
   -86.68020580000001
  ],
  "osm": "way/499135540",
- "holes": 3,
+ "holes": 18,
  "days": [
-  "2026-11-07",
-  "2026-11-08"
+  "2026-11-28",
+  "2026-11-29"
  ],
  "weather": "forecast",
- "built": "2026-11-01T20:48Z",
+ "built": "2026-11-26T09:41Z",
  "request": "course_data/requests/course_page_gaylord_springs.json",
- "blocked": {
-  "by": "course_page.py regate",
-  "when": "2026-11-03T02:52Z",
-  "was": "needs confirm"
- },
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:   File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send     raise ConnectionError(e, request=request) requests.exceptions.ConnectionError: HTTPSConnectionPool(host='download.geofabrik.de', port=443): Max retries exceeded with url: /north-america/us/tennessee-latest.osm.pbf (Caused by NewConnectionError(\"HTTPSConnection(host='download.ge"
+ "native": {
+  "holes": [
+   "16"
   ],
-  "when": "2026-11-26T07:49Z",
-  "resolve": {
-   "status": null,
-   "candidates": []
-  }
+  "tee_set": "Black",
+  "note": "4 asked of 14 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%)); 1 kept on the page's own picks (3 dropped)"
+ },
+ "routed": {
+  "source": "route_conf",
+  "approximate": [
+   "3"
+  ],
+  "approx_below": 0.65,
+  "p_holes": {
+   "1": 0.8743,
+   "2": 0.8435,
+   "3": 0.5987,
+   "4": 0.8646,
+   "5": 0.8536,
+   "6": 0.8282,
+   "7": 0.9022,
+   "8": 0.9158,
+   "9": 0.9644,
+   "10": 0.9664,
+   "11": 0.9013,
+   "12": 0.9252,
+   "13": 0.8902,
+   "14": 0.9467,
+   "15": 0.9103,
+   "16": 0.7229,
+   "17": 0.8803,
+   "18": 0.8681
+  },
+  "ensemble": {
+   "use": "a",
+   "sum_a": 15.66,
+   "sum_b": 16.03,
+   "agree": 1.0,
+   "model": "pair",
+   "second": "golfseg_own_v3",
+   "seconds": 48.9,
+   "right_a": null,
+   "right_b": null
+  },
+  "warnings": []
  }
 }
