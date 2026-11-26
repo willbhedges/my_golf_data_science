@@ -4,37 +4,37 @@
  "course": "Brickyard Crossing Golf Course",
  "bbox_snwe": [
   39.786379,
-  -86.2411017,
+  -86.2396674765357,
   39.8046941,
   -86.223924
  ],
  "grid": {
   "crs": "EPSG:32616",
   "res_m": 1.0,
-  "width": 1730,
-  "height": 2288,
+  "width": 1606,
+  "height": 2286,
   "bounds": [
-   564842,
-   4404202,
+   564966,
+   4404204,
    566572,
    4406490
   ],
   "transform": [
    1.0,
    0.0,
-   564842.0,
+   564966.0,
    0.0,
    -1.0,
    4406490.0
   ],
   "ll_bbox_wsen": [
-   -86.24273793235253,
-   39.78516396198192,
+   -86.24128971070174,
+   39.785181980594494,
    -86.22230359619401,
-   39.80591090125515
+   39.80590143636985
   ]
  },
- "fetched_utc": "2026-11-01T20:38:20Z",
+ "fetched_utc": "2026-11-26T17:04:31Z",
  "lidar": {
   "hag": {
    "source": "planetary-computer 3dep-lidar-hag",
@@ -42,7 +42,7 @@
     {
      "id": "USGS_LPC_IN_Central_MarionCo_2016_LAS_2018-hag-2m-1-2",
      "when": "2018-01-01T00:00:00.000000Z",
-     "cells": 3947516,
+     "cells": 3660592,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IN_Central_MarionCo_2016_LAS_2018",
@@ -51,10 +51,10 @@
      }
     }
    ],
-   "valid": 0.9972907150652816,
+   "valid": 0.997078976584963,
    "file": "hag.tif",
-   "mb": 1.21,
-   "frac_gt_2_5m": 0.2825243037309511
+   "mb": 1.12,
+   "frac_gt_2_5m": 0.27590270082989315
   },
   "dtm": {
    "source": "planetary-computer 3dep-lidar-dtm",
@@ -62,7 +62,7 @@
     {
      "id": "USGS_LPC_IN_Central_MarionCo_2016_LAS_2018-dtm-2m-1-2",
      "when": "2018-01-01T00:00:00.000000Z",
-     "cells": 983937,
+     "cells": 912243,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IN_Central_MarionCo_2016_LAS_2018",
@@ -71,8 +71,8 @@
      }
     }
    ],
-   "valid": 0.9943176765431101,
-   "mb": 2.11
+   "valid": 0.9939138989942571,
+   "mb": 1.98
   },
   "classification": {
    "source": "planetary-computer 3dep-lidar-classification",
@@ -80,7 +80,7 @@
     {
      "id": "USGS_LPC_IN_Central_MarionCo_2016_LAS_2018-classification-2m-1-2",
      "when": "2018-01-01T00:00:00.000000Z",
-     "cells": 3904380,
+     "cells": 3618496,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IN_Central_MarionCo_2016_LAS_2018",
@@ -91,7 +91,7 @@
     {
      "id": "USGS_LPC_IN_MarionCo_2011_LAS_2016-classification-2m-1-2",
      "when": "2011-04-30T00:00:00.000000Z",
-     "cells": 24752,
+     "cells": 23820,
      "props": {
       "datetime": null,
       "3dep:usgs_id": "USGS_LPC_IN_MarionCo_2011_LAS_2016",
@@ -100,11 +100,11 @@
      }
     }
    ],
-   "mb": 0.42,
+   "mb": 0.39,
    "counts": {
-    "0": 29108,
-    "1": 1833520,
-    "2": 2088180,
+    "0": 29000,
+    "1": 1693084,
+    "2": 1941800,
     "9": 4020,
     "10": 192,
     "17": 3220
@@ -116,7 +116,7 @@
   "tiles": [
    "032000121"
   ],
-  "mb": 0.27,
+  "mb": 0.25,
   "file": "chm_meta.tif",
   "valid": 1.0
  },
@@ -126,7 +126,7 @@
    {
     "id": "ESA_WorldCover_10m_2021_v200_N39W087",
     "when": "2021-12-31T23:59:59.000000Z",
-    "cells": 989560,
+    "cells": 917829,
     "props": {
      "datetime": null,
      "end_datetime": "2021-12-31T23:59:59.000000Z",
@@ -140,27 +140,27 @@
  "naip": {
   "years": [
    {
-    "year": 2022,
-    "file": "naip_2022.tif",
-    "mb": 11.66,
+    "year": 2025,
+    "file": "naip_2025.tif",
+    "mb": 19.45,
     "items": [
-     "in_m_3908615_sw_16_060_20220621"
+     "in_m_3908615_sw_16_060_20250831"
     ],
     "acquired": [
-     "2022-06-21"
+     "2025-08-31"
     ],
     "gsd_m": 0.6,
     "res_m": 0.6
    },
    {
-    "year": 2020,
-    "file": "naip_2020.tif",
-    "mb": 13.59,
+    "year": 2022,
+    "file": "naip_2022.tif",
+    "mb": 10.33,
     "items": [
-     "in_m_3908615_sw_16_060_20200612"
+     "in_m_3908615_sw_16_060_20220621"
     ],
     "acquired": [
-     "2020-06-12"
+     "2022-06-21"
     ],
     "gsd_m": 0.6,
     "res_m": 0.6
