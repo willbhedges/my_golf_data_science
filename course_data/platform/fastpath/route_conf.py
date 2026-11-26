@@ -281,19 +281,32 @@ def _runs(dirs):
     return out
 
 
+def _groups(dirs):
+    """run folders split at "--": each group is one experiment whose arms pair with each other only (pair_v3's two
+    runs: photos only; pair_keeposm2: the same courses with OSM's greens and tees given)"""
+    out = [[]]
+    for d in dirs:
+        if d == "--":
+            out.append([])
+        else:
+            out[-1].append(d)
+    return [g for g in out if g]
+
+
 def fit(dirs, out=MODEL, seeds=5):
     import lightgbm as lgb
-    R = _runs(dirs)
-    arms = sorted({k for v in R.values() for k in v if not k.startswith("A") or k == "A"})
-    pairs = [(x, y) for x in arms for y in arms if x != y]
     data = {"pair": [], "single": []}
-    for s, v in sorted(R.items()):
-        for x, y in pairs:
-            if x in v and y in v:
-                data["pair"] += [(s, v[x]["hole_ok"].get(ref, False), f) for ref, f in cross_rows(v[x], v[y])]
-        for x in arms:
-            if x in v:
-                data["single"] += [(s, v[x]["hole_ok"].get(ref, False), f) for ref, f in course_rows(v[x])]
+    for grp in _groups(dirs):
+        R = _runs(grp)
+        arms = sorted({k for v in R.values() for k in v if not k.startswith("A") or k == "A"})
+        pairs = [(x, y) for x in arms for y in arms if x != y]
+        for s, v in sorted(R.items()):
+            for x, y in pairs:
+                if x in v and y in v:
+                    data["pair"] += [(s, v[x]["hole_ok"].get(ref, False), f) for ref, f in cross_rows(v[x], v[y])]
+            for x in arms:
+                if x in v:
+                    data["single"] += [(s, v[x]["hole_ok"].get(ref, False), f) for ref, f in course_rows(v[x])]
     prm = dict(n_estimators=300, learning_rate=0.03, num_leaves=15, min_child_samples=40, subsample=0.8, subsample_freq=1,
                colsample_bytree=0.7, reg_lambda=5, verbose=-1)
     models = {}
@@ -304,7 +317,7 @@ def fit(dirs, out=MODEL, seeds=5):
         bs = [lgb.LGBMClassifier(random_state=sd, **prm).fit(X, y).booster_.model_to_string() for sd in range(seeds)]
         models[kind] = dict(cols=cols, boosters=bs, rows=len(y), courses=len({r[0] for r in rows}), right=round(float(y.mean()), 4))
         print(kind, X.shape, "right", round(float(y.mean()), 4))
-    json.dump(dict(schema="route_conf/1", arms=arms, source=[os.path.basename(os.path.normpath(d)) for d in dirs],
+    json.dump(dict(schema="route_conf/1", arms=arms, source=[d if d == "--" else os.path.basename(os.path.normpath(d)) for d in dirs],
                    params=prm, models=models), open(out, "w"))
     print("wrote", out, round(os.path.getsize(out) / 1e6, 2), "MB")
 
@@ -341,19 +354,20 @@ def fit_id(dirs, out=MODEL, seeds=5):
     sys.path.insert(0, os.path.dirname(HERE))
     import route_bench as RB
     import routing as R
-    Rn = _runs(dirs)
-    arms = sorted({k for v in Rn.values() for k in v if not k.startswith("A") or k == "A"})
     rows = []
-    for s, v in sorted(Rn.items()):
-        truth = {k: t for k, t in R.truth_from_fc(RB.course_files(s)[0]).items() if int(k) <= 18}
-        for x in arms:
-            if x not in v:
-                continue
-            ok = identity_ok(truth, v[x].get("lines") or {})
-            fwd = v[x].get("hole_ok_fwd") or v[x]["hole_ok"]
-            for y in arms:
-                if y != x and y in v:
-                    rows += [(s, bool(fwd.get(ref, False)) or ok(ref), f) for ref, f in cross_rows(v[x], v[y])]
+    for grp in _groups(dirs):
+        Rn = _runs(grp)
+        arms = sorted({k for v in Rn.values() for k in v if not k.startswith("A") or k == "A"})
+        for s, v in sorted(Rn.items()):
+            truth = {k: t for k, t in R.truth_from_fc(RB.course_files(s)[0]).items() if int(k) <= 18}
+            for x in arms:
+                if x not in v:
+                    continue
+                ok = identity_ok(truth, v[x].get("lines") or {})
+                fwd = v[x].get("hole_ok_fwd") or v[x]["hole_ok"]
+                for y in arms:
+                    if y != x and y in v:
+                        rows += [(s, bool(fwd.get(ref, False)) or ok(ref), f) for ref, f in cross_rows(v[x], v[y])]
     d = json.load(open(out))
     prm = d["params"]
     cols = sorted({k for r in rows for k in r[2]})
