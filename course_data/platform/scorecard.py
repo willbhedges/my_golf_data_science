@@ -631,7 +631,10 @@ def plausible(card, n_holes=None, osm_lengths=None):
         return False
     if osm_lengths:
         longest = max(card["tee_sets"].values(), key=lambda s: s.get("total") or 0)["yards"]
-        diffs = [abs(longest[int(r) - 1] - L) / max(L, 1) for r, L in osm_lengths.items()
+        # a ref mapped more than once (a short course beside the 18, a resort's other courses) carries a list of
+        # lengths: the card is compared with the nearest
+        diffs = [min(abs(longest[int(r) - 1] - x) / max(x, 1) for x in (L if isinstance(L, (list, tuple)) else [L]))
+                 for r, L in osm_lengths.items()
                  if str(r).isdigit() and int(r) - 1 < len(longest) and longest[int(r) - 1]]
         if diffs and sorted(diffs)[len(diffs) // 2] > 0.25:
             return False

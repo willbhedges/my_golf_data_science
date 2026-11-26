@@ -823,12 +823,16 @@ def run_qa_page(q, page, sets, cfg_set="page"):
     return out
 
 
+MAPPED_LINE_METHODS = ("osm", "v2", "structure", "v2+structure", "sequence_v3", "pathroute_v2")
+
+
 def verified_holes(pkg, checks, page_bad, routed, approximate, blocked=False):
     """The holes shown as right with no human check, sorted. A hole qualifies when
       * a web or file scorecard is matched, and the page is not blocked;
       * it passes every picture check (tee on a tee box, yardage within 10 of the card, par, tee-shot pick, aim) on
         every solved tee set, and the page QA found nothing on it;
-      * its line is OpenStreetMap's (a fully mapped course), or the routing verified it (route_conf.verified: P(the
+      * its line is OpenStreetMap's own (every hole of a fully mapped course; on a partly mapped one the holes the
+        package's routing stage did not place), or the fast path's routing verified it (route_conf.verified: P(the
         hole is this one) >= 0.98 and two scorecard sources agree; 99.1 % right out of fold) and did not mark it
         approximate."""
     pl, sc = pkg.get("pipeline") or {}, pkg.get("scorecard") or {}
@@ -839,8 +843,11 @@ def verified_holes(pkg, checks, page_bad, routed, approximate, blocked=False):
         return []
     if routed:
         cand = {str(r) for r in routed.get("verified") or []} - {str(a) for a in approximate or []}
-    elif (pl.get("holes") or {}).get("method") == "osm":
-        cand = {str(k) for k in (pkg.get("holes") or {})}
+    elif (pl.get("holes") or {}).get("method") in MAPPED_LINE_METHODS:
+        # a partly mapped course: only the holes OpenStreetMap draws itself (the package's routing stage placed the
+        # others and records it on the hole)
+        cand = {str(k) for k, h in (pkg.get("holes") or {}).items()
+                if not h.get("routing") and not h.get("inferred") and "hole" not in (h.get("provenance") or {})}
     else:
         return []
     order = [str(k) for k in (pkg.get("holes") or {})]

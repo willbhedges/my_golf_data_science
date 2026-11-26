@@ -363,6 +363,9 @@ def test_verified_holes_mapped_and_routed():
     assert cp.verified_holes(pkg, checks, {}, None, None, blocked=True) == []
     assert cp.verified_holes(pkg, checks, {}, dict(verified=["1", "2", "3"]), ["3"]) == ["1"]
     assert cp.verified_holes(pkg, checks, {}, dict(verified=[]), []) == []
-    pkg["pipeline"]["holes"]["method"] = "v2+structure"
+    pkg["pipeline"]["holes"]["method"] = "v2+structure"          # partly mapped: only OpenStreetMap's own holes
+    pkg["holes"]["1"] = dict(routing=dict(status="ok", p_hole=1.0), provenance=dict(hole="routing:ok"))
+    assert cp.verified_holes(pkg, checks, {}, None, None) == ["3"]
+    pkg["pipeline"]["holes"]["method"] = "geometry"
     assert cp.verified_holes(pkg, checks, {}, None, None) == []
     assert cp.span_text(["1", "2", "3", "5", "9", "10"]) == "1-3, 5, 9-10"

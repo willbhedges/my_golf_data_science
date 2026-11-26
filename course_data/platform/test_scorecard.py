@@ -316,3 +316,17 @@ def test_sanity_fill_per_set_length():
     assert scm.sanity(c27) == []
     assert scm.sanity(dict(par=[4] * 9, tee_sets=dict(B=dict(yards=None), C=None)))      # no usable set
     assert scm.sanity(dict(tee_sets=dict(B=dict(yards=["350"] * 9)))) == []              # string yardages
+
+
+def test_plausible_with_a_ref_mapped_twice():
+    """a short course beside the 18 repeats the hole numbers: the card is compared with the nearest length"""
+    import fetch_package as fp
+    y = [400, 150, 520, 380, 410, 170, 390, 505, 360]
+    holes = [dict(ref=str(i + 1), length_yd=v) for i, v in enumerate(y)] + \
+            [dict(ref=str(i + 1), length_yd=100) for i in range(9)] + [dict(ref="3 - #2", length_yd=300)]
+    n, lengths = fp.hole_lengths(holes)
+    assert n is None and lengths["3"] == [520, 100, 300]
+    card = dict(tee_sets={"Blue": dict(yards=y, total=sum(y))})
+    assert scm.plausible(card, n, lengths)
+    assert not scm.plausible(dict(tee_sets={"Blue": dict(yards=[v // 2 + 90 for v in y], total=1)}), n, lengths)
+    assert fp.hole_lengths(holes[:9]) == (9, {str(i + 1): v for i, v in enumerate(y)})

@@ -96,6 +96,23 @@ def fetch_osm(course, raw, drop_holes=False, supplement=None):
     return fc, summ
 
 
+def hole_lengths(holes):
+    """-> (hole count or None, {ref: yards}) of the OSM summary's holes for the scorecard plausibility check. When a
+    hole number is mapped more than once (a short course beside the 18; a resort whose refs read '10 - #2') the count
+    is unknown (None) and each ref carries the list of its lengths."""
+    import re
+    cand, plain = {}, True
+    for h in holes:
+        m = re.match(r"\s*(\d+)", str(h.get("ref") or ""))
+        if not m or not h.get("length_yd"):
+            continue
+        plain &= str(h["ref"]).strip().isdigit()
+        cand.setdefault(str(int(m.group(1))), []).append(h["length_yd"])
+    if plain and all(len(v) == 1 for v in cand.values()):
+        return len(cand) or None, {r: v[0] for r, v in cand.items()}
+    return None, cand
+
+
 def fetch_scorecards(req, course, summ, raw, parallel=False):
     """parallel: the four sources (four hosts, each keeping its own courtesy interval) run at once; the result is
     assembled in the same order, so the output is the serial one (the fast path: about the slowest source's time).
@@ -105,8 +122,7 @@ def fetch_scorecards(req, course, summ, raw, parallel=False):
 
     def ln():
         sm = summ.result() if hasattr(summ, "result") else summ
-        lengths = {str(h["ref"]): h["length_yd"] for h in sm.get("holes", []) if h.get("length_yd")}
-        return len(lengths) or None, lengths
+        return hole_lengths(sm.get("holes", []))
     sources = []
     for label, fn in (("golfify", lambda: scm.fetch_golfify(course["name"], course["state"], course.get("town"), rawdir,
                                                             course.get("center"))),
