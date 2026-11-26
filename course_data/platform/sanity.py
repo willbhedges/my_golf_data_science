@@ -706,6 +706,7 @@ def _hit(pt, obs, skip):
 
 
 FOREIGN_OWN_YD, FOREIGN_OTHER_YD = 60.0, 80.0   # a tee this far from its own hole's start and this near another's
+FOREIGN_CONE, FOREIGN_CONE_MIN_YD = 0.3, 20.0    # ... unless it is straight behind the start (lateral <= 0.3 x back)
 
 
 def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
@@ -744,7 +745,14 @@ def guard_tees(tp, fc, max_forward=MAX_FORWARD_YD):
                 # made to fit by moving the tee
                 T0 = pr.fwd(r["lon"], r["lat"])
                 d_own = math.hypot(T0[0] - S[0], T0[1] - S[1])
-                if d_own > FOREIGN_OWN_YD:
+                al0 = (T0[0] - S[0]) * u[0] + (T0[1] - S[1]) * u[1]
+                lat0 = abs(-(T0[0] - S[0]) * u[1] + (T0[1] - S[1]) * u[0])
+                # a tee straight behind this hole's start (inside a 0.3 cone, 20 yds at least) is this hole's own back
+                # tee even when another hole's tee is next to it (Bailey Creek 2, 2026-11-20: the Black tee 77 yds
+                # back beside hole 18's tee; the hole read 475 for a card 552). Down River's borrowed tees sit 56-100
+                # yds to the side or up the line, outside the cone
+                behind = al0 < 0 and lat0 <= max(FOREIGN_CONE_MIN_YD, FOREIGN_CONE * -al0)
+                if d_own > FOREIGN_OWN_YD and not behind:
                     near = min(((math.hypot(T0[0] - q[0], T0[1] - q[1]), k) for k, q in starts.items() if k != str(ref)),
                                default=(1e9, None))
                     if near[0] <= FOREIGN_OTHER_YD and near[0] < d_own:

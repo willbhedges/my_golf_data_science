@@ -699,3 +699,15 @@ def test_tee_on_another_holes_box_goes_back_to_the_line_start():
     assert blue["method"] == "tee_axis_capped" and "hole 2's tee" in blue["check"]
     assert abs(yards_of(blue)[0]) < 1 and abs(yards_of(blue)[1]) < 1
     assert "check" not in white and len(notes) == 1
+
+
+def test_back_tee_straight_behind_the_start_stays_beside_another_holes_tee():
+    """Bailey Creek 2 (2026-11-20): the Black tee is 77 yds straight behind the routed line's start, beside hole 18's
+    tee. It is this hole's own back tee: not moved, not flagged. The same distance off to the side still goes back."""
+    fc = _hole_fc([line([(40, -70), (300, -70)], golf="hole", ref="2"), poly(40, -72, golf="tee", osm_id=21)])
+    tp = dict(holes={})
+    tee_at(tp, "1", "Black", 5, -75, method="tee_axis")        # behind hole 1's start, 35 yds from hole 2's start
+    assert sanity.guard_tees(tp, fc) == [] and "check" not in tp["holes"]["1"]["tees"]["Black"]
+    tp = dict(holes={})
+    tee_at(tp, "1", "Black", 40, -62, method="tee_axis")       # 62 back but 40 to the side: outside the cone
+    assert len(sanity.guard_tees(tp, fc)) == 1 and "hole 2's tee" in tp["holes"]["1"]["tees"]["Black"]["check"]

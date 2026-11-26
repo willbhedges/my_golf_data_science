@@ -1012,7 +1012,11 @@ def place_tees_v2(fc, per_hole_card, card_sets, pads=(), img_dir=None, slug=None
             break
     used += ["segment"] * bool(seg) + ["scene"] * bool(scene)
     cands = lz.gather(osm_tees=tees, segment=seg, scene=scene, pads=list(pads), texture=texture)
-    res = lz.localize_course(lines, greens, yards, cands)
+    # tee boxes detected on imagery (route_scene's supplement, origin fastscene) are not a complete map of the hole's
+    # tees (recall about 87 %), so the far cap, which pulls a set back onto the back-most MAPPED box, is off: it put
+    # correct back tees 50-90 yds forward (Split Rock 1 / 5 / 9, Bailey Creek 12, 2026-11-26)
+    detected = any((t.get("tags") or {}).get("origin") == "fastscene" for t in tees)
+    res = lz.localize_course(lines, greens, yards, cands, dict(far_cap_yd=None) if detected else None)
     pt = place_tee_mod()
     by_hole = pt.assign_tees_to_holes(lines, tees)
     colours = {str(v).lower() for s in card_sets for v in (s, (card_sets.get(s) or {}).get("colour")) if v}
