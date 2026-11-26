@@ -1,12 +1,12 @@
 {
  "schema": "course_library/1",
  "doc": "course_data/library/README.md",
- "updated": "2026-11-21T17:46Z",
+ "updated": "2026-11-26T07:06Z",
  "counts": {
   "hand-checked": 7,
   "auto-OK": 1,
-  "needs confirm": 91,
-  "failed": 5,
+  "needs confirm": 92,
+  "failed": 4,
   "unsupported": 2,
   "blocked": 8
  },
@@ -4792,6 +4792,70 @@
    "group": "library"
   },
   {
+   "slug": "lake_of_the_woods_como",
+   "name": "Lake of the Woods Golf Course",
+   "city": "Columbia",
+   "state": "MO",
+   "status": "needs confirm",
+   "check_holes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "reasons": [
+    "holes placed from aerial photos (OpenStreetMap maps none): none marked approximate",
+    "scorecard not matched (source None, flags [])",
+    "18 holes built vs the card's 0",
+    "pars sum to 71, card None",
+    "18 hole(s) with a CHECK"
+   ],
+   "tee_sets": [
+    {
+     "name": "osm_back",
+     "yards": null,
+     "par": null,
+     "rating": null,
+     "slope": null,
+     "colour": null,
+     "on_page": "solved"
+    }
+   ],
+   "solved_sets": [
+    "osm_back"
+   ],
+   "page": "course_data/library/lake_of_the_woods_como/page.html",
+   "page_bytes": 1342239,
+   "qa_report": "course_data/library/lake_of_the_woods_como/qa_report.md",
+   "center": [
+    38.9670342,
+    -92.2352194
+   ],
+   "osm": "way/387184389",
+   "holes": 18,
+   "days": [
+    "2026-11-28",
+    "2026-11-29"
+   ],
+   "weather": "forecast",
+   "built": "2026-11-26T06:30Z",
+   "group": "library"
+  },
+  {
    "slug": "old_kinderhook",
    "name": "Old Kinderhook Resort, Golf, Club & Spa",
    "city": "Camdenton",
@@ -8237,29 +8301,6 @@
    "days": null,
    "weather": null,
    "built": "2026-10-31T02:11Z",
-   "group": "library"
-  },
-  {
-   "slug": "lake_of_the_woods_como",
-   "name": "Lake of the Woods Golf Course",
-   "city": "Columbia",
-   "state": "MO",
-   "status": "failed",
-   "check_holes": [],
-   "reasons": [
-    "package: osm: 137 features; {'cartpath': 22, 'bunker': 3} scorecards: [{\"source\": \"golfify\", \"ok\": true, \"info\": \"https://www.golfify.io/courses/lake-of-the-woods-golf-course\"}, {\"source\": \"club_site\", \"ok\": false, \"info\": \"club site: no parsable scorecard in 21 pages\"}, {\"source\": \"opengolfapi\", \"ok\": false, \"info\": \"opengolfapi: no tees / holes_data for Lake of the Woods Golf Course (opengolfapi: Lake of"
-   ],
-   "tee_sets": [],
-   "solved_sets": null,
-   "page": null,
-   "page_bytes": null,
-   "qa_report": null,
-   "center": null,
-   "osm": null,
-   "holes": null,
-   "days": null,
-   "weather": null,
-   "built": "2026-10-30T04:23Z",
    "group": "library"
   },
   {
