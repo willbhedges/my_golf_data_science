@@ -48,6 +48,14 @@ def _get(url, path, timeout=60):
 def course_from_row(row, cache):
     """row: dict(name, city, state, lat, lon, osm 'way/123', osm_holes, ...) -> resolve.py's course dict."""
     import fetch_course as fcm
+    if not row.get("osm") or str(row["osm"]).startswith("none"):
+        # a course OpenStreetMap has no golf_course element for (Keller, Maplewood MN): work from the point alone,
+        # as the full pipeline's no_osm_course does. Whatever golf=* features OSM has in the box are still used.
+        import resolve as rs
+        out = rs.from_near(row["name"], row["state"], f"{row['lat']},{row['lon']}", float(row.get("radius_m") or 900),
+                           town=row.get("city") or None)
+        out["resolved_by"] = "request point, no OSM course (fastpath/osm_api.py)"
+        return out
     typ, oid = row["osm"].split("/")
     oid = int(oid)
     geom = b = None

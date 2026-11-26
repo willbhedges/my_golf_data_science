@@ -160,7 +160,7 @@ def build(query, slug=None, n=2000, imagery=True, row=None, log=print, extra=Non
     if course["status"] != "ok":
         return dict(status=course["status"], slug=slug, why=course.get("closed"))
     req = dict(schema="request/1", kind="package", course=row["name"], state=row["state"], slug=slug, tees="Black",
-               allow_substitute=True, builder="fastpath", town=row.get("city"), osm=row["osm"],
+               allow_substitute=True, builder="fastpath", town=row.get("city"), osm=row.get("osm"),
                near=f"{row['lat']:.5f},{row['lon']:.5f}", **(extra or {}))
     pc.write_json(os.path.join(pkg_dir, "package_request.json"), req)
     import fetch_package as fp

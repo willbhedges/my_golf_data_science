@@ -120,6 +120,8 @@ jobs:
           ROUTE=0
           [ ! -f course_data/packages/$S/package.json ] && grep -q "no holes built" /tmp/pkg_v0.log && ROUTE=1
           [ -f course_data/packages/$S/package.json ] && python3 course_data/library/course_page.py short "$R" && ROUTE=1
+          # not in OpenStreetMap as a golf course at all, and the request gives a point ("near"): route around it
+          [ ! -f course_data/packages/$S/package.json ] && grep -q "resolve: not_found" /tmp/pkg_v0.log && grep -q '"near"' "$R" && ROUTE=1
           if [ "$ROUTE" = 1 ]; then
             echo "OpenStreetMap does not map every hole: routing the course on aerial photos"
             set +e

@@ -31,7 +31,13 @@ def row_for(q):
         if c.get("status", "ok") == "ok" and c.get("center") and (c.get("osm") or {}).get("id"):
             return dict(name=q["name"], state=q["state"], city=q.get("city") or "", lat=c["center"][1], lon=c["center"][0],
                         osm="%s/%s" % (c["osm"]["type"], c["osm"]["id"]), holes=c.get("holes") or 18)
-    return fast.lookup(", ".join(x for x in (q["name"], q.get("city"), q["state"]) if x))
+    row = fast.lookup(", ".join(x for x in (q["name"], q.get("city"), q["state"]) if x))
+    if row is None and q.get("near"):
+        # not in OpenStreetMap as a golf course at all: the request's own point (course_page "near": "lat,lon")
+        lat, lon = (float(x) for x in str(q["near"]).split(",")[:2])
+        row = dict(name=q["name"], state=q["state"], city=q.get("city") or "", lat=lat, lon=lon, osm=None, holes=18,
+                   radius_m=q.get("near_radius_m"))
+    return row
 
 
 def main(req):
@@ -99,6 +105,7 @@ def main(req):
                     approx_below=rc.get("approx_below"), source=rc.get("source"), warnings=rc.get("warnings"),
                     imagery_year=(P.get("imagery") or {}).get("year"))
     info["ignore_osm_holes"] = dropped
+    info["no_osm_course"] = not row.get("osm")
     ok = os.path.exists(sup) and r.get("status") in ("shown", "ok", "confirm") and bool(info.get("p_holes"))
     os.makedirs(out, exist_ok=True)
     if ok:
