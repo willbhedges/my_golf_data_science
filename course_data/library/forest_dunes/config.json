@@ -5,51 +5,58 @@
  "hand_checked": false,
  "main_which": "auto",
  "slug": "forest_dunes",
- "sub": "South Branch Township, MI \u00b7 automatic page \u00b7 osm_back \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
+ "sub": "South Branch Township, MI \u00b7 automatic page \u00b7 I 7,116 / Ii 6,554 \u00b7 Driver 275/300 \u00b7 2-wood 265/280 \u00b7 4-wood 255/270 at 70\u00b0F",
  "event": "",
  "package": "course_data/library/forest_dunes/package.json",
  "truth_package": "course_data/library/forest_dunes/package.json",
- "tees": "osm_back",
- "alt_bases": {},
+ "tees": "I",
+ "alt_bases": {
+  "Ii": "auto_b"
+ },
  "sets": [
-  "osm_back"
+  "I",
+  "Ii"
  ],
  "colors": {
-  "osm_back": "#111"
+  "I": "#888",
+  "Ii": "#888"
  },
  "days": [
-  "2026-11-07",
-  "2026-11-08"
+  "2026-11-28",
+  "2026-11-29"
  ],
  "day_labels": [
-  "Sat 11/7",
-  "Sun 11/8"
+  "Sat 11/28",
+  "Sun 11/29"
  ],
  "tee_hour": 9.0,
  "temps": [
-  30,
+  25,
   40,
-  55
+  50
  ],
  "draws": 48,
  "swings": 2500,
  "forecast": "course_data/library/forest_dunes/weather.json",
  "weather_kind": "forecast",
  "climate": {
-  "temp_lo": 34.1,
-  "temp_hi": 47.9,
-  "wind_mph": 5.5,
-  "wind_from": 324,
+  "temp_lo": 32.1,
+  "temp_hi": 43.4,
+  "wind_mph": 6.3,
+  "wind_from": 231,
   "source": "Open-Meteo hourly forecast"
  },
  "grid_prune": true,
- "bases_why": "no scorecard: the package's own tee set",
+ "bases_why": "the two longest sets on the card (combination sets skipped)",
  "request": "course_data/requests/course_page_forest_dunes.json",
- "rev": 2,
- "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from no card, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: osm_back. See qa_report.md for the hole-by-hole checks.",
- "built": "2026-11-01T22:17Z",
+ "rev": 3,
+ "foot": "Automatic page (not hand checked): course from OpenStreetMap, card from opengolfapi, trees / long grass / water from the vision layer on USDA NAIP + USGS 3DEP lidar, OB inferred from the course outline and buildings. Solved tee sets: I, Ii. See qa_report.md for the hole-by-hole checks.",
+ "built": "2026-11-26T17:18Z",
  "offsets": {
   "auto": [
+   0
+  ],
+  "auto_b": [
    0
   ]
  },

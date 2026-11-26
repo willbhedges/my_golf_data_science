@@ -1,10 +1,10 @@
 {
- "fetched_utc": "2026-11-01T22:03:44Z",
+ "fetched_utc": "2026-11-26T16:56:04Z",
  "tried": [
   {
    "source": "golfify",
    "ok": false,
-   "info": "golfify: no matching page (10 URLs tried)"
+   "info": "golfify: no matching page (14 URLs tried)"
   },
   {
    "source": "allsquare",
@@ -18,24 +18,285 @@
   },
   {
    "source": "opengolfapi",
-   "ok": false,
-   "info": "opengolfapi: card at https://api.opengolfapi.org/api/v1/courses/35f53e90-4e4f-4272-8573-e51d0de781b3 rejected (hole count / lengths don't fit OSM)"
-  },
-  {
-   "source": "bluegolf",
-   "ok": false,
-   "info": "bluegolf: no course page found by search"
-  },
-  {
-   "source": "golfpass",
-   "ok": false,
-   "info": "golfpass: no course page found by search"
-  },
-  {
-   "source": "allsquare",
-   "ok": false,
-   "info": "allsquare: no course page found by search"
+   "ok": true,
+   "info": "https://api.opengolfapi.org/api/v1/courses/35f53e90-4e4f-4272-8573-e51d0de781b3"
   }
  ],
- "cards": []
+ "cards": [
+  {
+   "source": "opengolfapi",
+   "url": "https://api.opengolfapi.org/api/v1/courses/35f53e90-4e4f-4272-8573-e51d0de781b3",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://api.opengolfapi.org/api/v1/courses/35f53e90-4e4f-4272-8573-e51d0de781b3",
+    "par": [
+     4,
+     4,
+     3,
+     4,
+     5,
+     4,
+     5,
+     4,
+     3,
+     4,
+     3,
+     4,
+     4,
+     4,
+     5,
+     3,
+     4,
+     5
+    ],
+    "handicap": [
+     15,
+     1,
+     13,
+     9,
+     5,
+     11,
+     7,
+     3,
+     17,
+     4,
+     18,
+     10,
+     14,
+     2,
+     6,
+     8,
+     16,
+     12
+    ],
+    "tee_sets": {
+     "I": {
+      "colour": "i",
+      "aliases": [
+       "i"
+      ],
+      "yards": [
+       403,
+       451,
+       203,
+       399,
+       605,
+       378,
+       537,
+       443,
+       203,
+       439,
+       193,
+       397,
+       373,
+       464,
+       563,
+       233,
+       302,
+       530
+      ],
+      "total": 7116,
+      "total_stated": 7116,
+      "rating": 75.2,
+      "slope": 146,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Web": {
+      "colour": "web",
+      "aliases": [
+       "web"
+      ],
+      "yards": [
+       403,
+       451,
+       203,
+       399,
+       605,
+       378,
+       537,
+       443,
+       203,
+       439,
+       193,
+       397,
+       373,
+       464,
+       563,
+       233,
+       302,
+       530
+      ],
+      "total": 7116,
+      "source": "opengolfapi"
+     },
+     "Ii": {
+      "colour": "ii",
+      "aliases": [
+       "ii"
+      ],
+      "yards": [
+       375,
+       423,
+       178,
+       372,
+       572,
+       344,
+       499,
+       414,
+       163,
+       402,
+       163,
+       371,
+       344,
+       431,
+       531,
+       198,
+       278,
+       496
+      ],
+      "total": 6554,
+      "total_stated": 6550,
+      "rating": 72.4,
+      "slope": 139,
+      "gender": "Male",
+      "source": "opengolfapi"
+     },
+     "Combo_Ii_&Amp;_Iii": {
+      "colour": "combo_ii_&amp;_iii",
+      "aliases": [
+       "combo_ii_&amp;_iii"
+      ],
+      "yards": [
+       375,
+       387,
+       178,
+       372,
+       521,
+       344,
+       499,
+       375,
+       163,
+       361,
+       163,
+       371,
+       344,
+       378,
+       531,
+       198,
+       278,
+       496
+      ],
+      "total": 6334,
+      "source": "opengolfapi"
+     },
+     "Iii": {
+      "colour": "iii",
+      "aliases": [
+       "iii"
+      ],
+      "yards": [
+       314,
+       387,
+       143,
+       334,
+       521,
+       309,
+       462,
+       375,
+       154,
+       361,
+       142,
+       338,
+       300,
+       378,
+       481,
+       179,
+       243,
+       471
+      ],
+      "total": 5892,
+      "total_stated": 5888,
+      "rating": 69.2,
+      "slope": 127,
+      "gender": "Male",
+      "source": "opengolfapi",
+      "alt_ratings": [
+       {
+        "name": "Iii (Female)",
+        "rating": 74.8,
+        "slope": 143,
+        "total": 5888,
+        "par": 72
+       }
+      ]
+     },
+     "Iv": {
+      "colour": "iv",
+      "aliases": [
+       "iv"
+      ],
+      "yards": [
+       285,
+       346,
+       119,
+       294,
+       452,
+       256,
+       412,
+       278,
+       97,
+       305,
+       127,
+       289,
+       255,
+       324,
+       418,
+       140,
+       214,
+       385
+      ],
+      "total": 4996,
+      "total_stated": 4993,
+      "rating": 69.9,
+      "slope": 136,
+      "gender": "Male",
+      "source": "opengolfapi"
+     }
+    },
+    "attribution": "Contains data from OpenGolfAPI (opengolfapi.org), ODbL 1.0; (c) OpenStreetMap contributors",
+    "licence": "ODbL-1.0",
+    "facility": {
+     "id": "35f53e90-4e4f-4272-8573-e51d0de781b3",
+     "course_name": "Forest Dunes Golf Resort",
+     "club_name": "Forest Dunes Golf Resort",
+     "city": "South Branch Township",
+     "state": "MI",
+     "lat": 44.5908998,
+     "lng": -84.5296333,
+     "holes": 18,
+     "yardage": 7116,
+     "website": "http://www.forestdunesgolf.com/"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "opengolfapi",
+  "base_url": "https://api.opengolfapi.org/api/v1/courses/35f53e90-4e4f-4272-8573-e51d0de781b3",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "opengolfapi https://api.opengolfapi.org/api/v1/courses/35f53e90-4e4f-4272-8573-e51d0de781b3": {
+    "holes": 18,
+    "fit": 8,
+    "share": 0.444,
+    "mean_err": 169.4,
+    "all_sets": 0.148,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
 }
