@@ -62,5 +62,17 @@
  "weather": "forecast",
  "built": "2026-11-01T22:22Z",
  "request": "course_data/requests/course_page_pinehurst.json",
- "verified_holes": []
+ "verified_holes": [],
+ "last_attempt": {
+  "status": "failed",
+  "stage": "package",
+  "error": [
+   "package:   File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send     raise ConnectionError(e, request=request) requests.exceptions.ConnectionError: HTTPSConnectionPool(host='download.geofabrik.de', port=443): Max retries exceeded with url: /north-america/us/north-carolina-latest.osm.pbf (Caused by NewConnectionError(\"HTTPSConnection(host='downlo"
+  ],
+  "when": "2026-11-26T17:16Z",
+  "resolve": {
+   "status": null,
+   "candidates": []
+  }
+ }
 }
