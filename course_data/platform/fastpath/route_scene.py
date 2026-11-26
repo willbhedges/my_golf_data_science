@@ -884,6 +884,12 @@ def run(pkg_dir, fc, card, n_holes, log=None, card_select=True):
             ["water"] * (not ({"water_hazard", "lateral_water_hazard"} & have))
     sup = list(r.get("features") or [])
     sup += scene_features(scene, ("green", "tee"), used=used)
+    if os.environ.get("SCENE_ALL_TEES", "1") != "0":
+        # tee boxes the routing did not start a hole from, too: a routed line often starts at a forward tee, and the
+        # tee stage can only put the back sets on a box it is given (Lake of the Woods 1, 2026-11-26: the Blue tee
+        # walked 112 yds back along the line to a spot 30 yds from a detected box the supplement had left out)
+        have_t = {f["properties"].get("id") for f in sup if f["properties"].get("golf") == "tee"}
+        sup += [f for f in scene_features(scene, ("tee",)) if f["properties"].get("id") not in have_t]
     sup += scene_features(scene, tuple(kinds))
     for f in sup:
         f["properties"]["origin"] = "fastscene"
