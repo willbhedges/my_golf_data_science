@@ -1,6 +1,6 @@
 # Lake Shawnee Golf Course (Topeka, KS) - Blue tees
 
-Built 2026-11-26T10:45:18Z. OSM relation/2053245. Scorecard: file (course_data/library/lake_shawnee/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red, Gold)).
+Built 2026-11-26T16:00:51Z. OSM relation/2053245. Scorecard: file (course_data/library/lake_shawnee/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red, Gold)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red, Gold**
 
