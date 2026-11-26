@@ -1,0 +1,141 @@
+{
+ "schema": "vision_any_raw/1",
+ "slug": "keller",
+ "course": "Keller Golf Course",
+ "bbox_snwe": [
+  44.98101,
+  -93.067685,
+  44.994488,
+  -93.05397
+ ],
+ "grid": {
+  "crs": "EPSG:32615",
+  "res_m": 1.0,
+  "width": 1324,
+  "height": 1740,
+  "bounds": [
+   494542,
+   4980722,
+   495866,
+   4982462
+  ],
+  "transform": [
+   1.0,
+   0.0,
+   494542.0,
+   0.0,
+   -1.0,
+   4982462.0
+  ],
+  "ll_bbox_wsen": [
+   -93.06924519600311,
+   44.97991908739982,
+   -93.05243344352414,
+   44.99559141213497
+  ]
+ },
+ "fetched_utc": "2026-11-26T10:44:37Z",
+ "lidar": {},
+ "ept": {
+  "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
+  "candidates": [
+   {
+    "name": "MN_CentralMissRiver_5_B22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_CentralMissRiver_5_B22/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 83069293873
+   },
+   {
+    "name": "MN_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 291760609591
+   }
+  ],
+  "tiles": 2,
+  "used": [
+   {
+    "name": "MN_CentralMissRiver_5_B22",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_CentralMissRiver_5_B22/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 83069293873,
+    "cells": 2115804,
+    "tiles": 2
+   },
+   {
+    "name": "MN_FullState",
+    "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MN_FullState/ept.json",
+    "cov": 1.0,
+    "year": 0,
+    "count": 291760609591,
+    "cells": 9601,
+    "tiles": 2
+   }
+  ],
+  "valid": 0.9225809112060284,
+  "hag_mb": 0.97,
+  "frac_gt_2_5m": 0.38081050109386394,
+  "class_mb": 0.04
+ },
+ "meta_chm": {
+  "source": "Meta/WRI high-resolution canopy height (Tolan et al. 2024), s3 dataforgood-fb-data",
+  "tiles": [
+   "021333011"
+  ],
+  "mb": 0.29,
+  "file": "chm_meta.tif",
+  "valid": 1.0
+ },
+ "worldcover": {
+  "source": "ESA WorldCover via planetary-computer",
+  "items": [
+   {
+    "id": "ESA_WorldCover_10m_2021_v200_N42W096",
+    "when": "2021-12-31T23:59:59.000000Z",
+    "cells": 575940,
+    "props": {
+     "datetime": null,
+     "end_datetime": "2021-12-31T23:59:59.000000Z",
+     "start_datetime": "2021-01-01T00:00:00.000000Z"
+    }
+   }
+  ],
+  "file": "worldcover.tif",
+  "mb": 0.02
+ },
+ "naip": {
+  "years": [
+   {
+    "year": 2025,
+    "file": "naip_2025.tif",
+    "mb": 8.06,
+    "items": [
+     "mn_m_4409308_nw_15_060_20250706",
+     "mn_m_4409308_ne_15_060_20250706"
+    ],
+    "acquired": [
+     "2025-07-06"
+    ],
+    "gsd_m": 0.6,
+    "res_m": 0.6
+   },
+   {
+    "year": 2023,
+    "file": "naip_2023.tif",
+    "mb": 11.15,
+    "items": [
+     "mn_m_4409308_nw_15_030_20230703_20240119",
+     "mn_m_4409308_ne_15_030_20230703_20240119"
+    ],
+    "acquired": [
+     "2023-07-03"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   }
+  ]
+ }
+}
