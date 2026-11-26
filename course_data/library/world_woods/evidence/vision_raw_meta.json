@@ -34,7 +34,7 @@
    28.697493596265005
   ]
  },
- "fetched_utc": "2026-11-02T23:38:37Z",
+ "fetched_utc": "2026-11-26T07:40:21Z",
  "lidar": {},
  "ept": {
   "source": "USGS 3DEP lidar point cloud, EPT on AWS (usgs-lidar-public) via PDAL",
@@ -54,7 +54,7 @@
     "count": 37683160703
    }
   ],
-  "ept_resolution_m": 0.5,
+  "tiles": 4,
   "used": [
    {
     "name": "FL_Peninsular_Hernando_2019",
@@ -62,7 +62,8 @@
     "cov": 1.0,
     "year": 2019,
     "count": 32858585231,
-    "cells": 5719807
+    "cells": 5719807,
+    "tiles": 4
    },
    {
     "name": "FL_Peninsular_Citrus_2018",
@@ -70,7 +71,8 @@
     "cov": 0.727,
     "year": 2018,
     "count": 37683160703,
-    "cells": 1265582
+    "cells": 1265582,
+    "tiles": 3
    }
   ],
   "valid": 0.9964692573900094,
@@ -107,6 +109,20 @@
  "naip": {
   "years": [
    {
+    "year": 2025,
+    "file": "naip_2025.tif",
+    "mb": 32.12,
+    "items": [
+     "fl_m_2808221_sw_17_030_20250516",
+     "fl_m_2808221_nw_17_030_20250516"
+    ],
+    "acquired": [
+     "2025-05-16"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
     "year": 2023,
     "file": "naip_2023.tif",
     "mb": 31.49,
@@ -118,20 +134,6 @@
      "2023-01-11"
     ],
     "gsd_m": 0.3,
-    "res_m": 0.6
-   },
-   {
-    "year": 2021,
-    "file": "naip_2021.tif",
-    "mb": 26.21,
-    "items": [
-     "fl_m_2808221_sw_17_060_20211130",
-     "fl_m_2808221_nw_17_060_20211130"
-    ],
-    "acquired": [
-     "2021-11-30"
-    ],
-    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]

@@ -9,12 +9,13 @@
  "reasons": [
   "16 holes built, the card has 18: holes are missing or mis-routed",
   "built pars sum to 64, the card's to 72 (more than 2 apart): holes or pars are wrong",
+  "holes out of order: green-to-next-tee walks up to 1315 yds, 1 over 500 (in order: under 800, at most 3 over 500); longest: 9->10 1315, 14->15 192, 16->17 124",
   "resolved to 'Cabot Citrus Farms' 2.9 km from the request's near point with match score 0.38 (< 0.5): probably not the requested course",
   "holes not all mapped in OSM (hole method: v2+structure)",
   "scorecard not matched (source golfify, flags ['1 hole(s) where a longer set is shorter than the next set: 1 Yellow(W) 300 < Green(M) 334'])",
   "16 holes built vs the card's 18",
   "pars sum to 64, card 72",
-  "11 hole(s) with a CHECK"
+  "12 hole(s) with a CHECK"
  ],
  "check_holes": [
   3,
@@ -27,7 +28,8 @@
   11,
   12,
   15,
-  17
+  17,
+  18
  ],
  "tee_sets": [
   {
@@ -108,7 +110,7 @@
   "Silver"
  ],
  "page": "course_data/library/world_woods/page.html",
- "page_bytes": 2361463,
+ "page_bytes": 4452856,
  "qa_report": "course_data/library/world_woods/qa_report.md",
  "center": [
   28.685584900000002,
@@ -117,20 +119,15 @@
  "osm": "way/410646892",
  "holes": 16,
  "days": [
-  "2026-11-07",
-  "2026-11-08"
+  "2026-11-28",
+  "2026-11-29"
  ],
  "weather": "forecast",
- "built": "2026-11-03T00:13Z",
+ "built": "2026-11-26T08:27Z",
  "request": "course_data/requests/course_page_world_woods.json",
  "native": {
   "holes": [],
   "tee_set": "Black",
-  "note": "not asked: no agent_layers in the request"
- },
- "blocked": {
-  "by": "course_page.py regate",
-  "when": "2026-11-03T02:52Z",
-  "was": "needs confirm"
+  "note": "0 asked of 12 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%))"
  }
 }
