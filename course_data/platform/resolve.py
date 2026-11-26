@@ -349,6 +349,19 @@ def boundary(el_type, el_id):
     return geom, fc.bounds_of(els[0])
 
 
+def _at_point(c, want, near, pad_m=250):
+    """A course found only by being within 4 km of the request's point is the course when its name resembles the
+    request's or the point lies on it. Keller (Maplewood MN) has no golf_course element, and its clubhouse point
+    resolved to Phalen Park Golf Course 2 km south: a page of the wrong course under Keller's name."""
+    if c.get("name") and name_similarity(want, c["name"]) >= 0.3:
+        return True
+    b, (lat, lon) = c.get("bbox"), _near(near)
+    if not b:
+        return bool(c.get("center")) and pc.haversine_m(lat, lon, c["center"][1], c["center"][0]) < pad_m
+    dy, dx = pad_m / 111320.0, pad_m / (111320.0 * math.cos(math.radians(lat)))
+    return b[0] - dx <= lon <= b[2] + dx and b[1] - dy <= lat <= b[3] + dy
+
+
 def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
     """-> course dict (ARCHITECTURE 3.1 course.json + state, town, holes, boundary, candidates).
     status: ok | ambiguous | not_found. Only 'ok' carries boundary/bbox."""
@@ -360,6 +373,8 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
     cands = []
     for e in els[:12]:
         c = candidate(e, counts.get((e["type"], e["id"])))
+        if _near(near) and not osm and not _at_point(c, name, near):
+            continue                                     # search step 5: a course around the point, not on it
         if with_towns and not c["town"] and c["center"]:
             c["town"] = reverse_town(c["center"][1], c["center"][0])
         cands.append(c)
@@ -374,6 +389,8 @@ def resolve(name, state, town=None, osm=None, with_towns=True, near=None):
             counts = hole_counts(more[:12])
             for e in more[:12]:
                 c = candidate(e, counts.get((e["type"], e["id"])))
+                if not _at_point(c, name, near):
+                    continue
                 if with_towns and not c["town"] and c["center"]:
                     c["town"] = reverse_town(c["center"][1], c["center"][0])
                 cands.append(c)

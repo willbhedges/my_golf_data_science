@@ -334,3 +334,11 @@ def test_fetch_imagery_command_never_holds_none(monkeypatch, tmp_path):
     cmd = seen[0]
     assert all(isinstance(x, str) for x in cmd)
     assert cmd[cmd.index("--name") + 1] == "queenstown_harbor" and cmd[cmd.index("--year") + 1] == "auto"
+
+
+def test_a_course_around_the_point_but_not_on_it_is_not_the_course():
+    # Keller (Maplewood MN): no golf_course element; Phalen Park, 2 km south, was within 4 km of the clubhouse point
+    phalen = dict(name="Phalen Park Golf Course", center=[-93.0608, 44.9877], bbox=[-93.066, 44.982, -93.055, 44.993])
+    assert not rs._at_point(phalen, "Keller Golf Course", "45.0068,-93.0585")
+    assert rs._at_point(dict(phalen, name=None), "Keller Golf Course", "44.9880,-93.0600")       # unnamed, point on it
+    assert rs._at_point(dict(phalen, name="Keller Golf Club"), "Keller Golf Course", "45.0068,-93.0585")
