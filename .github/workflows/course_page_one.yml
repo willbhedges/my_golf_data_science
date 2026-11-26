@@ -115,8 +115,13 @@ jobs:
           # imagery router, course_data/library/route_unmapped.py; its fits need the pinned library versions, so it
           # runs in its own venv), then package again with the routed holes as an osm_supplement. Holes the router is
           # unsure of are marked approximate on the page (routing.json).
-          if [ ! -f course_data/packages/$S/package.json ] && grep -q "no holes built" /tmp/pkg_v0.log; then
-            echo "no holes in OpenStreetMap: routing the course on aerial photos"
+          # The same when OpenStreetMap maps only some of the holes (fewer built than the scorecard has): the router
+          # keeps the mapped holes and places the rest.
+          ROUTE=0
+          [ ! -f course_data/packages/$S/package.json ] && grep -q "no holes built" /tmp/pkg_v0.log && ROUTE=1
+          [ -f course_data/packages/$S/package.json ] && python3 course_data/library/course_page.py short "$R" && ROUTE=1
+          if [ "$ROUTE" = 1 ]; then
+            echo "OpenStreetMap does not map every hole: routing the course on aerial photos"
             set +e
             python3 -m venv /tmp/rv && /tmp/rv/bin/pip install -q -r course_data/platform/fastpath/refit/requirements.txt matplotlib
             timeout 45m /tmp/rv/bin/python -u course_data/library/route_unmapped.py "$R" 2>&1 | tail -n 40 | tee /tmp/route_unmapped.log

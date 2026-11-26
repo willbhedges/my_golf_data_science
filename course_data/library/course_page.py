@@ -1105,13 +1105,13 @@ def finish(q, parts):
         # carries an "approximate" note and counts as a hole to confirm
         ap = [str(a) for a in routed.get("approximate") or []]
         ph = routed.get("p_holes") or {}
-        reasons.insert(0, "holes placed from aerial photos (OpenStreetMap maps none): " +
+        reasons.insert(0, "holes placed from aerial photos (OpenStreetMap does not map them all): " +
                        (f"{len(ap)} marked approximate ({', '.join(ap)})" if ap else "none marked approximate"))
         check_holes = sorted(set(check_holes) | {int(a) if a.isdigit() else a for a in ap}, key=lambda x: (isinstance(x, str), x))
         if status == "auto-OK":
             status = "needs confirm"
         data["sub"] = data["sub"] + " · holes placed from aerial photos" + (f", {len(ap)} approximate" if ap else "")
-        data["foot_extra"] = ((data.get("foot_extra") or "") + " This course's holes are not drawn in OpenStreetMap: tees, "
+        data["foot_extra"] = ((data.get("foot_extra") or "") + " OpenStreetMap does not draw all of this course's holes: tees, "
                               "greens and the hole order were worked out from aerial photos, lidar and the scorecard, "
                               "so a hole can be wrong. Holes marked approximate are the ones the app is least sure of.").strip()
         for hs in [data["holes"]] + list((data.get("alt") or {}).values()):
@@ -1352,10 +1352,22 @@ def regate(apply=False, dirs=None):
     return flips
 
 
+def holes_short(q):
+    """(holes the package built, holes on its scorecard): fewer built than the card has means OpenStreetMap maps only
+    part of the course, and the workflow routes the rest on aerial photos (route_unmapped.py). Without a card there
+    is no count to compare (0, 0)."""
+    p = os.path.join(CD, "packages", q["slug"], "package.json")
+    if not os.path.exists(p):
+        return 0, 0
+    pkg = json.load(open(p))
+    ts = (pkg.get("tee_sets") or {}).get(pkg.get("tee_set")) or {}
+    return len(pkg.get("holes") or {}), len(ts.get("yards") or [])
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["plan", "pkgreq", "configure", "prepare", "native", "compute", "finish", "failed", "index", "slug",
-                                    "regate"])
+                                    "regate", "short"])
     ap.add_argument("args", nargs="*")
     ap.add_argument("--imagery")
     ap.add_argument("--apply", action="store_true", help="regate: write the blocked status (default: list only)")
@@ -1375,6 +1387,10 @@ def main():
         elif a.cmd == "pkgreq":
             os.makedirs(out_dir(q), exist_ok=True)
             pkgreq(q)
+        elif a.cmd == "short":
+            n, m = holes_short(q)
+            print(f"{n} of {m} holes built")
+            sys.exit(0 if n < m else 1)
         elif a.cmd == "configure":
             configure(q)
         elif a.cmd == "prepare":
