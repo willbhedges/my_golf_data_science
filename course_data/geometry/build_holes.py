@@ -461,9 +461,17 @@ def build(fc, tee_tag=None, lengths=None, extra_layers=(), only=None, world=None
     ext = (tees or {}).get("holes", {})
     holes = world.holes or infer_holes(world)
     out, report = {}, {}
+    # a way with no ref gets a number no numbered way has (it used to take len(out) + 1, which on a course with a
+    # numbered hole missing is a real hole's number: Ironhorse's unnumbered spare line became, and replaced, hole 17)
+    taken = {str(h["props"]["ref"]) for h in holes if h["props"].get("ref")}
+    spare = max([int(r) for r in taken if r.isdigit()] + [0])
     for hole in holes:
         p = hole["props"]
-        ref = str(p.get("ref") or len(out) + 1)
+        if p.get("ref"):
+            ref = str(p["ref"])
+        else:
+            spare = max(spare, len(out)) + 1
+            ref = str(spare)
         if only and ref != only:
             continue
         par = int(p["par"]) if str(p.get("par", "")).isdigit() else None
