@@ -189,6 +189,13 @@ def pkgreq(q):
             r[k] = q[k]
     if q.get("library_fixes"):
         r["note"] += "; review fixes from " + ", ".join(f"{q['out']}/{f}" for f in q["library_fixes"])
+    # a course OSM does not map: the holes route_unmapped.py routed on aerial photos in THIS run (the workflow
+    # deletes the files before the first package attempt), unless the request / a review supplies its own
+    if os.path.exists(out_dir(q, "routed_holes.geojson")) and "osm_supplement" not in r:
+        r["osm_supplement"] = os.path.join(q["out"], "routed_holes.geojson")
+        r["note"] += "; holes routed on aerial photos (library/route_unmapped.py)"
+        if os.path.exists(out_dir(q, "routed_card.json")) and "scorecard" not in r and "typed_card" not in r:
+            r["scorecard"] = os.path.join(q["out"], "routed_card.json")
     wj(out_dir(q, "package_request.json"), r)
     print(q["slug"])
 
@@ -802,6 +809,15 @@ def run_qa_page(q, page, sets, cfg_set="page"):
     return out
 
 
+def routed_info(q):
+    """routing.json of a course routed on aerial photos in this build (route_unmapped.py), when the package used it"""
+    r = rj(out_dir(q, "routing.json"))
+    req = rj(out_dir(q, "package_request.json")) or {}
+    if r and r.get("p_holes") and str(req.get("osm_supplement") or "").endswith("routed_holes.geojson"):
+        return r
+    return None
+
+
 def course_gate(pkg, checks, qa, cfg):
     """Course-level confidence gate. auto-OK = complete OSM holes + card matched + every check PASS + clean page."""
     reasons = []
@@ -1083,6 +1099,29 @@ def finish(q, parts):
             h = c["holes"].get(str(hd.get("key")))
             if h and h["status"] != "PASS":
                 hd["note"] = ((hd.get("note") or "") + " Auto-map CHECK: " + "; ".join(h["reasons"])).strip()
+    routed = routed_info(q)
+    if routed:
+        # holes routed on aerial photos (route_unmapped.py): the page says so, and each hole the router is unsure of
+        # carries an "approximate" note and counts as a hole to confirm
+        ap = [str(a) for a in routed.get("approximate") or []]
+        ph = routed.get("p_holes") or {}
+        reasons.insert(0, "holes placed from aerial photos (OpenStreetMap maps none): " +
+                       (f"{len(ap)} marked approximate ({', '.join(ap)})" if ap else "none marked approximate"))
+        check_holes = sorted(set(check_holes) | {int(a) if a.isdigit() else a for a in ap}, key=lambda x: (isinstance(x, str), x))
+        if status == "auto-OK":
+            status = "needs confirm"
+        data["sub"] = data["sub"] + " · holes placed from aerial photos" + (f", {len(ap)} approximate" if ap else "")
+        data["foot_extra"] = ((data.get("foot_extra") or "") + " This course's holes are not drawn in OpenStreetMap: tees, "
+                              "greens and the hole order were worked out from aerial photos, lidar and the scorecard, "
+                              "so a hole can be wrong. Holes marked approximate are the ones the app is least sure of.").strip()
+        for hs in [data["holes"]] + list((data.get("alt") or {}).values()):
+            for hd in hs:
+                k = str(hd.get("key"))
+                if k in ap:
+                    p = ph.get(k)
+                    hd["note"] = ((hd.get("note") or "") + " Approximate: placed from aerial photos, and the app is not "
+                                  "sure this is hole " + k + (f" ({round(100 * p)} % confident)" if p is not None else "")
+                                  + ". Check the picture against the course before trusting the pick.").strip()
     if not has_card(pkg, cfg):
         label_no_card(data, cfg["tees"])
     open(page, "w").write(pack_page(head, data, code, tail))
@@ -1098,6 +1137,8 @@ def finish(q, parts):
             for s, r in qa.items()}
     wj(out_dir(q, "qa.json"), dict(checks=checks, page=summ))
     st = status_record(q, cfg, pkg, status, reasons, check_holes, page_rel, size)
+    if routed:
+        st["routed"] = {k: routed.get(k) for k in ("source", "approximate", "approx_below", "p_holes", "ensemble", "warnings")}
     wj(out_dir(q, "status.json"), st)
     log(json.dumps(st, indent=1))
 

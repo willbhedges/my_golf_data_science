@@ -91,6 +91,7 @@ jobs:
           O=$(python3 course_data/library/course_page.py slug "$R" | cut -d' ' -f2)
           echo "OUT=$O" >> "$GITHUB_ENV"; echo "S=$S" >> "$GITHUB_ENV"
           mkdir -p "$O"
+          rm -f "$O/routed_holes.geojson" "$O/routed_card.json" "$O/routing.json"   # a routing is only ever this run's
           python3 course_data/library/course_page.py pkgreq "$R"
           # Overpass / Nominatim rate limits come back as "not_found": retry with a back-off. Each attempt is capped
           # (an Overpass outage made one attempt run > 1 h: Fred Arbanas hit the 150-min job timeout, so nothing was
@@ -110,6 +111,25 @@ jobs:
             [ $((SECONDS - T0)) -gt 4200 ] && break
             sleep $((t * 90))
           done
+          # A course OpenStreetMap does not map ("no holes built"): route the holes on aerial photos (the fast path's
+          # imagery router, course_data/library/route_unmapped.py; its fits need the pinned library versions, so it
+          # runs in its own venv), then package again with the routed holes as an osm_supplement. Holes the router is
+          # unsure of are marked approximate on the page (routing.json).
+          if [ ! -f course_data/packages/$S/package.json ] && grep -q "no holes built" /tmp/pkg_v0.log; then
+            echo "no holes in OpenStreetMap: routing the course on aerial photos"
+            set +e
+            python3 -m venv /tmp/rv && /tmp/rv/bin/pip install -q -r course_data/platform/fastpath/refit/requirements.txt matplotlib
+            timeout 45m /tmp/rv/bin/python -u course_data/library/route_unmapped.py "$R" 2>&1 | tail -n 40 | tee /tmp/route_unmapped.log
+            rr=${PIPESTATUS[0]}; set -e
+            if [ "$rr" = 0 ] && [ -f "$O/routed_holes.geojson" ]; then
+              python3 course_data/library/course_page.py pkgreq "$R"
+              set +e
+              OSM_SOURCE=$SRC timeout 40m python course_data/platform/package.py run "$O/package_request.json" 2>&1 | tee /tmp/pkg_v0.log
+              set -e
+            else
+              echo "routing on aerial photos gave no holes: $(tail -n 2 /tmp/route_unmapped.log | tr '\n' ' ' | cut -c1-300)" | tee -a /tmp/pkg_v0.log
+            fi
+          fi
           if [ ! -f course_data/packages/$S/package.json ]; then
             python3 course_data/library/course_page.py failed "$R" package "$(tail -n 3 /tmp/pkg_v0.log | tr '\n' ' ' | cut -c1-400)"
             echo "ok=0" >> "$GITHUB_OUTPUT"; exit 0
