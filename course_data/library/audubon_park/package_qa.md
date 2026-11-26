@@ -1,6 +1,6 @@
 # Audubon Park Golf Course (New Orleans, LA) - Gold tees
 
-Built 2026-10-31T01:49:52Z. OSM way/27887431. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Gold, Blue, White)).
+Built 2026-11-26T07:47:03Z. OSM way/27887431. Scorecard: golfify (golfify). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Gold, Blue, White)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Gold' instead (allow_substitute). Sets on the card: Gold, Blue, White**
 
@@ -16,8 +16,8 @@ Built 2026-10-31T01:49:52Z. OSM way/27887431. Scorecard: golfify (golfify). Tee 
 | holes_with_trees_or_long_grass_in_landing_zone | 6 |
 | of_par4_5 | 6 |
 | mean_landing_osm_share | 0.216 |
-| mean_confidence | 0.847 |
-| osm_score | 0.715 |
+| mean_confidence | 0.85 |
+| osm_score | 0.716 |
 
 OSM features inside the course: buildings 2, golf=bunker 69, golf=green 16, golf=hole 16, golf=tee 32, holes_with_par 16, single_trees 28, water_polygons 5
 
@@ -25,38 +25,41 @@ OSM features inside the course: buildings 2, golf=bunker 69, golf=green 16, golf
 
 | hole | par | yds (card / measured) | bearing | score | band | OSM | imagery | inferred | tee | flags |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 4 | 323 / 324 | 34 | 0.67 | check the flags | 26% | 8% | 66% | tee stage: Gold lidar_pad | tee: tee stage: Gold lidar_pad; Gold tee on a lidar pad (no OSM box at 323 yds) |
+| 1 | 4 | 323 / 324 | 34 | 0.68 | check the flags | 26% | 12% | 62% | tee stage: Gold lidar_pad | tee: tee stage: Gold lidar_pad; Gold tee on a lidar pad (no OSM box at 323 yds) |
 | 2 | 3 | 148 / 148 | 56 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 3 | 3 | 227 / 224 | 223 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 4 | 3 | 129 / 124 | 147 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
-| 5 | 4 | 292 / 281 | 237 | 0.67 | check the flags | 4% | 3% | 92% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
+| 5 | 4 | 292 / 287 | 237 | 0.67 | check the flags | 4% | 6% | 91% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 6 | 3 | 167 / 167 | 53 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 7 | 3 | 127 / 126 | 223 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 8 | 3 | 187 / 184 | 303 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
-| 9 | 5 | 462 / 463 | 60 | 0.85 | auto | 71% | 0% | 29% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis; no fairway in the landing zone |
-| 10 | 4 | 360 / 360 | 59 | 0.77 | check the flags | 2% | 41% | 57% | tee stage: Gold tee_centroid | no fairway in the landing zone |
+| 9 | 5 | 462 / 463 | 60 | 0.85 | auto | 71% | 0% | 28% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis; no fairway in the landing zone |
+| 10 | 4 | 360 / 360 | 59 | 0.79 | check the flags | 2% | 49% | 50% | tee stage: Gold tee_centroid | no fairway in the landing zone |
 | 11 | 3 | 137 / 137 | 32 | 0.86 | auto | 100% | 0% | 0% | tee stage: Gold lidar_pad | tee: tee stage: Gold lidar_pad; Gold tee on a lidar pad (no OSM box at 137 yds) |
 | 12 | 3 | 195 / 194 | 284 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
 | 13 | 3 | 148 / 146 | 235 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
-| 14 | 4 | 282 / 282 | 119 | 0.75 | check the flags | 12% | 14% | 74% | tee stage: Gold tee_centroid |  |
+| 14 | 4 | 282 / 282 | 119 | 0.76 | check the flags | 12% | 18% | 70% | tee stage: Gold tee_centroid |  |
 | 16 | 3 | 163 / 162 | 47 | 0.93 | auto | 100% | 0% | 0% | tee stage: Gold tee_axis | tee: tee stage: Gold tee_axis |
-| 18 | 5 | 471 / 476 | 203 | 0.62 | check the flags | 14% | 0% | 86% | tee stage: Gold lidar_pad | tee: tee stage: Gold lidar_pad; no fairway in the landing zone; Gold tee on a lidar pad (no OSM box at 471 yds) |
+| 18 | 5 | 471 / 475 | 203 | 0.62 | check the flags | 15% | 1% | 84% | tee stage: Gold lidar_pad | tee: tee stage: Gold lidar_pad; no fairway in the landing zone; Gold tee on a lidar pad (no OSM box at 471 yds) |
 
 ## Stages
 
 - **resolve**: ok: way/27887431 Audubon Park Golf Course (New Orleans, LA)
-- **osm**: ok: 1238 features
+- **osm**: ok: 1237 features
 - **routing**: ok: v2+structure (mapped_card, lam 0.5, structure on osm) placed 16/18 holes OSM has no way for (16 to check; segment no, lidar pads 67, perception scene no)
 - **scorecard**: ok: golfify (golfify)
 - **tee_localizer**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment)
-- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 35 candidate pads near hole starts
+- **tees**: ok: tees/localize v2 (osm+lidar+texture pads, joint chain assignment) for 3 sets; lidar pads: 25 candidate pads near hole starts (10 on buildings / off the course dropped)
 - **geometry**: ok: geometry/build_holes.py (16 holes, 3 tee set(s))
-- **imagery**: ok: course_data/packages/audubon_park/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2023)
-- **green_visibility**: ok: 16/16 greens visible as turf on NAIP 2023
+- **imagery**: ok: course_data/packages/audubon_park/imagery (USDA NAIP via Microsoft Planetary Computer (collection 'naip'), 2025)
+- **green_visibility**: ok: 16/16 greens visible as turf on NAIP 2025
 - **elevation**: ok: course_data/packages/audubon_park/imagery/dem.tif (16/16 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
+- **fairway_fill**: gated: mown / rough separation d' 0.55 < 1.0 (seeds 4047, rough 16986); no fairway filled
+- **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 12 polygons (outside 12); mode replace
+- **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
 
 ## Warnings
 
@@ -77,3 +80,7 @@ OSM features inside the course: buildings 2, golf=bunker 69, golf=green 16, golf
 - hole 14: placed by v2+structure inference, golfer check (ambiguous (27% of the posterior))
 - hole 16: placed by v2+structure inference, golfer check (ambiguous (55% of the posterior))
 - hole 18: placed by v2+structure inference, golfer check (ambiguous (55% of the posterior))
+- hole 3 Blue: CHECK, tee was put 67 yds from this hole's start, at hole 16's tee, to fit the card yardage: kept at the hole line's start (the card yardage does not fit this hole)
+- hole 3 White: CHECK, tee was put 85 yds from this hole's start, at hole 16's tee, to fit the card yardage: kept at the hole line's start (the card yardage does not fit this hole)
+- hole 4 White: CHECK, tee was put 86 yds from this hole's start, at hole 2's tee, to fit the card yardage: kept at the hole line's start (the card yardage does not fit this hole)
+- no fairway mapped on 3 hole(s) and the NAIP fairway fill did not run: gated: mown / rough separation d' 0.55 < 1.0 (seeds 4047, rough 16986); no fairway filled
