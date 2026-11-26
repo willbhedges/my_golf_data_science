@@ -364,6 +364,18 @@ def bench_card(scj):
     return x["source"], x["card"]
 
 
+_CLUB_POINTS = {}
+
+
+def club_points():
+    """{slug: [lon, lat]} benchdata/big/club_points.json: OpenGolfAPI's lat / lng of each bench course with a card
+    there (a point independent of how OSM maps the course)"""
+    if not _CLUB_POINTS:
+        p = os.path.join(HERE, "benchdata", "big", "club_points.json")
+        _CLUB_POINTS.update(json.load(open(p)) if os.path.exists(p) else {"": None})
+    return _CLUB_POINTS
+
+
 def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
     import platform_common  # noqa: F401
     sys.path.insert(0, GEN)
@@ -396,7 +408,11 @@ def load_course(c, scene_kind, seed=0, ver=None, router="v1"):
         scene = rd(os.path.join(ROOT, f)) if f else None
     else:
         raise ValueError(scene_kind)
-    return dict(slug=c["slug"], split=c["split"], fc=strip_golf(fc), course=course, card=card, n=n, truth=truth,
+    fc2 = strip_golf(fc)
+    pt = club_points().get(c["slug"])                  # the scorecard source's course point (ROUTE_CLUB_POINT=1 reads it)
+    if pt:
+        fc2["course_point"] = pt
+    return dict(slug=c["slug"], split=c["split"], fc=fc2, course=course, card=card, n=n, truth=truth,
                 scene=scene, card_src=card_src)
 
 

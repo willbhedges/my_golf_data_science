@@ -179,7 +179,8 @@ def candidates(fc, scene, p_green=P_GREEN, p_tee=None, n_holes=18, split_tees=No
                    for t in (scene or {}).get("trees") or [] if t.get("centroid") and float(t.get("p", 1.0)) >= 0.5
                    and float(t.get("area_m2") or 0.0) >= 20.0]
     sp = [C._xy(pj, p["centroid"]) + (float(p.get("area_m2") or 0),) for p in (scene or {}).get("parking") or []]
-    C._pick_club(co, park + sp, club)
+    pt = (fc or {}).get("course_point") if os.environ.get("ROUTE_CLUB_POINT", "0") == "1" else None
+    C._pick_club(co, park + sp, club, C._xy(pj, pt) if pt else None)
     co = C._finish(co)
     info = dict(greens_osm=n_osm_g, greens_scene=len(co["G"]) - n_osm_g,
                 tees_osm=sum(t["src"] == "osm" for t in co["T"]), tees_scene=sum(t["src"] == "scene" for t in co["T"]),

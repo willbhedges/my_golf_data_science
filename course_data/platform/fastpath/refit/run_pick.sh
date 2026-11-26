@@ -26,7 +26,7 @@ st table || { python3 route_learn.py table --split train+big --procs 4 2>&1 | ta
 st x3 || { python3 route_learn.py x3 --split train+big --procs 4 2>&1 | tail -1; mk x3; }
 st cv || { python3 route_learn.py cv --out $SC 2>&1 | tail -1; python3 route_learn.py fit --out $SC 2>&1 | tail -1; find $ROUTE_LEARN_DIR -maxdepth 1 -name "*.pkl" -delete; mk cv; }
 st gen || { ROUTE_BENCH_SC=$SC/cv python3 $R/gen3.py train+big $SC/cv $W/gen3_tb 4 > $W/gen3_tb.log 2>&1; mk gen; }
-st rr || { (cd $R && X2=1 NC=1 MODEL=rankbag KS=beam,renum,start,end python3 rr_fit.py $W/gen3_tb 0.5 $W/picks_tb.json $ROUTE_RERANK_MODEL > $W/rr.log 2>&1); tail -3 $W/rr.log; mk rr; }
+st rr || { (cd $R && X2=1 NC=${NC:-1} MODEL=rankbag KS=beam,renum,start,end python3 rr_fit.py $W/gen3_tb 0.5 $W/picks_tb.json $ROUTE_RERANK_MODEL > $W/rr.log 2>&1); tail -3 $W/rr.log; mk rr; }
 st tgen || { ROUTE_RERANK=0 ROUTE_RERANK_PICKS=$W/picks_tb.json ROUTE_BENCH_SC=$SC/cv python3 $R/tgen2.py train+big $W/tg_tb 4 > $W/tg_tb.log 2>&1; mk tgen; }
 st tl || { (cd $T4 && python3 tl_exp.py $W/tg_tb $W/tlc.pkl len:0:grid len:1:rank > $W/tl.log 2>&1 && python3 tl_fit.py $W/tg_tb $W/tlc.pkl 0.93 12 0.5 $W/tee_picks.json $ROUTE_TEE_MODEL > $W/tlfit.log 2>&1); tail -2 $W/tlfit.log; find $W/tg_tb -name "*.pkl" -delete; rm -f $W/tlc.pkl; mk tl; }
 st oof || { ROUTE_TEE=0 ROUTE_RERANK=0 ROUTE_RERANK_PICKS=$W/picks_tb.json ROUTE_TEE_PICKS=$W/tee_picks.json ROUTE_BENCH_SC=$SC/cv EV train+big $W/oof.json; mk oof; }

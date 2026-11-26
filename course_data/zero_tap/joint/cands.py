@@ -126,12 +126,18 @@ def _osm_context(fc, pj):
     return fair, park, club
 
 
-def _pick_club(co, park, club):
-    """Clubhouse: a tagged one, else the scene's, else the biggest car park within 400 yd of a green."""
+def _pick_club(co, park, club, point=None):
+    """Clubhouse: a tagged one, else the scene's, else the course's own location point (the scorecard source's
+    lat / lng: the first tee is the tee nearest it on 35 % of courses, among the nearest three on 66 %) when it lies
+    within 400 yd of a green, else the biggest car park within 400 yd of a green."""
     if club:
         co["club"] = club[0]
         co["club_src"] = "tag"
     G = np.asarray(co["G"], float).reshape(-1, 2)
+    if co.get("club") is None and point is not None and len(G) and \
+            np.min(np.hypot(G[:, 0] - point[0], G[:, 1] - point[1])) < 400:
+        co["club"] = (float(point[0]), float(point[1]))
+        co["club_src"] = "point"
     pk = []
     for x, y, a in park:
         if len(G) and np.min(np.hypot(G[:, 0] - x, G[:, 1] - y)) < 400:

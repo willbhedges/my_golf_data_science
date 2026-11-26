@@ -1,0 +1,4 @@
+{"schema": "request/1", "kind": "routing_bench", "stage": "refit",
+ "note": "the shipped refit (refit/run_pick.sh) on the v2 Actions-built inputs, with the scorecard source's course point as the clubhouse when OSM tags none (ROUTE_CLUB_POINT=1; benchdata/big/club_points.json, 518 of 600 TRAIN-BIG courses) and the re-ranker's clubhouse features live (NC=0). Compared per split with the v2 refit of run 44856349197. Two thirds of wrong holes are on courses whose first or last hole is wrong.",
+ "inputs_run_id": "44838747125", "inputs_patch_run_id": "44848759175", "tag": "clubpoint", "compare_run_id": "44856349197",
+ "env": {"ROUTE_CLUB_POINT": "1", "NC": "0"}, "attempt": 1}
