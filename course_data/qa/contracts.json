@@ -2170,28 +2170,29 @@
   ]
  },
  "library/eagle_bend": {
-  "passed": 265,
-  "failed": 10,
+  "passed": 263,
+  "failed": 12,
   "skipped": 0,
   "holes": 18,
   "fail_summary": [
    "package_header (1: pkg)",
    "zones_match_zones_ll (1: 6)",
-   "every_tee_set (3: 2-Gold,8-White,8-Red)",
-   "tee_not_in_hazard (1: 2)",
-   "zones_valid_simple (4: 8,9,13,17)"
+   "every_tee_set (6: 2-Gold,8-White,8-Red,9-Gold,10-Gold,11-Gold)",
+   "zones_valid_simple (4: 1,9,15,17)"
   ],
   "messages": [
    "test_package_header : AssertionError: location library/eagle_bend/package.json (ARCHITECTURE 9.2: packages/<slug>/package.json)",
-   "test_zones_match_zones_ll 6: AssertionError: zones vs zones_ll agree on only 94% of the 100-400 yd grid ([('recovery->water', 25)]); polygon counts zones_ll {'fairway': 4, 'water': 3, 'sand': 3, 'recovery': 8} vs zones {'recovery': 9, 'fairway': 4, ",
+   "test_zones_match_zones_ll 6: AssertionError: zones vs zones_ll agree on only 93% of the 100-400 yd grid ([('recovery->water', 28)]); polygon counts zones_ll {'fairway': 4, 'water': 3, 'sand': 3, 'recovery': 11} vs zones {'recovery': 11, 'fairway': 3",
    "test_every_tee_set 2-Gold: AssertionError: tee in 'recovery'",
    "test_every_tee_set 8-White: AssertionError: length 148 vs card 127 (+17%)",
    "test_every_tee_set 8-Red: AssertionError: length 123 vs card 106 (+16%)",
-   "test_tee_not_in_hazard 2: AssertionError: tee [-95.3161579, 38.9223957] sits in 'recovery'",
-   "test_zones_valid_simple 8: AssertionError: 2/12 bad zones: #8 water: Self-intersection[-95.3236979464743 38.9260486526155]; #9 water: Self-intersection[-95.3231887772478 38.9264072862503]",
-   "test_zones_valid_simple 9: AssertionError: 1/25 bad zones: #17 water: Self-intersection[-95.3237016221941 38.926047127454]",
-   "test_zones_valid_simple 13: AssertionError: 1/15 bad zones: #11 recovery: Self-intersection[-95.3174638365119 38.9215137350743]",
-   "test_zones_valid_simple 17: AssertionError: 1/14 bad zones: #13 water: Self-intersection[-95.3236934491256 38.920476627396]"
+   "test_every_tee_set 9-Gold: AssertionError: tee in 'recovery'",
+   "test_every_tee_set 10-Gold: AssertionError: tee in 'recovery'",
+   "test_every_tee_set 11-Gold: AssertionError: tee in 'recovery'",
+   "test_zones_valid_simple 1: AssertionError: 1/22 bad zones: #16 recovery: Self-intersection[-95.321858591653 38.9220066163207]",
+   "test_zones_valid_simple 9: AssertionError: 1/25 bad zones: #17 water: Self-intersection[-95.3237018047204 38.9260470517186]",
+   "test_zones_valid_simple 15: AssertionError: 1/30 bad zones: #13 recovery: Self-intersection[-95.3219464405621 38.9209247831945]",
+   "test_zones_valid_simple 17: AssertionError: 1/16 bad zones: #15 water: Self-intersection[-95.3236934491256 38.920476627396]"
   ]
  },
  "library/ed_oliver": {
