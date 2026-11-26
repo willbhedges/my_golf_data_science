@@ -34,7 +34,7 @@
    38.857417194288054
   ]
  },
- "fetched_utc": "2026-11-02T03:14:03Z",
+ "fetched_utc": "2026-11-26T17:03:10Z",
  "lidar": {
   "hag": {
    "source": "planetary-computer 3dep-lidar-hag",
@@ -90,12 +90,12 @@
    {
     "name": "MO_WestCentral_1_2018",
     "url": "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/MO_WestCentral_1_2018/ept.json",
-    "cov": 0.358,
+    "cov": 0.169,
     "year": 2018,
     "count": 59697308669
    }
   ],
-  "ept_resolution_m": 0.5,
+  "tiles": 2,
   "used": [
    {
     "name": "KS_Statewide_B16_2018",
@@ -103,7 +103,8 @@
     "cov": 1.0,
     "year": 2018,
     "count": 27840677365,
-    "cells": 4122554
+    "cells": 4122554,
+    "tiles": 2
    }
   ],
   "valid": 0.9996765188579321,
@@ -140,6 +141,20 @@
  "naip": {
   "years": [
    {
+    "year": 2025,
+    "file": "naip_2025.tif",
+    "mb": 19.19,
+    "items": [
+     "ks_m_3809412_nw_15_030_20250511",
+     "ks_m_3809411_ne_15_030_20250511"
+    ],
+    "acquired": [
+     "2025-05-11"
+    ],
+    "gsd_m": 0.3,
+    "res_m": 0.6
+   },
+   {
     "year": 2023,
     "file": "naip_2023.tif",
     "mb": 22.26,
@@ -151,20 +166,6 @@
      "2023-08-16"
     ],
     "gsd_m": 0.3,
-    "res_m": 0.6
-   },
-   {
-    "year": 2021,
-    "file": "naip_2021.tif",
-    "mb": 15.05,
-    "items": [
-     "ks_m_3809412_nw_15_060_20210613",
-     "ks_m_3809411_ne_15_060_20210613"
-    ],
-    "acquired": [
-     "2021-06-13"
-    ],
-    "gsd_m": 0.6,
     "res_m": 0.6
    }
   ]
