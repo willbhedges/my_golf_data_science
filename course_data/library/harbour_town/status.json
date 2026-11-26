@@ -7,17 +7,14 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "holes not all mapped in OSM (hole method: v2+structure)",
   "scorecard not matched (source opengolfapi, flags ['Heritage: holes sum to 7131 but the source says 7099 (+32): mixed card versions', 'Blue: holes sum to 6642 but the source says 6681 (-39): mixed card versions', 'White: holes sum to 6103 but the source says 6253 (-150): mixed card versions', 'Gold: holes sum to 5478 but the source says 5867 (-389): mixed card versions', 'Green: holes sum to 4760 but the source says 5084 (-324): mixed card versions'])",
-  "7 hole(s) with a CHECK"
+  "5 hole(s) with a CHECK"
  ],
  "check_holes": [
   2,
   3,
   5,
   7,
-  8,
-  16,
   18
  ],
  "tee_sets": [
@@ -72,7 +69,7 @@
   "Blue"
  ],
  "page": "course_data/library/harbour_town/page.html",
- "page_bytes": 3010152,
+ "page_bytes": 6264337,
  "qa_report": "course_data/library/harbour_town/qa_report.md",
  "center": [
   32.13072015,
@@ -81,23 +78,30 @@
  "osm": "relation/4813858",
  "holes": 18,
  "days": [
-  "2026-11-07",
-  "2026-11-08"
+  "2026-11-28",
+  "2026-11-29"
  ],
  "weather": "forecast",
- "built": "2026-11-01T22:44Z",
+ "built": "2026-11-26T19:07Z",
  "request": "course_data/requests/course_page_harbour_town.json",
- "verified_holes": [],
- "last_attempt": {
-  "status": "failed",
-  "stage": "package",
-  "error": [
-   "package:   File \"/opt/hostedtoolcache/Python/3.11.18/x64/lib/python3.11/site-packages/requests/adapters.py\", line 729, in send     raise ConnectionError(e, request=request) requests.exceptions.ConnectionError: HTTPSConnectionPool(host='download.geofabrik.de', port=443): Max retries exceeded with url: /north-america/us/south-carolina-latest.osm.pbf (Caused by NewConnectionError(\"HTTPSConnection(host='downlo"
-  ],
-  "when": "2026-11-26T17:15Z",
-  "resolve": {
-   "status": null,
-   "candidates": []
-  }
- }
+ "native": {
+  "holes": [],
+  "tee_set": "Heritage",
+  "note": "0 asked of 14 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%))"
+ },
+ "verified_holes": [
+  1,
+  4,
+  6,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17
+ ]
 }
