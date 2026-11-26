@@ -17,7 +17,7 @@
    ],
    "prior": {
     "L": 0.03,
-    "R": 0.0929
+    "R": 0.0911
    },
    "widths": {
     "L": 10.0,
@@ -47,7 +47,7 @@
      130.0
     ]
    },
-   "value": 0.0252,
+   "value": 0.0247,
    "plans": {
     "current": "Driver +29",
     "L": "Driver +25",
@@ -248,29 +248,24 @@
    "tested": false,
    "strict": "red",
    "prelim": "red",
-   "exp_regret": 0.0252,
+   "exp_regret": 0.0247,
    "worst_regret": 0.2708,
    "p_wrong": null,
    "lie": "native",
    "state_p": {
     "L": 0.027,
-    "R": 0.09,
+    "R": 0.088,
     "both": 0.003,
-    "none": 0.88
+    "none": 0.882
    },
    "detail": "Tall, unmown grass you would hack out of, from the landing area out. Our map's guess: left 3%, right 9%. Your answer re-plans hole 14."
   }
  ],
  "source": "native_auto",
  "cap": 2,
- "note": "2 asked of 15 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%)); 1 kept on the page's own picks (1 dropped)",
+ "note": "1 asked of 14 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%)); 1 kept on the page's own picks",
  "n": 4000,
- "runtime_s": 100.7,
- "dropped": [
-  {
-   "hole": "17",
-   "why": "planner's no-answer plan Long iron -60 is not the page's 4-wood -23.0"
-  }
- ],
+ "runtime_s": 128.1,
+ "dropped": [],
  "baseline": "page calm-day pick"
 }
