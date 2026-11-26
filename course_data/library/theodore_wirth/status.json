@@ -5,28 +5,61 @@
  "city": "Minneapolis",
  "state": "MN",
  "group": "library",
- "status": "failed",
+ "status": "needs confirm",
  "reasons": [
-  "package:     elif r.get(\"method\") == \"walkback\" and back is not None and alongs[back] > max_forward:                                                                 ~~~~~~^^^^^^ KeyError: 125.0 "
+  "scorecard not matched (source opengolfapi, flags ['Blue: holes sum to 6164 but the source says 6475 (-311): mixed card versions', 'White: holes sum to 5053 but the source says 6179 (-1126): mixed card versions'])",
+  "3 hole(s) with a CHECK"
  ],
- "check_holes": [],
- "tee_sets": [],
- "page": null,
- "page_bytes": null,
+ "check_holes": [
+  4,
+  13,
+  18
+ ],
+ "tee_sets": [
+  {
+   "name": "Blue",
+   "yards": 6164,
+   "par": 72,
+   "rating": 71.8,
+   "slope": 131,
+   "colour": "blue",
+   "on_page": "solved"
+  },
+  {
+   "name": "White",
+   "yards": 5053,
+   "par": 72,
+   "rating": 70.5,
+   "slope": 128,
+   "colour": "white",
+   "on_page": "solved"
+  }
+ ],
+ "solved_sets": [
+  "Blue",
+  "White"
+ ],
+ "page": "course_data/library/theodore_wirth/page.html",
+ "page_bytes": 5707212,
+ "qa_report": "course_data/library/theodore_wirth/qa_report.md",
+ "center": [
+  44.992457200000004,
+  -93.3254311
+ ],
+ "osm": "relation/20146766",
+ "holes": 18,
+ "days": [
+  "2026-11-28",
+  "2026-11-29"
+ ],
+ "weather": "forecast",
+ "built": "2026-11-26T08:47Z",
  "request": "course_data/requests/course_page_theodore_wirth.json",
- "resolve": {
-  "status": "ok",
-  "candidates": [
-   {
-    "name": "Theodore Wirth Golf Course",
-    "town": "Minneapolis",
-    "holes": 27,
-    "osm": {
-     "type": "relation",
-     "id": 20146766
-    }
-   }
-  ]
- },
- "built": "2026-10-31T02:11Z"
+ "native": {
+  "holes": [
+   "18"
+  ],
+  "tee_set": "Blue",
+  "note": "1 asked of 14 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%)); 1 kept on the page's own picks"
+ }
 }
