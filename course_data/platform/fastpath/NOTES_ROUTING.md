@@ -2057,3 +2057,12 @@ router wrong / field right 61, router right / field wrong 99, both wrong 25; on 
 tee out-scores the routed one on 80 %. The two err on different holes (either right: 98.3 %): a feature for the hole
 / tee models, not a replacement. Gate 1 (holefield_gate1.py) = the same from the detector's maps, against the
 photo-only router.
+
+Gate 1 (run 45979467058, research/holefield_gate1.py, 3 h): the field learned from the detector's maps (U-Net
+P(green) / P(tee) + corridor maps fair / bunker / water / tree / turf; 420 train / 95 test courses, fold 0): green's
+best tee its own 89.0 %, Hungarian 92.3 %, courses all paired 69.5 % (true field 96.4 / 97.8 / 85.3 %): the same as
+from the mapped layout. Against the photo-only router (pair_v3 arm A, 1,479 holes whose routed green is a mapped
+hole's): router's tee right 1,356 (91.7 %), field's 1,334 (90.2 %), router wrong / field right 74, router right /
+field wrong 96, both wrong 49 (either right 96.7 %); on the router's 123 wrong tees the true tee out-scores the
+routed one on 76 %. Caveat: the tee candidates include the mapped hole starts. Go: folds 1-4 for out-of-fold fields
+(`args_list` runs one job per entry), then the field's line integral as a hole / tee feature and a refit.

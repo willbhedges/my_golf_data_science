@@ -162,7 +162,9 @@ def main():
     res.update(learned=ev, router=against_router(te, F), log=log, per_course=per)
     np.savez_compressed(os.path.join(out, "fields_fold%d.npz" % fold),
                         **{c["slug"]: f.astype(np.float16) for c, f in zip(te, F)})
-    json.dump(res, open(os.path.join(out, "holefield_gate1.json"), "w"), indent=1)
+    os.replace(os.path.join(out, "holefield_gate0.pt"), os.path.join(out, "holefield_fold%d.pt" % fold))
+    json.dump({c["slug"]: list(c["origin"]) for c in te}, open(os.path.join(out, "origins_fold%d.json" % fold), "w"))
+    json.dump(res, open(os.path.join(out, "holefield_gate1_fold%d.json" % fold), "w"), indent=1)
     print("RESULT", json.dumps({k: res[k] for k in ("n_train", "n_test", "truth_field", "learned", "router")}))
 
 
