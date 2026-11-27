@@ -2026,3 +2026,34 @@ the v2 refit 44856349197, out of fold:
 Not shipped: the gain is on one split and a loss on the other, and as many courses get worse as better. The knob
 stays off (default 0). A refit alone moves 234 courses' per-hole results, so a +0.6 point change is inside the noise
 of this protocol.
+
+## State 2026-11-27 (later): pairing is the bottleneck; a learned hole field (part affinity field)
+
+Physical holes (a routed line whose green is a mapped hole's and whose tee stands on that hole): 94.1 % of holes with
+OSM greens / tees given (pair_keeposm2 arm A), 91.7 % on photos (pair_v3 arm A). Courses with every physical hole
+right: 288 of 570 / 270 of 594, and of those 271 / 259 are numbered right throughout (94 / 96 %). So the numbering is
+not the bottleneck: the tee <-> green pairing is, and a wrong pair drags its neighbours' numbers (329 / 405 holes are
+a right physical hole under a wrong number, 89 / 90 of them on courses with every pair right). Six failing courses
+drawn (scratch viz.py): parallel holes sharing a tee area and swapping tees, the tee by the previous green taken for
+the wrong hole, a par-3 course entered from the wrong side; no single pattern. Card: on the 183 right-green wrong-tee
+holes the true tee fits the longest set better on 53 %, the routed one on 26 %; an all-sets yardage fingerprint is no
+better (40 / 28 %).
+
+Hole field (research/holefield_gate0.py, the routing_bench `research` stage): a 5-level U-Net (24 base channels,
+5 m / pixel, 384 x 384) predicts the unit tee -> green direction within 22 m of each hole line (+ an on-a-hole
+logit), as OpenPose's part affinity fields; a tee is scored for a green by the field's mean alignment along the
+segment (or its best single bend). Gate 0, input = the mapped layout only (green / tee / fairway / bunker / water
+rasters), 421 train / 95 test courses, 40 epochs (run 45936097627, 4.5 h on 4 cores):
+
+| score | green's best tee is its own | Hungarian, hole starts x greens | courses all paired |
+|---|---|---|---|
+| hand (length + fairway under the segment) | 52.2 % | 46.3 % | 1 % |
+| learned field | 90.2 % | 92.3 % | 70.5 % |
+| true field (ceiling of the scoring) | 97.0 % | 97.8 % | 85.3 % |
+
+Gate 0b (run 45976979983), per hole against the scene router on the same 91 test courses (1,453 holes whose routed
+green is a mapped hole's): router's tee right 1,367 (94.1 %), field's best tee right 1,329 (91.5 %), both 1,268,
+router wrong / field right 61, router right / field wrong 99, both wrong 25; on the router's 86 wrong tees the true
+tee out-scores the routed one on 80 %. The two err on different holes (either right: 98.3 %): a feature for the hole
+/ tee models, not a replacement. Gate 1 (holefield_gate1.py) = the same from the detector's maps, against the
+photo-only router.
