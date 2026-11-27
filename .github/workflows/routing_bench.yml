@@ -85,7 +85,7 @@ jobs:
           r = json.load(open(sys.argv[1]))
           stage = r.get("stage") or "smoke"
           print("stage=" + stage)
-          rq = {k: v for k, v in r.items() if k in ("inputs_run_id", "inputs_patch_run_id", "tag", "compare_run_id", "detector", "impl", "env", "script", "args", "artifact_run_id")}
+          rq = {k: v for k, v in r.items() if k in ("inputs_run_id", "inputs_patch_run_id", "tag", "compare_run_id", "detector", "impl", "env", "script", "args", "artifact_run_id", "holefield_run_a", "holefield_run_b")}
           rq["args_list"] = r.get("args_list") or [r.get("args") or ""]        # research: one job per entry
           print("req=" + json.dumps(rq))
           if stage == "bench_inputs":
@@ -353,6 +353,27 @@ jobs:
           path: ${{ github.workspace }}/course_data/platform/fastpath/cache/v2root
           run-id: ${{ fromJson(needs.plan.outputs.req).inputs_patch_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        if: fromJson(needs.plan.outputs.req).holefield_run_a != ''
+        with:
+          pattern: research-holefield*
+          merge-multiple: true
+          path: ${{ runner.temp }}/hf/a
+          run-id: ${{ fromJson(needs.plan.outputs.req).holefield_run_a }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v4
+        if: fromJson(needs.plan.outputs.req).holefield_run_b != ''
+        with:
+          pattern: research-holefield*
+          merge-multiple: true
+          path: ${{ runner.temp }}/hf/b
+          run-id: ${{ fromJson(needs.plan.outputs.req).holefield_run_b }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Hole fields (out-of-fold, research runs) as route_learn features
+        if: fromJson(needs.plan.outputs.req).holefield_run_a != ''
+        run: |
+          ls -la $RUNNER_TEMP/hf/* | head -30
+          echo "ROUTE_HOLEFIELD=$RUNNER_TEMP/hf" >> "$GITHUB_ENV"
       - name: Request env (ROUTE_ knobs and NC from the request's "env")
         env:
           REQ_ENV: ${{ toJson(fromJson(needs.plan.outputs.req).env) }}

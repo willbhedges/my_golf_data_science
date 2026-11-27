@@ -908,6 +908,9 @@ def x3_table(slug, split, ver=None):
     d["_wx4"] = wx4_on()
     out = dict(slug=slug, hx3=pair_features3(d, M), wx3=walk_features3(d, M), sx3=loop_features3(d, scene, M, "start"),
                ex3=loop_features3(d, scene, M, "end"))
+    import holefield
+    if holefield.on():                    # ROUTE_HOLEFIELD: the learned hole field's line integral per pair
+        out["hx4"] = holefield.pair_x(slug, d)
     os.makedirs(os.path.dirname(p), exist_ok=True)
     pickle.dump(out, open(p, "wb"))
     return out
@@ -1143,7 +1146,8 @@ X3 = os.environ.get("ROUTE_LEARN_X3", "1") == "1"      # + pair_features3 / walk
 
 def _X(t, kind):
     if kind == "h":
-        return np.c_[t["hx"], t["hx2"], t["hx3"]] if "hx3" in t else np.c_[t["hx"], t["hx2"]]
+        X = np.c_[t["hx"], t["hx2"], t["hx3"]] if "hx3" in t else np.c_[t["hx"], t["hx2"]]
+        return np.c_[X, t["hx4"]] if "hx4" in t else X
     if kind in ("s", "e"):
         return np.c_[t[kind + "x"], t[kind + "x3"]] if kind + "x3" in t else t[kind + "x"]
     return np.c_[t["wx"], t["wx2"], t["wx3"]] if "wx3" in t else np.c_[t["wx"], t["wx2"]]
@@ -1228,6 +1232,7 @@ def cmd_fit(out_dir, kinds=KINDS):
     ts = load_tables(TRAIN)
     ms = {kind: _fit(ts, kind) for kind in kinds}
     pickle.dump(dict(models=ms, XF=XF + ["t_src"] * tee_pads_on(), WXF=WXF, n_train=len(ts), x3=X3, tsrc=tee_pads_on(),
+                     x4=any("hx4" in t for t in ts),
                      wx4=wx4_on(),
                      **(dict(XF3=XF3, WXF3=WXF3, LXF3=LXF3) if X3 else {})), open(MODEL, "wb"))
     os.makedirs(out_dir, exist_ok=True)
@@ -1324,6 +1329,9 @@ def rescore(d, scene, M, card=None, n_holes=None, path=MODEL):
     if m.get("x3"):                       # the richer local features (pair_features3 ...), read before ph is replaced
         t.update(hx3=pair_features3(d, M), wx3=walk_features3(d, M), sx3=loop_features3(d, scene, M, "start"),
                  ex3=loop_features3(d, scene, M, "end"))
+    if m.get("x4"):                       # the hole-field features: the course's field when one is at hand
+        import holefield
+        t["hx4"] = holefield.pair_x(d.get("_slug") or "", d)
     d["sc"] = dict(d["sc"], **predict(m["models"], t))
     if m["models"].get("p") is not None and len(d["co"]["G"]):
         d["sc"]["pp"] = m["models"]["p"].predict_proba(prac_features(d, M))[:, 1]
