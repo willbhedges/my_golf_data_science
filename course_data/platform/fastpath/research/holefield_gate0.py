@@ -106,7 +106,7 @@ def load(slug):
             field[0][m], field[1][m] = u[0], u[1]
             best[m] = d[m]
         out.append((r, q[0], q[-1], q))
-    return dict(slug=slug, x=x, field=field, mask=(best < 1e8).astype(np.float32), holes=out,
+    return dict(slug=slug, x=x, field=field, mask=(best < 1e8).astype(np.float32), holes=out, origin=(lon0, lat0, kx, ky),
                 tees=[t for t in tees if 0 <= t[0] < SIZE and 0 <= t[1] < SIZE])
 
 
@@ -213,12 +213,11 @@ def is_test(slug):
     return zlib.crc32(slug.encode()) % 5 == 0
 
 
-def train(tr, te, epochs, out):
+def build_net():
+    """the gate-0 network (torch imported here so data + evaluation need none)"""
     import torch
     import torch.nn as nn
     import torch.nn.functional as Fn
-    torch.manual_seed(0)
-    torch.set_num_threads(os.cpu_count() or 4)
 
     def block(i, o):
         return nn.Sequential(nn.Conv2d(i, o, 3, padding=1), nn.BatchNorm2d(o), nn.ReLU(inplace=True),
@@ -240,7 +239,17 @@ def train(tr, te, epochs, out):
             for u, s in zip(self.up, sk[-2::-1]):
                 x = u(torch.cat([Fn.interpolate(x, size=s.shape[-2:], mode="bilinear", align_corners=False), s], 1))
             return self.head(x)
-    net = Net()
+    return Net()
+
+
+def train(tr, te, epochs, out):
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as Fn
+    torch.manual_seed(0)
+    torch.set_num_threads(os.cpu_count() or 4)
+
+    net = build_net()
     opt = torch.optim.AdamW(net.parameters(), 2e-3, weight_decay=1e-4)
     steps = epochs * math.ceil(len(tr) / 8)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, 2e-3, total_steps=steps)
