@@ -1999,3 +1999,30 @@ corroborated card:
 
 Never-used courses: 29.1 % / 99.27 % and 26.7 % / 99.29 %. OSM-given routings are 91.9 % identity-right, 89.3 % tee
 and green right (two-detector run). The threshold stays 0.98.
+
+## State 2026-11-27: where the misses are; the course point as a clubhouse (not shipped)
+
+Misses on pair_keeposm2 arm A (OSM greens / tees given; 999 wrong of 9,459 holes under hole_ok):
+* 424 green right, tee wrong: 245 of them pass hole_ok_fwd or identity_ok (a forward box beside the line), 168 are
+  another hole's tee (median 21 yd from that hole's line, 98 yd from the own start), 15 other.
+* 429 a real hole green under another number: 88 nine swaps (8 courses), 72 two-hole swaps (36 courses), 32 shifts,
+  237 other (48 courses).
+* 146 a green that is no hole's (76 scene detections and 24 virtual greens although OSM maps every green; the rest
+  OSM practice greens).
+* 639 of the 999 are on the 69 + 84 courses whose hole 1 or last hole is wrong (photos only: 848 of 1,252).
+
+Course point: OpenGolfAPI's lat / lng (benchdata/big/club_points.json, 518 of 600 TRAIN-BIG courses). Hole 1's tee
+is the tee nearest it on 35 % of courses, among the nearest three on 68 %; the last green 37 % / 67 %; median 159 yd.
+`ROUTE_CLUB_POINT=1` makes it co["club"] (src "point") when no clubhouse is tagged and it lies within 400 yd of a
+green. Full refit with it and the re-ranker's clubhouse features live (NC=0), routing_bench run 45913165005, against
+the v2 refit 44856349197, out of fold:
+
+| split | v2 refit | with the point |
+|---|---|---|
+| all 643 | 85.51 % | 86.09 % (+62 holes; 111 courses better, 105 worse) |
+| choice 443 | 85.09 % | 86.43 % (+99) |
+| never-used 200 | 86.45 % | 85.34 % (-37; 23 better, 46 worse) |
+
+Not shipped: the gain is on one split and a loss on the other, and as many courses get worse as better. The knob
+stays off (default 0). A refit alone moves 234 courses' per-hole results, so a +0.6 point change is inside the noise
+of this protocol.
