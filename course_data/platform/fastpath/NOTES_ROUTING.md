@@ -2066,3 +2066,26 @@ hole's): router's tee right 1,356 (91.7 %), field's 1,334 (90.2 %), router wrong
 field wrong 96, both wrong 49 (either right 96.7 %); on the router's 123 wrong tees the true tee out-scores the
 routed one on 76 %. Caveat: the tee candidates include the mapped hole starts. Go: folds 1-4 for out-of-fold fields
 (`args_list` runs one job per entry), then the field's line integral as a hole / tee feature and a refit.
+
+## State 2026-11-27 (night): hole-field features in the hole model: +1.2 points out of fold (not shipped yet)
+
+Fields out of fold for every TRAIN-BIG course (holefield_gate1.py, fold 0 run 45979467058, folds 1-4 run 46020653509;
+about 3 to 4.5 h a fold on 4 cores). `holefield.pair_x` -> hx4 per candidate (tee complex, green): the line integral
+from the complex centroid and from its far box, the pair against the best of its green and of its tee, its rank among
+the green's tees. `ROUTE_HOLEFIELD=<dir>` adds hx4 to route_learn's hole model (x3 tables; NaN where a course has no
+field, e.g. the 43 validation train courses). The shipped refit with it (routing_bench run 46061583284,
+`holefield_run_a` / `holefield_run_b` in the request), against the v2 refit 44856349197, out of fold:
+
+| split | v2 refit | + hx4 | courses better / worse | all-right courses |
+|---|---|---|---|---|
+| all 643 | 85.51 % | 86.75 % (+133 holes) | 159 / 89 | 234 -> 261 |
+| choice 443 | 85.09 % | 86.62 % (+113) | 106 / 60 | 170 -> 190 |
+| never-used 200 | 86.45 % | 87.05 % (+20) | 53 / 29 | 64 -> 71 |
+
+Forward-tee metric +130 holes (86.97 -> 88.19 %); card error median 6.4 -> 6.0 yd. Both splits up, better : worse
+about 1.8 : 1 on each (the course-point refit was 111 : 105). Only the hole model reads the field so far: the tee
+step and the re-ranker do not. Caveats: the field canvas is centred on the mapped hole lines (production must centre
+on the scene), the fields come from 420-course fits, the test-28 split is unread.
+To ship: a field model fitted on every course; field inference in the fast path (the network is 5 levels of 3x3
+convolutions at 384 x 384, 5 m); the refit's fits into route_models/ with fold models and a route_conf refit on its
+paired routings; one read of test 28.
