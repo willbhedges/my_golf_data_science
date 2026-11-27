@@ -1,8 +1,8 @@
 # The Golf Course at Glen Mills: automatic page QA
 
-**Status: needs confirm** — confirm holes 4, 6, 11, 12, 17, 18
+**Status: needs confirm** — confirm holes 4, 6, 11, 12
 
-* page: `course_data/library/glen_mills/page.html` (3.2 MB); request `course_data/requests/course_page_glen_mills.json`; built 2026-11-26T22:11Z
+* page: `course_data/library/glen_mills/page.html` (3.2 MB); request `course_data/requests/course_page_glen_mills.json`; built 2026-11-26T23:29Z
 * course: The Golf Course at Glen Mills (Thornbury Township, PA), OSM way/284570622; holes: osm (tier mapped_card); card: course_data/library/glen_mills/routed_card.json (file)
 * solved tee sets: Black, Blue (the two longest sets on the card (combination sets skipped)); page sets: Black, Blue
 * weather: forecast for 2026-11-28, 2026-11-29; grid temperatures [35, 45, 55] F; calm-day picks with 48 prior draws
@@ -13,7 +13,7 @@
 
 Course-level reasons:
 
-* holes placed from aerial photos (OpenStreetMap does not map them all): 3 marked approximate (17, 18, 12)
+* holes placed from aerial photos (OpenStreetMap does not map them all): 1 marked approximate (12)
 * 4 hole(s) with a CHECK
 
 Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = card; tee shots: the calm pick lands on fairway / first cut and its pattern is at most 40% trees / water / OB; no printed tee-shot aim (calm book or forecast pick) more than 40 yds off the tee line; par 3s: the target box on the OSM green; the page renders in a phone and a desktop browser).
@@ -39,7 +39,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 15 | 5 | PASS | Driver -40 |  |
 | 16 | 3 | PASS |  |  |
 | 17 | 5 | PASS | Driver +2 |  |
-| 18 | 4 | PASS | Driver -7 |  |
+| 18 | 4 | PASS | Driver -6 |  |
 
 ## Blue tees
 
@@ -56,7 +56,7 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 | 9 | 4 | PASS | 4-wood -1 |  |
 | 10 | 3 | PASS |  |  |
 | 11 | 4 | PASS | Long iron +6 (tie) |  |
-| 12 | 4 | PASS | Driver +27 |  |
+| 12 | 4 | PASS | Driver +28 |  |
 | 13 | 4 | PASS | Driver -22 |  |
 | 14 | 3 | PASS |  |  |
 | 15 | 5 | PASS | Driver -40 |  |

@@ -1,6 +1,6 @@
 # The Golf Course at Glen Mills (Thornbury Township, PA) - Black tees
 
-Built 2026-11-26T22:10:27Z. OSM way/284570622. Scorecard: file (course_data/library/glen_mills/routed_card.json). Tee set: name.
+Built 2026-11-26T23:28:39Z. OSM way/284570622. Scorecard: file (course_data/library/glen_mills/routed_card.json). Tee set: name.
 
 ## Coverage
 
