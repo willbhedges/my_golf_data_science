@@ -85,7 +85,7 @@ jobs:
           r = json.load(open(sys.argv[1]))
           stage = r.get("stage") or "smoke"
           print("stage=" + stage)
-          print("req=" + json.dumps({k: v for k, v in r.items() if k in ("inputs_run_id", "inputs_patch_run_id", "tag", "compare_run_id", "detector", "impl", "env")}))
+          print("req=" + json.dumps({k: v for k, v in r.items() if k in ("inputs_run_id", "inputs_patch_run_id", "tag", "compare_run_id", "detector", "impl", "env", "script", "args")}))
           if stage == "bench_inputs":
               tb = sorted(json.load(open(FP + "/benchdata/big/pinned_years.json")))
               va = sorted(json.load(open(FP + "/benchdata/val/pinned_years.json")))
@@ -445,3 +445,41 @@ jobs:
           name: refit-repeat-${{ env.TAG }}
           retention-days: 30
           path: ${{ runner.temp }}/work/oof.json
+
+  # stage research: one script of fastpath/research/ on the committed bench data (OSM truth + cards, no imagery), e.g.
+  # {"stage": "research", "script": "holefield_gate0.py", "args": "40"}; its OUT_DIR is the artifact research-<script>
+  research:
+    needs: plan
+    if: needs.plan.outputs.stage == 'research'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      SCRIPT: ${{ fromJson(needs.plan.outputs.req).script }}
+      ARGS: ${{ fromJson(needs.plan.outputs.req).args }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /course_data/platform/fastpath/research/
+            /course_data/platform/fastpath/benchdata/big/
+            /course_data/platform/fastpath/refit/never_used.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy scipy scikit-image shapely && pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Run the research script
+        run: |
+          case "$SCRIPT" in *[!a-z0-9_.]*|""|.*) echo "bad script name"; exit 1;; esac
+          case "$ARGS" in *[!A-Za-z0-9_.,=\ -]*) echo "bad args"; exit 1;; esac
+          mkdir -p $RUNNER_TEMP/research
+          python3 -u $FP/research/$SCRIPT $RUNNER_TEMP/research $ARGS 2>&1 | tee $RUNNER_TEMP/research/log.txt
+          { echo '```'; grep -E "^RESULT|^courses" $RUNNER_TEMP/research/log.txt | cut -c1-3000; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: research-${{ env.SCRIPT }}
+          path: ${{ runner.temp }}/research
+          retention-days: 30
