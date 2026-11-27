@@ -3518,21 +3518,19 @@
   ]
  },
  "library/ironhorse": {
-  "passed": 261,
-  "failed": 64,
+  "passed": 243,
+  "failed": 50,
   "skipped": 0,
-  "holes": 20,
+  "holes": 18,
   "fail_summary": [
-   "hole_count (1: pkg)",
    "package_header (1: pkg)",
    "zones_match_zones_ll (9: 5,6,7,8,10,13,15,16,18)",
-   "every_tee_set (30: 5-Black,5-Red,6-Gold,6-Red,7-Black,7-Red,11-Black,11-Blue,11-Gold,12-Gold)",
+   "every_tee_set (20: 5-Black,5-Red,6-Gold,6-Red,7-Black,7-Red,11-Black,11-Blue,11-Gold,12-Gold)",
    "length_vs_card (1: 11)",
-   "tee_not_in_hazard (6: 5,7,11,14,18,20)",
-   "zones_valid_simple (16: 1,2,3,4,6,7,8,9,12,13)"
+   "tee_not_in_hazard (5: 5,7,11,14,18)",
+   "zones_valid_simple (14: 1,2,3,4,6,7,8,9,12,13)"
   ],
   "messages": [
-   "test_hole_count : AssertionError: 20 holes: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20']",
    "test_package_header : AssertionError: location library/ironhorse/package.json (ARCHITECTURE 9.2: packages/<slug>/package.json)",
    "test_zones_match_zones_ll 5: AssertionError: zones vs zones_ll agree on only 98% of the 100-400 yd grid ([('recovery->water', 9)]); polygon counts zones_ll {'recovery': 13, 'fairway': 6, 'water': 3, 'sand': 5, 'ob': 3} vs zones {'recovery': 13, 'ob'",
    "test_zones_match_zones_ll 6: AssertionError: zones vs zones_ll agree on only 97% of the 100-400 yd grid ([('recovery->water', 7), ('ob->recovery', 2), ('fairway->rough', 1)]); polygon counts zones_ll {'recovery': 24, 'fairway': 7, 'water': 3, 'sand'",
@@ -3563,23 +3561,12 @@
    "test_every_tee_set 18-Black: AssertionError: tee in 'ob'",
    "test_every_tee_set 18-White: AssertionError: length 471 vs card 396 (+19%); tee in 'ob'",
    "test_every_tee_set 18-Gold: AssertionError: length 471 vs card 394 (+20%); tee in 'ob'",
-   "test_every_tee_set 19-Black: AssertionError: no card yards",
-   "test_every_tee_set 19-Blue: AssertionError: no card yards",
-   "test_every_tee_set 19-White: AssertionError: no card yards",
-   "test_every_tee_set 19-Gold: AssertionError: no card yards",
-   "test_every_tee_set 19-Red: AssertionError: no card yards",
-   "test_every_tee_set 20-Black: AssertionError: no card yards; tee in 'ob'",
-   "test_every_tee_set 20-Blue: AssertionError: no card yards; tee in 'ob'",
-   "test_every_tee_set 20-White: AssertionError: no card yards; tee in 'ob'",
-   "test_every_tee_set 20-Gold: AssertionError: no card yards; tee in 'ob'",
-   "test_every_tee_set 20-Red: AssertionError: no card yards; tee in 'ob'",
    "test_length_vs_card 11: AssertionError: tee->green 315 yds (along the hole line) vs card 371 (-15%)",
    "test_tee_not_in_hazard 5: AssertionError: tee [-94.6245801, 38.8514471] sits in 'ob'",
    "test_tee_not_in_hazard 7: AssertionError: tee [-94.6273048, 38.8532554] sits in 'recovery'",
    "test_tee_not_in_hazard 11: AssertionError: tee [-94.6409629, 38.8504356] sits in 'recovery'",
    "test_tee_not_in_hazard 14: AssertionError: tee [-94.6438883, 38.85184] sits in 'recovery'",
    "test_tee_not_in_hazard 18: AssertionError: tee [-94.6410533, 38.8506612] sits in 'ob'",
-   "test_tee_not_in_hazard 20: AssertionError: tee [-94.6245906, 38.851476] sits in 'ob'",
    "test_zones_valid_simple 1: AssertionError: 2/45 bad zones: #28 recovery: Self-intersection[-94.6320795204964 38.8488662875197]; #42 recovery: Self-intersection[-94.6350190479561 38.8500536826254]",
    "test_zones_valid_simple 2: AssertionError: 2/41 bad zones: #37 recovery: Self-intersection[-94.6332576530541 38.8518274501726]; #39 recovery: Self-intersection[-94.6336256176206 38.8514947193868]",
    "test_zones_valid_simple 3: AssertionError: 2/54 bad zones: #16 fairway: Self-intersection[-94.6333750459801 38.8504286162019]; #45 recovery: Self-intersection[-94.6336255674148 38.8514949757708]",
@@ -3593,9 +3580,7 @@
    "test_zones_valid_simple 14: AssertionError: 2/59 bad zones: #1 fairway: Self-intersection[-94.6482597600204 38.8537152369623]; #42 recovery: Self-intersection[-94.6436946232898 38.8512199048335]",
    "test_zones_valid_simple 15: AssertionError: 1/44 bad zones: #35 recovery: Self-intersection[-94.645164123702 38.8513392188669]",
    "test_zones_valid_simple 17: AssertionError: 3/37 bad zones: #1 fairway: Self-intersection[-94.642830479417 38.8512902162167]; #19 recovery: Self-intersection[-94.6445390164662 38.8520925290717]; #33 recovery: Self-intersection[-94.6414004505087 38.",
-   "test_zones_valid_simple 18: AssertionError: 2/51 bad zones: #8 fairway: Self-intersection[-94.6393590869947 38.8510145880714]; #35 recovery: Self-intersection[-94.6360664755737 38.8491812223069]",
-   "test_zones_valid_simple 19: AssertionError: 2/42 bad zones: #38 recovery: Self-intersection[-94.633257738797 38.8518275147534]; #40 recovery: Self-intersection[-94.6336255154325 38.85149519889]",
-   "test_zones_valid_simple 20: AssertionError: 1/20 bad zones: #14 recovery: Self-intersection[-94.6251154376222 38.8510327416004]"
+   "test_zones_valid_simple 18: AssertionError: 2/51 bad zones: #8 fairway: Self-intersection[-94.6393590869947 38.8510145880714]; #35 recovery: Self-intersection[-94.6360664755737 38.8491812223069]"
   ]
  },
  "library/jayhawk_club": {
