@@ -1,6 +1,6 @@
 # Lake Shawnee Golf Course (Topeka, KS) - Blue tees
 
-Built 2026-11-26T23:27:50Z. OSM relation/2053245. Scorecard: file (course_data/library/lake_shawnee/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red, Gold)).
+Built 2026-11-28T04:15:35Z. OSM relation/2053245. Scorecard: file (course_data/library/lake_shawnee/routed_card.json). Tee set: substitute: longest set (tee set 'Black' not on the card (sets: Blue, White, Red, Gold)).
 
 **WARNING: requested tee set 'Black' is not on the card; using 'Blue' instead (allow_substitute). Sets on the card: Blue, White, Red, Gold**
 
@@ -42,7 +42,7 @@ OSM features inside the course: buildings 4, golf=bunker 4, golf=cartpath 14, go
 | 15 | 3 | 199 / 200 | 79 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 16 | 5 | 515 / 509 | 359 | 0.78 | check the flags | 0% | 62% | 38% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 | 17 | 3 | 183 / 183 | 173 | 0.93 | auto | 100% | 0% | 0% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
-| 18 | 4 | 455 / 450 | 39 | 0.78 | check the flags | 28% | 28% | 45% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
+| 18 | 4 | 455 / 450 | 39 | 0.78 | check the flags | 28% | 28% | 44% | tee stage: Blue tee_axis | tee: tee stage: Blue tee_axis |
 
 ## Stages
 
@@ -58,7 +58,7 @@ OSM features inside the course: buildings 4, golf=bunker 4, golf=cartpath 14, go
 - **elevation**: ok: course_data/packages/lake_shawnee/imagery/dem.tif (18/18 holes)
 - **vision**: ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar canopy edge buffer)
 - **segment**: not run (no course_data/segment/<slug>/segment.geojson; commit requests/segment_<slug>.json)
-- **fairway_fill**: ok: 9/9 hole(s) without a mapped fairway filled from NAIP (d' 1.69; gated: none)
+- **fairway_fill**: ok: 9/9 hole(s) without a mapped fairway filled from NAIP (d' 1.71; gated: none)
 - **green_auto**: not needed: every hole has a mapped green
 - **ob**: ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow hand OB); layers osm+ms_buildings; 12 polygons (outside 12); mode replace
 - **native_auto**: none: course gate shut: 0% of sides >= 0.675 (< 25%)
