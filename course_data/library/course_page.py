@@ -1230,7 +1230,7 @@ def finish(q, parts):
     st = status_record(q, cfg, pkg, status, reasons, check_holes, page_rel, size)
     st["verified_holes"] = [int(r) if r.isdigit() else r for r in ver]
     if routed:
-        st["routed"] = {k: routed.get(k) for k in ("source", "approximate", "approx_below", "p_holes", "p_id", "verified",
+        st["routed"] = {k: routed.get(k) for k in ("source", "route_select", "approximate", "approx_below", "p_holes", "p_id", "verified",
                                                    "card_corroborated", "ensemble", "warnings")}
     wj(out_dir(q, "status.json"), st)
     log(json.dumps(st, indent=1))
