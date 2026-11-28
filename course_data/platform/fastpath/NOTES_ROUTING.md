@@ -2089,3 +2089,14 @@ on the scene), the fields come from 420-course fits, the test-28 split is unread
 To ship: a field model fitted on every course; field inference in the fast path (the network is 5 levels of 3x3
 convolutions at 384 x 384, 5 m); the refit's fits into route_models/ with fold models and a route_conf refit on its
 paired routings; one read of test 28.
+
+Hole field in the fast path (opt-in, 2026-11-28): the fit on every TRAIN-BIG course (run 46073574372, 32 epochs),
+exported with batch norms folded (research/holefield_export.py -> route_models/holefield_v1/holefield_weights.npz,
+2.76 M parameters, float16, 5 MB). `holefield.forward` is the network in numpy (0.8 s for 384 x 384; against the
+torch output on the reference pair: mean abs difference 0.002 on a mean |y| of 1.95, correlation 0.999998).
+`holefield.scene_field` runs it on the whole scene grid at 5 m from route_learn.Maps (no fixed canvas, so large
+courses are covered; 86 of 600 bench courses did not fit the research canvas and had NaN features in the refit);
+`pair_x_maps` gives hx4 in route_learn.rescore when the model has x4. The refit's fits are route_models/v2_hf/
+(hole model 94 features), selected by `ROUTE_SELECT=hf`; a page request sets it with "route_select": "hf".
+Default unchanged (v2). Before the default flips: paired-routing bench of v2_hf with out-of-fold fields, route_conf
+refit on it (the verified-hole figures were measured on v2 routings), one read of test 28.

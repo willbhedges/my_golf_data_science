@@ -122,7 +122,9 @@ def unet_file():
 # (route_models/v2_pk/: regressor re-ranker, eps tie-break tee choice).
 # ROUTE_SELECT=chosen (route_models/v2_chosen/): the fits made with the bench's old card (scorecard.json's chosen card),
 # before the 2026-11-20 refit under the production card pick (NOTES_ROUTING.md "refit under the card pick").
-SELECT_ROLLBACK = {"v2": {"0": "v2_pk", "w1e": "v2_w1e", "chosen": "v2_chosen"}}
+# ROUTE_SELECT=hf (route_models/v2_hf/): the refit whose hole model also reads the learned hole field (holefield.py,
+# NOTES_ROUTING.md 2026-11-27: +1.2 points out of fold); files it lacks (route_conf.json) come from route_models/v2/.
+SELECT_ROLLBACK = {"v2": {"0": "v2_pk", "w1e": "v2_w1e", "chosen": "v2_chosen", "hf": "v2_hf"}}
 
 
 def select_rollback():

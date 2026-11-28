@@ -1331,7 +1331,8 @@ def rescore(d, scene, M, card=None, n_holes=None, path=MODEL):
                  ex3=loop_features3(d, scene, M, "end"))
     if m.get("x4"):                       # the hole-field features: the course's field when one is at hand
         import holefield
-        t["hx4"] = holefield.pair_x(d.get("_slug") or "", d)
+        hx4 = holefield.pair_x(d["_slug"], d) if holefield.on() and d.get("_slug") else holefield.pair_x_maps(d, M)
+        t["hx4"] = hx4 if hx4 is not None else np.full((len(d["hx"]), len(holefield.XF4)), np.nan)
     d["sc"] = dict(d["sc"], **predict(m["models"], t))
     if m["models"].get("p") is not None and len(d["co"]["G"]):
         d["sc"]["pp"] = m["models"]["p"].predict_proba(prac_features(d, M))[:, 1]

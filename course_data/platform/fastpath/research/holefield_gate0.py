@@ -121,8 +121,8 @@ def _along(field, pts):
         u = v / L
         k = max(2, int(L / 2))
         q = a[None] + np.linspace(0.0, 1.0, k)[:, None] * v[None]
-        c = np.clip(q[:, 0].round().astype(int), 0, SIZE - 1)
-        r = np.clip(q[:, 1].round().astype(int), 0, SIZE - 1)
+        c = np.clip(q[:, 0].round().astype(int), 0, field.shape[2] - 1)
+        r = np.clip(q[:, 1].round().astype(int), 0, field.shape[1] - 1)
         tot += float(np.sum(field[0][r, c] * u[0] + field[1][r, c] * u[1])) * L / k
         w += L
     return tot / max(w, 1e-6)

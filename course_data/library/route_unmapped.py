@@ -41,6 +41,12 @@ def row_for(q):
 
 
 def main(req):
+    try:                                  # "route_select": "hf" in the request: the hole-field routing fits
+        sel = str(json.load(open(req)).get("route_select") or "")   # (detector.SELECT_ROLLBACK), read before the
+    except (OSError, ValueError):                                    # router's modules resolve their model files
+        sel = ""
+    if sel in ("hf",):
+        os.environ["ROUTE_SELECT"] = sel
     import course_page as cp
     import fast
     q = cp.request(req)
@@ -116,6 +122,7 @@ def main(req):
         info.update(p_holes=rc.get("p_holes") or info["p_holes"], approximate=rc.get("approximate") or info["approximate"],
                     approx_below=rc.get("approx_below"), source=rc.get("source"), warnings=rc.get("warnings"),
                     imagery_year=(P.get("imagery") or {}).get("year"))
+    info["route_select"] = os.environ.get("ROUTE_SELECT") or None
     info["ignore_osm_holes"] = dropped
     info["no_osm_course"] = not row.get("osm")
     ok = os.path.exists(sup) and r.get("status") in ("shown", "ok", "confirm") and bool(info.get("p_holes"))
