@@ -1,6 +1,6 @@
 # Keller Golf Course (Maplewood, MN) - Black tees
 
-Built 2026-11-26T12:21:54Z. OSM none/0. Scorecard: golfify (golfify). Tee set: name.
+Built 2026-11-28T04:30:32Z. OSM none/0. Scorecard: golfify (golfify). Tee set: name.
 
 ## Coverage
 
