@@ -41,12 +41,18 @@ def row_for(q):
 
 
 def main(req):
-    try:                                  # "route_select": "hf" in the request: the hole-field routing fits
-        sel = str(json.load(open(req)).get("route_select") or "")   # (detector.SELECT_ROLLBACK), read before the
-    except (OSError, ValueError):                                    # router's modules resolve their model files
-        sel = ""
-    if sel in ("hf",):
-        os.environ["ROUTE_SELECT"] = sel
+    # Page builds route with the hole-field fits (route_models/v2_hf, ROUTE_SELECT=hf: +1.2 points of holes right
+    # out of fold, NOTES_ROUTING.md 2026-11-27 / 28). "route_select": "v2" in the request rolls a course back to the
+    # fits before them. Set before the router's modules resolve their model files. (The benches and the fast-path
+    # CLI keep detector.py's default, v2.)
+    try:
+        sel = str(json.load(open(req)).get("route_select") or "hf")
+    except (OSError, ValueError):
+        sel = "hf"
+    if sel == "hf":
+        os.environ["ROUTE_SELECT"] = "hf"
+    else:
+        os.environ.pop("ROUTE_SELECT", None)
     import course_page as cp
     import fast
     q = cp.request(req)

@@ -2100,3 +2100,20 @@ courses are covered; 86 of 600 bench courses did not fit the research canvas and
 (hole model 94 features), selected by `ROUTE_SELECT=hf`; a page request sets it with "route_select": "hf".
 Default unchanged (v2). Before the default flips: paired-routing bench of v2_hf with out-of-fold fields, route_conf
 refit on it (the verified-hole figures were measured on v2 routings), one read of test 28.
+
+Hole field, first real builds and the page default (2026-11-28). Rebuilt with "route_select": "hf":
+
+| course | CHECK holes before -> after | approximate | verified |
+|---|---|---|---|
+| Brown Deer | 7 -> 5 | 4 -> 0 | 0 -> 7 |
+| Lake of the Woods | 6 -> 4 | 3 -> 0 | 0 (no second card) |
+| Gaylord Springs | 14 -> 6 | 2 -> 0 | 0 -> 4 |
+
+(status.json did not record the fits used; it does from now on, routed.route_select.) route_conf on the new routings:
+the shipped model scored on the refit's out-of-fold routings (arm A, v2_hf) against pair_v3's arm B: P(id) >= 0.98 and
+a corroborated card passes 38.2 % of holes, 99.42 % right (22 wrong; never-used 36.2 %, 99.41 %); on the old arm A it
+passes 33.1 %. So the verified-hole rule holds on the new routings (arm B there is still the old fits': the pair of
+two new routings is not benched). Identity-right holes 89.5 -> 90.0 %.
+Page builds now default to the hole-field fits (route_unmapped.py; "route_select": "v2" rolls a course back);
+detector.py's default, the benches and the fast-path CLI stay v2. Test 28 is unread for this change: the refit stage
+on Actions has no test read, and the evidence used is the never-used 200 (+20 holes, 53 courses better / 29 worse).
