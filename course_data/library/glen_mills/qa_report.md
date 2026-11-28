@@ -1,11 +1,11 @@
 # The Golf Course at Glen Mills: automatic page QA
 
-**Status: needs confirm** — confirm holes 4, 6, 11, 12
+**Status: needs confirm** — confirm holes 4, 6, 10, 12
 
-* page: `course_data/library/glen_mills/page.html` (3.2 MB); request `course_data/requests/course_page_glen_mills.json`; built 2026-11-26T23:29Z
+* page: `course_data/library/glen_mills/page.html` (3.3 MB); request `course_data/requests/course_page_glen_mills.json`; built 2026-11-28T04:25Z
 * course: The Golf Course at Glen Mills (Thornbury Township, PA), OSM way/284570622; holes: osm (tier mapped_card); card: course_data/library/glen_mills/routed_card.json (file)
 * solved tee sets: Black, Blue (the two longest sets on the card (combination sets skipped)); page sets: Black, Blue
-* weather: forecast for 2026-11-28, 2026-11-29; grid temperatures [35, 45, 55] F; calm-day picks with 48 prior draws
+* weather: forecast for 2026-12-05, 2026-12-06; grid temperatures [35, 50, 60] F; calm-day picks with 48 prior draws
 * imagery on the page: 2022-05-10,2022-05-17; package imagery 2022
 * stages: vision `ok: vision_any/2 (multi-year NAIP + lidar point statistics, LightGBM on hand maps; lidar c`; OB `ok: ob_infer/1 (course outline + houses/parcels/roads, offsets fitted on Spirit Hollow han`
 
@@ -22,17 +22,17 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | PASS | Driver -4 |  |
-| 2 | 4 | PASS | Driver -24 |  |
-| 3 | 4 | PASS | 4-wood +1 |  |
+| 1 | 4 | PASS | Driver +5 |  |
+| 2 | 4 | PASS | Driver -23 |  |
+| 3 | 4 | PASS | 4-wood -0 |  |
 | 4 | 5 | PASS | Driver -4 |  |
 | 5 | 3 | PASS |  |  |
-| 6 | 5 | CHECK | Driver -35 | tee: tee marker not on an OSM tee box (lidar_pad; 19 yds from the nearest OSM tee box) |
+| 6 | 5 | CHECK | Driver -35 | tee: tee marker not on an OSM tee box (walkback; 19 yds from the nearest OSM tee box) |
 | 7 | 3 | PASS |  |  |
 | 8 | 4 | PASS | Driver +14 |  |
 | 9 | 4 | PASS | Driver +1 |  |
-| 10 | 3 | PASS |  |  |
-| 11 | 4 | CHECK | 4-wood +4 | tee: tee marker not on an OSM tee box (lidar_pad; 19 yds from the nearest OSM tee box) |
+| 10 | 3 | CHECK |  | tee: tee marker not on an OSM tee box (lidar_pad; 27 yds from the nearest OSM tee box) |
+| 11 | 4 | PASS | Long iron +7 (tie) |  |
 | 12 | 4 | CHECK | 4-wood +8 | yardage: measured 277 vs card 339 (-62) |
 | 13 | 4 | PASS | Driver -23 |  |
 | 14 | 3 | PASS |  |  |
@@ -45,12 +45,12 @@ Checks per hole (tee on an OSM tee box; yardage within 10 of the card; par = car
 
 | hole | par | result | pick | reasons |
 |---|---|---|---|---|
-| 1 | 4 | PASS | Driver -0 |  |
+| 1 | 4 | PASS | Driver +8 |  |
 | 2 | 4 | PASS | Driver -22 |  |
-| 3 | 4 | PASS | Driver -11 |  |
+| 3 | 4 | PASS | Driver -12 |  |
 | 4 | 5 | CHECK | Driver -10 | aim: Driver -10 lands 308 yds out in rough (12 yds from fairway) |
 | 5 | 3 | PASS |  |  |
-| 6 | 5 | PASS | Driver -27 |  |
+| 6 | 5 | PASS | Driver -24 |  |
 | 7 | 3 | PASS |  |  |
 | 8 | 4 | PASS | Driver +14 |  |
 | 9 | 4 | PASS | 4-wood -1 |  |
