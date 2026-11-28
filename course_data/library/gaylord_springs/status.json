@@ -7,24 +7,16 @@
  "group": "library",
  "status": "needs confirm",
  "reasons": [
-  "holes placed from aerial photos (OpenStreetMap does not map them all): 2 marked approximate (6, 14)",
-  "14 hole(s) with a CHECK"
+  "holes placed from aerial photos (OpenStreetMap does not map them all): none marked approximate",
+  "6 hole(s) with a CHECK"
  ],
  "check_holes": [
-  1,
   4,
   5,
-  6,
-  7,
   9,
-  10,
   11,
   12,
-  14,
-  15,
-  16,
-  17,
-  18
+  14
  ],
  "tee_sets": [
   {
@@ -78,7 +70,7 @@
   "Gold"
  ],
  "page": "course_data/library/gaylord_springs/page.html",
- "page_bytes": 4460412,
+ "page_bytes": 4588728,
  "qa_report": "course_data/library/gaylord_springs/qa_report.md",
  "center": [
   36.21956435,
@@ -87,79 +79,90 @@
  "osm": "way/499135540",
  "holes": 18,
  "days": [
-  "2026-11-28",
-  "2026-11-29"
+  "2026-12-05",
+  "2026-12-06"
  ],
  "weather": "forecast",
- "built": "2026-11-26T23:28Z",
+ "built": "2026-11-28T02:51Z",
  "request": "course_data/requests/course_page_gaylord_springs.json",
  "native": {
   "holes": [],
   "tee_set": "Black",
-  "note": "4 asked of 14 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%)); 0 kept on the page's own picks (4 dropped)"
+  "note": "2 asked of 14 framed holes (priors: native_auto p; automatic band off: course gate shut: 0% of sides >= 0.675 (< 25%)); 0 kept on the page's own picks (2 dropped)"
  },
- "verified_holes": [],
+ "verified_holes": [
+  1,
+  2,
+  7,
+  10
+ ],
  "routed": {
   "source": "route_conf",
   "approximate": [],
   "approx_below": 0.65,
   "p_holes": {
-   "1": 0.9567,
-   "2": 0.8451,
-   "3": 0.8911,
-   "4": 0.8996,
-   "5": 0.8965,
-   "6": 0.9028,
-   "7": 0.8101,
-   "8": 0.9434,
-   "9": 0.9221,
-   "10": 0.961,
-   "11": 0.9073,
-   "12": 0.9385,
-   "13": 0.9387,
-   "14": 0.8779,
-   "15": 0.9361,
-   "16": 0.9275,
-   "17": 0.8921,
-   "18": 0.8537
+   "1": 0.9569,
+   "2": 0.9347,
+   "3": 0.9245,
+   "4": 0.9121,
+   "5": 0.8786,
+   "6": 0.8844,
+   "7": 0.9463,
+   "8": 0.9321,
+   "9": 0.9436,
+   "10": 0.9579,
+   "11": 0.9121,
+   "12": 0.9045,
+   "13": 0.89,
+   "14": 0.9302,
+   "15": 0.9193,
+   "16": 0.8901,
+   "17": 0.8831,
+   "18": 0.8789
   },
   "p_id": {
-   "1": 0.9806,
-   "2": 0.8758,
-   "3": 0.9344,
-   "4": 0.9529,
-   "5": 0.9712,
-   "6": 0.9692,
-   "7": 0.8418,
-   "8": 0.9707,
-   "9": 0.9706,
-   "10": 0.9873,
-   "11": 0.9517,
-   "12": 0.9755,
-   "13": 0.9524,
-   "14": 0.918,
-   "15": 0.9735,
-   "16": 0.9576,
-   "17": 0.9615,
-   "18": 0.9037
+   "1": 0.9885,
+   "2": 0.984,
+   "3": 0.9615,
+   "4": 0.9452,
+   "5": 0.9606,
+   "6": 0.962,
+   "7": 0.9891,
+   "8": 0.9689,
+   "9": 0.9871,
+   "10": 0.9901,
+   "11": 0.9718,
+   "12": 0.9656,
+   "13": 0.9472,
+   "14": 0.9706,
+   "15": 0.9792,
+   "16": 0.8986,
+   "17": 0.9075,
+   "18": 0.9591
   },
   "verified": [
    "1",
+   "2",
+   "7",
+   "9",
    "10"
   ],
   "card_corroborated": 1,
   "ensemble": {
-   "use": "b",
-   "sum_a": 15.76,
-   "sum_b": 16.3,
+   "use": "a",
+   "sum_a": 16.48,
+   "sum_b": 16.93,
    "agree": 1.0,
    "model": "pair",
    "second": "golfseg_own_v3",
-   "seconds": 59.8,
+   "seconds": 48.5,
    "right_a": null,
    "right_b": null,
    "verified": [
     "1",
+    "2",
+    "7",
+    "9",
     "10"
    ],
    "card_corroborated": 1
