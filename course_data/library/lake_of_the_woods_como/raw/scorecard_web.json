@@ -1,10 +1,10 @@
 {
- "fetched_utc": "2026-11-26T15:56:15Z",
+ "fetched_utc": "2026-11-28T02:47:48Z",
  "tried": [
   {
    "source": "golfify",
-   "ok": false,
-   "info": "golfify: card at https://www.golfify.io/courses/lake-of-the-woods-golf-course rejected (hole count / lengths don't fit OSM)"
+   "ok": true,
+   "info": "https://www.golfify.io/courses/lake-of-the-woods-golf-course"
   },
   {
    "source": "allsquare",
@@ -20,22 +20,299 @@
    "source": "opengolfapi",
    "ok": false,
    "info": "opengolfapi: no tees / holes_data for Lake of the Woods Golf Course (opengolfapi: Lake of the Woods Golf Course (0.0 km))"
-  },
-  {
-   "source": "bluegolf",
-   "ok": false,
-   "info": "bluegolf: no course page found by search"
-  },
-  {
-   "source": "golfpass",
-   "ok": false,
-   "info": "golfpass: no course page found by search"
-  },
-  {
-   "source": "allsquare",
-   "ok": false,
-   "info": "allsquare: no course page found by search"
   }
  ],
- "cards": []
+ "cards": [
+  {
+   "source": "golfify",
+   "url": "https://www.golfify.io/courses/lake-of-the-woods-golf-course",
+   "card": {
+    "schema": "scorecard/1",
+    "source": "https://www.golfify.io/courses/lake-of-the-woods-golf-course",
+    "par": [
+     4,
+     3,
+     4,
+     4,
+     4,
+     4,
+     3,
+     4,
+     5,
+     3,
+     5,
+     4,
+     4,
+     4,
+     4,
+     5,
+     3,
+     4
+    ],
+    "handicap": [
+     5,
+     17,
+     15,
+     13,
+     7,
+     1,
+     11,
+     9,
+     3,
+     16,
+     4,
+     6,
+     2,
+     12,
+     14,
+     8,
+     18,
+     10
+    ],
+    "tee_sets": {
+     "Blue": {
+      "colour": "blue",
+      "aliases": [
+       "blue"
+      ],
+      "yards": [
+       398,
+       181,
+       357,
+       298,
+       360,
+       430,
+       210,
+       365,
+       495,
+       150,
+       575,
+       352,
+       468,
+       377,
+       311,
+       516,
+       165,
+       370
+      ],
+      "par": [
+       4,
+       3,
+       4,
+       4,
+       4,
+       4,
+       3,
+       4,
+       5,
+       3,
+       5,
+       4,
+       4,
+       4,
+       4,
+       5,
+       3,
+       4
+      ],
+      "handicap": [
+       5,
+       17,
+       15,
+       13,
+       7,
+       1,
+       11,
+       9,
+       3,
+       16,
+       4,
+       6,
+       2,
+       12,
+       14,
+       8,
+       18,
+       10
+      ],
+      "total": 6378,
+      "total_stated": 6378,
+      "rating": 69.7,
+      "slope": 127,
+      "source": "https://www.golfify.io/courses/lake-of-the-woods-golf-course"
+     },
+     "White": {
+      "colour": "white",
+      "aliases": [
+       "white"
+      ],
+      "yards": [
+       383,
+       146,
+       325,
+       296,
+       354,
+       357,
+       204,
+       363,
+       495,
+       150,
+       559,
+       349,
+       429,
+       350,
+       296,
+       514,
+       148,
+       366
+      ],
+      "par": [
+       4,
+       3,
+       4,
+       4,
+       4,
+       4,
+       3,
+       4,
+       5,
+       3,
+       5,
+       4,
+       4,
+       4,
+       4,
+       5,
+       3,
+       4
+      ],
+      "handicap": [
+       5,
+       17,
+       15,
+       13,
+       7,
+       1,
+       11,
+       9,
+       3,
+       16,
+       4,
+       6,
+       2,
+       12,
+       14,
+       8,
+       18,
+       10
+      ],
+      "total": 6084,
+      "total_stated": 6084,
+      "rating": 68.5,
+      "slope": 122,
+      "source": "https://www.golfify.io/courses/lake-of-the-woods-golf-course"
+     },
+     "Red": {
+      "colour": "red",
+      "aliases": [
+       "red"
+      ],
+      "yards": [
+       282,
+       137,
+       237,
+       216,
+       263,
+       320,
+       132,
+       272,
+       358,
+       150,
+       494,
+       315,
+       320,
+       267,
+       296,
+       427,
+       102,
+       313
+      ],
+      "par": [
+       4,
+       3,
+       4,
+       4,
+       4,
+       4,
+       3,
+       4,
+       5,
+       3,
+       5,
+       4,
+       4,
+       4,
+       4,
+       5,
+       3,
+       4
+      ],
+      "handicap": [
+       7,
+       17,
+       11,
+       13,
+       3,
+       1,
+       15,
+       5,
+       9,
+       16,
+       2,
+       6,
+       12,
+       8,
+       14,
+       4,
+       18,
+       10
+      ],
+      "total": 4901,
+      "total_stated": 4901,
+      "rating": 66,
+      "slope": 105,
+      "source": "https://www.golfify.io/courses/lake-of-the-woods-golf-course"
+     }
+    },
+    "facility": {
+     "clubName": "Lake of the Woods Golf Course",
+     "city": "Columbia",
+     "state": "Missouri",
+     "address": "6700 Saint Charles Road",
+     "latitude": 38.968173,
+     "longitude": -92.2369,
+     "numberOfHoles": 18,
+     "website": "http://golfcolumbiamo.com/lake-of-the-woods/"
+    }
+   }
+  }
+ ],
+ "consensus": {
+  "base": "golfify",
+  "base_url": "https://www.golfify.io/courses/lake-of-the-woods-golf-course",
+  "changes": [],
+  "flags": [],
+  "scores": {
+   "golfify https://www.golfify.io/courses/lake-of-the-woods-golf-course": {
+    "holes": 18,
+    "fit": 6,
+    "share": 0.333,
+    "mean_err": 26.5,
+    "all_sets": 0.333,
+    "consistent": true,
+    "date": null,
+    "corroborated_by": 0
+   }
+  }
+ }
 }
